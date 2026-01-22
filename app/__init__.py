@@ -8,10 +8,10 @@ def create_app():
 
     db.init_app(app)
     migrate.init_app(app, db)
-    #jwt.init_app(app)
+    jwt.init_app(app)
 
 
-    from app.models import product
+    from app.models import product, user
 
     from app.routes.health import health_bp
     from app.routes.product_routes import product_bp

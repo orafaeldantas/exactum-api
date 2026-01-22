@@ -1,15 +1,18 @@
 from flask import Blueprint, request, jsonify
 from app.services import product_service
+from app.extensions import jwt_auth
 
 product_bp = Blueprint("products", __name__, url_prefix="/products")
 
 @product_bp.route("", methods=["POST"])
+@jwt_auth
 def create():
     data = request.json
     product = product_service.create_product(data)
     return jsonify({"id": product.id}), 201
 
 @product_bp.route("", methods=["GET"])
+@jwt_auth
 def list_all():
     products = product_service.list_product()
     return jsonify([
@@ -23,6 +26,7 @@ def list_all():
     ])
 
 @product_bp.route("/<int:product_id>", methods=["GET"])
+@jwt_auth
 def get(product_id):
     product = product_service.get_product(product_id)
     if not product:
@@ -38,6 +42,7 @@ def get(product_id):
     })
 
 @product_bp.route("/<int:product_id>", methods=["PUT"])
+@jwt_auth
 def update(product_id):
     product = product_service.get_product(product_id)
     if not product:
@@ -48,6 +53,7 @@ def update(product_id):
     return jsonify({"message": "Product updated"})
 
 @product_bp.route("/<int:product_id>", methods=["DELETE"])
+@jwt_auth
 def delete(product_id):
     product = product_service.get_product(product_id)
     if not product:
