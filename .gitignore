@@ -1,8 +1,9 @@
 venv/
-__pycache__/
+**/__pycache__/
 
 *.db
 *.env
+*.pyc
 
 
 seed.py
