@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  api:
+    build: .
+    container_name: exactum_api
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    command: sh -c "./wait-for-db.sh && python run.py"
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    user: root 
+
+  db:
+    image: postgres:15
+    container_name: exactum_db
+    restart: always
+    environment:
+      POSTGRES_DB: exactum_db
+      POSTGRES_USER: exactum_admin
+      POSTGRES_PASSWORD: exactum_dev_pass
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
