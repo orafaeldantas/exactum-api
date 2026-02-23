@@ -1,5 +1,4 @@
 #!/bin/sh
-
 echo "⏳ Waiting for Postgres..."
 
 while ! nc -z db 5432; do
@@ -7,3 +6,6 @@ while ! nc -z db 5432; do
 done
 
 echo "✅ Postgres is up!"
+echo "🚀 Starting application..."
+
+exec "$@"
