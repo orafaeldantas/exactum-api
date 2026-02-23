@@ -55,3 +55,8 @@
   button:hover {
     background-color: var(--accent-hover);
   }
+
+  .error {
+    color: var(--error);
+    font-size: 0.85rem;
+  }
