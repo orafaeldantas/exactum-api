@@ -7,14 +7,18 @@ migrate = Migrate(directory="migrations")
 jwt = JWTManager()
 
 
-@jwt.user_identity_loader
-def user_identity_lookup(user):
+@jwt.invalid_token_loader
+def invalid_token(reason):
+    print("JWT INVALID:", reason)
+    return {"error": reason}, 422
 
-    return user.id
+@jwt.unauthorized_loader
+def missing_token(reason):
+    print("JWT MISSING:", reason)
+    return {"error": reason}, 401
 
-@jwt.additional_claims_loader
-def add_claims_to_access_token(user):
+@jwt.expired_token_loader
+def expired(jwt_header, jwt_payload):
+    print("JWT EXPIRED")
+    return {"error": "expired"}, 401
 
-    return {
-        "is_admin": getattr(user, 'is_admin', False)
-    }

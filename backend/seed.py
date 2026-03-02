@@ -8,7 +8,7 @@ def seed_database():
         admin_password = os.getenv("", "123456")
 
         if not User.query.filter_by(username="admin").first():
-            user = User(username="admin")
+            user = User(username="admin", is_admin=True)
             user.set_password(admin_password)
             db.session.add(user)
             db.session.commit()
