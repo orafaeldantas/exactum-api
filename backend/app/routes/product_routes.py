@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.services import product_service
 from app.extensions import jwt_auth
+from flask_jwt_extended import get_jwt_identity
 
 product_bp = Blueprint("products", __name__, url_prefix="/products")
 
@@ -32,6 +33,9 @@ def get(product_id):
     if not product:
         return jsonify({"error": "Product not found"}), 404
     
+    if product.user_id != get_jwt_identity():
+        return jsonify({"error": "Forbidden"}), 403
+    
     return jsonify({
         "id": product.id,
         "name": product.name,
@@ -48,6 +52,9 @@ def update(product_id):
     if not product:
         return jsonify({"error": "Product not found"}, 404)
     
+    if product.user_id != get_jwt_identity():
+        return jsonify({"error": "Forbidden"}), 403
+    
     data= request.json
     product_service.update_product(product, data)
     return jsonify({"message": "Product updated"})
@@ -58,6 +65,9 @@ def delete(product_id):
     product = product_service.get_product(product_id)
     if not product:
         return jsonify({"error": "Product not found"}, 404)
+    
+    if product.user_id != get_jwt_identity():
+        return jsonify({"error": "Forbidden"}), 403
     
     product_service.delete_product(product)
     return jsonify({"message": "Product deactivated"})

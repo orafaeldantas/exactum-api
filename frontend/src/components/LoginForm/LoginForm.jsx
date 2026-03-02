@@ -1,6 +1,6 @@
 import styles from './LoginForm.module.css';
 import { useState } from 'react';
-import { loginRequest } from '../../services/api';
+import { loginRequest } from "../../services/auth";
 
 export default function LoginForm() {
   const [username, setUsername] = useState('');
@@ -16,8 +16,8 @@ export default function LoginForm() {
     try {
       const data = await loginRequest(username, password);
 
-      // salva token
       localStorage.setItem("access_token", data.access_token);
+      window.location.reload();
 
       console.log("Login realizado com sucesso");
     } catch (err) {
