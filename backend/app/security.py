@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import jsonify
+from flask import jsonify, abort
 from flask_jwt_extended import get_jwt_identity, get_jwt
 
 def owner_required(param_name="user_id"):
@@ -23,3 +23,15 @@ def owner_required(param_name="user_id"):
             return fn(*args, **kwargs)
         return wrapper
     return decorator
+
+
+def authorize_owner_or_admin(resource_owner_id):
+
+    claims = get_jwt()
+    current_user_id = int(get_jwt_identity())
+
+    is_admin = claims.get("is_admin", False)
+    is_owner = str(current_user_id) == str(resource_owner_id)
+
+    if not is_admin and not is_owner:
+        abort(403, description="Access denied: only the owner or admin.")

@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.services import product_service
-from flask_jwt_extended import get_jwt_identity, jwt_required, get_jwt
+from flask_jwt_extended import jwt_required, get_jwt
+from app.security import authorize_owner_or_admin
 
 product_bp = Blueprint("products", __name__, url_prefix="/products")
 
@@ -32,9 +33,7 @@ def get(product_id):
     if not product:
         return jsonify({"error": "Product not found"}), 404
     
-    claims = get_jwt()
-    if not claims.get("is_admin") and str(product.user_id) != str(get_jwt_identity()):
-        return jsonify({"error": "Forbidden: You are not the owner or an admin"}), 403
+    authorize_owner_or_admin(product.user_id)
     
     return jsonify({
         "id": product.id,
@@ -52,12 +51,12 @@ def update(product_id):
     if not product:
         return jsonify({"error": "Product not found"}, 404)
     
-    if product.user_id != get_jwt_identity():
-        return jsonify({"error": "Forbidden"}), 403
+    authorize_owner_or_admin(product.user_id)
     
     data= request.json
     product_service.update_product(product, data)
     return jsonify({"message": "Product updated"})
+
 
 @product_bp.route("/<int:product_id>", methods=["DELETE"])
 @jwt_required()
@@ -66,8 +65,7 @@ def delete(product_id):
     if not product:
         return jsonify({"error": "Product not found"}, 404)
     
-    if product.user_id != get_jwt_identity():
-        return jsonify({"error": "Forbidden"}), 403
+    authorize_owner_or_admin(product.user_id)
     
     product_service.delete_product(product)
     return jsonify({"message": "Product deactivated"})
