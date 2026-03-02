@@ -1,19 +1,21 @@
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-export async function loginRequest(username, password) {
-  const response = await fetch(`${API_URL}/auth/login`, {
-    method: "POST",
+export async function apiFetch(endpoint, options = {}) {
+  const token = localStorage.getItem("access_token");
+
+  const response = await fetch(`${API_URL}${endpoint}`, {
+    ...options,
     headers: {
       "Content-Type": "application/json",
+      ...(token && { Authorization: `Bearer ${token}` }),
+      ...options.headers,
     },
-    body: JSON.stringify({ username, password }),
   });
 
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.error || "Erro ao autenticar");
+  if (response.status === 401) {
+    localStorage.removeItem("access_token");
+    throw new Error("Sessão expirada");
   }
 
-  return data;
+  return response;
 }
