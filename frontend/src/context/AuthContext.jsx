@@ -6,6 +6,7 @@ export const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  
 
   async function loadUser() {
     try {
@@ -19,6 +20,12 @@ export function AuthProvider({ children }) {
     }
   }
 
+  async function login(token) {
+    localStorage.setItem("access_token", token);
+    await loadUser();
+    
+  }
+
   function logout() {
     localStorage.removeItem("access_token");
     setUser(null);
@@ -29,7 +36,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
