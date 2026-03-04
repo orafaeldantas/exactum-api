@@ -21,8 +21,8 @@ export default function LoginForm() {
     try {
       const data = await loginRequest(username, password)
 
-      await login(data.access_token) // salva token e atualiza contexto
-      navigate("/Dashboard")   // redireciona
+      await login(data.access_token)
+      navigate("/dashboard")   
 
       console.log("Login realizado com sucesso")
 
