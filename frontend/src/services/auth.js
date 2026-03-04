@@ -15,5 +15,5 @@ export async function loginRequest(username, password) {
     throw new Error(data.error || "Erro ao autenticar");
   }
 
-  return data; // { access_token }
+  return data;
 }

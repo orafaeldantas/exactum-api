@@ -23,10 +23,12 @@ def create_app():
 
     from app.routes.health import health_bp
     from app.routes.product_routes import product_bp
+    from app.routes.user_routes import user_bp
     from app.routes.auth_routes import auth_bp
 
     app.register_blueprint(health_bp)
     app.register_blueprint(product_bp)
+    app.register_blueprint(user_bp)
     app.register_blueprint(auth_bp)
 
     return app

@@ -7,7 +7,7 @@ def owner_required(param_name="user_id"):
         @wraps(fn)
         def wrapper(*args, **kwargs):
 
-            claims = get_jwt()
+            claims = get_jwt() 
             token_user_id = get_jwt_identity()
             resource_user_id = kwargs.get(param_name)
 
