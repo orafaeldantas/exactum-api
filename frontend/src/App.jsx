@@ -3,6 +3,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import RoleRoute from "./routes/RoleRoute";
 import CreateUser from "./pages/CreateUser";
+import MainLayout from "./layouts/MainLayout";
 
 
 function App() {
@@ -14,7 +15,9 @@ function App() {
         path="/dashboard"
         element={
           <RoleRoute>
-            <Dashboard />
+            <MainLayout>
+              <Dashboard />
+            </MainLayout>
           </RoleRoute>
         }
       />
@@ -23,7 +26,9 @@ function App() {
         path="/users"
         element={
           <RoleRoute>
-            <CreateUser />
+            <MainLayout>
+              <CreateUser />
+            </MainLayout>
           </RoleRoute>
         }
       />
