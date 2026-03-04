@@ -9,7 +9,7 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     is_active = db.Column(db.Boolean, default=True)
-    is_admin = db.Column(db.Boolean, default=False)
+    role = db.Column(db.String(20), default="user")
 
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 

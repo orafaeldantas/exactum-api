@@ -6,6 +6,7 @@ function Navbar() {
   const { user, logout } = useContext(AuthContext)
   const navigate = useNavigate()
 
+
   function handleLogout() {
     logout()
     navigate("/")
@@ -21,7 +22,7 @@ function Navbar() {
         {user && (
           <>
             <span>
-              {user.is_admin ? "👑 Admin" : "👤 Usuário"}
+              {user.role === "admin" ? "👑 Admin" : "👤 Usuário"}
             </span>
 
             <button onClick={handleLogout} style={styles.button}>

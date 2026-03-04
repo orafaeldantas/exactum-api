@@ -17,7 +17,7 @@ def login():
     identity=str(user.id),
     additional_claims={
         "username": user.username,
-        "is_admin": user.is_admin
+        "role": user.role
     }
 )
 
@@ -32,11 +32,11 @@ def me():
 
     claims = get_jwt()
     username = claims.get("username")
-    is_admin = claims.get("is_admin")
+    role = claims.get("role")
 
     return {"id": user_id, 
             "username": username,
-            "is_admin": is_admin
+            "role": role
     }
 
 
