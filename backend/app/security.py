@@ -11,7 +11,7 @@ def owner_required(param_name="user_id"):
             token_user_id = get_jwt_identity()
             resource_user_id = kwargs.get(param_name)
 
-            if claims.get("is_admin") is True:
+            if claims.get("role") == 'admin':
                 return fn(*args, **kwargs)
 
             if resource_user_id is None:
@@ -25,13 +25,16 @@ def owner_required(param_name="user_id"):
     return decorator
 
 
-def authorize_owner_or_admin(resource_owner_id):
+def authorize_route(resource_owner_id, role):
+
 
     claims = get_jwt()
-    current_user_id = int(get_jwt_identity())
+    current_user_id = get_jwt_identity()
 
-    is_admin = claims.get("is_admin", False)
     is_owner = str(current_user_id) == str(resource_owner_id)
 
-    if not is_admin and not is_owner:
+    authorization = str(claims.get("role")) in role
+
+
+    if not is_owner and not authorization:
         abort(403, description="Access denied: only the owner or admin.")

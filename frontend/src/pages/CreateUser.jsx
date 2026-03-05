@@ -4,7 +4,7 @@ import { apiFetch } from "../services/api";
 export default function CreateUser() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [role, setRole] = useState("user");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -19,7 +19,7 @@ export default function CreateUser() {
         body: JSON.stringify({
           username,
           password,
-          is_admin: isAdmin,
+          role
         }),
       });
 
@@ -30,7 +30,8 @@ export default function CreateUser() {
       setMessage("Usuário criado com sucesso!");
       setUsername("");
       setPassword("");
-      setIsAdmin(false);
+      setRole("user");
+
     } catch (err) {
       setError(err.message);
     }
@@ -41,6 +42,7 @@ export default function CreateUser() {
       <h1>Cadastrar Usuário</h1>
 
       <form onSubmit={handleSubmit}>
+
         <input
           type="text"
           placeholder="Usuário"
@@ -57,16 +59,17 @@ export default function CreateUser() {
           required
         />
 
-        <label>
-          <input
-            type="checkbox"
-            checked={isAdmin}
-            onChange={(e) => setIsAdmin(e.target.checked)}
-          />
-          É administrador?
-        </label>
+        <label>Tipo de usuário</label>
+        <select
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+        >
+          <option value="user">Usuário</option>
+          <option value="admin">Administrador</option>
+        </select>
 
         <button type="submit">Criar</button>
+
       </form>
 
       {message && <p>{message}</p>}

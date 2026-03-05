@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.services import product_service
-from flask_jwt_extended import jwt_required, get_jwt
-from app.security import authorize_owner_or_admin
+from flask_jwt_extended import jwt_required
+from app.security import authorize_route
 
 product_bp = Blueprint("products", __name__, url_prefix="/products")
 
@@ -33,7 +33,7 @@ def get(product_id):
     if not product:
         return jsonify({"error": "Product not found"}), 404
     
-    authorize_owner_or_admin(product.user_id)
+    authorize_route(product.user_id, ['user', 'admin'])
     
     return jsonify({
         "id": product.id,
@@ -51,7 +51,7 @@ def update(product_id):
     if not product:
         return jsonify({"error": "Product not found"}, 404)
     
-    authorize_owner_or_admin(product.user_id)
+    authorize_route(product.user_id, ['user', 'admin'])
     
     data= request.json
     product_service.update_product(product, data)
@@ -65,7 +65,7 @@ def delete(product_id):
     if not product:
         return jsonify({"error": "Product not found"}, 404)
     
-    authorize_owner_or_admin(product.user_id)
+    authorize_route(product.user_id, ['user', 'admin'])
     
     product_service.delete_product(product)
     return jsonify({"message": "Product deactivated"})
