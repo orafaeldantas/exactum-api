@@ -16,8 +16,7 @@ function Dashboard() {
           <>
             <p>ID: {user.id}</p>
             <p>
-              Tipo de conta:{" "}
-              {user.is_admin ? "Administrador" : "Usuário comum"}
+              Tipo de conta:{user.role}
             </p>
           </>
         )}

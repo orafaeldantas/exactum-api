@@ -5,7 +5,7 @@ def create_user(data):
     user = User(
         username=data.get("username"),
         is_active=data.get("is_active"),
-        is_admin=data.get("is_admin")
+        role=data.get("role", "user")
     )
 
     user.set_password(data.get("password"))
