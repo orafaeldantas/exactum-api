@@ -15,7 +15,7 @@ def create():
     user = user_service.create_user(data)
     return jsonify({"id": user.id}), 201
 
-@user_bp.route("/list", methods=["GET"])
+@user_bp.route("", methods=["GET"])
 @jwt_required()
 def list_users():
     authorize_route(0, "admin")

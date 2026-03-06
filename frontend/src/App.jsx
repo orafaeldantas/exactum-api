@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import CreateUser from "./pages/CreateUser";
+import ListUsers from "./pages/ListUsers";
 
 import Layout from "./layouts/MainLayout";
 import RoleRoute from "./routes/RoleRoute";
@@ -26,10 +27,22 @@ function App() {
           path="/users"
           element={
             <RoleRoute requiredRole="admin">
+              <ListUsers />
+            </RoleRoute>
+          }
+        />
+        
+        <Route
+          path="/users/create"
+          element={
+            <RoleRoute requiredRole="admin">
               <CreateUser />
             </RoleRoute>
           }
         />
+
+
+        
       </Route>
 
     </Routes>

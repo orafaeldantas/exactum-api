@@ -64,7 +64,7 @@ export default function CreateUser() {
         <label>Tipo de usuário</label>
 
         <select
-          value={"role"}
+          value={role}
           onChange={(e) => setRole(e.target.value)}
           
         >

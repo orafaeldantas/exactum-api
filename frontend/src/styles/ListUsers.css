@@ -1,0 +1,89 @@
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+  }
+  
+  .page-header h1 {
+    font-size: 24px;
+  }
+  
+  .create-btn {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .create-btn:hover {
+    background: #1d4ed8;
+  }
+  
+  .table-container {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0px 2px 8px rgba(0,0,0,0.05);
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  thead {
+    background: #f3f4f6;
+  }
+  
+  th {
+    text-align: left;
+    padding: 12px;
+    font-size: 14px;
+  }
+  
+  td {
+    padding: 12px;
+    border-top: 1px solid #e5e7eb;
+  }
+  
+  tbody tr:hover {
+    background: #f9fafb;
+  }
+  
+  .role-admin {
+    color: #dc2626;
+    font-weight: bold;
+  }
+  
+  .role-user {
+    color: #2563eb;
+  }
+  
+  .status-active {
+    color: #16a34a;
+  }
+  
+  .status-inactive {
+    color: #9ca3af;
+  }
+  
+  .actions button {
+    margin-right: 6px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .edit-btn {
+    background: #f59e0b;
+    color: white;
+  }
+  
+  .disable-btn {
+    background: #ef4444;
+    color: white;
+  }
