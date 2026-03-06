@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { apiFetch } from "../services/api";
+import { ROLES, ROLE_OPTIONS } from "../constants/roles";
 
 export default function CreateUser() {
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("user");
+  const [role, setRole] = useState(ROLES.USER);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -30,7 +32,7 @@ export default function CreateUser() {
       setMessage("Usuário criado com sucesso!");
       setUsername("");
       setPassword("");
-      setRole("user");
+      setRole(ROLES.USER);     
 
     } catch (err) {
       setError(err.message);
@@ -60,12 +62,17 @@ export default function CreateUser() {
         />
 
         <label>Tipo de usuário</label>
+
         <select
-          value={role}
+          value={"role"}
           onChange={(e) => setRole(e.target.value)}
+          
         >
-          <option value="user">Usuário</option>
-          <option value="admin">Administrador</option>
+          {ROLE_OPTIONS.map((r) => (
+            <option key={r.value} value={r.value}>
+              {r.label}
+            </option>
+          ))}
         </select>
 
         <button type="submit">Criar</button>
@@ -74,6 +81,7 @@ export default function CreateUser() {
 
       {message && <p>{message}</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
+
     </div>
   );
 }
