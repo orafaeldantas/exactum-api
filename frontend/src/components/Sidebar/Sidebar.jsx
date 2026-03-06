@@ -1,40 +1,58 @@
 import { NavLink } from "react-router-dom"
+import { useState } from "react"
+
+import {
+  LayoutDashboard,
+  Users,
+  ScrollText,
+  Settings,
+  ChevronLeft,
+  ChevronRight
+} from "lucide-react"
+
 import styles from "./Sidebar.module.css"
 
 function Sidebar() {
-  return (
-    <aside className={styles.sidebar}>
 
-      <h2 className={styles.logo}>
-        Exactum
-      </h2>
+  const [collapsed, setCollapsed] = useState(false)
+
+  function toggleSidebar() {
+    setCollapsed(!collapsed)
+  }
+
+  return (
+
+    <aside className={`${styles.sidebar} ${collapsed ? styles.collapsed : ""}`}>
+
+      <div className={styles.header}>
+        {!collapsed && <h2>Exactum</h2>}
+
+        <button onClick={toggleSidebar} className={styles.toggle}>
+          {collapsed ? <ChevronRight size={20}/> : <ChevronLeft size={20}/>}
+        </button>
+      </div>
+
 
       <nav className={styles.menu}>
 
-      <NavLink
-        to="/dashboard"
-        className={({ isActive }) =>
-          isActive ? styles.active : styles.link
-        }
-      >
-        📊 Dashboard
-      </NavLink>
+        <NavLink to="/dashboard" className={styles.link}>
+          <LayoutDashboard size={20}/>
+          {!collapsed && <span>Dashboard</span>}
+        </NavLink>
 
-      <NavLink
-        to="/users"
-        className={({ isActive }) =>
-          isActive ? styles.active : styles.link
-        }
-      >
-          👥 Usuários
+        <NavLink to="/users" className={styles.link}>
+          <Users size={20}/>
+          {!collapsed && <span>Usuários</span>}
         </NavLink>
 
         <NavLink to="/logs" className={styles.link}>
-          📜 Logs
+          <ScrollText size={20}/>
+          {!collapsed && <span>Logs</span>}
         </NavLink>
 
         <NavLink to="/settings" className={styles.link}>
-          ⚙ Configurações
+          <Settings size={20}/>
+          {!collapsed && <span>Config</span>}
         </NavLink>
 
       </nav>
