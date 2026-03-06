@@ -14,3 +14,23 @@ def create():
 
     user = user_service.create_user(data)
     return jsonify({"id": user.id}), 201
+
+@user_bp.route("/list", methods=["GET"])
+@jwt_required()
+def list_users():
+    authorize_route(0, "admin")
+
+    users = user_service.list_users()
+
+    usersFormated = []
+
+    for u in users:
+       usersFormated.append({
+            "id": u.id,
+            "username": u.username,
+            "role": u.role,
+            "is_active": u.is_active
+        })
+
+    return usersFormated
+    

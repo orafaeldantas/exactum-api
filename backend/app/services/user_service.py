@@ -16,4 +16,8 @@ def create_user(data):
     return user
 
 
+def list_users():
+    return User.query.all()
+
+
 
