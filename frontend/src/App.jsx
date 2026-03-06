@@ -1,38 +1,37 @@
 import { Routes, Route } from "react-router-dom";
+
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
-import RoleRoute from "./routes/RoleRoute";
 import CreateUser from "./pages/CreateUser";
-import MainLayout from "./layouts/MainLayout";
 
+import Layout from "./layouts/MainLayout";
+import RoleRoute from "./routes/RoleRoute";
 
 function App() {
   return (
     <Routes>
+
       <Route path="/" element={<Login />} />
 
       <Route
-        path="/dashboard"
         element={
           <RoleRoute>
-            <MainLayout>
-              <Dashboard />
-            </MainLayout>
+            <Layout />
           </RoleRoute>
         }
-      />
+      >
+        <Route path="/dashboard" element={<Dashboard />} />
 
-      <Route
-        path="/users"
-        element={
-          <RoleRoute>
-            <MainLayout>
+        <Route
+          path="/users"
+          element={
+            <RoleRoute requiredRole="admin">
               <CreateUser />
-            </MainLayout>
-          </RoleRoute>
-        }
-      />
-      
+            </RoleRoute>
+          }
+        />
+      </Route>
+
     </Routes>
   );
 }

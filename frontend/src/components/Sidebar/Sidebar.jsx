@@ -1,38 +1,46 @@
-import "./Sidebar.css";
-import { Link, useLocation } from "react-router-dom";
-import { useContext } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import { NavLink } from "react-router-dom"
+import styles from "./Sidebar.module.css"
 
-export default function Sidebar() {
-  const { user, logout } = useContext(AuthContext);
-  const location = useLocation();
-
+function Sidebar() {
   return (
-    <div className="sidebar">
-      <h2 className="sidebar-title">Sistema</h2>
+    <aside className={styles.sidebar}>
 
-      <nav className="sidebar-nav">
-        <Link
-          to="/dashboard"
-          className={location.pathname === "/dashboard" ? "active" : ""}
-        >
-          Dashboard
-        </Link>
+      <h2 className={styles.logo}>
+        Exactum
+      </h2>
 
-        {user?.role === "admin" && (
-          <Link
-            to="/users"
-            className={location.pathname === "/users" ? "active" : ""}
-          >
-            Usuários
-          </Link>
-        )}
+      <nav className={styles.menu}>
+
+      <NavLink
+        to="/dashboard"
+        className={({ isActive }) =>
+          isActive ? styles.active : styles.link
+        }
+      >
+        📊 Dashboard
+      </NavLink>
+
+      <NavLink
+        to="/users"
+        className={({ isActive }) =>
+          isActive ? styles.active : styles.link
+        }
+      >
+          👥 Usuários
+        </NavLink>
+
+        <NavLink to="/logs" className={styles.link}>
+          📜 Logs
+        </NavLink>
+
+        <NavLink to="/settings" className={styles.link}>
+          ⚙ Configurações
+        </NavLink>
+
       </nav>
 
-      <div className="sidebar-footer">
-        <p>{user?.username}</p>
-        <button onClick={logout}>Logout</button>
-      </div>
-    </div>
-  );
+    </aside>
+  )
 }
+
+export default Sidebar
