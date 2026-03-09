@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import CreateUser from "./pages/CreateUser";
 import ListUsers from "./pages/ListUsers";
+import EditUser from "./pages/EditUser";
 
 import Layout from "./layouts/MainLayout";
 import RoleRoute from "./routes/RoleRoute";
@@ -41,8 +42,8 @@ function App() {
           }
         />
 
-
-        
+        <Route path="/users/edit/:id" element={<EditUser />} />
+       
       </Route>
 
     </Routes>

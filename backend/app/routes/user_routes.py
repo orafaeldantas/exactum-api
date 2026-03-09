@@ -34,6 +34,21 @@ def list():
 
     return usersFormated
 
+@user_bp.route("/<int:user_id>", methods=["GET"])
+@jwt_required()
+@owner_required()
+def get(user_id):
+
+    user = user_service.get_user(user_id)
+
+    userFormated = {
+        "username" : user.username,
+        "role" : user.role,
+        "is_active" : user.is_active
+    }
+
+    return userFormated
+
 @user_bp.route("/<int:user_id>", methods=["PATCH"])
 @jwt_required()
 @owner_required()
@@ -45,6 +60,6 @@ def update(user_id):
     
     data = request.json
 
-    user_service.update_user(user_id, data)
+    user_service.update_user(user, data)
 
     return {"message": "User update"}
