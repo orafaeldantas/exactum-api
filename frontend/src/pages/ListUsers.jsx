@@ -115,9 +115,12 @@ export default function ListUsers() {
 
                 <td className="actions">
 
-                  <button className="edit-btn">
-                    Editar
-                  </button>
+                <button
+                  className="edit-btn"
+                  onClick={() => navigate(`/users/edit/${user.id}`)}
+                >
+                  Editar
+                </button>
 
                   <button className="disable-btn">
                     Desativar
