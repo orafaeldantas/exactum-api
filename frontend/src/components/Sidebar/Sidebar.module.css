@@ -54,3 +54,8 @@
   background: #333;
   color: white;
 }
+
+input {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
