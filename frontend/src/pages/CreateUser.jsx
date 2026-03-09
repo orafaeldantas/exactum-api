@@ -1,86 +1,33 @@
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { apiFetch } from "../services/api";
-import { ROLES, ROLE_OPTIONS } from "../constants/roles";
+import UserForm from "../components/UserForm/UserForm";
 
 export default function CreateUser() {
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [role, setRole] = useState(ROLES.USER);
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setMessage("");
-    setError("");
+  async function handleCreate(data) {
 
-    try {
-      const response = await apiFetch("/users/create", {
-        method: "POST",
-        body: JSON.stringify({
-          username,
-          password,
-          role
-        }),
-      });
+    const response = await apiFetch("/users", {
+      method: "POST",
+      body: JSON.stringify(data)
+    });
 
-      if (!response.ok) {
-        throw new Error("Erro ao criar usuário");
-      }
-
-      setMessage("Usuário criado com sucesso!");
-      setUsername("");
-      setPassword("");
-      setRole(ROLES.USER);     
-
-    } catch (err) {
-      setError(err.message);
+    if (response.ok) {
+      navigate("/users");
     }
+
   }
 
   return (
     <div>
-      <h1>Cadastrar Usuário</h1>
 
-      <form onSubmit={handleSubmit}>
+      <h1>Criar Usuário</h1>
 
-        <input
-          type="text"
-          placeholder="Usuário"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-        />
-
-        <input
-          type="password"
-          placeholder="Senha"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-
-        <label>Tipo de usuário</label>
-
-        <select
-          value={role}
-          onChange={(e) => setRole(e.target.value)}
-          
-        >
-          {ROLE_OPTIONS.map((r) => (
-            <option key={r.value} value={r.value}>
-              {r.label}
-            </option>
-          ))}
-        </select>
-
-        <button type="submit">Criar</button>
-
-      </form>
-
-      {message && <p>{message}</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      <UserForm
+        onSubmit={handleCreate}
+        submitText="Criar usuário"
+      />
 
     </div>
   );

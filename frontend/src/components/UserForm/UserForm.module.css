@@ -1,0 +1,32 @@
+.formContainer {
+    max-width: 500px;
+    margin-top: 20px;
+  }
+  
+  .formGroup {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+  }
+  
+  .formGroup label {
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  
+  .formGroup input,
+  .formGroup select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+  }
+  
+  .formButton {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    background-color: #3b82f6;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+  }
