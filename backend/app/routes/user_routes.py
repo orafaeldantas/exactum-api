@@ -17,7 +17,7 @@ def create():
 
 @user_bp.route("", methods=["GET"])
 @jwt_required()
-def list_users():
+def list():
     authorize_route(0, "admin")
 
     users = user_service.list_users()
@@ -33,4 +33,18 @@ def list_users():
         })
 
     return usersFormated
+
+@user_bp.route("/<int:user_id>", methods=["PATCH"])
+@jwt_required()
+@owner_required()
+def update(user_id):
     
+    user = user_service.get_user(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}, 404)
+    
+    data = request.json
+
+    user_service.update_user(user_id, data)
+
+    return {"message": "User update"}
