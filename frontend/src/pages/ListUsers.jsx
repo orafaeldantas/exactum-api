@@ -8,6 +8,11 @@ export default function ListUsers() {
   const [users, setUsers] = useState([]);
   const [error, setError] = useState("");
 
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+
+  const usersPerPage = 5;
+
   const navigate = useNavigate();
 
   async function loadUsers() {
@@ -32,6 +37,19 @@ export default function ListUsers() {
     loadUsers();
   }, []);
 
+  // 🔎 filtro de busca
+  const filteredUsers = users.filter((user) =>
+    user.username.toLowerCase().includes(search.toLowerCase())
+  );
+
+  // 📄 paginação
+  const startIndex = (page - 1) * usersPerPage;
+  const endIndex = startIndex + usersPerPage-1;
+
+  const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
+
+  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+
   return (
     <div>
 
@@ -47,6 +65,21 @@ export default function ListUsers() {
       </div>
 
       {error && <p style={{color:"red"}}>{error}</p>}
+
+      <input
+        type="text"
+        placeholder="Buscar usuário..."
+        value={search}
+        onChange={(e) => {
+          setSearch(e.target.value);
+          setPage(1);
+        }}
+        style={{
+          marginBottom: "20px",
+          padding: "8px",
+          width: "250px"
+        }}
+      />
 
       <div className="table-container">
 
@@ -64,7 +97,7 @@ export default function ListUsers() {
 
           <tbody>
 
-            {users.map((user) => (
+            {paginatedUsers.map((user) => (
 
               <tr key={user.id}>
 
@@ -99,6 +132,28 @@ export default function ListUsers() {
           </tbody>
 
         </table>
+
+      </div>
+
+      <div style={{marginTop:"20px"}}>
+
+        <button
+          disabled={page === 1}
+          onClick={() => setPage(page - 1)}
+        >
+          Anterior
+        </button>
+
+        <span style={{margin:"0 10px"}}>
+          Página {page} de {totalPages || 1}
+        </span>
+
+        <button
+          disabled={page === totalPages || totalPages === 0}
+          onClick={() => setPage(page + 1)}
+        >
+          Próxima
+        </button>
 
       </div>
 
