@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { apiFetch } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import "../styles/ListUsers.css";
+import { getUsers, toggleUserStatus } from "../services/userService";
 
 export default function ListUsers() {
 
@@ -15,38 +15,61 @@ export default function ListUsers() {
 
   const navigate = useNavigate();
 
+  // Carregar usuários
   async function loadUsers() {
-    try {
-
-      const response = await apiFetch("/users");
-
-      if (!response.ok) {
-        throw new Error("Erro ao carregar usuários");
-      }
-
-      const data = await response.json();
-
-      setUsers(data);
-
-    } catch (err) {
-      setError(err.message);
-    }
+    const data = await getUsers();
+    setUsers(data)
   }
 
   useEffect(() => {
     loadUsers();
   }, []);
 
-  // 🔎 filtro de busca
+  async function handleToggleStatus(user) {
+
+    const confirmAction = window.confirm(
+      user.is_active
+        ? "Deseja desativar este usuário?"
+        : "Deseja ativar este usuário?"
+    );
+  
+    if (!confirmAction) return;
+  
+    try {
+  
+      await toggleUserStatus(user.id, user.is_active);
+  
+      // atualização otimista
+      setUsers((prevUsers) =>
+        prevUsers.map((u) =>
+          u.id === user.id
+            ? { ...u, is_active: !u.is_active }
+            : u
+        )
+      );
+  
+    } catch (err) {
+      setError(err.message);
+    }
+  
+  }
+
+  // filtro de busca
   const filteredUsers = users.filter((user) =>
     user.username.toLowerCase().includes(search.toLowerCase())
   );
 
-  // 📄 paginação
+  // paginação
   const startIndex = (page - 1) * usersPerPage;
-  const endIndex = startIndex + usersPerPage-1;
+  const endIndex = startIndex + usersPerPage;
 
   const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
+  console.log("paginatedUsers: ")
+  console.log(paginatedUsers)
+  console.log("Users: ")
+  console.log(users)
+  console.log("filteredUsers: ")
+  console.log(filteredUsers)
 
   const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
@@ -64,7 +87,7 @@ export default function ListUsers() {
         </button>
       </div>
 
-      {error && <p style={{color:"red"}}>{error}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
       <input
         type="text"
@@ -115,15 +138,18 @@ export default function ListUsers() {
 
                 <td className="actions">
 
-                <button
-                  className="edit-btn"
-                  onClick={() => navigate(`/users/edit/${user.id}`)}
-                >
-                  Editar
-                </button>
+                  <button
+                    className="edit-btn"
+                    onClick={() => navigate(`/users/edit/${user.id}`)}
+                  >
+                    Editar
+                  </button>
 
-                  <button className="disable-btn">
-                    Desativar
+                  <button
+                    className={user.is_active ? "disable-btn" : "enable-btn"}
+                    onClick={() => handleToggleStatus(user)}
+                  >
+                    {user.is_active ? "Desativar" : "Ativar"}
                   </button>
 
                 </td>
@@ -138,7 +164,7 @@ export default function ListUsers() {
 
       </div>
 
-      <div style={{marginTop:"20px"}}>
+      <div style={{ marginTop: "20px" }}>
 
         <button
           disabled={page === 1}
@@ -147,7 +173,7 @@ export default function ListUsers() {
           Anterior
         </button>
 
-        <span style={{margin:"0 10px"}}>
+        <span style={{ margin: "0 10px" }}>
           Página {page} de {totalPages || 1}
         </span>
 
