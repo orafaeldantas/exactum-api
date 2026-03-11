@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -11,42 +12,65 @@ import RoleRoute from "./routes/RoleRoute";
 
 function App() {
   return (
-    <Routes>
+    <>
 
-      <Route path="/" element={<Login />} />
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: "#333",
+            color: "#fff"
+          }
+        }}
+      />
 
-      <Route
-        element={
-          <RoleRoute>
-            <Layout />
-          </RoleRoute>
-        }
-      >
-        <Route path="/dashboard" element={<Dashboard />} />
+      <Routes>
+
+        <Route path="/" element={<Login />} />
 
         <Route
-          path="/users"
           element={
-            <RoleRoute requiredRole="admin">
-              <ListUsers />
+            <RoleRoute>
+              <Layout />
             </RoleRoute>
           }
-        />
-        
-        <Route
-          path="/users/create"
-          element={
-            <RoleRoute requiredRole="admin">
-              <CreateUser />
-            </RoleRoute>
-          }
-        />
+        >
 
-        <Route path="/users/edit/:id" element={<EditUser />} />
-       
-      </Route>
+          <Route path="/dashboard" element={<Dashboard />} />
 
-    </Routes>
+          <Route
+            path="/users"
+            element={
+              <RoleRoute requiredRole="admin">
+                <ListUsers />
+              </RoleRoute>
+            }
+          />
+
+          <Route
+            path="/users/create"
+            element={
+              <RoleRoute requiredRole="admin">
+                <CreateUser />
+              </RoleRoute>
+            }
+          />
+
+          <Route
+            path="/users/edit/:id"
+            element={
+              <RoleRoute requiredRole="admin">
+                <EditUser />
+              </RoleRoute>
+            }
+          />
+
+        </Route>
+
+      </Routes>
+
+    </>
   );
 }
 
