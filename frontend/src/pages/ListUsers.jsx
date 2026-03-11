@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import "../styles/ListUsers.css";
 import { getUsers, toggleUserStatus } from "../services/userService";
 
@@ -10,6 +11,8 @@ export default function ListUsers() {
 
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+
+  const [loadingUserId, setLoadingUserId] = useState(null);
 
   const usersPerPage = 5;
 
@@ -37,9 +40,11 @@ export default function ListUsers() {
   
     try {
   
+      setLoadingUserId(user.id);
+
       await toggleUserStatus(user.id, user.is_active);
   
-      // atualização otimista
+ 
       setUsers((prevUsers) =>
         prevUsers.map((u) =>
           u.id === user.id
@@ -47,9 +52,18 @@ export default function ListUsers() {
             : u
         )
       );
+
+      toast.success(
+        user.is_active
+          ? "Usuário desativado com sucesso"
+          : "Usuário ativado com sucesso"
+      );
   
     } catch (err) {
       setError(err.message);
+      toast.error("Erro ao atualizar usuário");
+    }finally {
+      setLoadingUserId(null);
     }
   
   }
@@ -148,8 +162,13 @@ export default function ListUsers() {
                   <button
                     className={user.is_active ? "disable-btn" : "enable-btn"}
                     onClick={() => handleToggleStatus(user)}
+                    disabled={loadingUserId === user.id}
                   >
-                    {user.is_active ? "Desativar" : "Ativar"}
+                    {loadingUserId === user.id
+                      ? "Processando..."
+                      : user.is_active
+                        ? "Desativar"
+                        : "Ativar"}
                   </button>
 
                 </td>

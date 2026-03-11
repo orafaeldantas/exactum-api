@@ -83,6 +83,14 @@
     color: white;
   }
   
+  .enable-btn,
+  .disable-btn {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
   .enable-btn {
     background: #22c55e;
     color: white;
@@ -91,4 +99,11 @@
   .disable-btn {
     background: #ef4444;
     color: white;
+  }
+
+  .enable-btn:disabled,
+  .disable-btn:disabled 
+  {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
