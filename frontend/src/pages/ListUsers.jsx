@@ -78,12 +78,6 @@ export default function ListUsers() {
   const endIndex = startIndex + usersPerPage;
 
   const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
-  console.log("paginatedUsers: ")
-  console.log(paginatedUsers)
-  console.log("Users: ")
-  console.log(users)
-  console.log("filteredUsers: ")
-  console.log(filteredUsers)
 
   const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
