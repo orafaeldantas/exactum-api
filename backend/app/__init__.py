@@ -2,10 +2,17 @@ from flask import Flask
 from flask_cors import CORS
 from .extensions import db, migrate, jwt
 from config import Config
+import logging
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
+  
+
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+    )
 
     CORS(
         app,
