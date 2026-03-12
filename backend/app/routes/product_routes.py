@@ -1,12 +1,13 @@
 from flask import Blueprint, request, jsonify
 from app.services import product_service
 from flask_jwt_extended import jwt_required
-from app.security import authorize_route
+from app.security import role_authorization
 
 product_bp = Blueprint("products", __name__, url_prefix="/products")
 
 @product_bp.route("", methods=["POST"])
 @jwt_required()
+@role_authorization(['user', 'admin'])
 def create():
     data = request.json
     product = product_service.create_product(data)
@@ -14,6 +15,7 @@ def create():
 
 @product_bp.route("", methods=["GET"])
 @jwt_required()
+@role_authorization(['user', 'admin'])
 def list_all():
     products = product_service.list_product()
     return jsonify([
@@ -28,12 +30,12 @@ def list_all():
 
 @product_bp.route("/<int:product_id>", methods=["GET"])
 @jwt_required()
+@role_authorization(['user', 'admin'])
 def get(product_id):
     product = product_service.get_product(product_id)
     if not product:
         return jsonify({"error": "Product not found"}), 404
     
-    authorize_route(product.user_id, ['user', 'admin'])
     
     return jsonify({
         "id": product.id,
@@ -46,12 +48,12 @@ def get(product_id):
 
 @product_bp.route("/<int:product_id>", methods=["PUT"])
 @jwt_required()
+@role_authorization(['user', 'admin'])
 def update(product_id):
     product = product_service.get_product(product_id)
     if not product:
         return jsonify({"error": "Product not found"}, 404)
     
-    authorize_route(product.user_id, ['user', 'admin'])
     
     data= request.json
     product_service.update_product(product, data)
@@ -60,12 +62,12 @@ def update(product_id):
 
 @product_bp.route("/<int:product_id>", methods=["DELETE"])
 @jwt_required()
+@role_authorization(['user', 'admin'])
 def delete(product_id):
     product = product_service.get_product(product_id)
     if not product:
         return jsonify({"error": "Product not found"}, 404)
     
-    authorize_route(product.user_id, ['user', 'admin'])
     
     product_service.delete_product(product)
     return jsonify({"message": "Product deactivated"})

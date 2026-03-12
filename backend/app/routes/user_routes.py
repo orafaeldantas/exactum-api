@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
 from app.services import user_service
-from app.security import owner_required, authorize_route
+from app.security import owner_required, role_authorization
 import logging
 
 logger = logging.getLogger(__name__)
@@ -9,9 +9,9 @@ user_bp = Blueprint("users", __name__, url_prefix="/users")
 
 @user_bp.route("/create", methods=["POST"])
 @jwt_required()
+@role_authorization("admin")
 def create():
-    authorize_route(0, "admin")
-    
+  
     data = request.json
 
     user = user_service.create_user(data)
@@ -19,8 +19,8 @@ def create():
 
 @user_bp.route("", methods=["GET"])
 @jwt_required()
+@role_authorization("admin")
 def list():
-    authorize_route(0, "admin")
 
     users = user_service.list_users()
 
@@ -38,6 +38,7 @@ def list():
 
 @user_bp.route("/<int:user_id>", methods=["GET"])
 @jwt_required()
+@role_authorization("admin")
 @owner_required()
 def get(user_id):
 
@@ -53,6 +54,7 @@ def get(user_id):
 
 @user_bp.route("/<int:user_id>", methods=["PATCH"])
 @jwt_required()
+@role_authorization("admin")
 @owner_required()
 def update(user_id):
     

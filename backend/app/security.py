@@ -32,6 +32,22 @@ def owner_required(param_name="user_id"):
     return decorator
 
 
+# RBAC - Role Based Access Control
+def role_authorization(role):
+    def decorator(fn):
+        @wraps(fn)
+        def wrapper(*args, **kwargs):
+            claims = get_jwt() 
+
+            if claims.get("role") == role:
+                return fn(*args, **kwargs)
+                
+
+            return fn(*args, **kwargs)
+        return wrapper
+    return decorator
+
+"""
 def authorize_route(resource_owner_id, role):
 
 
@@ -45,3 +61,4 @@ def authorize_route(resource_owner_id, role):
 
     if not is_owner and not authorization:
         abort(403, description="Access denied: only the owner or admin.")
+"""
