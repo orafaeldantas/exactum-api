@@ -6,10 +6,12 @@ class User(db.Model):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
+    tenant_id = db.Column(db.Integer, db.ForeignKey('tenants.id'), nullable=False)
     username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(255), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     is_active = db.Column(db.Boolean, default=True)
-    role = db.Column(db.String(20), default="user")
+    role = db.Column(db.String(20), default="user") 
 
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
