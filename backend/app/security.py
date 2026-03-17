@@ -43,22 +43,7 @@ def role_authorization(role):
                 return fn(*args, **kwargs)
                 
 
-            return fn(*args, **kwargs)
+            return jsonify({"error": "Forbidden: You are not authorized"}), 403
         return wrapper
     return decorator
 
-"""
-def authorize_route(resource_owner_id, role):
-
-
-    claims = get_jwt()
-    current_user_id = get_jwt_identity()
-
-    is_owner = str(current_user_id) == str(resource_owner_id)
-
-    authorization = str(claims.get("role")) in role
-
-
-    if not is_owner and not authorization:
-        abort(403, description="Access denied: only the owner or admin.")
-"""

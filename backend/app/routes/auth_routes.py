@@ -9,14 +9,16 @@ auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 def login():
     data = request.json
 
-    user = User.query.filter_by(username=data["username"], is_active=True).first()
+    user = User.query.filter_by(email=data["email"], is_active=True).first()
     if not user or not user.check_password(data["password"]):
         return jsonify({"error": "Invalid credentials"}), 401
     
     access_token = create_access_token(
     identity=str(user.id),
     additional_claims={
+        "tenant": user.tenant_id,
         "username": user.username,
+        "email": user.email,
         "role": user.role
     }
 )
@@ -32,10 +34,14 @@ def me():
 
     claims = get_jwt()
     username = claims.get("username")
+    email = claims.get("email")
+    tenant = claims.get("tenant")
     role = claims.get("role")
 
-    return {"id": user_id, 
+    return {"id": user_id,
+            "tenant": tenant, 
             "username": username,
+            "email": email,
             "role": role
     }
 
