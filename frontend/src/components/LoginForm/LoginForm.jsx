@@ -8,7 +8,7 @@ export default function LoginForm() {
   const navigate = useNavigate()
   const { login } = useContext(AuthContext)
 
-  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -19,7 +19,7 @@ export default function LoginForm() {
     setLoading(true)
 
     try {
-      const data = await loginRequest(username, password)
+      const data = await loginRequest(email, password)
 
       await login(data.access_token)
       navigate("/dashboard")   
@@ -44,9 +44,9 @@ export default function LoginForm() {
       <form onSubmit={handleSubmit} className={styles.form}>
         <input
           type="text"
-          placeholder="Usuário"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          placeholder="E-mail"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           required
         />
 
