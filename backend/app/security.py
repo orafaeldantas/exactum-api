@@ -18,7 +18,6 @@ def owner_required(param_name="user_id"):
             logger.info(f"Claims: {claims}")
 
             if claims.get("role") == 'admin':
-                logger.info(f"Entrou")
                 return fn(*args, **kwargs)
                 
             if resource_user_id is None:
@@ -42,8 +41,21 @@ def role_authorization(role):
             if claims.get("role") == role:
                 return fn(*args, **kwargs)
                 
-
             return jsonify({"error": "Forbidden: You are not authorized"}), 403
+        return wrapper
+    return decorator
+
+
+def tenant_required():
+    def decorator(fn):
+        @wraps(fn)
+        def wrapper(*args, **kwargs):
+            claims = get_jwt()
+
+            if not claims.get("tenant_id"):
+                return {"error": "Tenant not found"}, 400
+        
+            return fn(*args, **kwargs)
         return wrapper
     return decorator
 
