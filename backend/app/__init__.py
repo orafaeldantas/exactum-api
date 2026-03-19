@@ -3,6 +3,7 @@ from flask_cors import CORS
 from .extensions import db, migrate, jwt
 from config import Config
 from app.middlewares.context import init_request_context
+from app.database.tenant_filter import init_tenant_filter
 import logging
 
 def create_app():
@@ -27,6 +28,8 @@ def create_app():
     migrate.init_app(app, db)
     jwt.init_app(app)
     init_request_context(app)
+    init_tenant_filter(db)
+    
 
     from app.models import product, user
 
