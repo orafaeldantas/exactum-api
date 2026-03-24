@@ -6,8 +6,7 @@ class Config:
     DEBUG = True
 
     SQLALCHEMY_DATABASE_URI = os.getenv(
-        "DATABASE_URL",
-        "postgresql://exactum_admin:root@localhost:5432/exactum_db"
+        "DATABASE_URL"
     )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False

@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, g
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt, get_jwt_identity
 from app.models import User
 
@@ -16,7 +16,7 @@ def login():
     access_token = create_access_token(
     identity=str(user.id),
     additional_claims={
-        "tenant": user.tenant_id,
+        "tenant_id": user.tenant_id,
         "username": user.username,
         "email": user.email,
         "role": user.role
@@ -30,13 +30,11 @@ def login():
 @jwt_required()
 def me():
 
-    user_id = get_jwt_identity()
-
-    claims = get_jwt()
-    username = claims.get("username")
-    email = claims.get("email")
-    tenant = claims.get("tenant")
-    role = claims.get("role")
+    user_id = g.user_id
+    username = g.username
+    email = g.email
+    tenant = g.tenant_id
+    role = g.role
 
     return {"id": user_id,
             "tenant": tenant, 
