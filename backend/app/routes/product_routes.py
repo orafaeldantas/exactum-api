@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from app.services import product_service
 from flask_jwt_extended import jwt_required
 from app.security import role_authorization
+from flask import g
 
 product_bp = Blueprint("products", __name__, url_prefix="/products")
 
@@ -18,6 +19,7 @@ def create():
 @role_authorization(['user', 'admin'])
 def list_all():
     products = product_service.list_product()
+
     return jsonify([
         {
             "id": p.id,

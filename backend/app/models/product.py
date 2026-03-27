@@ -11,6 +11,8 @@ class Product(db.Model):
     description = db.Column(db.String(255))
     price = db.Column(db.Numeric(10, 2), nullable=False)
     stock_quantity = db.Column(db.Integer, nullable=False, default=0)
+    sku = db.Column(db.String(255), nullable=False)
+    category = db.Column(db.String(120), nullable=False)
     is_active = db.Column(db.Boolean, default=True)
 
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
