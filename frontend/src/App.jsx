@@ -9,6 +9,7 @@ import EditUser from "./pages/EditUser";
 
 import Layout from "./layouts/MainLayout";
 import RoleRoute from "./routes/RoleRoute";
+import ListProducts from "./pages/ListProducts";
 
 function App() {
   return (
@@ -44,6 +45,15 @@ function App() {
             element={
               <RoleRoute requiredRole="admin">
                 <ListUsers />
+              </RoleRoute>
+            }
+          />
+
+          <Route
+            path="/products"
+            element={
+              <RoleRoute>
+                <ListProducts />
               </RoleRoute>
             }
           />

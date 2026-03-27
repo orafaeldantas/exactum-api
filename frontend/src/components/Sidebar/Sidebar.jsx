@@ -7,7 +7,8 @@ import {
   ScrollText,
   Settings,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Box
 } from "lucide-react"
 
 import styles from "./Sidebar.module.css"
@@ -38,6 +39,11 @@ function Sidebar() {
         <NavLink to="/dashboard" className={styles.link}>
           <LayoutDashboard size={20}/>
           {!collapsed && <span>Dashboard</span>}
+        </NavLink>
+
+        <NavLink to="/products" className={styles.link}>
+          <Box size={20}/>
+          {!collapsed && <span>Produtos</span>}
         </NavLink>
 
         <NavLink to="/users" className={styles.link}>
