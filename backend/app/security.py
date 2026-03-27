@@ -35,7 +35,7 @@ def role_authorization(role):
         @wraps(fn)
         def wrapper(*args, **kwargs):
 
-            if g.role == role:
+            if g.role in role:
                 return fn(*args, **kwargs)
                 
             return jsonify({"error": "Forbidden: You are not authorized"}), 403

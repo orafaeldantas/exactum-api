@@ -1,5 +1,6 @@
 from app.extensions import db
 from app.models import Product
+from flask import g
 
 def create_product(data):
     product = Product(
@@ -14,7 +15,7 @@ def create_product(data):
     return product
 
 def list_product():
-    return Product.query.filter_by(is_active=True).all()
+    return Product.query.filter_by(tenant_id=g.tenant_id).all()
 
 def get_product(product_id):
     return Product.query.filter_by(id=product_id, is_active=True).first()
