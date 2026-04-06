@@ -1,5 +1,8 @@
 from flask import g
 from flask_jwt_extended import get_jwt, verify_jwt_in_request, get_jwt_identity
+import logging
+
+logger = logging.getLogger(__name__)
 
 def init_request_context(app):
     @app.before_request
@@ -13,6 +16,8 @@ def init_request_context(app):
             g.role = claims.get("role")
             g.email = claims.get("email")
             g.username = claims.get("username")
+
+            logger.info(claims)
 
         except Exception:
             g.user_id = None

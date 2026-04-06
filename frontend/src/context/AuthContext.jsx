@@ -9,6 +9,11 @@ export function AuthProvider({ children }) {
   
 
   async function loadUser() {
+    if (!localStorage.getItem("access_token")) {
+      setUser(null);
+      setLoading(false);
+      return; 
+    }
     try {
       const response = await apiFetch("/auth/me");
       const data = await response.json();
