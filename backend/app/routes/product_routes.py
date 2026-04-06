@@ -25,7 +25,8 @@ def list_all():
             "id": p.id,
             "name": p.name,
             "price": str(p.price),
-            "stock_quantity": p.stock_quantity
+            "stock_quantity": p.stock_quantity,
+            "is_active": p.is_active
         }
         for p in products
     ])
