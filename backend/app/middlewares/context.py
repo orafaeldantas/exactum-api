@@ -17,7 +17,7 @@ def init_request_context(app):
             g.email = claims.get("email")
             g.username = claims.get("username")
 
-            logger.info(claims)
+            logger.info(f"TENANT: {g.tenant_id}, USER ID: {g.user_id}, ROLE: {g.role}, EMAIL: {g.email}")
 
         except Exception:
             g.user_id = None
