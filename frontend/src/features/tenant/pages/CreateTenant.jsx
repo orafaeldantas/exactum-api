@@ -54,7 +54,7 @@ export default function CreateTenant() {
 
   return (
     <div className="flex flex-row h-screen">
-  
+
       {/* Sidebar */}
       <div className="w-72 bg-gray-900 text-white p-6">
       <Stepper
