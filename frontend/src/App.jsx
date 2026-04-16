@@ -1,6 +1,8 @@
 import { Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
+import CreateTenant from "./features/tenant/pages/CreateTenant";
+
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import CreateUser from "./pages/CreateUser";
@@ -10,6 +12,8 @@ import EditUser from "./pages/EditUser";
 import Layout from "./layouts/MainLayout";
 import RoleRoute from "./routes/RoleRoute";
 import ListProducts from "./pages/ListProducts";
+
+import PrivateRoutes from "./routes/PrivateRoutes";
 
 function App() {
   return (
@@ -26,15 +30,20 @@ function App() {
         }}
       />
 
+
       <Routes>
 
-        <Route path="/" element={<Login />} />
+        <Route path="/create-tenant" element={<CreateTenant />} />
 
+        <Route path="/" element={<Login />} />
+        
         <Route
           element={
-            <RoleRoute>
-              <Layout />
-            </RoleRoute>
+            <PrivateRoutes>
+              <RoleRoute>
+                <Layout />
+              </RoleRoute>
+            </PrivateRoutes>
           }
         >
 
