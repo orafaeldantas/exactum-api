@@ -39,11 +39,9 @@ function App() {
         
         <Route
           element={
-            <PrivateRoutes>
               <RoleRoute>
                 <Layout />
               </RoleRoute>
-            </PrivateRoutes>
           }
         >
 
