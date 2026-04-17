@@ -36,7 +36,29 @@ export default function CompanyStep({ data, updateData, next }) {
     updateData({ [name]: value });
   }
 
-  async function handleNext() {
+  function handleNext() {
+    const validationErrors = validate();
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    try {
+
+      setLoading(true);
+
+      //updateData({ id: response.id });
+
+      next();
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+ /* async function handleNext() {
     const validationErrors = validate();
 
     if (Object.keys(validationErrors).length > 0) {
@@ -58,7 +80,7 @@ export default function CompanyStep({ data, updateData, next }) {
     } finally {
       setLoading(false);
     }
-  }
+  }*/
 
   return (
     <div className="max-w-3xl">

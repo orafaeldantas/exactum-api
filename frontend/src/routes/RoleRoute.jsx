@@ -4,7 +4,7 @@ import { AuthContext } from "../context/AuthContext"
 
 export default function RoleRoute({ children, requiredRole }) {
 
-  const { user, loading } = useContext(AuthContext)
+  const { user, loading, token } = useContext(AuthContext)
 
   if (loading) {
     return <p>Carregando...</p>

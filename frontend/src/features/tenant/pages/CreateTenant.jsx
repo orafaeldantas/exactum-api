@@ -3,17 +3,23 @@ import { useState } from "react";
 import Stepper from "../components/Stepper";
 
 import CompanyStep from "../steps/CompanyStep";
-/*import AdminStep from "../steps/AdminStep";
+import AdminStep from "../steps/AdminStep";
 import PlanStep from "../steps/PlanStep";
-import ReviewStep from "../steps/ReviewStep";*/
+import ReviewStep from "../steps/ReviewStep";
 
 export default function CreateTenant() {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(3);
 
   const [formData, setFormData] = useState({
     company: {},
     admin: {},
-    plan: null,
+    plan: {
+      type: "growth",
+      features: {
+        predictive: true,
+        alerts: true,
+        import: false,
+      }},
   });
 
   function next() {
@@ -87,13 +93,14 @@ export default function CreateTenant() {
               updateData={updateAdmin}
               next={next}
               back={back}
+              tenantId={formData.company.id}
             />
           )}
   
           {step === 3 && (
             <PlanStep
-              selectedPlan={formData.plan}
-              setPlan={updatePlan}
+              data={formData.plan}
+              updateData={updatePlan}
               next={next}
               back={back}
             />
