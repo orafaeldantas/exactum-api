@@ -8,7 +8,7 @@ import PlanStep from "../steps/PlanStep";
 import ReviewStep from "../steps/ReviewStep";
 
 export default function CreateTenant() {
-  const [step, setStep] = useState(3);
+  const [step, setStep] = useState(1);
 
   const [formData, setFormData] = useState({
     company: {},
@@ -61,7 +61,6 @@ export default function CreateTenant() {
   return (
     <div className="flex flex-row h-screen">
 
-      {/* Sidebar */}
       <div className="w-72 bg-gray-900 text-white p-6">
       <Stepper
         steps={steps}
@@ -74,7 +73,6 @@ export default function CreateTenant() {
       />
       </div>
   
-      {/* Área principal */}
       <div className="flex-1 bg-gray-100 overflow-y-auto">
   
         <div className="max-w-5xl mx-auto p-10">
