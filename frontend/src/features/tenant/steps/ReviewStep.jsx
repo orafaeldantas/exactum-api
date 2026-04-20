@@ -5,10 +5,12 @@ export default function ReviewStep({ data, back }) {
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit() {
+    console.log(data)
     try {
       setLoading(true);
 
       await createTenantDraft(data);
+      console.log(data)
 
       alert("Tenant criado com sucesso!");
 

@@ -4,7 +4,9 @@ import { AuthContext } from "../context/AuthContext"
 
 export default function RoleRoute({ children, requiredRole }) {
 
-  const { user, loading, token } = useContext(AuthContext)
+  const { user, loading } = useContext(AuthContext)
+
+
 
   if (loading) {
     return <p>Carregando...</p>
@@ -17,6 +19,8 @@ export default function RoleRoute({ children, requiredRole }) {
   if (requiredRole && user.role !== requiredRole) {
     return <Navigate to="/dashboard" replace />
   }
+
+
 
   return children
 }

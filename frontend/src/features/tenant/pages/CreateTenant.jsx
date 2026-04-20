@@ -93,7 +93,6 @@ export default function CreateTenant() {
               updateData={updateAdmin}
               next={next}
               back={back}
-              tenantId={formData.company.id}
             />
           )}
   
