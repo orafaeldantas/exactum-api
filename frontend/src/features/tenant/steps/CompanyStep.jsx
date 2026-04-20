@@ -150,8 +150,8 @@ export default function CompanyStep({ data, updateData, next }) {
               Identificador (slug) *
             </label>
 
-            <div className="flex mt-1">
-              <span className="bg-gray-100 px-3 py-2 border border-r-0 rounded-l-md text-sm text-gray-500">
+            <div className="flex mt-1" >
+              <span className="bg-gray-100 px-3 py-2 h-11 border border-r-0 rounded-l-md text-sm text-gray-500">
                 app.exactum.com/
               </span>
 
