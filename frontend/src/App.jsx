@@ -13,7 +13,6 @@ import Layout from "./layouts/MainLayout";
 import RoleRoute from "./routes/RoleRoute";
 import ListProducts from "./pages/ListProducts";
 
-import PrivateRoutes from "./routes/PrivateRoutes";
 
 function App() {
   return (
