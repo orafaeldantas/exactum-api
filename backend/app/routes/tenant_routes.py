@@ -8,7 +8,7 @@ tenant_bp = Blueprint("tenants", __name__, url_prefix="/tenants")
 @tenant_bp.route("/create", methods=["POST"])
 def create():
     data = request.json
-    print(data)
+
     tenant = tenant_service.create_tenant(data)
     
     return jsonify({"message":tenant}), 201
