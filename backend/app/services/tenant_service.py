@@ -17,6 +17,8 @@ def create_tenant(data):
         raw_cnpj = company.get("cnpj", "")
         clean_cnpj = re.sub(r'\D', '', raw_cnpj)
 
+        if (admin.get("password") != admin.get("confirmPassword")):
+            return 'the password confirmation is incorrect.'
 
         tenant = Tenant(
             name=company.get("name"),
@@ -42,9 +44,9 @@ def create_tenant(data):
         db.session.add(user)
         
         db.session.commit()
-        return 'ok'
+        return 'tenant created successfully!'
 
     except Exception as e:
         db.session.rollback()
         logger.error(e)
-        return 'err!'
+        return 'error while trying to create the tenant.'
