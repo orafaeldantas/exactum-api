@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
 import CreateTenant from "./features/tenant/pages/CreateTenant";
+import SuccessPage from "./features/tenant/pages/SuccessPage";
 
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -33,8 +34,9 @@ function App() {
       <Routes>
 
         <Route path="/create-tenant" element={<CreateTenant />} />
+        <Route path="/success" element={<SuccessPage />} />
 
-        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
         
         <Route
           element={

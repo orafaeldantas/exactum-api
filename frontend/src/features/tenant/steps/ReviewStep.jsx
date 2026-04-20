@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { createTenantDraft } from "../services/tenantService";
+import { useNavigate } from "react-router-dom";
 
 export default function ReviewStep({ data, back }) {
   const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   async function handleSubmit() {
     console.log(data)
@@ -10,9 +13,8 @@ export default function ReviewStep({ data, back }) {
       setLoading(true);
 
       await createTenantDraft(data);
-      console.log(data)
-
-      alert("Tenant criado com sucesso!");
+      
+      navigate("/success");    
 
     } catch (err) {
       alert(err.message);

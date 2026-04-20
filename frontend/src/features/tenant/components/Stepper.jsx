@@ -2,7 +2,6 @@ export default function Stepper({ steps, currentStep, onStepClick }) {
     return (
       <aside className="w-72 min-h-screen bg-gray-900 text-white p-6 flex flex-col">
         
-        {/* Logo / título */}
         <div className="mb-10">
           <h1 className="text-lg font-semibold">Exactum</h1>
           <p className="text-xs text-gray-400">
@@ -10,7 +9,6 @@ export default function Stepper({ steps, currentStep, onStepClick }) {
           </p>
         </div>
   
-        {/* Steps */}
         <div className="flex flex-col gap-4">
           {steps.map((step, index) => {
             const stepNumber = index + 1;
@@ -25,7 +23,6 @@ export default function Stepper({ steps, currentStep, onStepClick }) {
                 onClick={() => onStepClick?.(stepNumber)}
                 className="flex items-start gap-3 cursor-pointer"
               >
-                {/* Bolinha */}
                 <div
                   className={`
                     w-6 h-6 flex items-center justify-center rounded-full text-xs font-semibold
@@ -41,7 +38,6 @@ export default function Stepper({ steps, currentStep, onStepClick }) {
                   {isCompleted ? "✓" : stepNumber}
                 </div>
   
-                {/* Texto */}
                 <div>
                   <p className="text-xs text-gray-400">
                     Etapa {stepNumber}
@@ -66,7 +62,6 @@ export default function Stepper({ steps, currentStep, onStepClick }) {
           })}
         </div>
   
-        {/* Footer */}
         <div className="mt-auto text-xs text-gray-500">
           Ao criar o tenant você concorda com os termos.
         </div>
