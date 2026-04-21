@@ -166,7 +166,7 @@ export default function ListProducts() {
 
                   <button
                     className="edit-btn"
-                    onClick={() => navigate(`/products/edit/${product.id}`)}
+                    onClick={() => navigate(`/product/edit/${product.id}`)}
                   >
                     Editar
                   </button>

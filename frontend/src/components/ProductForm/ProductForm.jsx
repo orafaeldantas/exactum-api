@@ -17,12 +17,12 @@ export default function ProductForm({
 
   useEffect(() => {
     if (initialData) {
-      setName(initialData.name || "");
-      setDescription(initialData.description || "");
-      setPrice(initialData.price || "");
-      setStockQuantity(initialData.stock_quantity || 0);
-      setSku(initialData.sku || "");
-      setCategory(initialData.category || "");
+      setName(initialData.name);
+      setDescription(initialData.description);
+      setPrice(initialData.price);
+      setStockQuantity(initialData.stock_quantity);
+      setSku(initialData.sku);
+      setCategory(initialData.category);
       setIsActive(initialData.is_active ?? true);
     }
   }, [initialData]);

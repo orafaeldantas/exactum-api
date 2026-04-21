@@ -14,6 +14,8 @@ import EditUser from "./pages/EditUser";
 import Layout from "./layouts/MainLayout";
 import RoleRoute from "./routes/RoleRoute";
 import ListProducts from "./pages/ListProducts";
+import CreateProduct from "./pages/CreateProduct";
+import EditProduct from "./pages/EditProduct";
 
 
 function App() {
@@ -60,15 +62,6 @@ function App() {
           />
 
           <Route
-            path="/products"
-            element={
-              <RoleRoute>
-                <ListProducts />
-              </RoleRoute>
-            }
-          />
-
-          <Route
             path="/users/create"
             element={
               <RoleRoute requiredRole="admin">
@@ -82,6 +75,33 @@ function App() {
             element={
               <RoleRoute requiredRole="admin">
                 <EditUser />
+              </RoleRoute>
+            }
+          />
+
+          <Route
+            path="/products"
+            element={
+              <RoleRoute>
+                <ListProducts />
+              </RoleRoute>
+            }
+          />
+
+          <Route
+            path="/products/create"
+            element={
+              <RoleRoute>
+                <CreateProduct />
+              </RoleRoute>
+            }
+          />
+
+          <Route
+            path="/product/edit/:id"
+            element={
+              <RoleRoute requiredRole="admin">
+                <EditProduct />
               </RoleRoute>
             }
           />
