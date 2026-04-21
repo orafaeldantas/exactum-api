@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { apiFetch } from "../services/api";
-import UserForm from "../components/ProductForm/ProductForm";
+import ProductForm from "../components/ProductForm/ProductForm";
 
 export default function CreateProduct() {
 
@@ -22,7 +22,7 @@ export default function CreateProduct() {
   return (
     <div>
 
-      <h1>Criar Usuário</h1>
+      <h1>Cadrastar Produto</h1>
 
       <ProductForm
         onSubmit={handleCreate}
