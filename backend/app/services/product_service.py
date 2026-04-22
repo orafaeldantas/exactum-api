@@ -6,9 +6,12 @@ def create_product(data):
     product = Product(
         tenant_id=g.tenant_id,
         name=data.get("name"),
-        description=data.get("description"),
+        description=data.get("description", "Não definido"),
         price=data.get("price"),
-        stock_quantity=data.get("stock_quantity", 0)
+        stock_quantity=data.get("stock_quantity", 0),
+        sku=data.get("sku", "Não definido"),
+        category=data.get("category", "Não definido"),
+        is_active=data.get("is_active", True)
     )
     db.session.add(product)
     db.session.commit()
