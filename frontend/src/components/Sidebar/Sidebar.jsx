@@ -37,7 +37,7 @@ function Sidebar() {
       <div className={`flex items-center h-16 px-4 mb-4 ${collapsed ? "justify-center" : "justify-between"}`}>
         {!collapsed && (
           <div className="flex items-center gap-2">
-            <CircleDot className="w-6 h-6 text-blue-500" />
+            <Box className="w-6 h-6 text-blue-500" />
             <h2 className="text-xl font-bold text-white tracking-tight">Exactum</h2>
           </div>
         )}
@@ -97,7 +97,7 @@ function Sidebar() {
 
       </nav>
 
-      {/* Footer da Sidebar (Opcional) */}
+      {/* Footer */}
       {!collapsed && (
         <div className="absolute bottom-6 left-6 right-6 p-4 rounded-2xl bg-slate-800/50">
           <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Versão</p>
