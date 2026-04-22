@@ -4,7 +4,7 @@ import styles from "./ProductForm.module.css";
 export default function ProductForm({
   initialData = {},
   onSubmit,
-  submitText = "Salvar"
+  submitText,
 }) {
 
   const [name, setName] = useState("");
@@ -17,13 +17,13 @@ export default function ProductForm({
 
   useEffect(() => {
     if (initialData) {
-      setName(initialData.name);
-      setDescription(initialData.description);
-      setPrice(initialData.price);
-      setStockQuantity(initialData.stock_quantity);
-      setSku(initialData.sku);
-      setCategory(initialData.category);
-      setIsActive(initialData.is_active ?? true);
+      setName(initialData.name || name);
+      setDescription(initialData.description || description);
+      setPrice(initialData.price || price);
+      setStockQuantity(initialData.stock_quantity || stockQuantity);
+      setSku(initialData.sku || sku);
+      setCategory(initialData.category || category);
+      setIsActive(initialData.is_active || isActive);
     }
   }, [initialData]);
 

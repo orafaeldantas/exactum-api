@@ -7,7 +7,7 @@ export default function CreateProduct() {
   const navigate = useNavigate();
 
   async function handleCreate(data) {
-
+    console.log(data)
     const response = await apiFetch("/products", {
       method: "POST",
       body: JSON.stringify(data)
