@@ -60,7 +60,7 @@ export default function LoginForm() {
 
         {error && <span className={styles.error}>{error}</span>}
 
-        <button type="submit" disabled={loading}>
+        <button type="submit" disabled={loading} className={styles.buttonLogin}>
           {loading ? "Entrando..." : "Entrar"}
         </button>
       </form>

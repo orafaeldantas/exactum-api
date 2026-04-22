@@ -21,7 +21,7 @@ input:focus {
   border-color: #2563eb;
 }
 
-button {
+.buttonLogin {
   width: 100%;
   background-color: #2563eb;
   color: white;
