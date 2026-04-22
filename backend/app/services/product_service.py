@@ -4,9 +4,10 @@ from flask import g
 
 def create_product(data):
     product = Product(
-        name=data["name"],
+        tenant_id=g.tenant_id,
+        name=data.get("name"),
         description=data.get("description"),
-        price=data["price"],
+        price=data.get("price"),
         stock_quantity=data.get("stock_quantity", 0)
     )
     db.session.add(product)

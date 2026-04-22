@@ -10,6 +10,7 @@ product_bp = Blueprint("products", __name__, url_prefix="/products")
 @jwt_required()
 @role_authorization(['user', 'admin'])
 def create():
+    
     data = request.json
     product = product_service.create_product(data)
     return jsonify({"id": product.id}), 201
@@ -49,7 +50,7 @@ def get(product_id):
 
     })
 
-@product_bp.route("/<int:product_id>", methods=["PUT"])
+@product_bp.route("/<int:product_id>", methods=["PATCH"])
 @jwt_required()
 @role_authorization(['user', 'admin'])
 def update(product_id):
