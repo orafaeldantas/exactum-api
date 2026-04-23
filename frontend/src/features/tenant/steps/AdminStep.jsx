@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { createAdmin } from "../services/adminService";
+import { User, Mail, Lock, ShieldCheck, ArrowRight, ArrowLeft, AlertCircle } from "lucide-react";
 
-export default function AdminStep({ data, updateData, next, back, tenantId }) {
+export default function AdminStep({ data, updateData, next, back }) {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
@@ -30,7 +30,7 @@ export default function AdminStep({ data, updateData, next, back, tenantId }) {
     updateData({ [name]: value });
   }
 
-  function handleNext(){
+  function handleNext() {
     const validationErrors = validate();
 
     if (Object.keys(validationErrors).length > 0) {
@@ -38,146 +38,145 @@ export default function AdminStep({ data, updateData, next, back, tenantId }) {
       return;
     }
 
-    try {
-      setLoading(true);
-
-      next();
-    } catch (err) {
-      alert(err.message);
-    } finally {
+    setLoading(true);
+    // Simulação de processamento
+    setTimeout(() => {
       setLoading(false);
-    }
+      next();
+    }, 800);
   }
 
-  /*async function handleNext() {
-    const validationErrors = validate();
-
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
-
-    try {
-      setLoading(true);
-
-      await createAdmin(tenantId, {
-        first_name: data.firstName,
-        last_name: data.lastName,
-        email: data.email,
-        password: data.password,
-      });
-
-      next();
-    } catch (err) {
-      alert(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }*/
+  const labelClass = "flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-gray-500 mb-1.5 ml-1";
+  const inputClass = "w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100";
 
   return (
-    <div className="max-w-3xl">
-      <h2 className="text-2xl font-semibold mb-6">
-        Criar administrador
-      </h2>
+    <div className="max-w-3xl animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="mb-8">
+        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight text-balance">
+          Criar conta de administrador
+        </h2>
+        <p className="text-gray-500 mt-2">
+          Defina as credenciais do primeiro usuário com acesso total ao sistema.
+        </p>
+      </div>
 
-      <div className="bg-white p-6 rounded-lg border shadow-sm">
-        <div className="grid grid-cols-2 gap-4">
-
+      <div className="space-y-6 rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          
           {/* Nome */}
           <div>
-            <label className="text-sm text-gray-600">Nome *</label>
+            <label className={labelClass}>
+              <User className="w-3.5 h-3.5" /> Nome *
+            </label>
             <input
               name="firstName"
+              placeholder="Ex: João"
               value={data.firstName || ""}
               onChange={handleChange}
-              className={`w-full mt-1 p-2 border rounded-md ${
-                errors.firstName && "border-red-500"
-              }`}
+              className={`${inputClass} ${errors.firstName ? "border-red-500 focus:ring-red-100" : ""}`}
             />
             {errors.firstName && (
-              <p className="text-xs text-red-500">{errors.firstName}</p>
+              <p className="mt-1.5 flex items-center gap-1 text-xs font-medium text-red-500 ml-1">
+                <AlertCircle className="w-3 h-3" /> {errors.firstName}
+              </p>
             )}
           </div>
 
           {/* Sobrenome */}
           <div>
-            <label className="text-sm text-gray-600">Sobrenome *</label>
+            <label className={labelClass}>
+              <User className="w-3.5 h-3.5" /> Sobrenome *
+            </label>
             <input
               name="lastName"
+              placeholder="Ex: Silva"
               value={data.lastName || ""}
               onChange={handleChange}
-              className={`w-full mt-1 p-2 border rounded-md ${
-                errors.lastName && "border-red-500"
-              }`}
+              className={`${inputClass} ${errors.lastName ? "border-red-500 focus:ring-red-100" : ""}`}
             />
           </div>
 
           {/* Email */}
-          <div className="col-span-2">
-            <label className="text-sm text-gray-600">Email *</label>
+          <div className="sm:col-span-2">
+            <label className={labelClass}>
+              <Mail className="w-3.5 h-3.5" /> Email Corporativo *
+            </label>
             <input
               type="email"
               name="email"
+              placeholder="joao@suaempresa.com"
               value={data.email || ""}
               onChange={handleChange}
-              className={`w-full mt-1 p-2 border rounded-md ${
-                errors.email && "border-red-500"
-              }`}
+              className={`${inputClass} ${errors.email ? "border-red-500 focus:ring-red-100" : ""}`}
             />
           </div>
 
           {/* Senha */}
           <div>
-            <label className="text-sm text-gray-600">Senha *</label>
+            <label className={labelClass}>
+              <Lock className="w-3.5 h-3.5" /> Senha *
+            </label>
             <input
               type="password"
               name="password"
+              placeholder="Mínimo 8 caracteres"
               value={data.password || ""}
               onChange={handleChange}
-              className={`w-full mt-1 p-2 border rounded-md ${
-                errors.password && "border-red-500"
-              }`}
+              className={`${inputClass} ${errors.password ? "border-red-500 focus:ring-red-100" : ""}`}
             />
             {errors.password && (
-              <p className="text-xs text-red-500">{errors.password}</p>
+              <p className="mt-1.5 flex items-center gap-1 text-xs font-medium text-red-500 ml-1">
+                <AlertCircle className="w-3 h-3" /> {errors.password}
+              </p>
             )}
           </div>
 
           {/* Confirmar senha */}
           <div>
-            <label className="text-sm text-gray-600">
-              Confirmar senha *
+            <label className={labelClass}>
+              <ShieldCheck className="w-3.5 h-3.5" /> Confirmar senha *
             </label>
             <input
               type="password"
               name="confirmPassword"
+              placeholder="Repita sua senha"
               value={data.confirmPassword || ""}
               onChange={handleChange}
-              className={`w-full mt-1 p-2 border rounded-md ${
-                errors.confirmPassword && "border-red-500"
-              }`}
+              className={`${inputClass} ${errors.confirmPassword ? "border-red-500 focus:ring-red-100" : ""}`}
             />
+            {errors.confirmPassword && (
+              <p className="mt-1.5 flex items-center gap-1 text-xs font-medium text-red-500 ml-1">
+                <AlertCircle className="w-3 h-3" /> {errors.confirmPassword}
+              </p>
+            )}
           </div>
 
         </div>
       </div>
 
-      {/* Botões */}
-      <div className="mt-6 flex justify-between">
+      {/* Botões de Navegação */}
+      <div className="mt-10 flex items-center justify-between">
         <button
           onClick={back}
-          className="px-4 py-2 border rounded-md"
+          className="flex items-center gap-2 px-6 py-3 text-sm font-bold text-gray-500 hover:text-gray-700 transition-colors"
         >
+          <ArrowLeft className="w-4 h-4" />
           Voltar
         </button>
 
         <button
           onClick={handleNext}
           disabled={loading}
-          className="bg-indigo-600 text-white px-6 py-2 rounded-md"
+          className="flex items-center gap-2 rounded-xl bg-blue-600 px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-200 transition-all hover:bg-blue-700 active:scale-[0.98] disabled:opacity-50"
         >
-          {loading ? "Criando..." : "Próximo"}
+          {loading ? (
+            <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+          ) : (
+            <>
+              Próximo Passo
+              <ArrowRight className="w-4 h-4" />
+            </>
+          )}
         </button>
       </div>
     </div>

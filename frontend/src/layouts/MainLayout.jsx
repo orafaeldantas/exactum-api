@@ -12,7 +12,7 @@ function Layout() {
         
         <Navbar />
 
-        <main className="flex-1 overflow-y-auto p-6 md:p-10">
+        <main className="flex-1 min-h-screen p-6 md:p-10">
           
           <div className="mx-auto max-w-screen-2xl">
             <Outlet />

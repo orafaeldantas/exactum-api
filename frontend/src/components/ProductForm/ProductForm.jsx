@@ -44,9 +44,9 @@ export default function ProductForm({
   const labelClass = "mb-1.5 flex items-center gap-2 text-sm font-semibold text-gray-700";
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-6 bg-gray-50/50">
+    <div className="flex items-center justify-center p-5 bg-gray-50/50">
       <form 
-        className="w-full max-w-2xl rounded-2xl border border-gray-200 bg-white p-8 shadow-sm" 
+        className="w-full max-w-2xl rounded-2xl border border-gray-200 bg-white p-8 shadow-sm " 
         onSubmit={handleSubmit}
       >
         <div className="mb-8 text-center">

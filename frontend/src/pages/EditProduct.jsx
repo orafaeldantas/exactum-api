@@ -44,8 +44,6 @@ export default function EditProduct() {
 
     <div>
 
-      <h1>Editar Produto</h1>
-
       <ProductForm
         initialData={product}
         onSubmit={handleUpdate}

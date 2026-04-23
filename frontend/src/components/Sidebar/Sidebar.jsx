@@ -1,5 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { useState } from "react";
+import { AuthContext } from "../../context/AuthContext";
+import { useContext } from "react";
 import {
   LayoutDashboard,
   Users,
@@ -8,11 +10,16 @@ import {
   ChevronLeft,
   ChevronRight,
   Box,
-  CircleDot
+  CircleDot,
+  ShoppingCart
 } from "lucide-react";
 
 function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
+
+  const { user } = useContext(AuthContext);
+
+  const roles = ["admin"];
 
   function toggleSidebar() {
     setCollapsed(!collapsed);
@@ -60,28 +67,41 @@ function Sidebar() {
           {!collapsed && <span className="font-medium">Dashboard</span>}
         </NavLink>
 
-        <NavLink 
-          to="/products" 
-          className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
-        >
-          <Box size={20} className={collapsed ? "mx-auto" : ""} />
-          {!collapsed && <span className="font-medium">Produtos</span>}
-        </NavLink>
+        
+          <NavLink 
+            to="/products" 
+            className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
+          >
+            <Box size={20} className={collapsed ? "mx-auto" : ""} />
+            {!collapsed && <span className="font-medium">Produtos</span>}
+          </NavLink>
+        
+        {roles.includes(user?.role) && (
+          <NavLink 
+            to="/users" 
+            className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
+          >
+            <Users size={20} className={collapsed ? "mx-auto" : ""} />
+            {!collapsed && <span className="font-medium">Usuários</span>}
+          </NavLink>
+        )}
+
+        {user.role in roles && (
+          <NavLink 
+            to="/logs" 
+            className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
+          >
+            <ScrollText size={20} className={collapsed ? "mx-auto" : ""} />
+            {!collapsed && <span className="font-medium">Logs</span>}
+          </NavLink>
+        )}
 
         <NavLink 
-          to="/users" 
+          to="/checkout" 
           className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
         >
-          <Users size={20} className={collapsed ? "mx-auto" : ""} />
-          {!collapsed && <span className="font-medium">Usuários</span>}
-        </NavLink>
-
-        <NavLink 
-          to="/logs" 
-          className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
-        >
-          <ScrollText size={20} className={collapsed ? "mx-auto" : ""} />
-          {!collapsed && <span className="font-medium">Logs</span>}
+          <ShoppingCart size={20} className={collapsed ? "mx-auto" : ""} />
+          {!collapsed && <span className="font-medium">PDV</span>}
         </NavLink>
 
         {/* Divisor Visual */}

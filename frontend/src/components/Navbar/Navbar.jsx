@@ -38,7 +38,7 @@ function Navbar() {
                     <User className="h-4 w-4 text-blue-600" />
                   )}
                   <span className="text-xs font-semibold uppercase tracking-wider text-gray-700">
-                    {user.role === "admin" ? "Administrador" : "Usuário"}
+                    {user.username}
                   </span>
                 </div>
 

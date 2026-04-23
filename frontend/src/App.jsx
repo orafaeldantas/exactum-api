@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import CreateUser from "./pages/CreateUser";
 import ListUsers from "./pages/ListUsers";
 import EditUser from "./pages/EditUser";
+import LocalSales from "./pages/LocalSales";
 
 import Layout from "./layouts/MainLayout";
 import RoleRoute from "./routes/RoleRoute";
@@ -35,12 +36,21 @@ function App() {
 
 
       <Routes>
-
+          
         <Route path="/" element={<Home />} />
         <Route path="/create-tenant" element={<CreateTenant />} />
         <Route path="/success" element={<SuccessPage />} />
 
         <Route path="/login" element={<Login />} />
+
+        <Route
+            path="/checkout"
+            element={
+              <RoleRoute>
+                <LocalSales />
+              </RoleRoute>
+            }
+          />
         
         <Route
           element={
@@ -61,6 +71,8 @@ function App() {
             }
           />
 
+         
+
           <Route
             path="/users/create"
             element={
@@ -78,6 +90,8 @@ function App() {
               </RoleRoute>
             }
           />
+
+
 
           <Route
             path="/products"
