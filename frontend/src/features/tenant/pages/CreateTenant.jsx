@@ -1,117 +1,125 @@
 import { useState } from "react";
-
 import Stepper from "../components/Stepper";
-
 import CompanyStep from "../steps/CompanyStep";
 import AdminStep from "../steps/AdminStep";
 import PlanStep from "../steps/PlanStep";
 import ReviewStep from "../steps/ReviewStep";
 
 export default function CreateTenant() {
+  
   const [step, setStep] = useState(1);
 
   const [formData, setFormData] = useState({
-    company: {},
-    admin: {},
+    company: {
+      name: "",
+      cnpj: "",
+      fantasyName: "",
+      slug: ""
+    },
+    admin: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      confirmPassword: ""
+    },
     plan: {
       type: "growth",
       features: {
         predictive: true,
         alerts: true,
         import: false,
-      }},
+      }
+    },
   });
 
-  function next() {
-    setStep((prev) => prev + 1);
-  }
+  const next = () => setStep((prev) => prev + 1);
+  const back = () => setStep((prev) => prev - 1);
 
-  function back() {
-    setStep((prev) => prev - 1);
-  }
-
-  function updateCompany(data) {
+  const updateCompany = (data) => {
     setFormData((prev) => ({
       ...prev,
       company: { ...prev.company, ...data },
     }));
-  }
+  };
 
-  function updateAdmin(data) {
+  const updateAdmin = (data) => {
     setFormData((prev) => ({
       ...prev,
       admin: { ...prev.admin, ...data },
     }));
-  }
+  };
 
-  function updatePlan(plan) {
+  const updatePlan = (data) => {
     setFormData((prev) => ({
       ...prev,
-      plan,
+      plan: { ...prev.plan, ...data },
     }));
-  }
+  };
 
   const steps = [
     { label: "Dados da empresa" },
     { label: "Administrador" },
-    { label: "Plano" },
-    { label: "Revisão" },
+    { label: "Escolha do Plano" },
+    { label: "Revisão Final" },
   ];
 
   return (
-    <div className="flex flex-row h-screen">
-
-      <div className="w-72 bg-gray-900 text-white p-6">
+    <div className="flex h-screen w-full overflow-hidden bg-gray-50">
+      
+      
       <Stepper
         steps={steps}
         currentStep={step}
         onStepClick={(clickedStep) => {
+          // Permite voltar passos clicando, mas não avançar sem validar
           if (clickedStep < step) {
             setStep(clickedStep);
           }
         }}
       />
-      </div>
   
-      <div className="flex-1 bg-gray-100 overflow-y-auto">
-  
-        <div className="max-w-5xl mx-auto p-10">
-  
-          {step === 1 && (
-            <CompanyStep
-              data={formData.company}
-              updateData={updateCompany}
-              next={next}
-            />
-          )}
-  
-          {step === 2 && (
-            <AdminStep
-              data={formData.admin}
-              updateData={updateAdmin}
-              next={next}
-              back={back}
-            />
-          )}
-  
-          {step === 3 && (
-            <PlanStep
-              data={formData.plan}
-              updateData={updatePlan}
-              next={next}
-              back={back}
-            />
-          )}
-  
-          {step === 4 && (
-            <ReviewStep
-              data={formData}
-              back={back}
-            />
-          )}
-  
+      {/* Área do Formulário */}
+      <main className="flex-1 overflow-y-auto overflow-x-hidden">
+        <div className="mx-auto max-w-5xl px-8 py-12 md:px-16 lg:py-20">
+          
+          <div className="relative">
+            {step === 1 && (
+              <CompanyStep
+                data={formData.company}
+                updateData={updateCompany}
+                next={next}
+              />
+            )}
+    
+            {step === 2 && (
+              <AdminStep
+                data={formData.admin}
+                updateData={updateAdmin}
+                next={next}
+                back={back}
+              />
+            )}
+    
+            {step === 3 && (
+              <PlanStep
+                data={formData.plan}
+                updateData={updatePlan}
+                next={next}
+                back={back}
+              />
+            )}
+    
+            {step === 4 && (
+              <ReviewStep
+                data={formData}
+                back={back}
+              />
+            )}
+          </div>
+
         </div>
-      </div>
+      </main>
   
     </div>
   );

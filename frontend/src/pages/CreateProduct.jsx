@@ -21,9 +21,7 @@ export default function CreateProduct() {
 
   return (
     <div>
-
-      <h1>Cadrastar Produto</h1>
-
+      
       <ProductForm
         onSubmit={handleCreate}
         submitText="Criar produto"

@@ -1,13 +1,84 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="public/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>estoque-frontend</title>
+    
+    <meta name="theme-color" content="#2563eb" />
+    <meta name="description" content="Exactum - Gestão Inteligente de Estoque e Previsão de Demanda" />
+
+    <title>Exactum | Gestão Inteligente de Estoque</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
+
+    <style>
+      /* Splash Screen / Loader inicial simples e leve */
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #f8fafc; /* gray-50 */
+        font-family: 'Inter', sans-serif;
+      }
+
+      #initial-loader {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        width: 100vw;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background: #f8fafc;
+        z-index: 9999;
+        transition: opacity 0.3s ease-out;
+      }
+
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid #e2e8f0;
+        border-top: 3px solid #2563eb; /* blue-600 */
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      .loader-text {
+        margin-top: 16px;
+        color: #64748b;
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: -0.01em;
+      }
+    </style>
   </head>
   <body>
+    <div id="initial-loader">
+      <div class="spinner"></div>
+      <p class="loader-text">Carregando Exactum...</p>
+    </div>
+
     <div id="root"></div>
+
     <script type="module" src="/src/main.jsx"></script>
+
+    <script>
+      window.addEventListener('load', () => {
+        const loader = document.getElementById('initial-loader');
+        if (loader) {
+          loader.style.opacity = '0';
+          setTimeout(() => loader.remove(), 300);
+        }
+      });
+    </script>
   </body>
 </html>
