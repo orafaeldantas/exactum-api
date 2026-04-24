@@ -30,6 +30,7 @@ export default function ListProducts() {
 
       const data = await response.json();
       setProducts(data);
+      console.log(data)
 
     } catch (err) {
       setError(err.message);
