@@ -44,8 +44,6 @@ export default function EditUser() {
 
     <div>
 
-      <h1>Editar Usuário</h1>
-
       <UserForm
         initialData={user}
         onSubmit={handleUpdate}

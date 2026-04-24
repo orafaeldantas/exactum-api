@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 
 import { getUsers, toggleUserStatus } from "../services/userService";
 
-import { Eye, Pencil, Power } from 'lucide-react';
+import { Eye, Pencil, Power, AlertTriangle } from 'lucide-react';
 
 export default function ListUsers() {
 
@@ -16,11 +16,15 @@ export default function ListUsers() {
 
   const [loadingUserId, setLoadingUserId] = useState(null);
 
+  // Modal States
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userToToggle, setUserToToggle] = useState(null);
+
   const usersPerPage = 5;
 
   const navigate = useNavigate();
 
-  // Carregar usuários
+  // Load users from service
   async function loadUsers() {
     try {
       const data = await getUsers();
@@ -34,14 +38,18 @@ export default function ListUsers() {
     loadUsers();
   }, []);
 
-  async function handleToggleStatus(user) {
-    const confirmAction = window.confirm(
-      user.is_active
-        ? "Deseja desativar este usuário?"
-        : "Deseja ativar este usuário?"
-    );
+  // Function to trigger the custom modal
+  function openConfirmModal(user) {
+    setUserToToggle(user);
+    setIsModalOpen(true);
+  }
 
-    if (!confirmAction) return;
+  // Handle status update after modal confirmation
+  async function handleConfirmToggle() {
+    if (!userToToggle) return;
+    
+    const user = userToToggle;
+    setIsModalOpen(false);
 
     try {
       setLoadingUserId(user.id);
@@ -65,15 +73,16 @@ export default function ListUsers() {
       toast.error("Erro ao atualizar usuário");
     } finally {
       setLoadingUserId(null);
+      setUserToToggle(null);
     }
   }
 
-  // filtro de busca
+  // Search filter logic
   const filteredUsers = users.filter((user) =>
     user.username.toLowerCase().includes(search.toLowerCase())
   );
 
-  // paginação
+  // Pagination logic
   const startIndex = (page - 1) * usersPerPage;
   const endIndex = startIndex + usersPerPage;
 
@@ -82,7 +91,54 @@ export default function ListUsers() {
   const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 p-6 relative">
+
+      {/* PROFESSIONAL CONFIRMATION MODAL */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* Overlay */}
+          <div 
+            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200" 
+            onClick={() => setIsModalOpen(false)} 
+          />
+          
+          {/* Modal Content */}
+          <div className="relative w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl animate-in zoom-in-95 duration-200">
+            <div className="p-6">
+              <div className="flex items-center gap-4">
+                <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${userToToggle?.is_active ? 'bg-amber-100' : 'bg-emerald-100'}`}>
+                  <AlertTriangle className={`h-6 w-6 ${userToToggle?.is_active ? 'text-amber-600' : 'text-emerald-600'}`} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-slate-800">
+                    {userToToggle?.is_active ? 'Desativar Usuário' : 'Ativar Usuário'}
+                  </h3>
+                  <p className="text-sm text-slate-500">
+                    Tem certeza que deseja alterar o status de <strong>{userToToggle?.username}</strong>?
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-3 bg-slate-50 px-6 py-4">
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-200 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleConfirmToggle}
+                className={`rounded-xl px-4 py-2.5 text-sm font-semibold text-white shadow-md transition-all active:scale-95 ${
+                  userToToggle?.is_active ? 'bg-amber-500 hover:bg-amber-600' : 'bg-emerald-500 hover:bg-emerald-600'
+                }`}
+              >
+                Confirmar Alteração
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Header */}
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -119,14 +175,14 @@ export default function ListUsers() {
         </div>
       </div>
 
-      {/* Error */}
+      {/* Error Display */}
       {error && (
         <div className="mb-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-600">
           {error}
         </div>
       )}
 
-      {/* Busca */}
+      {/* Search Input */}
       <div className="mb-6">
         <input
           type="text"
@@ -156,7 +212,7 @@ export default function ListUsers() {
         />
       </div>
 
-      {/* Table */}
+      {/* Users Table */}
       <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">
@@ -195,7 +251,7 @@ export default function ListUsers() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="grid grid-cols-2 gap-2 w-fit">
-                      {/* Editar */}
+                      {/* Edit Action */}
                       <button
                         className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-medium 
                                    text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:border-slate-300"
@@ -205,11 +261,11 @@ export default function ListUsers() {
                         Editar
                       </button>
 
-                      {/* Ativar / Desativar */}
+                      {/* Toggle Status Action */}
                       <button
                         className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-medium 
                                    text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:border-slate-300 disabled:opacity-50"
-                        onClick={() => handleToggleStatus(user)}
+                        onClick={() => openConfirmModal(user)}
                         disabled={loadingUserId === user.id}
                       >
                         <Power className={`w-4 h-4 ${user.is_active ? 'text-amber-500' : 'text-emerald-500'}`} />
@@ -231,7 +287,7 @@ export default function ListUsers() {
         </div>
       </div>
 
-      {/* Paginação */}
+      {/* Pagination Controls */}
       <div className="mt-6 flex items-center justify-center gap-1">
         <div className="flex w-30 justify-end">    
           <button
