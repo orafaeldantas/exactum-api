@@ -8,9 +8,9 @@ export default function UserForm({ initialData = {}, onSubmit, submitText }) {
 
   useEffect(() => {
     if (initialData) {
-      setUsername(initialData.username || "");
-      setRole(initialData.role || "user");
-      setIsActive(initialData.is_active ?? true);
+      setUsername(initialData.username || username);
+      setRole(initialData.role || role);
+      setIsActive(initialData.is_active ?? isActive);
     }
   }, [initialData]);
 
