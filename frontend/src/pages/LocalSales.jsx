@@ -65,7 +65,7 @@ const VendaLocal = () => {
     const value = e.target.value;
     setSearchTerm(value);
 
-    if (value.length > 1) {
+    if (value.length > 0) {
       const filtered = productsDb.filter(p => 
         p.name.toLowerCase().includes(value.toLowerCase()) || 
         p.id.toString().includes(value)
@@ -92,7 +92,8 @@ const VendaLocal = () => {
         price: Number(product.price),
         quantity: 1,
         stock: product.stock_quantity || 0,
-        prediction: product.previsao_dias || 5
+        prediction: product.previsao_dias || 5,
+        sku: product.sku
       }]);
     }
     setSearchTerm("");
@@ -108,7 +109,7 @@ const VendaLocal = () => {
   };
 
   // Logic to send data for backend
-  const sendData = (e) => {
+   const sendData = async (e) => {
     e.preventDefault();
     const data = {
       "sale": {
@@ -116,10 +117,26 @@ const VendaLocal = () => {
         "totalToPay": totalToPay,
         "item_quantity": cartItems.length
       },
-      "itemSale": cartItems
+      "itemsSale": cartItems
     }
 
     console.log(data)
+
+    try {
+
+      const response = await apiFetch("/sales", {
+        method: "POST",
+        body: JSON.stringify(data)
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao executar venda");
+      }
+
+    } catch (err) {
+      console.log(err)
+    }
+
   }
 
   // Financial summary calculations

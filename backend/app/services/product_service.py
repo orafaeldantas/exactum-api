@@ -1,6 +1,9 @@
 from app.extensions import db
 from app.models import Product
 from flask import g
+import logging
+
+logger = logging.getLogger(__name__)
 
 def create_product(data):
     product = Product(
@@ -37,5 +40,11 @@ def update_product(product, data):
 
 def delete_product(product):
     db.session.delete(product)
-    db.session.commit()
+
+    try:
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Error to deleted: {e}")
+        
 
