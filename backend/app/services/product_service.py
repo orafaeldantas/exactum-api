@@ -22,7 +22,7 @@ def list_product():
     return Product.query.filter_by(tenant_id=g.tenant_id).all()
 
 def get_product(product_id):
-    return Product.query.filter_by(id=product_id, is_active=True).first()
+    return Product.query.filter_by(id=product_id).first()
 
 def update_product(product, data):
     product.name = data.get("name", product.name)
@@ -36,6 +36,6 @@ def update_product(product, data):
     return product
 
 def delete_product(product):
-    product.is_active = False
+    db.session.delete(product)
     db.session.commit()
 
