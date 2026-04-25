@@ -150,7 +150,7 @@ export default function ListProducts() {
   return (
     <div className="min-h-screen bg-gray-50 p-6 relative">
 
-      {/* PROFESSIONAL STATUS MODAL */}
+      {/* STATUS MODAL */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div 
@@ -185,7 +185,7 @@ export default function ListProducts() {
         </div>
       )}
 
-      {/* PROFESSIONAL DELETE MODAL */}
+      {/* DELETE MODAL */}
       {isDeleteModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div 

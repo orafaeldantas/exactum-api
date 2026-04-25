@@ -74,4 +74,4 @@ def delete(product_id):
     
     
     product_service.delete_product(product)
-    return jsonify({"message": "Product deactivated"})
+    return jsonify({"message": "Product excluded"})
