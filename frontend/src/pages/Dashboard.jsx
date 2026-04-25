@@ -1,4 +1,4 @@
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import { AuthContext } from "../context/AuthContext"
 import { 
   Users, 
@@ -16,7 +16,7 @@ function Dashboard() {
   const stats = [
     { 
       label: "Total de Produtos", 
-      value: "1,284", 
+      value: "42",
       icon: <Package className="w-6 h-6" />, 
       change: "+12%", 
       isPositive: true 
