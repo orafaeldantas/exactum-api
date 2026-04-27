@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom"
 import { useContext, useState } from "react"
 import { loginRequest } from "../../services/auth"
 import { AuthContext } from "../../context/AuthContext"
-import { Mail, Lock, LogIn, AlertCircle, CircleDot } from "lucide-react"
+import { Mail, Lock, LogIn, AlertCircle, Box } from "lucide-react"
 
 export default function LoginForm() {
   const navigate = useNavigate()
@@ -38,10 +38,10 @@ export default function LoginForm() {
         {/* Logo / Header */}
         <div className="mb-8 text-center">
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 text-white shadow-lg shadow-blue-200">
-            <CircleDot className="h-7 w-7" />
+            <Box className="h-7 w-7" />
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-gray-900">
-            Exactum <span className="text-blue-600">Pro</span>
+            Exactum
           </h1>
           <p className="mt-2 text-sm text-gray-500">
             Acesse sua plataforma de gestão
