@@ -31,6 +31,7 @@ def update_product(product, data):
     product.name = data.get("name", product.name)
     product.description = data.get("description", product.description)
     product.price = data.get("price", product.price)
+    product.is_active = data.get("is_active", product.price)
     product.stock_quantity = data.get(
         "stock_quantity", product.stock_quantity
     )

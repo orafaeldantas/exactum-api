@@ -9,7 +9,7 @@ export function AuthProvider({ children }) {
   
 
   async function loadUser() {
-    if (!localStorage.getItem("access_token")) {
+    if (!sessionStorage.getItem('access_token')) {
       setUser(null);
       setLoading(false);
       return; 
@@ -26,13 +26,13 @@ export function AuthProvider({ children }) {
   }
 
   async function login(token) {
-    localStorage.setItem("access_token", token);
+    sessionStorage.setItem('access_token', token);
     await loadUser();
     
   }
 
   function logout() {
-    localStorage.removeItem("access_token");
+    sessionStorage.removeItem('access_token');
     setUser(null);
   }
 

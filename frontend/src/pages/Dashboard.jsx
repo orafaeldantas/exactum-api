@@ -1,5 +1,6 @@
-import { useContext, useState } from "react"
+import { useContext, useState, useEffect } from "react"
 import { AuthContext } from "../context/AuthContext"
+import { apiFetch } from "../services/api";
 import { 
   Users, 
   Package, 
@@ -11,12 +12,13 @@ import {
 
 function Dashboard() {
   const { user } = useContext(AuthContext)
+  const [quantityProducts, setQuantityProducts] = useState([]);
 
   // Dados estáticos para visualização prévia
   const stats = [
     { 
       label: "Total de Produtos", 
-      value: "42",
+      value: quantityProducts.length,
       icon: <Package className="w-6 h-6" />, 
       change: "+12%", 
       isPositive: true 
@@ -43,6 +45,19 @@ function Dashboard() {
       isPositive: true 
     },
   ]
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await apiFetch("/products");
+        const data = await response.json();
+        setQuantityProducts(data || []);
+      } catch (err) {
+        console.error("Error loading products:", err);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   return (
     <div className="animate-in fade-in duration-500">
@@ -132,7 +147,6 @@ function Dashboard() {
   )
 }
 
-// Pequeno componente interno para o ícone de seta (apenas para o exemplo acima)
 function ArrowRight(props) {
   return (
     <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
