@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { apiFetch } from "../services/api";
+import toast from "react-hot-toast";
 import { 
   Search, 
   ShoppingCart, 
@@ -40,6 +41,8 @@ const VendaLocal = () => {
   const [paymentMethod, setPaymentMethod] = useState("money"); // money, pix, debit, credit, installments
   const [installments, setInstallments] = useState(1);
 
+  const [saleFinished, setSaleFinished] = useState(0);
+
   // Load products from DB on component mount
   useEffect(() => {
     const fetchProducts = async () => {
@@ -58,7 +61,7 @@ const VendaLocal = () => {
     // Update clock every minute
     const timer = setInterval(() => setCurrentTime(new Date()), 60000);
     return () => clearInterval(timer);
-  }, []);
+  }, [saleFinished]);
 
   // Filter products based on search input (ID or Name)
   const handleSearch = (e) => {
@@ -132,6 +135,12 @@ const VendaLocal = () => {
       if (!response.ok) {
         throw new Error("Erro ao executar venda");
       }
+
+      setSaleFinished(prev => prev + 1);
+      setCartItems([]);
+
+      toast.success("Venda realizada!");
+
 
     } catch (err) {
       console.log(err)
