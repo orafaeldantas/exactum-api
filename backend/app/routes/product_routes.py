@@ -47,7 +47,8 @@ def get(product_id):
         "name": product.name,
         "description": product.description,
         "price": str(product.price),
-        "stock_quantity": product.stock_quantity
+        "stock_quantity": product.stock_quantity,
+        "sku": product.sku
 
     })
 
@@ -60,7 +61,7 @@ def update(product_id):
         return jsonify({"error": "Product not found"}, 404)
     
     
-    data= request.json
+    data = request.json
     product_service.update_product(product, data)
     return jsonify({"message": "Product updated"})
 
