@@ -1,5 +1,6 @@
 from app.extensions import db
 from app.models import Sale, ItemSale
+from app.services import product_service
 from flask import g
 import logging
 
@@ -31,11 +32,24 @@ def create_sales(data):
                 id_user = g.user_id
             )
 
+            
             db.session.add(new_item)
+
+            id_product = item.get("id")
+            product = product_service.get_product(id_product)
+           
+            remaining_stock = product.stock_quantity - new_item.quantity
+
+            new_stock = {"stock_quantity" : remaining_stock if remaining_stock > 0 else 0}
+
+            product_service.update_product(product, new_stock)
+
+
        
         db.session.commit()
 
         return "ok"
+    
     except Exception as e:
         db.session.rollback()
         logger.error(e)
