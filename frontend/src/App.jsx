@@ -17,14 +17,15 @@ import RoleRoute from "./routes/RoleRoute";
 import ListProducts from "./pages/ListProducts";
 import CreateProduct from "./pages/CreateProduct";
 import EditProduct from "./pages/EditProduct";
+import ResetPassword from "./pages/ResetPassword";
 
 
 function App() {
   return (
     <>
 
-      <Toaster
-        position="top-right"
+      <Toaster 
+        position="top-right" 
         toastOptions={{
           duration: 3000,
           style: {
@@ -42,6 +43,7 @@ function App() {
         <Route path="/success" element={<SuccessPage />} />
 
         <Route path="/login" element={<Login />} />
+        
 
         <Route
             path="/checkout"
@@ -51,6 +53,14 @@ function App() {
               </RoleRoute>
             }
           />
+
+        <Route path="/reset-password" 
+            element={
+              <RoleRoute>
+                <ResetPassword />
+              </RoleRoute>
+            } 
+        />
         
         <Route
           element={
@@ -61,6 +71,8 @@ function App() {
         >
 
           <Route path="/dashboard" element={<Dashboard />} />
+
+          
 
           <Route
             path="/users"
