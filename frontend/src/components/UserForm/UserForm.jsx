@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { User, ShieldCheck, Activity } from "lucide-react";
+import { User, ShieldCheck, Activity, Lock } from "lucide-react";
 
 export default function UserForm({ initialData = {}, onSubmit, submitText }) {
   const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [role, setRole] = useState("user");
   const [isActive, setIsActive] = useState(true);
 
@@ -11,6 +12,7 @@ export default function UserForm({ initialData = {}, onSubmit, submitText }) {
       setUsername(initialData.username || username);
       setRole(initialData.role || role);
       setIsActive(initialData.is_active ?? isActive);
+      setPassword(password);
     }
   }, [initialData]);
 
@@ -19,6 +21,7 @@ export default function UserForm({ initialData = {}, onSubmit, submitText }) {
 
     onSubmit({
       username,
+      password,
       role,
       is_active: isActive,
     });
@@ -49,6 +52,22 @@ export default function UserForm({ initialData = {}, onSubmit, submitText }) {
             onChange={(e) => setUsername(e.target.value)}
             required
             placeholder="Ex: joao_silva"
+            className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+          />
+        </div>
+
+        {/* Campo Senha Provisória */}
+        <div className="mb-5">
+          <label className="mb-1.5 flex items-center gap-2 text-sm font-semibold text-gray-700">
+            <Lock className="w-4 h-4 text-slate-400" />
+            Senha Provisória
+          </label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required={submitText === "Criar Usuário"}
+            placeholder="Digite a senha inicial"
             className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
           />
         </div>
@@ -85,7 +104,6 @@ export default function UserForm({ initialData = {}, onSubmit, submitText }) {
           </select>
         </div>
 
-        {/* Botão de Envio */}
         <button
           type="submit"
           className="

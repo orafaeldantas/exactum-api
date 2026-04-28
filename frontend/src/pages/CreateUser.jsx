@@ -24,7 +24,7 @@ export default function CreateUser() {
       
       <UserForm
         onSubmit={handleCreate}
-        submitText="Criar usuário"
+        submitText="Criar Usuário"
       />
 
     </div>
