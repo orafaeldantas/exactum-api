@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Lock, ShieldCheck, AlertCircle, Save } from "lucide-react";
-// Importe aqui seu serviço de atualização de senha, ex:
-// import { updatePasswordRequest } from "../../services/auth";
+import { apiFetch } from "../services/api";
 
 export default function ResetPassword() {
   const navigate = useNavigate();
-  
+
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
@@ -16,7 +15,6 @@ export default function ResetPassword() {
     e.preventDefault();
     setError("");
 
-    // Validação básica de segurança
     if (password.length < 6) {
       return setError("A nova senha deve ter pelo menos 6 caracteres.");
     }
@@ -28,10 +26,16 @@ export default function ResetPassword() {
     setLoading(true);
 
     try {
-      // Aqui você chamaria sua API para atualizar a senha
-      // await updatePasswordRequest(password);
-      
-      // Simulação de sucesso
+
+      const response = await apiFetch(`/users/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify(data)
+      });
+  
+      if (response.ok) {
+        navigate("/dashboard");
+      }
+
       console.log("Senha atualizada com sucesso");
       navigate("/dashboard");
     } catch (err) {
@@ -62,7 +66,7 @@ export default function ResetPassword() {
 
         <form onSubmit={handleSubmit} className="space-y-5">
           
-          {/* Nova Senha */}
+          {/* New Password */}
           <div className="relative">
             <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-gray-500 ml-1">
               Nova Senha
@@ -80,7 +84,7 @@ export default function ResetPassword() {
             </div>
           </div>
 
-          {/* Confirmar Senha */}
+          {/* Confirm Password */}
           <div className="relative">
             <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-gray-500 ml-1">
               Confirmar Nova Senha
@@ -98,7 +102,7 @@ export default function ResetPassword() {
             </div>
           </div>
 
-          {/* Mensagem de Erro */}
+          {/* Error Message */}
           {error && (
             <div className="flex items-center gap-2 rounded-lg bg-red-50 p-3 text-sm text-red-600 border border-red-100">
               <AlertCircle className="h-4 w-4 shrink-0" />
@@ -106,7 +110,7 @@ export default function ResetPassword() {
             </div>
           )}
 
-          {/* Botão Salvar */}
+          {/* Save button */}
           <button 
             type="submit" 
             disabled={loading} 
