@@ -235,7 +235,7 @@ export default function ListUsers() {
                   <td className="px-6 py-4">
                     <span className={`
                       rounded-full px-3 py-1 text-xs font-semibold
-                      ${user.role === "admin" ? "bg-purple-100 text-purple-700" : "bg-blue-100 text-blue-700"}
+                      ${(user.role === "admin" || user.role === "super-admin" )  ? "bg-purple-100 text-purple-700" : "bg-blue-100 text-blue-700"}
                     `}>
                       {user.role}
                     </span>

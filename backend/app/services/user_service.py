@@ -1,5 +1,6 @@
 from app.extensions import db
 from app.models import User
+from flask import g
 
 def create_user(data):
     user = User(
@@ -20,7 +21,7 @@ def get_user(user_id):
 
 
 def list_users():
-    return User.query.all()
+    return User.query.filter_by(tenant_id=g.tenant_id).all()
 
 def update_user(user, data):
 

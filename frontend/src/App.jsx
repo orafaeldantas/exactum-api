@@ -42,7 +42,6 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/create-tenant" element={<CreateTenant />} />
         <Route path="/success" element={<SuccessPage />} />
-        <Route path="/manage-companies" element={<ManageCompanies />} />
 
         <Route path="/login" element={<Login />} />
         
@@ -74,12 +73,19 @@ function App() {
 
           <Route path="/dashboard" element={<Dashboard />} />
 
-          
+          <Route
+            path="/manage-companies"
+            element={
+              <RoleRoute requiredRole={["super-admin"]}>
+                <ManageCompanies />
+              </RoleRoute>
+            }
+          />
 
           <Route
             path="/users"
             element={
-              <RoleRoute requiredRole="admin">
+              <RoleRoute requiredRole={["admin", "super-admin"]}>
                 <ListUsers />
               </RoleRoute>
             }
@@ -90,7 +96,7 @@ function App() {
           <Route
             path="/users/create"
             element={
-              <RoleRoute requiredRole="admin">
+              <RoleRoute requiredRole={["admin", "super-admin"]}>
                 <CreateUser />
               </RoleRoute>
             }
@@ -99,7 +105,7 @@ function App() {
           <Route
             path="/users/edit/:id"
             element={
-              <RoleRoute requiredRole="admin">
+              <RoleRoute requiredRole={["admin", "super-admin"]}>
                 <EditUser />
               </RoleRoute>
             }
@@ -128,7 +134,7 @@ function App() {
           <Route
             path="/product/edit/:id"
             element={
-              <RoleRoute requiredRole="admin">
+              <RoleRoute requiredRole={["admin", "super-admin"]}>
                 <EditProduct />
               </RoleRoute>
             }

@@ -19,7 +19,7 @@ export default function RoleRoute({ children, requiredRole }) {
     return <Navigate to="/reset-password" replace />;
   }
 
-  if (requiredRole && user.role !== requiredRole) {
+  if (requiredRole && !requiredRole?.includes(user.role)) {
     return <Navigate to="/dashboard" replace />
   }
 

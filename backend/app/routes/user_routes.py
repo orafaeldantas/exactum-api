@@ -19,26 +19,24 @@ def create():
 
 @user_bp.route("", methods=["GET"])
 @jwt_required()
-@role_authorization("admin")
+@role_authorization(["admin", "super-admin"])
 def list():
 
     users = user_service.list_users()
 
-    usersFormated = []
-
-    for u in users:
-       usersFormated.append({
+    return jsonify([
+        {
             "id": u.id,
             "username": u.username,
             "role": u.role,
             "is_active": u.is_active
-        })
-
-    return usersFormated
+        }
+        for u in users
+    ])
 
 @user_bp.route("/<int:user_id>", methods=["GET"])
 @jwt_required()
-@role_authorization("admin")
+@role_authorization(["admin", "super-admin"])
 @owner_required()
 def get(user_id):
 
@@ -54,7 +52,7 @@ def get(user_id):
 
 @user_bp.route("/<int:user_id>", methods=["PATCH"])
 @jwt_required()
-@role_authorization(["admin"])
+@role_authorization(["admin", "super-admin"])
 @owner_required()
 def update(user_id):
 
@@ -71,7 +69,7 @@ def update(user_id):
 
 @user_bp.route("/psw/<int:user_id>", methods=["PATCH"])
 @jwt_required()
-@role_authorization(["admin", "user"])
+@role_authorization(["admin", "super-admin", "user"])
 @owner_required()
 def update_password(user_id):
 
