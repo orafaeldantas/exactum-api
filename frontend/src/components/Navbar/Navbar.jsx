@@ -32,7 +32,7 @@ function Navbar() {
             {user && (
               <>
                 <div className="hidden items-center gap-2 rounded-full bg-gray-100 px-3 py-1.5 md:flex">
-                  {user.role === "admin" ? (
+                  {(user.role === "admin" || user.role === "super-admin" )  ? (
                     <ShieldCheck className="h-4 w-4 text-purple-600" />
                   ) : (
                     <User className="h-4 w-4 text-blue-600" />

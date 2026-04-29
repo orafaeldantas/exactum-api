@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react"; // Added useContext
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { apiFetch } from "../../services/api";
+import { AuthContext } from "../../context/AuthContext"; // Import AuthContext
 
 import { 
   Building2, Eye, Power, Trash2, AlertTriangle, 
@@ -9,13 +10,14 @@ import {
 } from 'lucide-react';
 
 export default function ManageCompanies() {
-  const [tenants, setTenants] = useState([]); // Agora batizado como tenants
+  const [tenants, setTenants] = useState([]);
   const [loadingId, setLoadingId] = useState(null);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const companiesPerPage = 6;
 
   const navigate = useNavigate();
+  const { impersonate } = useContext(AuthContext); // Hooking into AuthContext
 
   // Modal States
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
@@ -23,7 +25,7 @@ export default function ManageCompanies() {
 
   async function loadTenants() {
     try {
-      const response = await apiFetch("/superadmin/companies"); // Sua rota Flask
+      const response = await apiFetch("/superadmin/companies");
       if (!response.ok) throw new Error("Erro ao carregar instâncias");
       const data = await response.json();
       setTenants(data);
@@ -34,7 +36,6 @@ export default function ManageCompanies() {
 
   useEffect(() => { loadTenants(); }, []);
 
-  // Filtro ajustado para os novos campos
   const filteredTenants = tenants.filter((t) =>
     t.name.toLowerCase().includes(search.toLowerCase()) || 
     t.fantasy_name.toLowerCase().includes(search.toLowerCase()) ||
@@ -44,18 +45,22 @@ export default function ManageCompanies() {
   const paginated = filteredTenants.slice((page - 1) * companiesPerPage, page * companiesPerPage);
   const totalPages = Math.ceil(filteredTenants.length / companiesPerPage);
 
-  // Função para simular o acesso (Impersonate)
+  // Improved Impersonate function using AuthContext
   async function handleImpersonate(tenantId) {
     try {
       setLoadingId(tenantId);
       const response = await apiFetch(`/superadmin/impersonate/${tenantId}`, { method: "POST" });
+      
       if (!response.ok) throw new Error("Erro ao gerar acesso");
       
       const { token } = await response.json();
-      localStorage.setItem("token", token);
+
+      // Call context function to handle state and storage
+      await impersonate(token);
+
       toast.success("Acesso autorizado!");
       navigate("/dashboard");
-      window.location.reload();
+      // window.location.reload() is now handled inside AuthContext for better sync
     } catch (err) {
       toast.error(err.message);
     } finally {
@@ -82,19 +87,19 @@ export default function ManageCompanies() {
         </button>
       </div>
 
-      {/* Busca */}
+      {/* Search */}
       <div className="mb-6 relative max-w-sm">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
         <input 
           type="text" 
-          placeholder="Nome, Fantasia ou CNPJ..." 
+          placeholder="Nome fantasia ou CNPJ..." 
           value={search} 
           onChange={(e) => { setSearch(e.target.value); setPage(1); }} 
           className="w-full rounded-xl border border-gray-200 bg-white pl-10 pr-4 py-3 text-sm shadow-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition"
         />
       </div>
 
-      {/* Grid de Tenants */}
+      {/* Tenants Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {paginated.map((t) => (
           <div key={t.id} className="relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition-all">
@@ -148,7 +153,7 @@ export default function ManageCompanies() {
         ))}
       </div>
 
-      {/* Paginação */}
+      {/* Pagination */}
       {totalPages > 1 && (
         <div className="mt-8 flex items-center justify-center gap-1">
           <button disabled={page === 1} onClick={() => setPage(page - 1)} className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium disabled:opacity-40">Anterior</button>
@@ -157,7 +162,7 @@ export default function ManageCompanies() {
         </div>
       )}
 
-      {/* Modal de Status/Ações Rápidas */}
+      {/* Status Modal */}
       {isStatusModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setIsStatusModalOpen(false)} />
