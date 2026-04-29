@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, g
 from flask_jwt_extended import jwt_required
 from app.services import user_service
 from app.security import owner_required, role_authorization
@@ -54,10 +54,10 @@ def get(user_id):
 
 @user_bp.route("/<int:user_id>", methods=["PATCH"])
 @jwt_required()
-@role_authorization("admin")
+@role_authorization(["admin"])
 @owner_required()
 def update(user_id):
-    
+
     user = user_service.get_user(user_id)
     if not user:
         return jsonify({"error": "User not found"}, 404)
@@ -67,3 +67,25 @@ def update(user_id):
     user_service.update_user(user, data)
 
     return {"message": "User update"}
+
+
+@user_bp.route("/psw/<int:user_id>", methods=["PATCH"])
+@jwt_required()
+@role_authorization(["admin", "user"])
+@owner_required()
+def update_password(user_id):
+
+    user = user_service.get_user(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}, 404)
+    
+    data = request.json
+
+    if len(data) > 2: 
+        return jsonify({"error: incompatible data"}, 404)
+    
+    response = user_service.new_password(user, data)
+
+    return jsonify(response.password_reset), 200
+
+

@@ -12,18 +12,20 @@ export default function UserForm({ initialData = {}, onSubmit, submitText }) {
       setUsername(initialData.username || username);
       setRole(initialData.role || role);
       setIsActive(initialData.is_active ?? isActive);
-      setPassword(password);
     }
   }, [initialData]);
 
   function handleSubmit(e) {
     e.preventDefault();
 
+    const password_reset = (password !== "" ? true : false);
+
     onSubmit({
       username,
       password,
       role,
       is_active: isActive,
+      password_reset 
     });
   }
 

@@ -7,6 +7,7 @@ export async function loginRequest(email, password) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ email, password }),
+    
   });
 
   const data = await response.json();

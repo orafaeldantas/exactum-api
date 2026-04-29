@@ -6,7 +6,11 @@ export const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  
+
+  const updateUserResetPassword = (newData) => {
+    setUser(prev => ({ ...prev, ...newData }));
+    console.log(user.password_reset)
+  };
 
   async function loadUser() {
     if (!sessionStorage.getItem('access_token')) {
@@ -37,11 +41,11 @@ export function AuthProvider({ children }) {
   }
 
   useEffect(() => {
-    loadUser();
+    loadUser();  
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, updateUserResetPassword}}>
       {children}
     </AuthContext.Provider>
   );
