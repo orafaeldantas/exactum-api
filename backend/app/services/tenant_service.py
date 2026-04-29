@@ -50,3 +50,6 @@ def create_tenant(data):
         db.session.rollback()
         logger.error(e)
         return 'error while trying to create the tenant.'
+    
+def list_tenants():
+    return Tenant.query.all()

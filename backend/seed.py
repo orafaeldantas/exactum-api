@@ -5,10 +5,10 @@ from app.models import User
 
 def seed_database():
     with app.app_context():
-        admin_password = os.getenv("", "123456")
+        admin_password = os.getenv("", "root777")
 
-        if not User.query.filter_by(username="admin").first():
-            user = User(username="admin", is_admin=True)
+        if not User.query.filter_by(username="superadmin").first():
+            user = User(username="Rafael Dantas", is_admin=True)
             user.set_password(admin_password)
             db.session.add(user)
             db.session.commit()
