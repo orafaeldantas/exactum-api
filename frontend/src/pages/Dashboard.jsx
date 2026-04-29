@@ -1,6 +1,7 @@
 import { useContext, useState, useEffect } from "react"
 import { AuthContext } from "../context/AuthContext"
 import { apiFetch } from "../services/api";
+import { useNavigate } from "react-router-dom"
 import { 
   Users, 
   Package, 
@@ -13,6 +14,7 @@ import {
 function Dashboard() {
   const { user } = useContext(AuthContext)
   const [quantityProducts, setQuantityProducts] = useState([]);
+  const navigate = useNavigate()
 
   // Dados estáticos para visualização prévia
   const stats = [
@@ -47,6 +49,7 @@ function Dashboard() {
   ]
 
   useEffect(() => {
+    
     const fetchProducts = async () => {
       try {
         const response = await apiFetch("/products");

@@ -1,15 +1,20 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext"
 import { Lock, ShieldCheck, AlertCircle, Save } from "lucide-react";
 import { apiFetch } from "../services/api";
+import toast from "react-hot-toast";
 
 export default function ResetPassword() {
   const navigate = useNavigate();
+
+  const { user, updateUserResetPassword } = useContext(AuthContext)
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+ 
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -25,24 +30,34 @@ export default function ResetPassword() {
 
     setLoading(true);
 
+    console.log(user.id)
+
+    const data = {
+      "password": password,
+      "password_reset": false,
+    }
+
     try {
 
-      const response = await apiFetch(`/users/${id}`, {
+      const response = await apiFetch(`/users/psw/${user.id}`, {
         method: "PATCH",
         body: JSON.stringify(data)
       });
-  
+      
+      console.log(data)
       if (response.ok) {
+        toast.success("Senha alterada com sucesso!");
+        updateUserResetPassword({password_reset: false})
         navigate("/dashboard");
+        console.log(user.password_reset)
       }
 
-      console.log("Senha atualizada com sucesso");
-      navigate("/dashboard");
     } catch (err) {
       setError(err.message || "Erro ao atualizar senha. Tente novamente.");
     } finally {
       setLoading(false);
     }
+
   }
 
   const inputClass = "w-full rounded-xl border border-gray-200 bg-gray-50 pl-11 pr-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100";

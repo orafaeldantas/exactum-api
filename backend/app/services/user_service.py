@@ -23,21 +23,30 @@ def list_users():
     return User.query.all()
 
 def update_user(user, data):
+
+    user.username = data.get("username", user.username)
+    user.role = data.get("role", user.role)
+    user.is_active = data.get("is_active", user.is_active)
+    user.password_reset = data.get("password_reset", user.password_reset)
     
-    if "username" in data:
-        user.username = data["username"]
-
-    if "role" in data:
-        user.role = data["role"]  
-
-    if "is_active" in data:
-        user.is_active = data["is_active"]
-
-    if "password" in data:
+    if data.get("password"):
         user.set_password(data.get("password"))
 
     db.session.commit() 
  
+    return user
+
+def new_password(user, data):
+ 
+    if "password" in data:
+        user.set_password(data.get("password"))
+
+    if "password_reset" in data:
+        user.password_reset = data.get("password_reset")
+      
+
+    db.session.commit()
+
     return user
 
 

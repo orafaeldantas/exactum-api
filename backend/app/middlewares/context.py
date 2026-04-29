@@ -16,6 +16,7 @@ def init_request_context(app):
             g.role = claims.get("role")
             g.email = claims.get("email")
             g.username = claims.get("username")
+            g.password_reset = claims.get("password_reset")
 
             logger.info(f"TENANT: {g.tenant_id}, USER ID: {g.user_id}, ROLE: {g.role}, EMAIL: {g.email}")
 
@@ -25,3 +26,4 @@ def init_request_context(app):
             g.role = None
             g.email = None
             g.username = None
+            g.password_reset = None

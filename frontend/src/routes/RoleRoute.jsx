@@ -7,13 +7,16 @@ export default function RoleRoute({ children, requiredRole }) {
   const { user, loading } = useContext(AuthContext)
 
 
-
   if (loading) {
-    return <p>Carregando...</p>
+    return <p></p>
   }
 
   if (!user) {
     return <Navigate to="/" replace />
+  }
+  
+  if (user?.password_reset === true && window.location.pathname !== "/reset-password") {
+    return <Navigate to="/reset-password" replace />;
   }
 
   if (requiredRole && user.role !== requiredRole) {

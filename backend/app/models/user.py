@@ -11,6 +11,7 @@ class User(db.Model):
     email = db.Column(db.String(255), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     is_active = db.Column(db.Boolean, default=True)
+    password_reset = db.Column(db.Boolean, default=True)
     role = db.Column(db.String(20), default="user") 
 
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
