@@ -14,6 +14,7 @@ import {
 function Dashboard() {
   const { user } = useContext(AuthContext)
   const [quantityProducts, setQuantityProducts] = useState([]);
+  const [lowStock, setLowStock] = useState([]);setLowStock
   const navigate = useNavigate()
 
   // Dados estáticos para visualização prévia
@@ -27,7 +28,7 @@ function Dashboard() {
     },
     { 
       label: "Alertas de Estoque", 
-      value: "14", 
+      value: lowStock.length, 
       icon: <AlertTriangle className="w-6 h-6" />, 
       change: "-2", 
       isPositive: true 
@@ -60,6 +61,17 @@ function Dashboard() {
       }
     };
     fetchProducts();
+
+    const fetchLowStock = async () => {
+      try {
+        const response = await apiFetch("/low-stock");
+        const data = await response.json();
+        setLowStock(data || []);
+      } catch (err) {
+        console.error("Error loading products:", err);
+      }
+    };
+    fetchLowStock();
   }, []);
 
   return (
