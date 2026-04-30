@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"; // VOCÊ PROVAVELMENTE ESQUECEU ISSO
+import { useState, useEffect } from "react";
 import { apiFetch } from "./api"; 
 
 export function getProducts() { 

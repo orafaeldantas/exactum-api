@@ -1,6 +1,7 @@
 import { useContext, useEffect } from "react"
 import { AuthContext } from "../context/AuthContext"
 import { getProducts } from "../services/productService"; 
+import { getUsers } from "../services/userService"; 
 import { useNavigate } from "react-router-dom"
 import { 
   Users, 
@@ -14,7 +15,8 @@ import {
 
 function Dashboard() {
   const { user } = useContext(AuthContext)
-  const { lowStock = [], products = [], loadProducts } = getProducts(); 
+  const { lowStock = [], products = [], loadProducts } = getProducts();
+  const { users = [], loadUsers } = getUsers();  
 
   const navigate = useNavigate()
 
@@ -37,7 +39,7 @@ function Dashboard() {
     },
     { 
       label: "Usuários Ativos", 
-      value: "42", 
+      value: users.length, 
       icon: <Users className="w-6 h-6" />, 
       change: "+5%", 
       isPositive: true,
@@ -55,6 +57,7 @@ function Dashboard() {
 
   useEffect(() => {   
     loadProducts();
+    loadUsers();
   }, []);
   
 

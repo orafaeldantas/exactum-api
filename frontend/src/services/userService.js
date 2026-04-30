@@ -1,14 +1,25 @@
+import { useState, useEffect } from "react";
 import { apiFetch } from "./api";
 
-export async function getUsers() {
+export function getUsers() { 
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const response = await apiFetch("/users");
-
-  if (!response.ok) {
-    throw new Error("Erro ao carregar usuários");
+  async function loadUsers() {
+    try {
+      setLoading(true);
+      const response = await apiFetch("/users");
+      const data = await response.json();
+      setUsers(data);
+    } catch (err) {
+      console.error("Erro ao carregar:", err);
+    } finally {
+      setLoading(false);
+    }
   }
 
-  return response.json();
+
+  return { users, loadUsers, loading };
 }
 
 export async function toggleUserStatus(userId, currentStatus) {

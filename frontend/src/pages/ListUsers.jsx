@@ -8,7 +8,8 @@ import { Eye, Pencil, Power, AlertTriangle } from 'lucide-react';
 
 export default function ListUsers() {
 
-  const [users, setUsers] = useState([]);
+  const { users = [], loadUsers } = getUsers();  
+
   const [error, setError] = useState("");
 
   const [search, setSearch] = useState("");
@@ -24,15 +25,6 @@ export default function ListUsers() {
 
   const navigate = useNavigate();
 
-  // Load users from service
-  async function loadUsers() {
-    try {
-      const data = await getUsers();
-      setUsers(data);
-    } catch (err) {
-      setError("Erro ao carregar usuários");
-    }
-  }
 
   useEffect(() => {
     loadUsers();

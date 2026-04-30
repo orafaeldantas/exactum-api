@@ -8,28 +8,22 @@ import { Pencil, ShoppingCart, AlertCircle, TrendingDown } from 'lucide-react';
 export default function LowStockProducts() {
   const navigate = useNavigate();
   
-  // Pegando os dados do seu Hook customizado
-  // Note: Certifique-se que getProducts() retorna esses valores
   const { lowStock = [], loadProducts } = getProducts(); 
 
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const productsPerPage = 10;
 
-  // Definição de estoque baixo para a barra de progresso
   const LOW_STOCK_THRESHOLD = 10;
 
   useEffect(() => {
     loadProducts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Filtro seguro (adicionado verificação de array)
   const filteredProducts = lowStock.filter((product) =>
     product.name.toLowerCase().includes(search.toLowerCase())
   );
 
-  // Cálculos de Paginação
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
   const startIndex = (page - 1) * productsPerPage;
   const paginatedProducts = filteredProducts.slice(startIndex, startIndex + productsPerPage);
@@ -62,7 +56,6 @@ export default function LowStockProducts() {
         </div>
       </div>
 
-      {/* Cards Informativos */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-white p-5 rounded-2xl border border-red-100 shadow-sm flex items-center gap-4">
           <div className="bg-red-100 p-3 rounded-xl text-red-600">
@@ -75,7 +68,6 @@ export default function LowStockProducts() {
         </div>
       </div>
 
-      {/* Busca */}
       <div className="mb-6">
         <input 
           type="text" 
@@ -86,7 +78,6 @@ export default function LowStockProducts() {
         />
       </div>
 
-      {/* Tabela */}
       <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">
@@ -154,7 +145,6 @@ export default function LowStockProducts() {
         </div>
       </div>
 
-      {/* Paginação */}
       {totalPages > 1 && (
         <div className="mt-6 flex items-center justify-center gap-2">
           <button 
