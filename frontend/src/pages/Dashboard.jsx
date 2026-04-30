@@ -1,6 +1,6 @@
-import { useContext, useState, useEffect } from "react"
+import { useContext, useEffect } from "react"
 import { AuthContext } from "../context/AuthContext"
-import { apiFetch } from "../services/api";
+import { getProducts } from "../services/productService"; 
 import { useNavigate } from "react-router-dom"
 import { 
   Users, 
@@ -8,71 +8,55 @@ import {
   TrendingUp, 
   AlertTriangle, 
   ArrowUpRight, 
-  ArrowDownRight 
+  ArrowDownRight,
+  ChevronRight
 } from "lucide-react"
 
 function Dashboard() {
   const { user } = useContext(AuthContext)
-  const [quantityProducts, setQuantityProducts] = useState([]);
-  const [lowStock, setLowStock] = useState([]);setLowStock
+  const { lowStock = [], products = [], loadProducts } = getProducts(); 
+
   const navigate = useNavigate()
 
-  // Dados estáticos para visualização prévia
   const stats = [
     { 
       label: "Total de Produtos", 
-      value: quantityProducts.length,
+      value: products.length,
       icon: <Package className="w-6 h-6" />, 
       change: "+12%", 
-      isPositive: true 
+      isPositive: true,
+      path: "/products"
     },
     { 
       label: "Alertas de Estoque", 
       value: lowStock.length, 
       icon: <AlertTriangle className="w-6 h-6" />, 
-      change: "-2", 
-      isPositive: true 
+      change: lowStock.length > 0 ? "Crítico" : "Ok", 
+      isPositive: lowStock.length === 0, 
+      path: "/low-stock" 
     },
     { 
       label: "Usuários Ativos", 
       value: "42", 
       icon: <Users className="w-6 h-6" />, 
       change: "+5%", 
-      isPositive: true 
+      isPositive: true,
+      path: "/users" 
     },
     { 
       label: "Previsão Mensal", 
       value: "R$ 45.200", 
       icon: <TrendingUp className="w-6 h-6" />, 
       change: "+18%", 
-      isPositive: true 
+      isPositive: true,
+      path: "/reports/finance"
     },
   ]
 
-  useEffect(() => {
-    
-    const fetchProducts = async () => {
-      try {
-        const response = await apiFetch("/products");
-        const data = await response.json();
-        setQuantityProducts(data || []);
-      } catch (err) {
-        console.error("Error loading products:", err);
-      }
-    };
-    fetchProducts();
-
-    const fetchLowStock = async () => {
-      try {
-        const response = await apiFetch("/low-stock");
-        const data = await response.json();
-        setLowStock(data || []);
-      } catch (err) {
-        console.error("Error loading products:", err);
-      }
-    };
-    fetchLowStock();
+  useEffect(() => {   
+    loadProducts();
   }, []);
+  
 
   return (
     <div className="animate-in fade-in duration-500">
@@ -100,12 +84,21 @@ function Dashboard() {
         </div>
       </div>
 
-      {/* GRID DE MÉTRICAS (KPIs) */}
+      {/* GRID DE MÉTRICAS (KPIs) CLICÁVEIS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
         {stats.map((item, index) => (
-          <div key={index} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+          <button
+            key={index}
+            onClick={() => navigate(item.path)}
+            className="group relative flex flex-col text-left bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:border-blue-200 hover:-translate-y-1 transition-all duration-300 outline-none focus:ring-4 focus:ring-blue-100"
+          >
+            {/* Indicador visual de clique no canto superior direito */}
+            <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity text-slate-300">
+              <ChevronRight size={18} />
+            </div>
+
             <div className="flex items-center justify-between mb-4">
-              <div className="p-2 bg-slate-50 text-slate-600 rounded-lg">
+              <div className="p-2 bg-slate-50 text-slate-600 rounded-lg group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">
                 {item.icon}
               </div>
               <span className={`flex items-center text-xs font-bold ${item.isPositive ? 'text-emerald-600' : 'text-red-600'}`}>
@@ -113,18 +106,22 @@ function Dashboard() {
                 {item.isPositive ? <ArrowUpRight className="w-3 h-3 ml-0.5" /> : <ArrowDownRight className="w-3 h-3 ml-0.5" />}
               </span>
             </div>
+            
             <div>
-              <p className="text-sm font-medium text-slate-500 uppercase tracking-wider">{item.label}</p>
-              <h3 className="text-2xl font-black text-slate-900 mt-1">{item.value}</h3>
+              <p className="text-sm font-medium text-slate-500 uppercase tracking-wider group-hover:text-slate-600 transition-colors">
+                {item.label}
+              </p>
+              <h3 className="text-2xl font-black text-slate-900 mt-1 group-hover:text-blue-900 transition-colors">
+                {item.value}
+              </h3>
             </div>
-          </div>
+           
+            <div className="absolute bottom-0 left-0 h-1 bg-blue-500 w-0 group-hover:w-full transition-all duration-300 rounded-b-2xl"></div>
+          </button>
         ))}
       </div>
 
-      {/* ÁREA DE CONTEÚDO (PLACEHOLDERS) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        {/* Espaço para Gráfico Principal */}
         <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm p-6 min-h-[400px] flex flex-col items-center justify-center text-center border-dashed">
           <div className="bg-slate-50 p-4 rounded-full mb-4">
             <TrendingUp className="w-8 h-8 text-slate-300" />
@@ -135,7 +132,6 @@ function Dashboard() {
           </p>
         </div>
 
-        {/* Espaço para Atividades Recentes ou Alertas */}
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
           <h4 className="text-lg font-bold text-slate-900 mb-6 flex items-center justify-between">
             Ações Rápidas
@@ -155,9 +151,7 @@ function Dashboard() {
             ))}
           </div>
         </div>
-
       </div>
-
     </div>
   )
 }

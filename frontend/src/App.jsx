@@ -19,6 +19,7 @@ import ListProducts from "./pages/ListProducts";
 import CreateProduct from "./pages/CreateProduct";
 import EditProduct from "./pages/EditProduct";
 import ResetPassword from "./pages/ResetPassword";
+import LowStockProducts from "./pages/LowStock";
 
 
 function App() {
@@ -42,7 +43,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/create-tenant" element={<CreateTenant />} />
         <Route path="/success" element={<SuccessPage />} />
-
+        
         <Route path="/login" element={<Login />} />
         
 
@@ -118,6 +119,15 @@ function App() {
             element={
               <RoleRoute>
                 <ListProducts />
+              </RoleRoute>
+            }
+          />
+
+          <Route
+            path="/low-stock"
+            element={
+              <RoleRoute>
+                <LowStockProducts />
               </RoleRoute>
             }
           />
