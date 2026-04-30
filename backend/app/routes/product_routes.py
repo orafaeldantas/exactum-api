@@ -8,7 +8,7 @@ product_bp = Blueprint("products", __name__, url_prefix="/products")
 
 @product_bp.route("", methods=["POST"])
 @jwt_required()
-@role_authorization(['user', 'admin'])
+@role_authorization(['user', 'admin', 'super-admin'])
 def create():
     
     data = request.json
@@ -17,7 +17,7 @@ def create():
 
 @product_bp.route("", methods=["GET"])
 @jwt_required()
-@role_authorization(['user', 'admin'])
+@role_authorization(['user', 'admin', 'super-admin'])
 def list_all():
     products = product_service.list_product()
 
@@ -35,7 +35,7 @@ def list_all():
 
 @product_bp.route("/<int:product_id>", methods=["GET"])
 @jwt_required()
-@role_authorization(['user', 'admin'])
+@role_authorization(['user', 'admin', 'super-admin'])
 def get(product_id):
     product = product_service.get_product(product_id)
     if not product:
@@ -54,7 +54,7 @@ def get(product_id):
 
 @product_bp.route("/<int:product_id>", methods=["PATCH"])
 @jwt_required()
-@role_authorization(['user', 'admin'])
+@role_authorization(['user', 'admin', 'super-admin'])
 def update(product_id):
     product = product_service.get_product(product_id)
     if not product:
@@ -68,7 +68,7 @@ def update(product_id):
 
 @product_bp.route("/<int:product_id>", methods=["DELETE"])
 @jwt_required()
-@role_authorization(['user', 'admin'])
+@role_authorization(['user', 'admin', 'super-admin'])
 def delete(product_id):
     product = product_service.get_product(product_id)
     if not product:
@@ -77,3 +77,4 @@ def delete(product_id):
     
     product_service.delete_product(product)
     return jsonify({"message": "Product excluded"})
+
