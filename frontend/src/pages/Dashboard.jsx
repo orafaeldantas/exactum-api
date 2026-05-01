@@ -90,6 +90,7 @@ function Dashboard() {
   useEffect(() => {   
     loadProducts();
     loadUsers();
+    loadSales();
   }, []);
   
 

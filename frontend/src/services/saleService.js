@@ -10,7 +10,7 @@ export function getSales() {
       setLoading(true);
       const response = await apiFetch("/sales");
       const data = await response.json();
-      setUsers(data);
+      setSales(data);
     } catch (err) {
       console.error("Erro ao carregar:", err);
     } finally {
