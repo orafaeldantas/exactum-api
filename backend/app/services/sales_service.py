@@ -54,5 +54,8 @@ def create_sales(data):
         db.session.rollback()
         logger.error(e)
         return "error"
+    
+def list_sales():
+    return Sale.query.filter_by(tenant_id=g.tenant_id).all()
 
     
