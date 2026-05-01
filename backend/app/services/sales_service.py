@@ -57,7 +57,16 @@ def create_sales(data):
         logger.error(e)
         return "error"
     
-def list_sales():
-    return Sale.query.filter_by(tenant_id=g.tenant_id).all()
+def list_sales(month, year):
+
+    query = Sale.query.filter_by(tenant_id=g.tenant_id)
+
+    if month and year:
+        query = query.filter(
+            db.func.extract('month', Sale.created_at) == month,
+            db.func.extract('year', Sale.created_at) == year
+    )
+
+    return query.all()
 
     

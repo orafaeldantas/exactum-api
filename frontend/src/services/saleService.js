@@ -5,10 +5,10 @@ export function getSales() {
   const [sales, setSales] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  async function loadSales() {
+  async function loadSales(month, year) {
     try {
       setLoading(true);
-      const response = await apiFetch("/sales");
+      const response = await apiFetch(`/sales?month=${month}&year=${year}`);
       const data = await response.json();
       setSales(data);
     } catch (err) {
@@ -27,6 +27,8 @@ export function getSales() {
 
     const invoicingAux = sales.reduce((acc, sale) => acc + parseFloat(sale.price), 0);
     const invoicing = invoicingAux.toFixed(2).replace(".", ",")
+
+    console.log(sales.length)
 
   return { sales, invoicing, loadSales, loading };
 }

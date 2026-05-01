@@ -26,7 +26,10 @@ def create():
 @role_authorization(['user', 'admin', 'super-admin'])
 def list():
 
-    sales = sales_service.list_sales()
+    month = int(request.args.get('month'))
+    year = int(request.args.get('year'))
+
+    sales = sales_service.list_sales(month, year)
 
     return jsonify([
         {
