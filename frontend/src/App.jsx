@@ -12,6 +12,7 @@ import CreateUser from "./pages/CreateUser";
 import ListUsers from "./pages/ListUsers";
 import EditUser from "./pages/EditUser";
 import LocalSales from "./pages/LocalSales";
+import ListSales from "./pages/ListSales";
 
 import Layout from "./layouts/MainLayout";
 import RoleRoute from "./routes/RoleRoute";
@@ -84,6 +85,15 @@ function App() {
           />
 
           <Route
+            path="/sales"
+            element={
+              <RoleRoute requiredRole={["admin", "super-admin"]}>
+                <ListSales />
+              </RoleRoute>
+            }
+          />
+
+          <Route
             path="/users"
             element={
               <RoleRoute requiredRole={["admin", "super-admin"]}>
@@ -91,8 +101,7 @@ function App() {
               </RoleRoute>
             }
           />
-
-         
+   
 
           <Route
             path="/users/create"

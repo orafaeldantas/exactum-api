@@ -35,7 +35,9 @@ def list():
             "payment_method": s.payment_method,
             "quantity_items": s.quantity_items,
             "tenant_id": s.tenant_id,
-            "user_id": s.user_id
+            "user_id": s.user_id,
+            "created_at": s.created_at
+
         }
         for s in sales   
     ])
