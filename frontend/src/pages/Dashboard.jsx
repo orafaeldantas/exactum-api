@@ -2,6 +2,7 @@ import { useContext, useEffect } from "react"
 import { AuthContext } from "../context/AuthContext"
 import { getProducts } from "../services/productService"; 
 import { getUsers } from "../services/userService"; 
+import { getSales } from "../services/saleService"; 
 import { useNavigate } from "react-router-dom"
 import { 
   Users, 
@@ -26,7 +27,8 @@ import {
 function Dashboard() {
   const { user } = useContext(AuthContext)
   const { lowStock = [], products = [], loadProducts } = getProducts();
-  const { users = [], loadUsers } = getUsers();  
+  const { users = [], loadUsers } = getUsers();
+  const { sales = [], loadSales } = getSales();    
 
   const navigate = useNavigate()
 
@@ -57,7 +59,7 @@ function Dashboard() {
     },
     { 
       label: "Vendas (Mês)", 
-      value: "184", 
+      value: sales.length, 
       icon: <ShoppingCart className="w-5 h-5" />, 
       change: "+8%", 
       isPositive: true,
