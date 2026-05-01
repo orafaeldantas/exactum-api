@@ -20,12 +20,11 @@ def create():
     sale = sales_service.create_sales(data)
     return jsonify({"message": sale}), 201
 
-sale_bp.route("", methods=["POST"])
+
+@sale_bp.route("", methods=["GET"])
 @jwt_required()
 @role_authorization(['user', 'admin', 'super-admin'])
 def list():
-
-    data = request.json
 
     sales = sales_service.list_sales()
 
