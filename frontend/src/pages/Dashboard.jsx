@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react"
+import { useContext, useEffect, useState } from "react"
 import { AuthContext } from "../context/AuthContext"
 import { getProducts } from "../services/productService"; 
 import { getUsers } from "../services/userService"; 
@@ -28,7 +28,11 @@ function Dashboard() {
   const { user } = useContext(AuthContext)
   const { lowStock = [], products = [], loadProducts } = getProducts();
   const { users = [], loadUsers } = getUsers();
-  const { sales = [], invoicing, loadSales } = getSales();  
+  const { sales = [], invoicing, loadSales } = getSales();
+  
+  const today = new Date();
+  const [month, setMonth] = useState((today.getMonth() + 1).toString().padStart(2, '0'));
+  const [year, setYear] = useState(today.getFullYear().toString());
   
 
   const navigate = useNavigate()
@@ -91,7 +95,8 @@ function Dashboard() {
   useEffect(() => {   
     loadProducts();
     loadUsers();
-    loadSales();
+    loadSales(month, year);
+    console.log(sales)
 
   }, []);
   
