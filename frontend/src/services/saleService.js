@@ -17,7 +17,16 @@ export function getSales() {
       setLoading(false);
     }
   }
+    /*
+      let soma = 0;
 
+      for(let i = 0; i < sales.length; i++) {
+        soma += parseFloat(sales[i].price)
+      }
+    */
 
-  return { sales, loadSales, loading };
+    const invoicingAux = sales.reduce((acc, sale) => acc + parseFloat(sale.price), 0);
+    const invoicing = invoicingAux.toFixed(2).replace(".", ",")
+
+  return { sales, invoicing, loadSales, loading };
 }
