@@ -28,7 +28,8 @@ function Dashboard() {
   const { user } = useContext(AuthContext)
   const { lowStock = [], products = [], loadProducts } = getProducts();
   const { users = [], loadUsers } = getUsers();
-  const { sales = [], loadSales } = getSales();    
+  const { sales = [], invoicing, loadSales } = getSales();  
+  
 
   const navigate = useNavigate()
 
@@ -67,7 +68,7 @@ function Dashboard() {
     },
     { 
       label: "Receita Mensal", 
-      value: "R$ 45.200", 
+      value: `R$ ${invoicing}`, 
       icon: <DollarSign className="w-5 h-5" />, 
       change: "+18%", 
       isPositive: true,
@@ -91,6 +92,7 @@ function Dashboard() {
     loadProducts();
     loadUsers();
     loadSales();
+
   }, []);
   
 

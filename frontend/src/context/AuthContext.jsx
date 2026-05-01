@@ -9,7 +9,6 @@ export function AuthProvider({ children }) {
 
   const updateUserResetPassword = (newData) => {
     setUser(prev => ({ ...prev, ...newData }));
-    console.log(user.password_reset)
   };
 
   async function loadUser() {
@@ -22,7 +21,6 @@ export function AuthProvider({ children }) {
       const response = await apiFetch("/auth/me");
       const data = await response.json();
       setUser(data);
-      console.log(data.role)
     } catch {
       setUser(null);
     } finally {
