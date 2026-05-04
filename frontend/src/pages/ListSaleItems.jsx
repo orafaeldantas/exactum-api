@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getSales } from "../services/saleService";  // Supondo que você tenha essa função
+import { getSaleItems } from "../services/saleService";  
 import { 
   ArrowLeft, 
   Package, 
@@ -21,7 +21,7 @@ export default function SaleDetails() {
   useEffect(() => {
     async function loadData() {
       try {
-        const data = await getSales(id);
+        const data = await getSaleItems(id);
         setSale(data);
       } catch (error) {
         console.error("Erro ao carregar detalhes:", error);
