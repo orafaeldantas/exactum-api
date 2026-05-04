@@ -32,3 +32,24 @@ export function getSales() {
 
   return { sales, invoicing, loadSales, loading };
 }
+
+export function getSaleItems(id) { 
+  const [saleItems, setSaleItems] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  async function lodaSaleItems() {
+    try {
+      setLoading(true);
+      const response = await apiFetch(`/sale/${id}`);
+      const data = await response.json();
+      setSaleItems(data);
+    } catch (err) {
+      console.error("Erro ao carregar:", err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return { saleItems, lodaSaleItems, loading };
+
+}
