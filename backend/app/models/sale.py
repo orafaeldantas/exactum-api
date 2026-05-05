@@ -6,7 +6,7 @@ class Sale(db.Model):
     __tablename__ = 'sales'
 
     id = db.Column(db.Integer, primary_key=True)
-    price = db.Column(db.Numeric(10, 2), nullable=False)
+    total_price = db.Column(db.Numeric(10, 2), nullable=False)
     payment_method = db.Column(db.String(50), nullable=False)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     quantity_items = db.Column(db.Integer, nullable=False, default=1)
@@ -23,6 +23,7 @@ class ItemSale(db.Model):
     name = db.Column(db.String(255), nullable=False)
     quantity = db.Column(db.Integer, nullable=False, default=1)
     sku = db.Column(db.String(50), db.ForeignKey('products.sku'), nullable=False)
-    id_sale = db.Column(db.Integer, db.ForeignKey('sales.id'), nullable=True)
-    id_tenant = db.Column(db.Integer, db.ForeignKey('tenants.id'), nullable=False)
-    id_user = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    item_price = db.Column(db.Numeric(10, 2), nullable=False)
+    sale_id = db.Column(db.Integer, db.ForeignKey('sales.id'), nullable=False)
+    tenant_id = db.Column(db.Integer, db.ForeignKey('tenants.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
