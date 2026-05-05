@@ -76,13 +76,26 @@ def list_items(sale_id):
         "items": new_items
     }), 200
 
-"""
 @sale_bp.route("/five-items", methods=["GET"])
 @jwt_required()
 @role_authorization(['user', 'admin', 'super-admin'])
 def list_best_selling_items():
-    ...
 
-"""
+    month = int(request.args.get('month'))
+    year = int(request.args.get('year'))
 
+    items = sales_service.list_top_items(month, year)
+
+    return jsonify([
+        
+            {
+            "id": i.id,
+            "name": i.name,
+            "quantity": i.quantity,
+            "sku": i.sku,
+            "item_price": i.item_price
+            }
+            for i in items 
+
+        ]), 200
     
