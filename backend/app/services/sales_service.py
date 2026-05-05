@@ -82,7 +82,7 @@ def get_sale(id):
 
 def list_top_items(month, year):
 
-    query = ItemSale.query.filter(tenant_id=g.tenant_id)
+    query = ItemSale.query.filter_by(tenant_id=g.tenant_id)
 
     if month and year:
 

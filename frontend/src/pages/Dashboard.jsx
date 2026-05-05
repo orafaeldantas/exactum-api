@@ -210,7 +210,7 @@ function Dashboard() {
           <div className="flex items-center justify-between mb-8">
             <h4 className="text-lg font-bold text-slate-900 flex items-center gap-2">
               <Star className="w-5 h-5 text-amber-500 fill-amber-500" />
-              Ranking de Top Vendidos
+              Produtos mais vendidos (Mês)
             </h4>
             <button onClick={() => navigate("/products")} className="text-xs font-bold text-blue-600 hover:underline">Ver Todos</button>
           </div>
@@ -224,11 +224,15 @@ function Dashboard() {
                 <div className="flex-1">
                   <p className="text-sm font-bold text-slate-800 truncate w-24 xl:w-40">{prod.name}</p>
                   <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-[11px] text-slate-500 font-medium">{prod.stock_quantity} unidades restantes</span>
+                    <span className="text-[11px] text-slate-500 font-medium">
+                      {prod.quantity} 
+                      {prod.quantity > 1 ? ' unidades vendidas' : ' unidade vendida'}
+
+                    </span>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-xs font-black text-slate-900">R$ {Number(prod.price).toFixed(2)}</p>
+                  <p className="text-xs font-black text-slate-900">R$ {Number(prod.item_price).toFixed(2)}</p>
                   <p className="text-[10px] font-bold text-emerald-600">+12%</p>
                 </div>
               </div>
