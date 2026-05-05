@@ -24,6 +24,7 @@ class ItemSale(db.Model):
     quantity = db.Column(db.Integer, nullable=False, default=1)
     sku = db.Column(db.String(50), db.ForeignKey('products.sku'), nullable=False)
     item_price = db.Column(db.Numeric(10, 2), nullable=False)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     sale_id = db.Column(db.Integer, db.ForeignKey('sales.id'), nullable=False)
     tenant_id = db.Column(db.Integer, db.ForeignKey('tenants.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)

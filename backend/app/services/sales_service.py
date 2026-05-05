@@ -79,4 +79,18 @@ def get_sale(id):
 
     return Sale.query.filter_by(tenant_id=g.tenant_id, id=id).first()
 
-    
+"""
+def list_top_items(month, year):
+
+    query = ItemSale.query.filter_by(tenant_id=g.tenant_id)
+
+    query = query.order_by(desc(ItemSale.quantity)).limit(5)
+
+    if month and year:
+        query = query.filter(
+            db.func.extract('month', Sale.created_at) == month,
+            db.func.extract('year', Sale.created_at) == year
+    )
+
+    return query.all()    
+"""
