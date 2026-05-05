@@ -23,6 +23,6 @@ class ItemSale(db.Model):
     name = db.Column(db.String(255), nullable=False)
     quantity = db.Column(db.Integer, nullable=False, default=1)
     sku = db.Column(db.String(50), db.ForeignKey('products.sku'), nullable=False)
-    id_vendas = db.Column(db.Integer, db.ForeignKey('sales.id'), nullable=False)
+    id_sale = db.Column(db.Integer, db.ForeignKey('sales.id'), nullable=True)
     id_tenant = db.Column(db.Integer, db.ForeignKey('tenants.id'), nullable=False)
     id_user = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)

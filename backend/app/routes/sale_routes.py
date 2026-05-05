@@ -45,4 +45,37 @@ def list():
         for s in sales   
     ])
 
+
+@sale_bp.route("/<int:sale_id>/items", methods=["GET"])
+@jwt_required()
+@role_authorization(['user', 'admin', 'super-admin'])
+def list_items(sale_id):
+    items = sales_service.list_sale_items(sale_id)
+    sale = sales_service.get_sale(sale_id)
+
+    if not sale:
+        return jsonify({"error": "Venda não encontrada"}), 404
+
+    new_items = [
+        {
+            "id": i.id,
+            "name": i.name,
+            "quantity": i.quantity,
+            "sku": i.sku,
+            "price": getattr(i, 'price', 0)
+        }
+        for i in items        
+    ]
+   
+    return jsonify({
+        "id": sale.id,
+        "price": sale.price,
+        "payment_method": sale.payment_method,
+        "created_at": sale.created_at,
+        "quantity_items": sale.quantity_items,
+        "items": new_items
+    }), 200
+
+
+
     
