@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react"
 import { AuthContext } from "../context/AuthContext"
 import { getProducts } from "../services/productService"; 
 import { getUsers } from "../services/userService"; 
-import { getSales } from "../services/saleService"; 
+import { getSales, getTopItems } from "../services/saleService"; 
 import { useNavigate } from "react-router-dom"
 import { 
   Users, 
@@ -29,6 +29,7 @@ function Dashboard() {
   const { lowStock = [], products = [], loadProducts } = getProducts();
   const { users = [], loadUsers } = getUsers();
   const { sales = [], invoicing, loadSales } = getSales();
+  const { topItems = [], loadTopItems, loading } = getTopItems();
   
   const today = new Date();
   const [month, setMonth] = useState((today.getMonth() + 1).toString().padStart(2, '0'));
@@ -96,7 +97,7 @@ function Dashboard() {
     loadProducts();
     loadUsers();
     loadSales(month, year);
-    console.log(sales)
+    loadTopItems(month, year);
 
   }, []);
   
@@ -215,7 +216,7 @@ function Dashboard() {
           </div>
           
           <div className="space-y-6">
-            {products.slice(0, 5).map((prod, i) => (
+            {topItems.slice(0, 5).map((prod, i) => (
               <div key={prod.id} className="flex items-center gap-4 group cursor-pointer">
                 <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-sm font-bold text-slate-500 group-hover:bg-blue-600 group-hover:text-white transition-all">
                   {i + 1}º
@@ -233,7 +234,7 @@ function Dashboard() {
               </div>
             ))}
             
-            {products.length === 0 && (
+            {topItems.length === 0 && (
               <p className="text-center text-sm text-slate-400 py-10">Nenhum dado de venda disponível.</p>
             )}
           </div>
