@@ -53,3 +53,24 @@ export function getSaleItems() {
   return { saleItems, loadSaleItems, loading };
 
 }
+
+export function getTopItems() { 
+  const [topItems, setTopItems] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  async function loadTopItems(month, year) {
+    try {
+      setLoading(true);
+      const response = await apiFetch(`/sales/five-items?month=${month}&year=${year}`);
+      const data = await response.json();
+      setTopItems(data);
+    } catch (err) {
+      console.error("Erro ao carregar:", err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return { topItems, loadTopItems, loading };
+
+}
