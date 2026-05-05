@@ -33,14 +33,14 @@ export function getSales() {
   return { sales, invoicing, loadSales, loading };
 }
 
-export function getSaleItems(id) { 
+export function getSaleItems() { 
   const [saleItems, setSaleItems] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  async function lodaSaleItems() {
+  async function loadSaleItems(id) {
     try {
       setLoading(true);
-      const response = await apiFetch(`/sale/${id}`);
+      const response = await apiFetch(`/sales/${id}/items`);
       const data = await response.json();
       setSaleItems(data);
     } catch (err) {
@@ -50,6 +50,6 @@ export function getSaleItems(id) {
     }
   }
 
-  return { saleItems, lodaSaleItems, loading };
+  return { saleItems, loadSaleItems, loading };
 
 }

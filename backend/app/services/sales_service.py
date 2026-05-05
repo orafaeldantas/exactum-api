@@ -27,7 +27,7 @@ def create_sales(data):
                 name = item.get("name"),
                 quantity = item.get("quantity"),
                 sku = item.get("sku"),
-                id_vendas = new_sale.id,
+                id_sale = new_sale.id,
                 id_tenant = g.tenant_id,
                 id_user = g.user_id
             )
@@ -68,5 +68,13 @@ def list_sales(month, year):
     )
 
     return query.all()
+
+def list_sale_items(id):
+
+    return ItemSale.query.filter_by(id_tenant=g.tenant_id, id_sale=id).all()
+
+def get_sale(id):
+
+    return Sale.query.filter_by(tenant_id=g.tenant_id, id=id).first()
 
     
