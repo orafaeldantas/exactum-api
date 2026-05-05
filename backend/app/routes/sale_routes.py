@@ -76,6 +76,13 @@ def list_items(sale_id):
         "items": new_items
     }), 200
 
+"""
+@sale_bp.route("/five-items", methods=["GET"])
+@jwt_required()
+@role_authorization(['user', 'admin', 'super-admin'])
+def list_best_selling_items():
+    ...
 
+"""
 
     
