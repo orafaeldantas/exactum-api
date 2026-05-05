@@ -34,7 +34,7 @@ def list():
     return jsonify([
         {
             "id": s.id,
-            "price": s.price,
+            "total_price": s.total_price,
             "payment_method": s.payment_method,
             "quantity_items": s.quantity_items,
             "tenant_id": s.tenant_id,
@@ -62,14 +62,14 @@ def list_items(sale_id):
             "name": i.name,
             "quantity": i.quantity,
             "sku": i.sku,
-            "price": getattr(i, 'price', 0)
+            "item_price": getattr(i, 'item_price', 0)
         }
         for i in items        
     ]
    
     return jsonify({
         "id": sale.id,
-        "price": sale.price,
+        "total_price": sale.total_price,
         "payment_method": sale.payment_method,
         "created_at": sale.created_at,
         "quantity_items": sale.quantity_items,

@@ -12,7 +12,7 @@ def create_sales(data):
         items = data.get("itemsSale", {})
 
         new_sale = Sale (
-            price = sale.get("totalToPay"),
+            total_price = sale.get("totalToPay"),
             payment_method = sale.get("paymentMethod"),
             quantity_items = sale.get("item_quantity"),
             tenant_id = g.tenant_id,
@@ -27,9 +27,11 @@ def create_sales(data):
                 name = item.get("name"),
                 quantity = item.get("quantity"),
                 sku = item.get("sku"),
-                id_sale = new_sale.id,
-                id_tenant = g.tenant_id,
-                id_user = g.user_id
+                item_price = item.get("item_price"),
+                sale_id = new_sale.id,
+                tenant_id = g.tenant_id,
+                user_id = g.user_id
+
             )
 
             
@@ -71,7 +73,7 @@ def list_sales(month, year):
 
 def list_sale_items(id):
 
-    return ItemSale.query.filter_by(id_tenant=g.tenant_id, id_sale=id).all()
+    return ItemSale.query.filter_by(tenant_id=g.tenant_id, sale_id=id).all()
 
 def get_sale(id):
 

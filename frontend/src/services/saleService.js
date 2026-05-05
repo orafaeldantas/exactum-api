@@ -25,7 +25,7 @@ export function getSales() {
       }
     */
 
-    const invoicingAux = sales.reduce((acc, sale) => acc + parseFloat(sale.price), 0);
+    const invoicingAux = sales.reduce((acc, sale) => acc + parseFloat(sale.total_price), 0);
     const invoicing = invoicingAux.toFixed(2).replace(".", ",")
 
     console.log(sales.length)

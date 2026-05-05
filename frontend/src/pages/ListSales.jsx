@@ -178,7 +178,7 @@ export default function ListSales() {
                     </span>
                   </td>
                   <td className="px-6 py-4 text-sm font-black text-gray-800 text-right">
-                    R$ {Number(sale.price).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    R$ {Number(sale.total_price).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex justify-center">

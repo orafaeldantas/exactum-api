@@ -91,7 +91,7 @@ export default function SaleDetails() {
             <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Valor Total</p>
           </div>
           <h3 className="text-2xl font-black text-gray-800">
-            R$ {Number(sale.price || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+            R$ {Number(sale.total_price || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
           </h3>
         </div>
       </div>
@@ -130,7 +130,7 @@ export default function SaleDetails() {
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right text-sm font-black text-gray-800">
-                    R$ {(Number(item.price || 0) * item.quantity).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    R$ {(Number(item.item_price || 0) * item.quantity).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                   </td>
                 </tr>
               ))}
@@ -142,7 +142,7 @@ export default function SaleDetails() {
           <div className="flex justify-end px-6 py-4">
              <span className="text-sm font-bold text-gray-500 uppercase tracking-widest mr-8 flex items-center">Total do Pedido:</span>
              <span className="text-xl font-black text-blue-600">
-                R$ {Number(sale.price || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                R$ {Number(sale.total_price || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
              </span>
           </div>
         </div>
