@@ -12,11 +12,11 @@ function Layout() {
         
         <Navbar />
 
-        <main className="flex-1 min-h-screen p-6 md:p-10">
+        <main className="flex-1 min-h-0 overflow-hidden p-6 md:p-10">
           
-          <div className="mx-auto max-w-screen-2xl">
-            <Outlet />
-          </div>
+        <div className="mx-auto max-w-screen-2xl h-full min-h-0 flex flex-col">
+          <Outlet />
+        </div>
 
         </main>
       </div>
