@@ -6,62 +6,46 @@ import { getSales, getTopItems } from "../services/saleService";
 import { useNavigate } from "react-router-dom"
 import { 
   Users, 
-  Package, 
   TrendingUp, 
   AlertTriangle, 
   ArrowUpRight, 
   ArrowDownRight,
-  ChevronRight,
   DollarSign,
   ShoppingCart,
-  Star,
-  Globe,
-  ShoppingBag
+  Target,
+  PieChart,
+  Zap,
+  ChevronRight,
+  Star
 } from "lucide-react"
 
 /**
  * @component Dashboard
- * @description Central command interface for the ERP. 
- * Manages real-time inventory alerts, sales performance visualization, and marketplace integration status.
+ * @description Interface de comando central com KPIs, Gráficos de Meta e Insights de IA.
  */
 function Dashboard() {
   const { user } = useContext(AuthContext)
-  const { lowStock = [], products = [], loadProducts } = getProducts();
+  const { lowStock = [], loadProducts } = getProducts();
   const { users = [], loadUsers } = getUsers();
   const { sales = [], invoicing, loadSales } = getSales();
-  const { topItems = [], loadTopItems, loading } = getTopItems();
+  const { topItems = [], loadTopItems } = getTopItems();
   
   const today = new Date();
-  const [month, setMonth] = useState((today.getMonth() + 1).toString().padStart(2, '0'));
-  const [year, setYear] = useState(today.getFullYear().toString());
-  
-
+  const [month] = useState((today.getMonth() + 1).toString().padStart(2, '0'));
+  const [year] = useState(today.getFullYear().toString());
   const navigate = useNavigate()
 
-  /**
-   * @constant {Array} monthlyData
-   * @description Mock data for sales trend visualization. 
-   * Compares Physical vs Online revenue.
-   */
-  const monthlyData = [
-    { month: "Jan", physical: 40, online: 25 },
-    { month: "Fev", physical: 35, online: 30 },
-    { month: "Mar", physical: 45, online: 28 },
-    { month: "Abr", physical: 30, online: 48 },
-  ]
+  const ticketMedio = sales.length > 0 ? (parseFloat(invoicing) / sales.length).toFixed(2) : "0,00";
+  const goalValue = 50000; 
 
-  /**
-   * @constant {Array} stats
-   * @description KPI configuration for the top metrics grid.
-   */
   const stats = [
     { 
-      label: "Total de Produtos", 
-      value: products.length,
-      icon: <Package className="w-5 h-5" />, 
-      change: "+12%", 
+      label: "Ticket Médio", 
+      value: `R$ ${ticketMedio}`,
+      icon: <TrendingUp className="w-5 h-5" />, 
+      change: "+5%", 
       isPositive: true,
-      path: "/products"
+      path: "/sales"
     },
     { 
       label: "Vendas (Mês)", 
@@ -89,49 +73,39 @@ function Dashboard() {
     },
   ]
 
-  /**
-   * @hook useEffect
-   * @description Initial data fetch on component mount.
-   */
   useEffect(() => {   
     loadProducts();
     loadUsers();
     loadSales(month, year);
     loadTopItems(month, year);
-
-  }, []);
-  
+  }, [month, year]);
 
   return (
-    <div className="animate-in fade-in duration-500 pb-10">
+    <div className="animate-in fade-in duration-500 pb-10 h-full min-h-0 overflow-y-auto pr-3 custom-scroll">
       
-      {/* --- DASHBOARD HEADER --- */}
+      {/* --- HEADER --- */}
       <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Dashboard</h1>
           <p className="text-slate-500 mt-1">
-            Bem-vindo de volta, <span className="font-semibold text-blue-600">{user?.username || 'Administrador'}</span>. Aqui está o resumo do seu negócio.
+            Bem-vindo, <span className="font-semibold text-blue-600">{user?.username || 'Administrador'}</span>.
           </p>
         </div>
-
         <div className="flex items-center gap-3 bg-white p-2 rounded-xl border border-slate-200 shadow-sm text-sm">
            <div className="px-3 py-1 bg-slate-100 rounded-md flex items-center gap-2">
             <Users size={14} className="text-slate-400" />
-            <span className="font-bold text-slate-700">{users.length} Usuários Ativos</span>
-          </div>
-          <div className="px-3 py-1 bg-blue-50 rounded-md border border-blue-100 font-bold text-blue-700">
-            {user?.role || 'Admin'}
+            <span className="font-bold text-slate-700">{users.length} Usuários</span>
           </div>
         </div>
       </div>
 
-      {/* --- KPI METRICS GRID --- */}
+      {/* --- KPI GRID --- */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
         {stats.map((item, index) => (
           <button
             key={index}
             onClick={() => navigate(item.path)}
-            className="group relative flex flex-col text-left bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:border-blue-200 hover:-translate-y-1 transition-all duration-300 outline-none"
+            className="group relative flex flex-col text-left bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:border-blue-200 hover:-translate-y-1 transition-all duration-300 outline-none overflow-hidden"
           >
             <div className="flex items-center justify-between mb-4">
               <div className="p-2 bg-slate-50 text-slate-600 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-all">
@@ -142,165 +116,138 @@ function Dashboard() {
                 {item.isPositive ? <ArrowUpRight className="w-3 h-3 ml-0.5" /> : <ArrowDownRight className="w-3 h-3 ml-0.5" />}
               </span>
             </div>
-            
             <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{item.label}</p>
             <h3 className="text-2xl font-black text-slate-900 mt-1">{item.value}</h3>
-            
-            <div className="absolute bottom-0 left-0 h-1 bg-blue-500 w-0 group-hover:w-full transition-all duration-500 rounded-b-2xl"></div>
+            <div className="absolute bottom-0 left-0 h-1 bg-blue-500 w-0 group-hover:w-full transition-all duration-500"></div>
           </button>
         ))}
       </div>
 
-      {/* --- MAIN ANALYTICS SECTION --- */}
+      {/* --- ANALYTICS SECTION --- */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
         
-        {/* SALES PERFORMANCE CHART (OMNICHANNEL VIEW) */}
         <div className="lg:col-span-2 bg-white rounded-3xl border border-slate-200 shadow-sm p-8">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h4 className="text-xl font-black text-slate-900">Desempenho de Vendas</h4>
+              <h4 className="text-xl font-black text-slate-900">Vendas Acumuladas</h4>
               <p className="text-sm text-slate-500 font-medium flex items-center gap-1">
-                <Globe size={14} className="text-blue-500" /> Omnichannel: Crescimento Físico + Online
+                <Target size={14} className="text-blue-500" /> Comparativo vs Meta Mensal
               </p>
             </div>
-            <select className="bg-slate-50 border-none text-xs font-bold text-slate-600 rounded-lg p-2 outline-none cursor-pointer">
-              <option>Últimos 6 Meses</option>
-              <option>Ano Atual</option>
-            </select>
           </div>
-
-          {/* SIMULATED BAR CHART */}
-          <div className="flex items-end justify-between h-64 gap-4 px-4 border-b border-slate-100">
-            {monthlyData.map((data, i) => (
-              <div key={i} className="flex-1 flex flex-col items-center gap-2 group">
-                <div className="relative w-full flex flex-row items-end justify-center gap-1 h-full">
-                  {/* Physical Store Bar */}
-                  <div 
-                    className="w-full max-w-[12px] bg-slate-200 rounded-t-sm transition-all group-hover:bg-slate-300" 
-                    style={{ height: `${data.physical}%` }}
-                  ></div>
-                  {/* Online Marketplace Bar */}
-                  <div 
-                    className="w-full max-w-[12px] bg-blue-600 rounded-t-sm transition-all group-hover:bg-blue-700" 
-                    style={{ height: `${data.online}%` }}
-                  ></div>
-                  
-                  {/* TOOLTIP */}
-                  <div className="opacity-0 group-hover:opacity-100 absolute -top-10 bg-slate-800 text-white text-[10px] py-1 px-2 rounded font-bold transition-opacity whitespace-nowrap z-10 shadow-lg">
-                    Online: {data.online}% | Físico: {data.physical}%
-                  </div>
-                </div>
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{data.month}</span>
-              </div>
-            ))}
-          </div>
-          
-          <div className="flex gap-6 mt-6">
-            <div className="flex items-center gap-2 text-xs font-bold text-slate-500">
-              <div className="w-3 h-3 bg-blue-600 rounded-full"></div> Vendas Online
+          <div className="relative h-64 w-full border-b border-l border-slate-100 px-4">
+            <div className="absolute w-full border-t-2 border-dashed border-slate-200" style={{ bottom: '70%' }}>
+              <span className="absolute -top-5 right-0 text-[10px] font-bold text-slate-400 uppercase tracking-tight">Meta: R$ {goalValue}</span>
             </div>
-            <div className="flex items-center gap-2 text-xs font-bold text-slate-500">
-              <div className="w-3 h-3 bg-slate-200 rounded-full"></div> Loja Física
+            <svg className="absolute bottom-0 left-0 w-full h-full" preserveAspectRatio="none">
+              <polyline fill="none" stroke="#2563eb" strokeWidth="3" points="0,250 100,220 200,210 300,160 400,140 500,90 600,40" strokeLinecap="round" className="drop-shadow-lg" />
+            </svg>
+            <div className="flex justify-between absolute bottom-[-25px] w-full text-[10px] font-bold text-slate-400 uppercase">
+              <span>Dia 01</span>
+              <span>Dia 15</span>
+              <span>Dia 30</span>
             </div>
           </div>
         </div>
 
-        {/* TOP SELLING PRODUCTS RANKING */}
-        <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6">
-          <div className="flex items-center justify-between mb-8">
-            <h4 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-              <Star className="w-5 h-5 text-amber-500 fill-amber-500" />
-              Produtos mais vendidos (Mês)
+        <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+            <h4 className="text-lg font-black text-slate-900 flex items-center gap-2">
+              <Star className="text-amber-400 fill-amber-400" size={20} /> Produtos Mais Vendidos
             </h4>
-            <button onClick={() => navigate("/products")} className="text-xs font-bold text-blue-600 hover:underline">Ver Todos</button>
           </div>
-          
-          <div className="space-y-6">
-            {topItems.slice(0, 5).map((prod, i) => (
-              <div key={prod.id} className="flex items-center gap-4 group cursor-pointer">
-                <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-sm font-bold text-slate-500 group-hover:bg-blue-600 group-hover:text-white transition-all">
-                  {i + 1}º
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-bold text-slate-800 truncate w-24 xl:w-40">{prod.name}</p>
-                  <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-[11px] text-slate-500 font-medium">
-                      {prod.quantity} 
-                      {prod.quantity > 1 ? ' unidades vendidas' : ' unidade vendida'}
-
-                    </span>
+          <div className="p-2">
+            {topItems.slice(0, 5).map((item, i) => (
+              <div key={i} className="flex items-center justify-between p-4 hover:bg-slate-50 rounded-2xl transition-colors">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center font-black text-slate-400 text-sm">
+                    #{i + 1}
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-slate-900">{item.name}</p>
+                    <p className="text-xs text-slate-500 font-medium">{item.category || 'Geral'}</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-xs font-black text-slate-900">R$ {Number(prod.item_price).toFixed(2)}</p>
-                  <p className="text-[10px] font-bold text-emerald-600">+12%</p>
+                  <p className="text-sm font-black text-slate-900">{item.quantity} un.</p>
+                  <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">Em alta</p>
                 </div>
               </div>
             ))}
-            
-            {topItems.length === 0 && (
-              <p className="text-center text-sm text-slate-400 py-10">Nenhum dado de venda disponível.</p>
-            )}
           </div>
-
-          <button className="w-full mt-8 py-3 rounded-xl border-2 border-dashed border-slate-200 text-slate-400 text-xs font-bold hover:border-blue-300 hover:text-blue-500 transition-all">
-            Gerar Relatório de Performance
-          </button>
+          <div className="p-4 border-t border-slate-50">
+            <button onClick={() => navigate('/products')} className="w-full py-2 text-xs font-bold text-blue-600 hover:bg-blue-50 rounded-xl transition-colors flex items-center justify-center gap-1">
+              Ver catálogo completo <ChevronRight size={14} />
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* --- SECONDARY WIDGETS SECTION --- */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         
-        {/* MARKETPLACE INTEGRATION STATUS */}
-        <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 flex flex-col">
-          <h4 className="text-lg font-bold text-slate-900 mb-6">Integração com Marketplaces</h4>
-          <div className="space-y-4 flex-1">
-            <div className="p-4 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center font-black text-orange-600 shadow-sm">ML</div>
-                <div>
-                  <p className="text-xs font-bold text-orange-900">Mercado Livre</p>
-                  <p className="text-[10px] text-orange-700 font-medium">8 pedidos pendentes</p>
+        <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-8">
+          <h4 className="text-xl font-black text-slate-900 mb-6 flex items-center gap-2">
+            <PieChart className="text-slate-400" size={20} /> Canais de Venda
+          </h4>
+          <div className="space-y-6">
+            {[
+              { name: "Loja Física", value: 65, color: "bg-blue-600" },
+              { name: "Marketplace", value: 25, color: "bg-emerald-500" },
+              { name: "WhatsApp", value: 10, color: "bg-amber-500" }
+            ].map((item, i) => (
+              <div key={i}>
+                <div className="flex justify-between text-xs font-bold mb-2 uppercase tracking-tighter">
+                  <span className="text-slate-500">{item.name}</span>
+                  <span className="text-slate-900">{item.value}%</span>
+                </div>
+                <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div className={`h-full ${item.color}`} style={{ width: `${item.value}%` }}></div>
                 </div>
               </div>
-              <ChevronRight size={16} className="text-orange-400" />
-            </div>
-
-            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center font-black text-slate-600 shadow-sm">
-                  <ShoppingBag size={18} />
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-slate-900">Loja Oficial</p>
-                  <p className="text-[10px] text-slate-500 font-medium">Sincronização ativa...</p>
-                </div>
-              </div>
-              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-            </div>
+            ))}
           </div>
-          <button className="w-full mt-6 py-3 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-slate-800 transition-all">
-            Configurar Canais de Venda
-          </button>
-        </div>
-
-        {/* AI TREND ANALYSIS PREVIEW */}
-        <div className="lg:col-span-2 bg-slate-900 rounded-3xl p-8 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
-          <div className="z-10 text-center md:text-left flex-1">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-500/30 text-blue-400 text-[10px] font-bold uppercase mb-4">
-              <TrendingUp size={12} /> Motor Preditivo de IA
-            </div>
-            <h4 className="text-2xl font-bold text-white mb-2">Previsão de Demanda</h4>
-            <p className="text-slate-400 text-sm max-w-sm">
-              Nossa IA está analisando seu histórico para prever as necessidades de estoque do próximo mês.
+          <div className="mt-8 p-4 bg-blue-50 rounded-2xl flex items-center gap-3">
+            <PieChart className="text-blue-600 flex-shrink-0" size={20} />
+            <p className="text-[11px] font-bold text-blue-800 leading-tight">
+              A Loja Física superou a meta de participação em 5% este mês.
             </p>
           </div>
-          <div className="z-10 flex flex-col items-center gap-2">
-            <div className="text-4xl font-black text-blue-500">+24%</div>
-            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center">
-              Crescimento esperado <br/> em Eletrônicos Online
+        </div>
+
+        {/* INSIGHTS DE IA */}
+        <div className="bg-slate-900 rounded-3xl p-8 text-white relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
+            <Zap size={120} />
+          </div>
+          
+          <div className="relative z-10">
+            <div className="flex items-center gap-2 mb-6">
+              <div className="p-2 bg-blue-500 rounded-lg">
+                <Zap size={20} className="text-white fill-white" />
+              </div>
+              <h4 className="text-lg font-black tracking-tight">Análise Inteligente</h4>
+            </div>
+
+            <div className="space-y-6">
+              <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/10 hover:border-blue-500 transition-all cursor-default">
+                <p className="text-blue-400 text-xs font-black uppercase mb-1">Previsão de Estoque</p>
+                <p className="text-sm font-medium leading-relaxed">
+                  ...
+                </p>
+              </div>
+
+              <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/10 hover:border-emerald-500 transition-all cursor-default">
+                <p className="text-emerald-400 text-xs font-black uppercase mb-1">Oportunidade de Venda</p>
+                <p className="text-sm font-medium leading-relaxed">
+                  ...
+                </p>
+              </div>
+
+              <div className="bg-white/5 p-4 rounded-2xl border border-white/5 italic">
+                <p className="text-xs text-slate-400">
+                  "O Ticket Médio está 12% acima do registrado no mesmo período do mês passado."
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -310,14 +257,4 @@ function Dashboard() {
   )
 }
 
-/**
- * @component ArrowRight
- * @description Icon helper for directional actions.
- */
-function ArrowRight(props) {
-  return (
-    <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-  )
-}
-
-export default Dashboard
+export default Dashboard;

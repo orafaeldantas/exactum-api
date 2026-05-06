@@ -155,7 +155,7 @@ const VendaLocal = () => {
   const changeAmount = Number(amountReceived) > totalToPay ? Number(amountReceived) - totalToPay : 0;
 
   return (
-    <div className="flex h-screen bg-slate-50 text-slate-900 p-6 gap-6 font-sans overflow-hidden">
+    <div className="flex h-screen bg-slate-50 text-slate-900 p-6 gap-6 font-sans overflow-y-auto overflow-x-hidden custom-scroll">
       
       {/* LEFT COLUMN: Main Sales Area */}
       <div className="flex-1 flex flex-col gap-4 min-w-0">
