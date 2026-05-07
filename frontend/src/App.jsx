@@ -14,6 +14,8 @@ import EditUser from "./pages/EditUser";
 import LocalSales from "./pages/LocalSales";
 import ListSales from "./pages/ListSales";
 import ListSaleItems from "./pages/ListSaleItems";
+import AdminSettings from "./pages/AdminSettings";
+import UserSettings from "./pages/UserSettings";
 
 import Layout from "./layouts/MainLayout";
 import RoleRoute from "./routes/RoleRoute";
@@ -22,6 +24,7 @@ import CreateProduct from "./pages/CreateProduct";
 import EditProduct from "./pages/EditProduct";
 import ResetPassword from "./pages/ResetPassword";
 import LowStockProducts from "./pages/LowStock";
+import { User } from "lucide-react";
 
 
 function App() {
@@ -81,6 +84,24 @@ function App() {
             element={
               <RoleRoute requiredRole={["super-admin"]}>
                 <ManageCompanies />
+              </RoleRoute>
+            }
+          />
+          
+          
+          <Route
+            path="/user-settings"
+            element={
+              <RoleRoute requiredRole={["user"]}>
+                <UserSettings />
+              </RoleRoute>
+            }
+          />
+          <Route
+            path="/admin-settings"
+            element={
+              <RoleRoute requiredRole={["admin"]}>
+                <AdminSettings />
               </RoleRoute>
             }
           />

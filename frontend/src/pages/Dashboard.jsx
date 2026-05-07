@@ -35,13 +35,24 @@ function Dashboard() {
   const [year] = useState(today.getFullYear().toString());
   const navigate = useNavigate()
 
-  const ticketMedio = sales.length > 0 ? (parseFloat(invoicing) / sales.length).toFixed(2) : "0,00";
+
+  const invoicingFormated = invoicing.toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
+  const ticketMedio = sales.length > 0 ? invoicing / sales.length : "0,00";
+  const ticketMedioFormated = ticketMedio.toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
   const goalValue = 50000; 
+
+
 
   const stats = [
     { 
       label: "Ticket Médio", 
-      value: `R$ ${ticketMedio}`,
+      value: `R$ ${ticketMedioFormated}`,
       icon: <TrendingUp className="w-5 h-5" />, 
       change: "+5%", 
       isPositive: true,
@@ -57,7 +68,7 @@ function Dashboard() {
     },
     { 
       label: "Receita Mensal", 
-      value: `R$ ${invoicing}`, 
+      value: `R$ ${invoicingFormated}`, 
       icon: <DollarSign className="w-5 h-5" />, 
       change: "+18%", 
       isPositive: true,

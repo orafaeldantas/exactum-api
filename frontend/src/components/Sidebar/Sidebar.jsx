@@ -155,7 +155,7 @@ function Sidebar() {
         <div className="my-4 border-t border-slate-800 mx-2" />
 
         <NavLink 
-          to="/settings" 
+          to={user?.role === "admin" ? "/admin-settings" : "user-settings"}
           className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
         >
           <Settings size={20} className={collapsed ? "mx-auto" : ""} />
