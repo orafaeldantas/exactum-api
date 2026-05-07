@@ -242,12 +242,23 @@ export default function ListUsers() {
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="grid grid-cols-2 gap-2 w-fit">
+                    <div
+                      className={`
+                        grid grid-cols-2 gap-2 w-fit transition
+                        ${
+                          ["admin"].includes(user.role)
+                            ? "pointer-events-none opacity-40 select-none"
+                              : ""
+                          }
+                        `}
+                      >
                       {/* Edit Action */}
                       <button
                         className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-medium 
                                    text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:border-slate-300"
                         onClick={() => navigate(`/users/edit/${user.id}`)}
+                        
+                        title="Você não possui permissão para esta ação"
                       >
                         <Pencil className="w-4 h-4 text-slate-400" />
                         Editar
