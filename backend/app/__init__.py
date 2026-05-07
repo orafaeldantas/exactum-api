@@ -40,6 +40,7 @@ def create_app():
     from app.routes.tenant_routes import tenant_bp
     from app.routes.sale_routes import sale_bp
     from app.routes.super_admin_routes import superadmin_bp
+    from app.routes.finance_routes import finance_bp
 
     app.register_blueprint(health_bp)
     app.register_blueprint(product_bp)
@@ -48,5 +49,6 @@ def create_app():
     app.register_blueprint(tenant_bp)
     app.register_blueprint(sale_bp)
     app.register_blueprint(superadmin_bp)
+    app.register_blueprint(finance_bp)
 
     return app
