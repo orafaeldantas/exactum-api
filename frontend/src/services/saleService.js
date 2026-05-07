@@ -3,7 +3,6 @@ import { apiFetch } from "./api";
 
 export function getSales() { 
   const [sales, setSales] = useState([]);
-  const [salesPassed, setSalesPassed] = useState([]);
   const [loading, setLoading] = useState(false);
 
   async function loadSales(month, year) {
@@ -19,18 +18,6 @@ export function getSales() {
     }
   }
 
-  async function loadSalesPassed(month, year) {
-    try {
-      setLoading(true);
-      const response = await apiFetch(`/sales?month=${month}&year=${year}`);
-      const data = await response.json();
-      setSalesPassed(data);
-    } catch (err) {
-      console.error("Erro ao carregar:", err);
-    } finally {
-      setLoading(false);
-    }
-  }
     /*
       let soma = 0;
 
@@ -42,7 +29,7 @@ export function getSales() {
     const invoicing = sales.reduce((acc, sale) => acc + parseFloat(sale.total_price), 0);
     
 
-  return { sales, invoicing, loadSales, loading, salesPassed };
+  return { sales, invoicing, loadSales, loading};
 }
 
 export function getSaleItems() { 

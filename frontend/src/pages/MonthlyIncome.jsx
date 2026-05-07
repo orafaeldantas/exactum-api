@@ -287,8 +287,7 @@ export default function FinancialAnalytics() {
               inline-flex items-center gap-1 rounded-full
               bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700
             ">
-              <TrendingUp className="h-3.5 w-3.5" />
-              Alto volume operacional
+              {} produtos vendidos
             </div>
           </div>
         </div>
