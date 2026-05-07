@@ -19,7 +19,7 @@ export function getFinancePeriod() {
   }
     
 
-  return { financePeriod, setFinancePeriod, loading };
+  return { financePeriod, loadFinancePeriod, loading };
 }
 
 export function getFinanceToday() { 
