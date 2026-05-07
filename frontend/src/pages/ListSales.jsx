@@ -20,6 +20,9 @@ export default function ListSales() {
   const [month, setMonth] = useState((today.getMonth() + 1).toString().padStart(2, '0'));
   const [year, setYear] = useState(today.getFullYear().toString());
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+
+  const salesPerPage = 10;
 
   // Custom hook for fetching sales based on month/year
   const { sales = [], invoicing, loadSales, isLoading } = getSales();
@@ -50,6 +53,14 @@ export default function ListSales() {
     sale.id.toString().includes(search) || 
     sale.payment_method?.toLowerCase().includes(search.toLowerCase())
   );
+
+  // Pagination logic
+  const startIndex = (page - 1) * salesPerPage;
+  const endIndex = startIndex + salesPerPage;
+
+  const paginatedSales = filteredSales.slice(startIndex, endIndex);
+
+  const totalPages = Math.ceil(filteredSales.length / salesPerPage);
 
   return (
     <div className="min-h-screen bg-gray-50 p-6 relative">
@@ -103,7 +114,10 @@ export default function ListSales() {
             type="text" 
             placeholder="Buscar por ID ou pagamento..." 
             value={search} 
-            onChange={(e) => setSearch(e.target.value)} 
+            onChange={(e) => {
+              setSearch(e.target.value)
+              setPage(1); 
+            }}           
             className="w-full rounded-xl border border-gray-200 bg-gray-50 pl-11 pr-4 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100" 
           />
         </div>
@@ -164,7 +178,7 @@ export default function ListSales() {
               </tr>
             </thead>
             <tbody>
-              {filteredSales.map((sale) => (
+              {paginatedSales.map((sale) => (
                 <tr key={sale.id} className="border-t border-gray-100 transition-colors hover:bg-gray-50 group">
                   <td className="px-6 py-4 text-sm font-medium text-gray-700">#{sale.id}</td>
                   <td className="px-6 py-4 text-sm text-gray-500">
@@ -202,6 +216,32 @@ export default function ListSales() {
               )}
             </tbody>
           </table>
+        </div>
+      </div>
+      {/* Pagination Controls */}
+      <div className="mt-6 flex items-center justify-center gap-1">
+        <div className="flex w-30 justify-end">    
+          <button
+            disabled={page === 1}
+            onClick={() => setPage(page - 1)}
+            className="flex items-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-600 shadow-sm transition-all hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            ← Anterior
+          </button>
+        </div>  
+        <div className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm">
+          <span className="text-blue-600">{page}</span>
+          <span className="mx-1 text-gray-400">/</span>
+          <span>{totalPages || 1}</span>
+        </div>
+        <div className="w-30">        
+          <button
+            disabled={page === totalPages || totalPages === 0}
+            onClick={() => setPage(page + 1)}
+            className="flex items-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-600 shadow-sm transition-all hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            Próxima →
+          </button>
         </div>
       </div>
     </div>
