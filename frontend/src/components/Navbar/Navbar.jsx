@@ -78,7 +78,7 @@ function Navbar() {
       <div className="mx-auto max-w-screen-2xl px-4 sm:px-6 lg:px-1">
         <div className="flex h-16 items-center justify-between">
 
-          {/* Lado Esquerdo */}
+          {/* Left side */}
           <div className="flex items-center gap-2">
             <div
               className="
@@ -104,7 +104,7 @@ function Navbar() {
             </span>
           </div>
 
-          {/* Lado Direito */}
+          {/* Rigth side */}
           <div className="flex items-center gap-4">
             {user && (
               <div className="relative" ref={menuRef}>
@@ -321,7 +321,7 @@ function Navbar() {
                         </div>
                       </div>
 
-                      {/* Informações */}
+                      {/* Informations */}
                       <div className="space-y-4 px-5 py-4">
 
                         {/* Email */}
