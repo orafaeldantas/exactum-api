@@ -46,9 +46,6 @@ def create_sales(data):
 
             product_service.update_product(product, new_stock)
 
-            logger.info("ENTROU AQUI!!!!")
-
-
        
         db.session.commit()
 
