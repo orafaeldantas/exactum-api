@@ -56,7 +56,7 @@ function Dashboard() {
       icon: <TrendingUp className="w-5 h-5" />, 
       change: "+5%", 
       isPositive: true,
-      path: "/sales"
+      path: "/average-ticket"
     },
     { 
       label: "Vendas (Mês)", 

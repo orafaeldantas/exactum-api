@@ -17,6 +17,7 @@ import ListSaleItems from "./pages/ListSaleItems";
 import AdminSettings from "./pages/AdminSettings";
 import UserSettings from "./pages/UserSettings";
 import MonthlyIncome from "./pages/MonthlyIncome";
+import AverageTicketAnalytics from "./pages/AverageTicket";
 
 import Layout from "./layouts/MainLayout";
 import RoleRoute from "./routes/RoleRoute";
@@ -94,6 +95,15 @@ function App() {
             element={
               <RoleRoute requiredRole={["admin", "super-admin"]}>
                 <MonthlyIncome />
+              </RoleRoute>
+            }
+          />
+
+          <Route
+            path="/average-ticket"
+            element={
+              <RoleRoute requiredRole={["admin", "super-admin"]}>
+                <AverageTicketAnalytics />
               </RoleRoute>
             }
           />
