@@ -224,7 +224,7 @@ function Navbar() {
                         rounded-2xl
                         border
                         border-gray-200/80
-                        bg-white/90
+                        bg-white/100
                         backdrop-blur-xl
                         shadow-2xl
                         shadow-black/5
