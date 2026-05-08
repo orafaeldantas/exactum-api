@@ -31,6 +31,7 @@ export default function FinancialAnalytics() {
   const totalSales = financePeriod?.total_sales ?? 0;
   const ticketAverage = financePeriod?.average_ticket ?? 0;
   const totalProductsSold = financePeriod?.total_products_sold ?? 0;
+ 
 
   /*
     GOAL
@@ -118,8 +119,8 @@ export default function FinancialAnalytics() {
   */
 
   const topProduct = {
-    name: "Mouse Logitech G203",
-    quantity: 124,
+    name: financePeriod?.top_product ?? "---",
+    quantity: financePeriod?.qtd_top_product ?? 0,
   };
 
   const formatCurrency = (value = 0) => {

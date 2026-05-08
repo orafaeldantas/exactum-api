@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import extract 
+from sqlalchemy import extract, func 
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager, jwt_required
 
