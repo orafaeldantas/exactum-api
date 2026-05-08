@@ -66,8 +66,9 @@ def list_finance_period():
     total_sales = len(data)
 
     average_ticket = float(total_revenue) / float(total_sales)
+
+    top_product = finance_service.get_top_product(start_date, end_date)
     
-   
     return jsonify({
         "total_revenue": total_revenue,
         "total_sales": total_sales,
@@ -78,4 +79,6 @@ def list_finance_period():
         "money": payment_method["money"],
         "debit": payment_method["debit"],
         "credit": payment_method["credit"],
+        "top_product": top_product.name,
+        "qtd_top_product": top_product.total_quantity
     }), 200

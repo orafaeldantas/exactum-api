@@ -12,6 +12,7 @@ export function getFinancePeriod() {
       const response = await apiFetch(`/finance/period?period=${period}`);
       const data = await response.json();
       setFinancePeriod(data);
+      console.log(data)
     } catch (err) {
       console.error("Erro ao carregar:", err);
     } finally {
@@ -25,7 +26,6 @@ export function getFinancePeriod() {
       const response = await apiFetch(`/finance/period?period=month`);
       const data = await response.json();
       setFinanceGoal(data?.total_revenue);
-      console.log(data)
     } catch (err) {
       console.error("Erro ao carregar:", err);
     } finally {
