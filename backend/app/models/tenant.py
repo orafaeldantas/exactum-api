@@ -10,7 +10,10 @@ class Tenant(db.Model):
     slug = db.Column(db.String(100), unique=True, nullable=False)
     plan = db.Column(db.String(100), nullable=False)
     cnpj = db.Column(db.String(18), unique=True)
+    global_min_stock = db.Column(db.Integer, nullable=True, default=10)
+    corporate_email = db.Column(db.String(255), unique=True, nullable=True)
 
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
     users = db.relationship("User", backref="tenant")
+
