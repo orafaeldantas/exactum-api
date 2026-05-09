@@ -1,6 +1,7 @@
 import re
 from app.extensions import db
-from app.models import Tenant, User
+from app.models import Tenant, User, Goal
+from flask import g
 
 import logging
 
@@ -53,3 +54,9 @@ def create_tenant(data):
     
 def list_tenants():
     return Tenant.query.all()
+
+def get_tenant_id():
+    return Tenant.query.filter_by(id=g.tenant_id).first()
+
+def get_goal():
+    return Goal.query.filter_by(id=g.tenant_id).first()

@@ -1,5 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import toast from "react-hot-toast";
+import { getTenantData } from "../services/tenantService"
+import { getUser } from "../services/userService"
+import Loader from "../components/Loader/Loader";
+import { AuthContext } from "../context/AuthContext";
 
 import {
   Settings,
@@ -16,19 +20,47 @@ import {
 
 export default function SettingsPage() {
   const [loading, setLoading] = useState(false);
+  const { tenantData = {}, loadTenantData } = getTenantData();
+  const { user } = useContext(AuthContext);
 
   const [form, setForm] = useState({
-    companyName: "Exactum ERP",
-    companyEmail: "contato@exactum.com",
-    monthlyGoal: 50000,
-    minimumStock: 5,
-    username: "admin",
-    loginEmail: "admin@exactum.com",
+    companyName: "",
+    companyEmail: "",
+    monthlyGoal: 0,
+    minimumStock: 0,
+    username: user.username,
+    loginEmail: user.email,
     profileImage: "",
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
   });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);  
+      await loadTenantData();
+      setLoading(false);
+    };
+  
+    fetchData();
+  }, []);
+  
+  useEffect(() => {
+    if (Object.keys(tenantData).length > 0) {
+      setForm((prevForm) => ({
+        ...prevForm,
+        companyName: tenantData.name ?? "",
+        companyEmail: tenantData.corporate_email ?? "",
+        minimumStock: tenantData.global_min_stock ?? 0,
+        monthlyGoal: parseInt(tenantData.goal) ?? 0,
+      }));
+    }
+  }, [tenantData]);
+  
+  if (loading) {
+    return <Loader message="Carregando configurações..." />;
+  }
 
   function handleChange(e) {
     setForm({
@@ -48,18 +80,6 @@ export default function SettingsPage() {
       return;
     }
 
-    try {
-      setLoading(true);
-
-      // Aqui futuramente você conecta com API
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      toast.success("Configurações salvas com sucesso!");
-    } catch (err) {
-      toast.error("Erro ao salvar configurações");
-    } finally {
-      setLoading(false);
-    }
   }
 
   return (
