@@ -24,8 +24,16 @@ def list_users():
     return User.query.filter_by(tenant_id=g.tenant_id).all()
 
 def update_user(user, data):
+   
+    current_password = data.get("currentPassword")
+    if current_password:
+        if not user.check_password(data.get("currentPassword")):
+            return "Wrong current password"
+        if data.get("password") != data.get("confirmPassword"):
+            return "Thes passwords don't match"
 
     user.username = data.get("username", user.username)
+    user.email = data.get("email", user.email)
     user.role = data.get("role", user.role)
     user.is_active = data.get("is_active", user.is_active)
     user.password_reset = data.get("password_reset", user.password_reset)

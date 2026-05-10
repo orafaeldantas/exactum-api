@@ -62,9 +62,9 @@ def update(user_id):
     
     data = request.json
 
-    user_service.update_user(user, data)
+    user = user_service.update_user(user, data)
 
-    return {"message": "User update"}
+    return {"message": "success"}
 
 
 @user_bp.route("/psw/<int:user_id>", methods=["PATCH"])
