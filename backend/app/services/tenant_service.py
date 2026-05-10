@@ -55,8 +55,31 @@ def create_tenant(data):
 def list_tenants():
     return Tenant.query.all()
 
-def get_tenant_id():
+def get_tenant_by_id():
     return Tenant.query.filter_by(id=g.tenant_id).first()
 
+def update_tenant_by_id(data):
+    
+    tenant = get_tenant_by_id()
+    
+    if "companyName" in data: tenant.name = data.get("companyName")
+    if "companyEmail" in data: tenant.corporate_email = data.get("companyEmail")
+    if "minimumStock" in data: tenant.global_min_stock = data.get("minimumStock")
+    
 def get_goal():
-    return Goal.query.filter_by(id=g.tenant_id).first()
+    return Goal.query.filter_by(tenant_id=g.tenant_id).order_by(Goal.id.desc()).first()
+
+def create_goal(data):
+
+    if "monthlyGoal" in data:
+        goal = Goal(
+                tenant_id=g.tenant_id,
+                type="monthly",
+                year=9999,
+                month=9999,
+                value=data.get("monthlyGoal"),
+                description="monthly"
+            )
+
+        db.session.add(goal)
+        db.session.commit()

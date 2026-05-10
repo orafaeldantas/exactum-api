@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import toast from "react-hot-toast";
+import { apiFetch } from "../services/api";
 import { getTenantData } from "../services/tenantService"
-import { getUser } from "../services/userService"
 import Loader from "../components/Loader/Loader";
 import { AuthContext } from "../context/AuthContext";
 
@@ -71,7 +71,7 @@ export default function SettingsPage() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-
+  
     if (
       form.newPassword &&
       form.newPassword !== form.confirmPassword
@@ -79,9 +79,47 @@ export default function SettingsPage() {
       toast.error("As senhas não coincidem");
       return;
     }
-
+  
+    const dataUser = {
+      username: form.username,
+      email: form.loginEmail,
+      password: form.newPassword,
+      confirmPassword: form.confirmPassword,
+      currentPassword: form.currentPassword,
+    };
+  
+    const dataTenant = {
+      companyName: form.companyName,
+      companyEmail: form.companyEmail,
+      minimumStock: form.minimumStock,
+      monthlyGoal: form.monthlyGoal,
+    };
+  
+    try {
+      const [responseUser, responseTenant] = await Promise.all([
+        apiFetch(`/users/${user.id}`, {
+          method: "PATCH",
+          body: JSON.stringify(dataUser),
+        }),
+  
+        apiFetch("/tenants/data", {
+          method: "PATCH",
+          body: JSON.stringify(dataTenant),
+        }),
+      ]);
+  
+      if (responseUser.ok && responseTenant.ok) {
+        toast.success("Dados atualizados com sucesso");
+      } else {
+        toast.error("Erro ao atualizar os dados");
+      }
+  
+    } catch (error) {
+      toast.error("Erro de conexão");
+      console.error(error);
+    }
   }
-
+  
   return (
     <div className="min-h-screen bg-gray-50 p-6">
 
@@ -121,7 +159,6 @@ export default function SettingsPage() {
           {/* LEFT */}
           <div className="space-y-8 xl:col-span-2">
 
-            {/* META E ESTOQUE */}
             <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
               <div className="border-b border-gray-100 px-6 py-5">
                 <div className="flex items-center gap-3">
@@ -168,7 +205,6 @@ export default function SettingsPage() {
                   </div>
                 </div>
 
-                {/* ESTOQUE */}
                 <div>
                   <label className="mb-2 block text-sm font-semibold text-gray-700">
                     Estoque Mínimo Global
@@ -194,7 +230,6 @@ export default function SettingsPage() {
               </div>
             </div>
 
-            {/* DADOS EMPRESA */}
             <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
               <div className="border-b border-gray-100 px-6 py-5">
                 <div className="flex items-center gap-3">
@@ -261,7 +296,6 @@ export default function SettingsPage() {
               </div>
             </div>
 
-            {/* SEGURANÇA */}
             <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
               <div className="border-b border-gray-100 px-6 py-5">
                 <div className="flex items-center gap-3">
@@ -366,7 +400,7 @@ export default function SettingsPage() {
 
               <div className="p-6">
 
-                {/* FOTO */}
+                {/* PHOTO */}
                 <div className="mb-6 flex flex-col items-center">
                   <div className="
                     mb-4 flex h-24 w-24 items-center justify-center

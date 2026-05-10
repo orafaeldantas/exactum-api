@@ -16,7 +16,7 @@ def create():
 @tenant_bp.route("/data", methods=["GET"])
 def get_tenant_data():
     
-    tenant = tenant_service.get_tenant_id()
+    tenant = tenant_service.get_tenant_by_id()
     goal = tenant_service.get_goal()
 
     return jsonify(
@@ -28,3 +28,16 @@ def get_tenant_data():
         }
                    
     ), 200
+
+@tenant_bp.route("/data", methods=["PATCH"])
+def update_tenant_data():
+
+    data = request.json
+
+    tenant = tenant_service.update_tenant_by_id(data)
+    goal = tenant_service.create_goal(data)
+
+    if tenant or goal:
+        return jsonify({"error":"the procedure could not be completed"}), 400
+    
+    return jsonify({"success":"updated data"}), 200
