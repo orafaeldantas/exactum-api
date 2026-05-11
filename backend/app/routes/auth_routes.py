@@ -35,16 +35,12 @@ def login():
 def me():
 
     user_id = g.user_id
-    username = g.username
-    email = g.email
     tenant = g.tenant_id
     role = g.role
     password_reset = g.password_reset
 
     return {"id": user_id,
             "tenant": tenant, 
-            "username": username,
-            "email": email,
             "role": role,
             "password_reset": password_reset
     }

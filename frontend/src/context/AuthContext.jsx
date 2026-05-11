@@ -1,15 +1,13 @@
 import { createContext, useEffect, useState } from "react";
 import { apiFetch } from "../services/api";
 
+
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  const updateUserResetPassword = (newData) => {
-    setUser(prev => ({ ...prev, ...newData }));
-  };
+  
 
   async function loadUser() {
     if (!sessionStorage.getItem('access_token')) {
@@ -92,9 +90,8 @@ export function AuthProvider({ children }) {
       loading, 
       login, 
       logout, 
-      updateUserResetPassword,
-      impersonate,       // Exported for ManageCompanies
-      stopImpersonating  // Exported for Sidebar
+      impersonate,       
+      stopImpersonating  
     }}>
       {children}
     </AuthContext.Provider>

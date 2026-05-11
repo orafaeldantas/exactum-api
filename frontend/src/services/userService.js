@@ -4,7 +4,7 @@ import { AuthContext } from "../context/AuthContext";
 
 
 export function getUser() { 
-  const [userOnly, setUserOnly] = useState([]);
+  const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(false);
   const { user } = useContext(AuthContext);
 
@@ -13,7 +13,7 @@ export function getUser() {
       setLoading(true);
       const response = await apiFetch(`/users/${user.id}`);
       const data = await response.json();
-      setUserOnly(data);
+      setUserData(data);
       console.log(data)
     } catch (err) {
       console.error("Erro ao carregar:", err);
@@ -22,7 +22,7 @@ export function getUser() {
     }
   }
 
-  return { userOnly, loadUser, loading };
+  return { userData, loadUser, loading };
 }
 
 

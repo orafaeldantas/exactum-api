@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 export default function ResetPassword() {
   const navigate = useNavigate();
 
-  const { user, updateUserResetPassword } = useContext(AuthContext)
+  const { user } = useContext(AuthContext)
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -44,12 +44,9 @@ export default function ResetPassword() {
         body: JSON.stringify(data)
       });
       
-      console.log(data)
       if (response.ok) {
         toast.success("Senha alterada com sucesso!");
-        updateUserResetPassword({password_reset: false})
         navigate("/dashboard");
-        console.log(user.password_reset)
       }
 
     } catch (err) {
