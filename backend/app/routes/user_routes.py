@@ -87,3 +87,21 @@ def update_password(user_id):
     return jsonify(response.password_reset), 200
 
 
+@user_bp.route("/me", methods=["GET"])
+@jwt_required()
+@role_authorization(["admin", "super-admin", "user"])
+@owner_required()
+def me():
+
+    user = user_service.get_user(g.user_id)
+
+    userFormated = {
+        "username" : user.username,
+        "email": user.email
+    }
+
+    logger.info(f'=========================={userFormated}==========================')
+
+    return jsonify(userFormated), 200
+
+

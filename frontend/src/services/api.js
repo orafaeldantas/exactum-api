@@ -8,7 +8,7 @@ export async function apiFetch(endpoint, options = {}) {
     ...options.headers,
   };
 
-  // Só envia Content-Type se houver body
+
   if (options.body) {
     headers["Content-Type"] = "application/json";
   }

@@ -3,7 +3,8 @@ import toast from "react-hot-toast";
 import { apiFetch } from "../services/api";
 import { getTenantData } from "../services/tenantService"
 import Loader from "../components/Loader/Loader";
-import { AuthContext } from "../context/AuthContext";
+import { UserContext } from "../context/UserContext";
+import { TenantContext } from "../context/TenantContext";
 
 import {
   Settings,
@@ -20,16 +21,16 @@ import {
 
 export default function SettingsPage() {
   const [loading, setLoading] = useState(false);
-  const { tenantData = {}, loadTenantData } = getTenantData();
-  const { user } = useContext(AuthContext);
+  const { profile, loadingProfile } = useContext(UserContext);
+  const { tenantData, loadingTenant } = useContext(TenantContext);
 
   const [form, setForm] = useState({
     companyName: "",
     companyEmail: "",
     monthlyGoal: 0,
     minimumStock: 0,
-    username: user.username,
-    loginEmail: user.email,
+    username: "",
+    loginEmail: "",
     profileImage: "",
     currentPassword: "",
     newPassword: "",
@@ -37,29 +38,24 @@ export default function SettingsPage() {
   });
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);  
-      await loadTenantData();
-      setLoading(false);
-    };
+
+    if (!tenantData || !profile) 
+      return;
   
-    fetchData();
-  }, []);
+    setForm((prevForm) => ({
+      ...prevForm,
+      companyName: tenantData.name ?? "",
+      companyEmail: tenantData.corporate_email ?? "",
+      minimumStock: tenantData.global_min_stock ?? 0,
+      monthlyGoal: tenantData.goal ? parseInt(tenantData.goal) : 0,
+      username: profile.username ?? "",
+      loginEmail: profile.email ?? ""
+    }));
   
-  useEffect(() => {
-    if (Object.keys(tenantData).length > 0) {
-      setForm((prevForm) => ({
-        ...prevForm,
-        companyName: tenantData.name ?? "",
-        companyEmail: tenantData.corporate_email ?? "",
-        minimumStock: tenantData.global_min_stock ?? 0,
-        monthlyGoal: parseInt(tenantData.goal) ?? 0,
-      }));
-    }
-  }, [tenantData]);
-  
-  if (loading) {
-    return <Loader message="Carregando configurações..." />;
+  }, [tenantData, profile]);
+   
+  if (loadingTenant || loadingProfile) {
+    return <Loader message="Carregando..." />;
   }
 
   function handleChange(e) {
