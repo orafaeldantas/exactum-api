@@ -6,10 +6,17 @@ from app.middlewares.context import init_request_context
 from app.database.tenant_filter import init_tenant_filter
 import logging
 
+from flask_smorest import Api
+from backend.app.routes.old_user_routes import blp_user
+from exceptions.handlers import register_error_handlers
+
+
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
+    api = Api(app)
     
+    register_error_handlers(app)
   
     logging.basicConfig(
         level=logging.INFO,
@@ -35,7 +42,7 @@ def create_app():
 
     from app.routes.health import health_bp
     from app.routes.product_routes import product_bp
-    from app.routes.user_routes import user_bp
+    from backend.app.routes.old_user_routes import user_bp
     from app.routes.auth_routes import auth_bp
     from app.routes.tenant_routes import tenant_bp
     from app.routes.sale_routes import sale_bp
@@ -50,5 +57,8 @@ def create_app():
     app.register_blueprint(sale_bp)
     app.register_blueprint(superadmin_bp)
     app.register_blueprint(finance_bp)
+
+
+    api.register_blueprint(blp_user)
 
     return app

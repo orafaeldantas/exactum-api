@@ -1,62 +1,93 @@
-from app.extensions import db
 from app.models import User
-from flask import g
+from repositories.user_repository import UserRepository
 
-def create_user(data):
-    user = User(
-        username=data.get("username"),
-        is_active=data.get("is_active"),
-        role=data.get("role", "user")
-    )
-
-    user.set_password(data.get("password"))
-
-    db.session.add(user)
-    db.session.commit()
-
-    return user
-
-def get_user(user_id):
-    return User.query.filter_by(id=user_id).first() 
+from exceptions.user_exceptions import UserNotFound
 
 
-def list_users():
-    return User.query.filter_by(tenant_id=g.tenant_id).all()
+class UserService:
 
-def update_user(user, data):
-   
-    current_password = data.get("currentPassword")
-    if current_password:
-        if not user.check_password(data.get("currentPassword")):
-            return "Wrong current password"
-        if data.get("password") != data.get("confirmPassword"):
-            return "Thes passwords don't match"
+    @staticmethod
+    def list_users(tenant_id):
 
-    user.username = data.get("username", user.username)
-    user.email = data.get("email", user.email)
-    user.role = data.get("role", user.role)
-    user.is_active = data.get("is_active", user.is_active)
-    user.password_reset = data.get("password_reset", user.password_reset)
+        return UserRepository.get_all(tenant_id)
+
+    @staticmethod
+    def create_user(data):
+
+        user = User(
+            username=data.get("username"),
+            is_active=data.get("is_active"),
+            role=data.get("role", "user"),
+            email=data.get("email"),
+            password_reset=True
+        )
+
+        user.set_password(data.get("password"))
+
+        return UserRepository.save(user)
     
-    if data.get("password"):
-        user.set_password(data.get("password"))
+    @staticmethod
+    def get_user(user_id):
 
-    db.session.commit() 
- 
-    return user
+        return UserRepository.get(user_id)
+    
+    @staticmethod
+    def update_user(data, user_id):
 
-def new_password(user, data):
- 
-    if "password" in data:
-        user.set_password(data.get("password"))
+        user = UserRepository.get(user_id)
 
-    if "password_reset" in data:
-        user.password_reset = data.get("password_reset")
-      
+        if not user:
+            raise UserNotFound()
+        
+        if data.get("password") and (data.get("password_reset") == True):
 
-    db.session.commit()
+            user.set_password(data["password"])
 
-    return user
+        update_fields = [
+            "username",
+            "email",
+            "role",
+            "is_active",
+            "password_reset"
+        ]
 
+        for field in update_fields:
 
+            if field in data:
+
+                setattr(user, field, data[field])
+        
+
+        return UserRepository.save(user)
+    
+    @staticmethod
+    def update_profile(data, user_id):
+        
+        user = UserRepository.get(user_id)
+
+        if data.get("currentPassword"):
+
+            if not user.check_password(data["currentPassword"]):
+                raise   
+            
+            if data.get("password") != data.get("confirmPassword"):
+                raise
+        
+        user.set_password(data["password"])
+
+        update_fields = [
+            "username",
+            "email",
+        ]
+
+        for field in update_fields:
+
+            if field in data:
+
+                setattr(user, field, data[field])
+
+        return UserRepository.save(user)
+
+        
+        
 

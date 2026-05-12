@@ -1,107 +1,71 @@
-from flask import Blueprint, request, jsonify, g
+from flask.views import MethodView
+from flask_smorest import Blueprint
 from flask_jwt_extended import jwt_required
-from app.services import user_service
+
+from schemas.user_schema import (
+    UserResponseSchema, CreateUserSchema, UpdateUserSchema,
+    ProfileSchema
+)
+
+from controllers.user_controller import UserController
+
 from app.security import owner_required, role_authorization
-import logging
 
-logger = logging.getLogger(__name__)
-user_bp = Blueprint("users", __name__, url_prefix="/users")
 
-@user_bp.route("/create", methods=["POST"])
-@jwt_required()
-@role_authorization("admin")
-def create():
-  
-    data = request.json
+blp_users = Blueprint(
+    "users",
+    __name__,
+    url_prefix="/users",
+    description="User operations"
+)
 
-    user = user_service.create_user(data)
-    return jsonify({"id": user.id}), 201
 
-@user_bp.route("", methods=["GET"])
+@blp_users.route("/")
 @jwt_required()
 @role_authorization(["admin", "super-admin"])
-def list():
+class UserListRoute(MethodView):
 
-    users = user_service.list_users()
+    @blp_users.response(200, UserResponseSchema(many=True))
+    def get(self):
 
-    return jsonify([
-        {
-            "id": u.id,
-            "username": u.username,
-            "role": u.role,
-            "is_active": u.is_active
-        }
-        for u in users
-    ])
+        return UserController.get_users()
 
-@user_bp.route("/<int:user_id>", methods=["GET"])
+    @blp_users.arguments(CreateUserSchema)
+    @blp_users.response(201, UserResponseSchema)
+    def post(self, data):
+
+        return UserController.create_user(data)
+
+
+@blp_users.route("/<int:user_id>")
 @jwt_required()
 @role_authorization(["admin", "super-admin"])
-@owner_required()
-def get(user_id):
+class UserDetailRoute(MethodView):
 
-    user = user_service.get_user(user_id)
+    @blp_users.response(200, UserResponseSchema)
+    def get(self, user_id):
 
-    userFormated = {
-        "username" : user.username,
-        "role" : user.role,
-        "email": user.email,
-        "is_active" : user.is_active
-    }
-
-    return userFormated
-
-@user_bp.route("/<int:user_id>", methods=["PATCH"])
-@jwt_required()
-@role_authorization(["admin", "super-admin"])
-@owner_required()
-def update(user_id):
-
-    user = user_service.get_user(user_id)
-    if not user:
-        return jsonify({"error": "User not found"}, 404)
+        return UserController.get_user(user_id)
     
-    data = request.json
-
-    user = user_service.update_user(user, data)
-
-    return {"message": "success"}
-
-@user_bp.route("basic-data/<int:user_id>", methods=["PATCH"])
+    @blp_users.arguments(UpdateUserSchema)
+    @blp_users.response(200, UserResponseSchema)
+    def patch(self, data, user_id ):
+        
+        return UserController.update_user(data, user_id)
+    
+@blp_users.route("/profile/<int:user_id>")
 @jwt_required()
 @role_authorization(["admin", "super-admin", "user"])
-@owner_required()
-def basic_update(user_id):
+class UserProfileRoute(MethodView):
 
-    user = user_service.get_user(user_id)
-    if not user:
-        return jsonify({"error": "User not found"}, 404)
+    @blp_users.response(200, ProfileSchema)
+    def get(self, user_id):
+
+        return UserController.get_user(user_id)
     
-    data = request.json
-
-    user = user_service.update_user(user, data)
-
-    return {"message": "success"}
-
-
-@user_bp.route("/psw/<int:user_id>", methods=["PATCH"])
-@jwt_required()
-@role_authorization(["admin", "super-admin", "user"])
-@owner_required()
-def update_password(user_id):
-
-    user = user_service.get_user(user_id)
-    if not user:
-        return jsonify({"error": "User not found"}, 404)
-    
-    data = request.json
-
-    if len(data) > 2: 
-        return jsonify({"error: incompatible data"}, 404)
-    
-    response = user_service.new_password(user, data)
-
-    return jsonify(response.password_reset), 200
-
-
-
+    @blp_users.arguments(ProfileSchema)
+    @blp_users.response(200, ProfileSchema)
+    def patch(self, data, user_id ):
+        
+        return UserController.update_profile(data, user_id)
+        
