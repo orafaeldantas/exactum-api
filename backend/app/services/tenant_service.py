@@ -65,6 +65,8 @@ def update_tenant_by_id(data):
     if "companyName" in data: tenant.name = data.get("companyName")
     if "companyEmail" in data: tenant.corporate_email = data.get("companyEmail")
     if "minimumStock" in data: tenant.global_min_stock = data.get("minimumStock")
+
+    db.session.commit() 
     
 def get_goal():
     return Goal.query.filter_by(tenant_id=g.tenant_id).order_by(Goal.id.desc()).first()

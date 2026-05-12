@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react"; // Removido useContext se não estiver usando explicitamente aqui
+import { useEffect, useState, useContext } from "react"; 
 import { useNavigate } from "react-router-dom";
-// Se o seu Hook retorna erro, você pode desestruturar o 'error' dele também
 import { getProducts } from "../services/productService"; 
+import { TenantContext } from "../context/TenantContext";
+
 
 import { Pencil, ShoppingCart, AlertCircle, TrendingDown } from 'lucide-react';
 
@@ -9,12 +10,13 @@ export default function LowStockProducts() {
   const navigate = useNavigate();
   
   const { lowStock = [], loadProducts } = getProducts(); 
+  const { tenantData } = useContext(TenantContext);
 
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const productsPerPage = 10;
 
-  const LOW_STOCK_THRESHOLD = 10;
+  const LOW_STOCK_THRESHOLD = tenantData.global_min_stock;
 
   useEffect(() => {
     loadProducts();
