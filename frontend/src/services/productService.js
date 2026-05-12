@@ -1,9 +1,12 @@
-import { useState, useEffect } from "react";
-import { apiFetch } from "./api"; 
+import { useState, useContext } from "react";
+import { apiFetch } from "./api";
+import { TenantContext } from "../context/TenantContext";
+
 
 export function getProducts() { 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { tenantData } = useContext(TenantContext); 
 
   async function loadProducts() {
     try {
@@ -19,7 +22,7 @@ export function getProducts() {
   }
 
 
-  const lowStock = products.filter(p => p.stock_quantity <= 10);
+  const lowStock = products.filter(p => p.stock_quantity <= tenantData.global_min_stock ?? 0);
 
   return { products, lowStock, loadProducts, loading };
 }
