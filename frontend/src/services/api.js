@@ -8,7 +8,6 @@ export async function apiFetch(endpoint, options = {}) {
     ...options.headers,
   };
 
-
   if (options.body) {
     headers["Content-Type"] = "application/json";
   }

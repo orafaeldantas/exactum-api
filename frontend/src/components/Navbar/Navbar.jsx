@@ -1,5 +1,6 @@
 import { useContext, useState, useRef, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import { UserContext } from "../../context/UserContext";
 import { useNavigate } from "react-router-dom";
 
 import { AnimatePresence, motion } from "framer-motion";
@@ -17,6 +18,7 @@ import {
 
 function Navbar() {
   const { user, logout } = useContext(AuthContext);
+  const { profile } = useContext(UserContext);
 
   const navigate = useNavigate();
 
@@ -46,10 +48,10 @@ function Navbar() {
 
   // Avatar fallback
   const userInitial =
-    user?.username?.charAt(0)?.toUpperCase() || "U";
+  profile?.username?.charAt(0)?.toUpperCase() || "U";
 
   const isAdmin =
-    user?.role === "admin" || user?.role === "super-admin";
+  user?.role === "admin" || user?.role === "super-admin";
 
   return (
     <nav
@@ -106,7 +108,7 @@ function Navbar() {
 
           {/* Rigth side */}
           <div className="flex items-center gap-4">
-            {user && (
+            {profile && (
               <div className="relative" ref={menuRef}>
                 <button
                   onClick={() => setOpenMenu(!openMenu)}
@@ -123,10 +125,10 @@ function Navbar() {
                 >
                   {/* Avatar */}
                   <div className="relative">
-                    {user?.avatar ? (
+                    {profile?.avatar ? (
                       <img
-                        src={user.avatar}
-                        alt={user.username}
+                        src={profile.avatar}
+                        alt={profile.username}
                         className="
                           h-11
                           w-11
@@ -259,10 +261,10 @@ function Navbar() {
                       <div className="border-b border-gray-100 px-5 py-4">
                         <div className="flex items-center gap-3">
                           <div className="relative">
-                            {user?.avatar ? (
+                            {profile?.avatar ? (
                               <img
-                                src={user.avatar}
-                                alt={user.username}
+                                src={profile.avatar}
+                                alt={profile.username}
                                 className="
                                   h-14
                                   w-14
@@ -311,11 +313,11 @@ function Navbar() {
 
                           <div className="min-w-0">
                             <p className="truncate text-sm font-semibold text-gray-900">
-                              {user.username}
+                              {profile.username}
                             </p>
 
                             <p className="truncate text-xs text-gray-500">
-                              {user.email || "Sem email"}
+                              {profile.email || "Sem email"}
                             </p>
                           </div>
                         </div>
@@ -329,7 +331,7 @@ function Navbar() {
                           <Mail className="h-4 w-4 text-gray-400" />
 
                           <span className="truncate">
-                            {user.email || "Sem email"}
+                            {profile.email || "Sem email"}
                           </span>
                         </div>
 

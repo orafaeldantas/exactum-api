@@ -1,6 +1,7 @@
 import { useContext } from "react"
 import { Navigate } from "react-router-dom"
 import { AuthContext } from "../context/AuthContext"
+import Loader from "../components/Loader/Loader";
 
 export default function RoleRoute({ children, requiredRole }) {
 
@@ -8,7 +9,7 @@ export default function RoleRoute({ children, requiredRole }) {
 
 
   if (loading) {
-    return <p></p>
+    return <Loader message="Carregando..." />;
   }
 
   if (!user) {
