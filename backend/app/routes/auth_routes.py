@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify, g
 from flask_jwt_extended import create_access_token, jwt_required
+from app.services import user_service, tenant_service
 from app.models import User
 
 
@@ -30,20 +31,46 @@ def login():
     return jsonify(access_token=access_token)
 
 
-@auth_bp.route("/me", methods=["GET"])
+@auth_bp.route("/bootstrap", methods=["GET"])
 @jwt_required()
-def me():
+def bootstrap():
 
-    user_id = g.user_id
-    tenant = g.tenant_id
-    role = g.role
-    password_reset = g.password_reset
+    print("=================entrou====================")  
 
-    return {"id": user_id,
-            "tenant": tenant, 
-            "role": role,
-            "password_reset": password_reset
+    user = user_service.get_user(g.user_id)
+    tenant = tenant_service.get_tenant_by_id()
+    goal = tenant_service.get_goal()
+
+    user_formated = {
+
+        "username": user.username,
+        "email": user.email
     }
+
+    tenant_formated = {
+        
+        "name": tenant.name,
+        "corporate_email": tenant.corporate_email,
+        "global_min_stock": tenant.global_min_stock,
+        "goal": goal.value if goal else 0
+    }
+
+    auth = {
+        "user_id": g.user_id,
+        "tenant_id": g.tenant_id,
+        "role": g.role,
+        "password_reset": g.password_reset
+    }
+
+    print(auth, tenant_formated, user_formated)   
+
+    return jsonify({
+
+        "auth": auth,
+        "user": user_formated,
+        "tenant": tenant_formated
+ 
+    })
 
 
 

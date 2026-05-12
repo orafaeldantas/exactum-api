@@ -1,10 +1,10 @@
 import { useState, useEffect, useContext } from "react";
 import toast from "react-hot-toast";
 import { apiFetch } from "../services/api";
-import { getTenantData } from "../services/tenantService"
 import Loader from "../components/Loader/Loader";
 import { UserContext } from "../context/UserContext";
 import { TenantContext } from "../context/TenantContext";
+import { AuthContext } from "../context/AuthContext";
 
 import {
   Settings,
@@ -20,9 +20,9 @@ import {
 } from "lucide-react";
 
 export default function SettingsPage() {
-  const [loading, setLoading] = useState(false);
-  const { profile, loadingProfile } = useContext(UserContext);
-  const { tenantData, loadingTenant } = useContext(TenantContext);
+  const { loading } = useContext(AuthContext);;
+  const { profile } = useContext(UserContext);
+  const { tenantData } = useContext(TenantContext);
 
   const [form, setForm] = useState({
     companyName: "",
@@ -54,7 +54,7 @@ export default function SettingsPage() {
   
   }, [tenantData, profile]);
    
-  if (loadingTenant || loadingProfile) {
+  if (loading) {
     return <Loader message="Carregando..." />;
   }
 

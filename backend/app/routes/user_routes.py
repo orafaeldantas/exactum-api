@@ -45,6 +45,7 @@ def get(user_id):
     userFormated = {
         "username" : user.username,
         "role" : user.role,
+        "email": user.email,
         "is_active" : user.is_active
     }
 
