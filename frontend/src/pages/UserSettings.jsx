@@ -1,5 +1,8 @@
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
 import toast from "react-hot-toast";
+import { UserContext } from "../context/UserContext";
+import { AuthContext } from "../context/AuthContext";
+import { apiFetch } from "../services/api";
 
 import {
   Settings,
@@ -13,17 +16,36 @@ import {
 } from "lucide-react";
 
 export default function UserSettingsPage() {
-  const [loading, setLoading] = useState(false);
+  const { loading } = useContext(AuthContext);
+  const { profile } = useContext(UserContext);
+  const [loadingUserSettings, setLoadingUserSettings] = useState(false)
 
   const [form, setForm] = useState({
-    username: "usuario",
-    loginEmail: "usuario@exactum.com",
+    username: "",
+    loginEmail: "",
     profileImage: "",
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
     notifications: true,
   });
+
+  useEffect(() => {
+  
+    if (!profile) 
+      return;
+    
+    setForm((prevForm) => ({
+      ...prevForm,
+      username: profile.username ?? "",
+      loginEmail: profile.email ?? "",
+    }));
+    
+  }, [profile]);
+     
+  if (loading) {
+    return <Loader message="Carregando..." />;
+  }
 
   function handleChange(e) {
     const { name, value, type, checked } = e.target;
@@ -45,17 +67,31 @@ export default function UserSettingsPage() {
       return;
     }
 
+    const dataUser = {
+      username: form.username,
+      email: form.loginEmail,
+      password: form.newPassword,
+      confirmPassword: form.confirmPassword,
+      currentPassword: form.currentPassword
+    };
+
     try {
-      setLoading(true);
-
-      // FUTURA API
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      toast.success("Configurações atualizadas com sucesso!");
-    } catch (err) {
-      toast.error("Erro ao salvar configurações");
-    } finally {
-      setLoading(false);
+      const [responseUser] = await Promise.all([
+        apiFetch(`/users/basic-data/${profile.id}`, {
+          method: "PATCH",
+          body: JSON.stringify(dataUser),
+        }),
+      ]);
+  
+      if (responseUser.ok) {
+        toast.success("Dados atualizados com sucesso");
+      } else {
+        toast.error("Erro ao atualizar os dados");
+      }
+  
+    } catch (error) {
+      toast.error("Erro de conexão");
+      console.error(error);
     }
   }
 
