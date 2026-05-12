@@ -67,6 +67,22 @@ def update(user_id):
 
     return {"message": "success"}
 
+@user_bp.route("basic-data/<int:user_id>", methods=["PATCH"])
+@jwt_required()
+@role_authorization(["admin", "super-admin", "user"])
+@owner_required()
+def basic_update(user_id):
+
+    user = user_service.get_user(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}, 404)
+    
+    data = request.json
+
+    user = user_service.update_user(user, data)
+
+    return {"message": "success"}
+
 
 @user_bp.route("/psw/<int:user_id>", methods=["PATCH"])
 @jwt_required()
@@ -87,22 +103,5 @@ def update_password(user_id):
 
     return jsonify(response.password_reset), 200
 
-
-@user_bp.route("/me", methods=["GET"])
-@jwt_required()
-@role_authorization(["admin", "super-admin", "user"])
-@owner_required()
-def me():
-
-    user = user_service.get_user(g.user_id)
-
-    userFormated = {
-        "username" : user.username,
-        "email": user.email
-    }
-
-    logger.info(f'=========================={userFormated}==========================')
-
-    return jsonify(userFormated), 200
 
 

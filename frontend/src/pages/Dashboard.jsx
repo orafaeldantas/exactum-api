@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react"
-import { AuthContext } from "../context/AuthContext"
+import { UserContext } from "../context/UserContext";
+import { TenantContext } from "../context/TenantContext";
 import { getProducts } from "../services/productService"; 
 import { getUsers } from "../services/userService"; 
 import { getSales, getTopItems } from "../services/saleService"; 
@@ -24,7 +25,8 @@ import {
  * @description Interface de comando central com KPIs, Gráficos de Meta e Insights de IA.
  */
 function Dashboard() {
-  const { user } = useContext(AuthContext)
+  const { profile } = useContext(UserContext);
+  const { tenantData } = useContext(TenantContext);
   const { lowStock = [], loadProducts } = getProducts();
   const { users = [], loadUsers } = getUsers();
   const { sales = [], invoicing, loadSales } = getSales();
@@ -45,7 +47,7 @@ function Dashboard() {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })
-  const goalValue = 50000; 
+  const goalValue = tenantData.goal ? parseInt(tenantData.goal) : 0;
 
 
 
@@ -99,7 +101,7 @@ function Dashboard() {
         <div>
           <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Dashboard</h1>
           <p className="text-slate-500 mt-1">
-            Bem-vindo, <span className="font-semibold text-blue-600">{user?.username || 'Administrador'}</span>.
+            Bem-vindo, <span className="font-semibold text-blue-600">{profile?.username || 'Administrador'}</span>.
           </p>
         </div>
         <div className="flex items-center gap-3 bg-white p-2 rounded-xl border border-slate-200 shadow-sm text-sm">

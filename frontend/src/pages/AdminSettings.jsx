@@ -93,7 +93,7 @@ export default function SettingsPage() {
   
     try {
       const [responseUser, responseTenant] = await Promise.all([
-        apiFetch(`/users/${user.id}`, {
+        apiFetch(`/users/${profile.id}`, {
           method: "PATCH",
           body: JSON.stringify(dataUser),
         }),
