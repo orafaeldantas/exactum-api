@@ -7,7 +7,8 @@ from app.database.tenant_filter import init_tenant_filter
 import logging
 
 from flask_smorest import Api
-from backend.app.routes.old_user_routes import blp_user
+from routes.old_user_routes import blp_user
+from routes.tenant_routes import blp_tenants
 from exceptions.handlers import register_error_handlers
 
 
@@ -60,5 +61,6 @@ def create_app():
 
 
     api.register_blueprint(blp_user)
+    api.register_blueprint(blp_tenants)
 
     return app

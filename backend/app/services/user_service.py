@@ -1,5 +1,6 @@
 from app.models import User
 from repositories.user_repository import UserRepository
+from database.session import DatabaseSession
 
 from exceptions.user_exceptions import UserNotFound
 
@@ -24,7 +25,10 @@ class UserService:
 
         user.set_password(data.get("password"))
 
-        return UserRepository.save(user)
+        DatabaseSession.add(user)
+        DatabaseSession.commit()
+
+        return user
     
     @staticmethod
     def get_user(user_id):
@@ -57,8 +61,10 @@ class UserService:
 
                 setattr(user, field, data[field])
         
+        DatabaseSession.add(user)
+        DatabaseSession.commit()
 
-        return UserRepository.save(user)
+        return user
     
     @staticmethod
     def update_profile(data, user_id):
@@ -86,7 +92,10 @@ class UserService:
 
                 setattr(user, field, data[field])
 
-        return UserRepository.save(user)
+        DatabaseSession.add(user)
+        DatabaseSession.commit()
+
+        return user
 
         
         
