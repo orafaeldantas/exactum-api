@@ -1,72 +1,39 @@
-from flask import Blueprint, request, jsonify, g
-from flask_jwt_extended import create_access_token, jwt_required
-from app.services import user_service, tenant_service
-from app.models import User
+from flask.views import MethodView
+from flask_smorest import Blueprint
+from flask_jwt_extended import jwt_required
 
-
-auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
-
-@auth_bp.route("/login", methods=["POST"])
-def login():
-    data = request.json
-
-    user = User.query.filter_by(email=data.get("email"), is_active=True).first()
-    
-
-    if not user or not user.check_password(data["password"]):
-        return jsonify({"error": "Invalid credentials"}), 401
-    
-  
-    access_token = create_access_token(
-    identity=str(user.id),
-    additional_claims={
-        "tenant_id": user.tenant_id,
-        "username": user.username,
-        "email": user.email,
-        "role": user.role,
-        "password_reset": user.password_reset
-    }
+from schemas.auth_schema import (
+    LoginSchema, ResponseLoginSchema,
+    ResponseBootstrapSchema
 )
 
-    return jsonify(access_token=access_token)
+from controllers.auth_controller import AuthController
+
+from app.security import owner_required, role_authorization
 
 
-@auth_bp.route("/bootstrap", methods=["GET"])
-@jwt_required()
-def bootstrap():
+blp_auth = Blueprint(
+    "auth",
+    __name__,
+    url_prefix="/auth",
+    description="Authentication operations"
+)
 
-    user = user_service.get_user(g.user_id)
-    tenant = tenant_service.get_tenant_by_id()
-    goal = tenant_service.get_goal()
 
-    user_formated = {
-        "id": user.id,
-        "username": user.username,
-        "email": user.email
-    }
+@blp_auth.route("/login")
+class LoginRoute(MethodView):
 
-    tenant_formated = {
+    @blp_auth.arguments(LoginSchema)
+    @blp_auth.response(200, ResponseLoginSchema)
+    def post(self, data):
         
-        "name": tenant.name,
-        "corporate_email": tenant.corporate_email,
-        "global_min_stock": tenant.global_min_stock,
-        "goal": goal.value if goal else 0
-    }
+        return AuthController.login()
+    
+@blp_auth.route("/bootstrap")
+@jwt_required()
+class BootstrapRoute(MethodView):
 
-    auth = {
-        "user_id": g.user_id,
-        "tenant_id": g.tenant_id,
-        "role": g.role,
-        "password_reset": g.password_reset
-    }  
+    @blp_auth.response(200, ResponseBootstrapSchema)
+    def get(self):
 
-    return jsonify({
-
-        "auth": auth,
-        "user": user_formated,
-        "tenant": tenant_formated
- 
-    })
-
-
-
+        return AuthController.bootstrap()
