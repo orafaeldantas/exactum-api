@@ -1,14 +1,21 @@
 import re
-from app.extensions import db
-from app.models import Tenant, User, Goal
-from flask import g
 
-import logging
+from app.models import User, Tenant, Goal
+from repositories.tenant_repository import TenantRepository
+from repositories.goal_repository import GoalRepository    
 
-logger = logging.getLogger(__name__)
+from database.session import DatabaseSession
 
-def create_tenant(data):
-    try:
+from exceptions.user_exceptions import PasswordMismatchException
+from exceptions.tenant_exceptions import RegistrationFailed, TenantNotFound
+from exceptions.goal_exceptions import RegistrationFailedGoal
+
+
+class TenantService:
+
+
+    @staticmethod
+    def create_tenant(data):
 
         company = data.get("company", {})
         admin = data.get("admin", {})
@@ -19,7 +26,7 @@ def create_tenant(data):
         clean_cnpj = re.sub(r'\D', '', raw_cnpj)
 
         if (admin.get("password") != admin.get("confirmPassword")):
-            return 'the password confirmation is incorrect.'
+            raise PasswordMismatchException()
 
         tenant = Tenant(
             name=company.get("name"),
@@ -29,9 +36,8 @@ def create_tenant(data):
             slug=company.get("slug")
         )
 
-        db.session.add(tenant)
-        db.session.flush() # Generates the tenant.id
-
+        DatabaseSession.add(tenant)
+        DatabaseSession.flush()
 
         user = User(
             username=f"{admin.get('firstName')} {admin.get('lastName')}",
@@ -42,46 +48,63 @@ def create_tenant(data):
         )
 
         user.set_password(admin.get("password"))
-        db.session.add(user)
+
+
+        DatabaseSession.add(user)
+        DatabaseSession.commit()
+
+        if tenant.id and user.id:
+            raise RegistrationFailed()
+
+        return tenant.id
+    
+    @staticmethod
+    def get_tenant(tenant_id):
         
-        db.session.commit()
-        return 'tenant created successfully!'
-
-    except Exception as e:
-        db.session.rollback()
-        logger.error(e)
-        return 'error while trying to create the tenant.'
+        return TenantRepository.get(tenant_id)
     
-def list_tenants():
-    return Tenant.query.all()
+    @staticmethod
+    def list_all_tenants():
 
-def get_tenant_by_id():
-    return Tenant.query.filter_by(id=g.tenant_id).first()
-
-def update_tenant_by_id(data):
+        return TenantRepository.list_all_tenants()
     
-    tenant = get_tenant_by_id()
-    
-    if "companyName" in data: tenant.name = data.get("companyName")
-    if "companyEmail" in data: tenant.corporate_email = data.get("companyEmail")
-    if "minimumStock" in data: tenant.global_min_stock = data.get("minimumStock")
+    @staticmethod
+    def update_tenant(tenant_id, data):
 
-    db.session.commit() 
-    
-def get_goal():
-    return Goal.query.filter_by(tenant_id=g.tenant_id).order_by(Goal.id.desc()).first()
+        tenant = TenantRepository.get(tenant_id)
 
-def create_goal(data):
+        if not tenant_id:
 
-    if "monthlyGoal" in data:
-        goal = Goal(
-                tenant_id=g.tenant_id,
-                type="monthly",
-                year=9999,
-                month=9999,
-                value=data.get("monthlyGoal"),
-                description="monthly"
-            )
+            raise TenantNotFound()
 
-        db.session.add(goal)
-        db.session.commit()
+        update_fields = [
+            "name",
+            "corporate_email",
+            "global_min_stock"
+        ]
+
+        for field in update_fields:
+
+            if field in data:
+
+                setattr(tenant, field, data[field])
+        
+        DatabaseSession.add(tenant)
+
+        if data.get("monthly_goal"):
+            goal = GoalRepository.get_goal(tenant_id)
+            if goal:
+                goal.value = data.get("monthly_goal")
+            
+            goal = GoalRepository.create_goal(data.get("monthly_goal"), tenant_id)
+
+            if not goal:
+                raise RegistrationFailedGoal()
+            
+            DatabaseSession.add(goal)
+
+
+        DatabaseSession.commit()
+
+        return tenant
+        

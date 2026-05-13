@@ -16,21 +16,3 @@ class UserRepository:
 
         return User.query.filter_by(user_id=user_id).first()
  
-    @staticmethod
-    def save(user):
-
-        try:
-
-            db.session.add(user)
-
-            db.session.commit()
-
-            return user
-
-        except Exception:
-
-            db.session.rollback()
-
-            logger.exception("Error saving user")
-
-            raise
