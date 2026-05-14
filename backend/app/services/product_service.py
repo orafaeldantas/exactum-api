@@ -1,5 +1,5 @@
 from app.models import Product
-from repositories.user_repository import ProductRepository
+from repositories.product_repository import ProductRepository
 from database.session import DatabaseSession
 
 from exceptions.product_exceptions import ProductNotFound

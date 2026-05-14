@@ -12,7 +12,7 @@ class UserController:
     @staticmethod
     def create_user(data):
 
-        return UserService.create_user(data)
+        return UserService.create_user(data, g.tenant_id)
     
     @staticmethod
     def get_user(user_id): 
