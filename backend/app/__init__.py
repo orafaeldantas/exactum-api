@@ -7,8 +7,7 @@ from app.database.tenant_filter import init_tenant_filter
 import logging
 
 from flask_smorest import Api
-from routes.old_user_routes import blp_user
-from routes.tenant_routes import blp_tenants
+
 from exceptions.handlers import register_error_handlers
 
 
@@ -59,8 +58,13 @@ def create_app():
     app.register_blueprint(superadmin_bp)
     app.register_blueprint(finance_bp)
 
+    from routes.old_user_routes import blp_user
+    from routes.tenant_routes import blp_tenants
+    from routes.product_routes import blp_products
+
 
     api.register_blueprint(blp_user)
     api.register_blueprint(blp_tenants)
+    api.register_blueprint(blp_products)
 
     return app

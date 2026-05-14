@@ -41,3 +41,8 @@ class DatabaseSession:
     def refresh(instance):
 
         db.session.refresh(instance)
+
+    @staticmethod
+    def delete(instance):
+
+        db.session.delete(instance)
