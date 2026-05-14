@@ -13,9 +13,9 @@ from app.security import owner_required, role_authorization
 
 
 blp_item_analytics = Blueprint(
-    "item-analytics",
+    "analytics-items",
     __name__,
-    url_prefix="/item-analytics",
+    url_prefix="/analytics/items",
     description="Item Analytics operations"
 )
 
