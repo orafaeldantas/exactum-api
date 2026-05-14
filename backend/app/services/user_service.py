@@ -13,10 +13,11 @@ class UserService:
         return UserRepository.get_all(tenant_id)
 
     @staticmethod
-    def create_user(data):
+    def create_user(data, tenant_id):
 
         user = User(
             username=data.get("username"),
+            tenant_id=tenant_id,
             is_active=data.get("is_active"),
             role=data.get("role", "user"),
             email=data.get("email"),
