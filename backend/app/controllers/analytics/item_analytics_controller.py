@@ -10,7 +10,6 @@ class ItemAnalyticsController:
 
         return ItemAnalyticsService.list_items_by_period(
             g.tenant_id,
-            month=query_params["month"],
-            year=query_params["year"]
+            period=query_params["period"],
         )
     

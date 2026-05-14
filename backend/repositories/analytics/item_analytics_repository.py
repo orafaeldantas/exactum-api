@@ -12,9 +12,9 @@ logger = logging.getLogger(__name__)
 class ItemAnalyticsRepository:
 
     @staticmethod
-    def list_items_by_period(tenant_id, month, year):
+    def list_items_by_period(tenant_id, period, quantity=5):
 
-        start_date, end_date = ( DateService.get_month_range(month, year))
+        start_date, end_date = DateService.get_period_range(period)
 
         return db.session.query(
             ItemSale.name,
@@ -33,4 +33,28 @@ class ItemAnalyticsRepository:
             db.func.sum(
                 ItemSale.quantity
             ).desc()
-        ).limit(5).all()
+        ).limit(quantity).all()
+    
+    def get_top_product(tenant_id, period):
+
+        start_date, end_date = DateService.get_period_range(period)
+
+        return db.session.query(
+
+            ItemSale.name.label("product_name"),
+            db.func.sum(ItemSale.quantity).label("total_quantity"),
+            db.func.sum(ItemSale.quantity * ItemSale.item_price).label("item_revenue")
+
+        ).filter(
+            ItemSale.tenant_id == tenant_id,
+            ItemSale.created_at.between(start_date, end_date)
+
+        ).group_by(
+            ItemSale.name,
+
+        ).order_by(
+            db.func.sum(
+                ItemSale.quantity
+            ).desc()
+        ).first()
+

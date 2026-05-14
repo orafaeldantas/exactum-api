@@ -6,6 +6,6 @@ from repositories.analytics.item_analytics_repository import ItemAnalyticsReposi
 
 
 @staticmethod
-def list_items_by_period(tenant_id, month, year):
+def list_items_by_period(tenant_id, period):
 
-    return ItemAnalyticsRepository.list_items_by_period(tenant_id, month, year)
+    return ItemAnalyticsRepository.list_items_by_period(tenant_id, period)
