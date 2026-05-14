@@ -40,29 +40,13 @@ def create_app():
 
     from app.models import product, user
 
-    from app.routes.health import health_bp
-    from app.routes.product_routes import product_bp
-    from backend.app.routes.old_user_routes import user_bp
-    from app.routes.auth_routes import auth_bp
-    from app.routes.tenant_routes import tenant_bp
-    from app.routes.sale_routes import sale_bp
-    from app.routes.super_admin_routes import superadmin_bp
-    from app.routes.finance_routes import finance_bp
-
-    app.register_blueprint(health_bp)
-    app.register_blueprint(product_bp)
-    app.register_blueprint(user_bp)
-    app.register_blueprint(auth_bp)
-    app.register_blueprint(tenant_bp)
-    app.register_blueprint(sale_bp)
-    app.register_blueprint(superadmin_bp)
-    app.register_blueprint(finance_bp)
-
     from routes.user_routes import blp_user
     from routes.tenant_routes import blp_tenants
     from routes.product_routes import blp_products
     from routes.sale_routes import blp_sales
     from routes.analytics.item_analytics_routes import blp_item_analytics
+    from routes.analytics.revenue_analytics_routes import blp_revenue_analytics
+    from routes.super_admin_routes import blp_super_admin
 
 
     api.register_blueprint(blp_user)
@@ -70,5 +54,8 @@ def create_app():
     api.register_blueprint(blp_products)
     api.register_blueprint(blp_sales)
     api.register_blueprint(blp_item_analytics)
+    api.register_blueprint(blp_revenue_analytics)
+    api.register_blueprint(blp_super_admin)
+    
 
     return app
