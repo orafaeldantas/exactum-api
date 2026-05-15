@@ -7,7 +7,7 @@ class ProductController:
     @staticmethod
     def create_product(data):
 
-        return ProductService.create_tenant(data)
+        return ProductService.create_product(data, g.tenant_id)
     
     @staticmethod
     def list_all_products():
@@ -27,4 +27,4 @@ class ProductController:
     @staticmethod
     def delete_product(product_id):
 
-        return ProductService.delete_product(product_id)
+        ProductService.delete_product(product_id)

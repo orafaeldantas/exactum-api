@@ -15,6 +15,8 @@ class CreateProductSchema(Schema):
 
     is_active = fields.Bool(required=True)
 
+    stock_quantity = fields.Int(required=True)
+
 
 class CreateProductResponseSchema(Schema):
 
@@ -51,7 +53,7 @@ class GetProductResponseSchema(ListProductResponseSchema):
 
 class DeleteProductResponseSchema(CreateProductResponseSchema):
 
-    id = fields.Int(dump_only=True, attribute="product_id")
+    pass
 
 
 

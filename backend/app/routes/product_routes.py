@@ -36,7 +36,7 @@ class ProductListRoute(MethodView):
     @blp_products.response(201, CreateProductResponseSchema)
     def post(self, data):
 
-        return ProductController.create_product()
+        return ProductController.create_product(data)
 
 
     @jwt_required()
@@ -49,7 +49,7 @@ class ProductListRoute(MethodView):
     
     
 
-@blp_products.route("/int:<product_id>")
+@blp_products.route("/<int:product_id>")
 class ProductDetailRoute(MethodView):
     
     @jwt_required()
@@ -74,8 +74,10 @@ class ProductDetailRoute(MethodView):
     @jwt_required()
     @role_authorization(["admin", "super-admin", "users"])
     @blp_products.doc(security=[{"BearerAuth": []}])
-    @blp_products.response(200, DeleteProductResponseSchema)
+    @blp_products.response(204)
     def delete(self, product_id):
 
-        return ProductController.delete_product(product_id)
+        ProductController.delete_product(product_id)
+
+        return ''
 
