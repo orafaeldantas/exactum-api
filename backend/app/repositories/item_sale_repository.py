@@ -11,5 +11,5 @@ class ItemSaleRepository:
     @staticmethod
     def get_items(tenant_id, sale_id):
 
-        return ItemSale.query.filter_by(tenant_id=tenant_id, id=sale_id).all()
+        return ItemSale.query.filter_by(tenant_id=tenant_id, sale_id=sale_id).all()
     
