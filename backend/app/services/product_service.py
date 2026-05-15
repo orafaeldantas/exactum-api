@@ -13,11 +13,11 @@ class ProductService:
         return ProductRepository.list_all_products(tenant_id)
 
     @staticmethod
-    def create_product(data):
+    def create_product(data, tenant_id):
 
 
         product = Product(
-            tenant_id=data.get("tenant_id"),
+            tenant_id=tenant_id,
             name=data.get("name"),
             description=data.get("description"),
             price=data.get("price"),
@@ -36,7 +36,12 @@ class ProductService:
     @staticmethod
     def get_product(product_id):
 
-        return ProductRepository.get_product(product_id)
+        product = ProductRepository.get_product(product_id)
+    
+        if not product:
+            raise ProductNotFound()
+        
+        return product
     
     @staticmethod
     def update_product(data, product_id):
@@ -67,12 +72,12 @@ class ProductService:
         return product
     
     @staticmethod
-    def delete(product_id):
-        
-        DatabaseSession.delete(product_id)
-        DatabaseSession.commit()
+    def delete_product(product_id):
 
-        return product_id
+        product = ProductRepository.get_product(product_id)
+    
+        ProductRepository.delete_product(product)
+
 
         
         
