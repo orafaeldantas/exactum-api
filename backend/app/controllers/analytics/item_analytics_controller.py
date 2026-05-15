@@ -1,5 +1,5 @@
 from flask import g
-from services.analytics.item_analytics_service import ItemAnalyticsService
+from app.services.analytics.item_analytics_service import ItemAnalyticsService
 
 
 class ItemAnalyticsController:

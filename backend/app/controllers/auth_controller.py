@@ -1,5 +1,5 @@
 from flask import g
-from services.auth_service import AuthService
+from app.services.auth_service import AuthService
 
 
 

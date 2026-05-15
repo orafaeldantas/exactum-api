@@ -1,14 +1,14 @@
 import re
 
 from app.models import User, Tenant, Goal
-from repositories.tenant_repository import TenantRepository
-from repositories.goal_repository import GoalRepository    
+from app.repositories.tenant_repository import TenantRepository
+from app.repositories.goal_repository import GoalRepository    
 
-from database.session import DatabaseSession
+from app.database.session import DatabaseSession
 
-from exceptions.user_exceptions import PasswordMismatchException
-from exceptions.tenant_exceptions import RegistrationFailed, TenantNotFound
-from exceptions.goal_exceptions import RegistrationFailedGoal
+from app.exceptions.user_exceptions import PasswordMismatchException
+from app.exceptions.tenant_exceptions import RegistrationFailed, TenantNotFound
+from app.exceptions.goal_exceptions import RegistrationFailedGoal
 
 
 class TenantService:
@@ -61,7 +61,7 @@ class TenantService:
     @staticmethod
     def get_tenant(tenant_id):
         
-        return TenantRepository.get(tenant_id)
+        return TenantRepository.get_tenant(tenant_id)
     
     @staticmethod
     def list_all_tenants():
@@ -71,7 +71,7 @@ class TenantService:
     @staticmethod
     def update_tenant(tenant_id, data):
 
-        tenant = TenantRepository.get(tenant_id)
+        tenant = TenantRepository.get_tenant(tenant_id)
 
         if not tenant_id:
 

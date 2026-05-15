@@ -1,4 +1,4 @@
-from exceptions.app_exceptions import AppException
+from app.exceptions.app_exceptions import AppException
 
 class InvalidPeriod(AppException):
     

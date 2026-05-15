@@ -1,8 +1,8 @@
 from app.models import User
-from repositories.user_repository import UserRepository
-from database.session import DatabaseSession
+from app.repositories.user_repository import UserRepository
+from app.database.session import DatabaseSession
 
-from exceptions.user_exceptions import UserNotFound
+from app.exceptions.user_exceptions import UserNotFound
 
 
 class UserService:
@@ -34,7 +34,12 @@ class UserService:
     @staticmethod
     def get_user(user_id):
 
-        return UserRepository.get(user_id)
+        user = UserRepository.get(user_id)
+
+        if not user:
+            raise UserNotFound()
+        
+        return user
     
     @staticmethod
     def update_user(data, user_id):

@@ -1,7 +1,11 @@
 from flask import jsonify
 
-from exceptions.app_exceptions import AppException
+from app.exceptions.app_exceptions import AppException
 
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 def register_error_handlers(app):
 
@@ -14,6 +18,8 @@ def register_error_handlers(app):
 
     @app.errorhandler(Exception)
     def handle_generic_exception(error):
+
+        logger.exception(error)
 
         return jsonify({
             "error": "Internal server error"

@@ -1,5 +1,5 @@
 from flask import g
-from services.analytics.revenue_analytics_service import RevenueAnalyticsService
+from app.services.analytics.revenue_analytics_service import RevenueAnalyticsService
 
 
 class RevenueAnalyticsController:

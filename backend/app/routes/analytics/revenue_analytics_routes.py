@@ -2,12 +2,12 @@ from flask.views import MethodView
 from flask_smorest import Blueprint
 from flask_jwt_extended import jwt_required
 
-from schemas.analytics.revenue_analytics_schema import (
+from app.schemas.analytics.revenue_analytics_schema import (
     ListRevenueAnalyticsQuerySchema, 
     ListRevenueAnalyticsResponseSchema
 )
 
-from controllers.analytics.revenue_analytics_controller import RevenueAnalyticsController
+from app.controllers.analytics.revenue_analytics_controller import RevenueAnalyticsController
 
 from app.security import owner_required, role_authorization
 

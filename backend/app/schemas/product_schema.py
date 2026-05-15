@@ -51,7 +51,7 @@ class GetProductResponseSchema(ListProductResponseSchema):
 
 class DeleteProductResponseSchema(CreateProductResponseSchema):
 
-    id = fields.Int(dump_only=True, atribute="product_id")
+    id = fields.Int(dump_only=True, attribute="product_id")
 
 
 

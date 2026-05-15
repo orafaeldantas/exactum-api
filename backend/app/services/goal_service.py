@@ -1,6 +1,6 @@
 from app.models import Goal
-from repositories.goal_repository import UserRepository
-from database.session import DatabaseSession
+from app.repositories.goal_repository import UserRepository
+from app.database.session import DatabaseSession
 
 
 class goalService:

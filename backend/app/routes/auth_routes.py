@@ -2,14 +2,12 @@ from flask.views import MethodView
 from flask_smorest import Blueprint
 from flask_jwt_extended import jwt_required
 
-from schemas.auth_schema import (
+from app.schemas.auth_schema import (
     LoginSchema, ResponseLoginSchema,
     ResponseBootstrapSchema
 )
 
-from controllers.auth_controller import AuthController
-
-from app.security import owner_required, role_authorization
+from app.controllers.auth_controller import AuthController
 
 
 blp_auth = Blueprint(
@@ -27,12 +25,14 @@ class LoginRoute(MethodView):
     @blp_auth.response(200, ResponseLoginSchema)
     def post(self, data):
         
-        return AuthController.login()
+        return AuthController.login(data)
     
+
 @blp_auth.route("/bootstrap")
-@jwt_required()
 class BootstrapRoute(MethodView):
 
+    @jwt_required()
+    @blp_auth.doc(security=[{"BearerAuth": []}])
     @blp_auth.response(200, ResponseBootstrapSchema)
     def get(self):
 

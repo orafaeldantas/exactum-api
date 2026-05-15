@@ -2,12 +2,12 @@ from flask.views import MethodView
 from flask_smorest import Blueprint
 from flask_jwt_extended import jwt_required
 
-from schemas.analytics.item_analytics_schema import (
+from app.schemas.analytics.item_analytics_schema import (
     ListItemAnalyticsQuerySchema, 
     ListItemAnalyticsResponseSchema
 )
 
-from controllers.analytics.item_analytics_controller import ItemAnalyticsController
+from app.controllers.analytics.item_analytics_controller import ItemAnalyticsController
 
 from app.security import owner_required, role_authorization
 

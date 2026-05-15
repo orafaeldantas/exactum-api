@@ -1,8 +1,8 @@
 from app.models import Product
-from repositories.product_repository import ProductRepository
-from database.session import DatabaseSession
+from app.repositories.product_repository import ProductRepository
+from app.database.session import DatabaseSession
 
-from exceptions.product_exceptions import ProductNotFound
+from app.exceptions.product_exceptions import ProductNotFound
 
 
 class ProductService:

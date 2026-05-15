@@ -1,7 +1,7 @@
-from repositories.tenant_repository import TenantRepository
-from repositories.user_repository import UserRepository
+from app.repositories.tenant_repository import TenantRepository
+from app.repositories.user_repository import UserRepository
 
-from services.token_service import TokenService
+from app.services.token_service import TokenService
 
 
 class SuperAdminService:

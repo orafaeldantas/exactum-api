@@ -2,14 +2,18 @@ from flask.views import MethodView
 from flask_smorest import Blueprint
 from flask_jwt_extended import jwt_required
 
-from schemas.product_schema import (
+from app.schemas.product_schema import (
     CreateProductSchema, CreateProductResponseSchema,
     ListProductResponseSchema, UpdateProductSchema,
     UpdateProductResponseSchema, GetProductResponseSchema,
     DeleteProductResponseSchema
 )
 
-from controllers.product_controller import ProductController
+
+
+
+
+from app.controllers.product_controller import ProductController
 
 from app.security import owner_required, role_authorization
 
@@ -22,41 +26,55 @@ blp_products = Blueprint(
 )
 
 
-@blp_product.route("/")
-@jwt_required()
-@role_authorization(["admin", "super-admin", "users"])
+@blp_products.route("/")
 class ProductListRoute(MethodView):
 
-    @blp_product.arguments(CreateProductSchema)
-    @blp_product.response(201, CreateProductResponseSchema)
+    @jwt_required()
+    @role_authorization(["admin", "super-admin", "users"])
+    @blp_products.doc(security=[{"BearerAuth": []}])
+    @blp_products.arguments(CreateProductSchema)
+    @blp_products.response(201, CreateProductResponseSchema)
     def post(self, data):
 
         return ProductController.create_product()
 
-    
-    @blp_product.response(200, ListProductResponseSchema(many=True))
+
+    @jwt_required()
+    @role_authorization(["admin", "super-admin", "users"])
+    @blp_products.doc(security=[{"BearerAuth": []}])
+    @blp_products.response(200, ListProductResponseSchema(many=True))
     def get(self):
 
         return ProductController.list_all_products()
     
     
-@blp_product.route("/int:<product_id>")
-@jwt_required()
-@role_authorization(["admin", "super-admin", "users"])
+
+@blp_products.route("/int:<product_id>")
 class ProductDetailRoute(MethodView):
     
-    @blp_product.arguments(UpdateProductSchema)
-    @blp_product.response(201, UpdateProductResponseSchema)
+    @jwt_required()
+    @role_authorization(["admin", "super-admin", "users"])
+    @blp_products.doc(security=[{"BearerAuth": []}])
+    @blp_products.arguments(UpdateProductSchema)
+    @blp_products.response(201, UpdateProductResponseSchema)
     def patch(self, data, product_id):
 
         return ProductController.update_product(data, product_id)
     
-    @blp_product.response(200, GetProductResponseSchema)
+
+    @jwt_required()
+    @role_authorization(["admin", "super-admin", "users"])
+    @blp_products.doc(security=[{"BearerAuth": []}])
+    @blp_products.response(200, GetProductResponseSchema)
     def get(self, product_id):
 
         return ProductController.get_product(product_id)
     
-    @blp_product.response(200, DeleteProductResponseSchema)
+
+    @jwt_required()
+    @role_authorization(["admin", "super-admin", "users"])
+    @blp_products.doc(security=[{"BearerAuth": []}])
+    @blp_products.response(200, DeleteProductResponseSchema)
     def delete(self, product_id):
 
         return ProductController.delete_product(product_id)

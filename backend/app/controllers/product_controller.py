@@ -1,5 +1,5 @@
 from flask import g
-from services.product_service import ProductService
+from app.services.product_service import ProductService
 
 
 class ProductController:
