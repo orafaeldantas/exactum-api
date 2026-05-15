@@ -42,6 +42,8 @@ class ListProductResponseSchema(UpdateProductSchema):
 
     id = fields.Int(dump_only=True) 
 
+    stock_quantity = fields.Int() 
+
 
 class UpdateProductResponseSchema(CreateProductResponseSchema):
 
