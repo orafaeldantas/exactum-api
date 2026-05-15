@@ -1,12 +1,12 @@
 from app.models import Sale, ItemSale
 
-from repositories.sale_repository import SaleRepository
-from repositories.product_repository import ProductRepository
-from repositories.item_sale_repository import ItemSaleRepository
+from app.repositories.sale_repository import SaleRepository
+from app.repositories.product_repository import ProductRepository
+from app.repositories.item_sale_repository import ItemSaleRepository
 
-from database.session import DatabaseSession
+from app.database.session import DatabaseSession
 
-from exceptions.sale_exceptions import SaleNotFound
+from app.exceptions.sale_exceptions import SaleNotFound
 
 
 class SaleService:

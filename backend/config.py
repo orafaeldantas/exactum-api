@@ -30,6 +30,18 @@ class Config:
         "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
     )
 
+    API_SPEC_OPTIONS = {
+    "components": {
+        "securitySchemes": {
+            "BearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    }
+}
+
 
 
     

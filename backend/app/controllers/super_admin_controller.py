@@ -1,5 +1,5 @@
 from flask import g
-from services.user_service import SuperAdminService
+from app.services.super_admin_service import SuperAdminService
 
 
 class SuperAdminController:

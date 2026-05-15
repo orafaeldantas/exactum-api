@@ -2,13 +2,13 @@ from flask.views import MethodView
 from flask_smorest import Blueprint
 from flask_jwt_extended import jwt_required
 
-from schemas.sale_schema import (
+from app.schemas.sale_schema import (
     CreateSaleSchema, CreateSaleResponseSchema,
     ListSaleResponseSchema, ListSaleWithItemsResponseSchema,
     ListSaleQuerySchema
 )
 
-from controllers.sale_controller import SaleController
+from app.controllers.sale_controller import SaleController
 
 from app.security import owner_required, role_authorization
 

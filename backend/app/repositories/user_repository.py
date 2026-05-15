@@ -12,9 +12,9 @@ class UserRepository:
         return User.query.filter_by(tenant_id=tenant_id).all()
     
     @staticmethod
-    def get(user_id):
+    def get_user(user_id):
 
-        return User.query.filter_by(user_id=user_id).first()
+        return User.query.filter_by(id=user_id).first()
     
     @staticmethod
     def get_user_by_email(email):

@@ -8,7 +8,7 @@ import logging
 
 from flask_smorest import Api
 
-from exceptions.handlers import register_error_handlers
+from app.exceptions.handlers import register_error_handlers
 
 
 def create_app():
@@ -40,16 +40,18 @@ def create_app():
 
     from app.models import product, user
 
-    from routes.user_routes import blp_user
-    from routes.tenant_routes import blp_tenants
-    from routes.product_routes import blp_products
-    from routes.sale_routes import blp_sales
-    from routes.analytics.item_analytics_routes import blp_item_analytics
-    from routes.analytics.revenue_analytics_routes import blp_revenue_analytics
-    from routes.super_admin_routes import blp_super_admin
+    from app.routes.auth_routes import blp_auth
+    from app.routes.user_routes import blp_users
+    from app.routes.tenant_routes import blp_tenants
+    from app.routes.product_routes import blp_products
+    from app.routes.sale_routes import blp_sales
+    from app.routes.analytics.item_analytics_routes import blp_item_analytics
+    from app.routes.analytics.revenue_analytics_routes import blp_revenue_analytics
+    from app.routes.super_admin_routes import blp_super_admin
 
 
-    api.register_blueprint(blp_user)
+    api.register_blueprint(blp_auth)
+    api.register_blueprint(blp_users)
     api.register_blueprint(blp_tenants)
     api.register_blueprint(blp_products)
     api.register_blueprint(blp_sales)

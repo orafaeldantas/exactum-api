@@ -12,7 +12,7 @@ class TenantRepository:
         return Tenant.query.all()
     
     @staticmethod
-    def get(tenant_id):
+    def get_tenant(tenant_id):
 
-        return Tenant.query.filter_by(tenant_id=tenant_id).first()
+        return Tenant.query.filter_by(id=tenant_id).first()
  

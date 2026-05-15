@@ -56,18 +56,28 @@ class ResponseTenantSchema(Schema):
 
     id = fields.Int(dump_only=True)
 
-    name = fields.Str(required=True)
+    name = fields.Str()
 
     global_min_stock = fields.Int()
 
     corporate_email = fields.Email()
 
 class UdateTenantSchema(Schema):
+    
+    name = fields.Str()
 
-    name = fields.Str(data_key="companyEmail")
+    global_min_stock = fields.Int()
 
-    global_min_stock = fields.Int(data_key="minimumStock")
+    corporate_email = fields.Email()
 
-    corporate_email = fields.Email(data_key="companyEmail")
+    monthly_goal = fields.Int()
 
-    monthly_goal = fields.Int(data_key="monthlyGoal")
+class ResponseUdateTenantSchema(Schema):
+
+    id = fields.Int(dump_only=True)
+
+    name = fields.Str()
+
+class ResponseCreateTenantSchema(ResponseUdateTenantSchema):
+    
+    pass

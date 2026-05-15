@@ -1,5 +1,5 @@
 from flask import g
-from services.goal_service import GoalService
+from app.services.goal_service import GoalService
 
 
 class TenantController:

@@ -14,5 +14,5 @@ class ProductRepository:
     @staticmethod
     def get_product(product_id):
 
-        return Product.query.filter_by(product_id=product_id).first()
+        return Product.query.filter_by(id=product_id).first()
     

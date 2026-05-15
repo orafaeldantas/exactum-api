@@ -1,5 +1,5 @@
 from flask import g
-from services.user_service import UserService
+from app.services.user_service import UserService
 
 
 class UserController:

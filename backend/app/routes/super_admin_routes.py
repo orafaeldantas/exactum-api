@@ -2,12 +2,12 @@ from flask.views import MethodView
 from flask_smorest import Blueprint
 from flask_jwt_extended import jwt_required
 
-from schemas.super_admin_schema import (
+from app.schemas.super_admin_schema import (
     SuperAdminListImpersonateResponseSchema, 
     SuperAdminListTenantsResponseSchema
 )
 
-from controllers.super_admin_controller import SuperAdminController
+from app.controllers.super_admin_controller import SuperAdminController
 
 from app.security import owner_required, role_authorization
 
@@ -25,7 +25,7 @@ blp_super_admin = Blueprint(
 @role_authorization(["super-admin"])
 class SuperAdminListTenantsRoute(MethodView):
 
-    @blp_super_admin.response(200, SuperAdminListTenantsResponseSchema, many=True)
+    @blp_super_admin.response(200, SuperAdminListTenantsResponseSchema(many=True))
     def get(self):
 
         return SuperAdminController.list_tenants()

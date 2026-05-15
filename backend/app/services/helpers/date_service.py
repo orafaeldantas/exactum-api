@@ -1,6 +1,6 @@
 from datetime import datetime, timezone, timedelta
 
-from exceptions.helpers.date_exceptions import InvalidPeriod
+from app.exceptions.helpers.date_exceptions import InvalidPeriod
 
 
 class DateService:
