@@ -5,9 +5,10 @@ from app.repositories.analytics.item_analytics_repository import ItemAnalyticsRe
 #from database.session import DatabaseSession
 
 
-@staticmethod
+
 class ItemAnalyticsService:
     
-    def list_items_by_period(tenant_id, period):
+    @staticmethod
+    def get_top_product(tenant_id, period):
 
-        return ItemAnalyticsRepository.list_items_by_period(tenant_id, period)
+        return ItemAnalyticsRepository.get_top_product(tenant_id, period)

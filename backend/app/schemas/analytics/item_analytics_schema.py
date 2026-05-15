@@ -3,28 +3,15 @@ from marshmallow import Schema, fields, validate
 
 class ListItemAnalyticsQuerySchema(Schema):
 
-    month = fields.Int(
-        required=True,
-        validate=validate.Range(
-            min=1,
-            max=12
-        )
-    )
-
-    year = fields.Int(
-        required=True
-    )
+    period = fields.Str() 
 
 
 class ListItemAnalyticsResponseSchema(Schema):
 
     id = fields.Int(dump_only=True)
 
-    name = fields.Str()
+    product_name = fields.Str()
 
-    quantity = fields.Int()
+    total_quantity = fields.Int()
 
-    sku = fields.Str()
-
-    item_price = fields.Decimal()
-
+    item_revenue = fields.Decimal()
