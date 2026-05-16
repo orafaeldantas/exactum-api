@@ -21,10 +21,6 @@ class UserRepository:
 
         return User.query.filter_by(email=email, is_active=True).first()
     
-    @staticmethod
-    def get_user_by_role(tenant_id, role):
-
-        return User.query.filter_by(tenant_id=tenant_id, role=role, is_active=True).first()
     
 
  

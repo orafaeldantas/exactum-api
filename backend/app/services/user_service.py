@@ -34,7 +34,7 @@ class UserService:
     @staticmethod
     def get_user(user_id):
 
-        user = UserRepository.get(user_id)
+        user = UserRepository.get_user(user_id)
 
         if not user:
             raise UserNotFound()

@@ -15,11 +15,6 @@ class TenantController:
         return TenantService.get_tenant(g.tenant_id)
     
     @staticmethod
-    def list_all_tenants():
-
-        return TenantService.list_all_tenants()
-    
-    @staticmethod
     def update_tenant(data):
 
         return TenantService.update_tenant(g.tenant_id, data)

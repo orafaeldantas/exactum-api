@@ -21,22 +21,24 @@ blp_super_admin = Blueprint(
 
 
 @blp_super_admin.route("/tenants")
-@jwt_required()
-@role_authorization(["super-admin"])
 class SuperAdminListTenantsRoute(MethodView):
 
+    @jwt_required()
+    @role_authorization(["super-admin", "admin"])
+    @blp_super_admin.doc(security=[{"BearerAuth": []}])
     @blp_super_admin.response(200, SuperAdminListTenantsResponseSchema(many=True))
     def get(self):
 
-        return SuperAdminController.list_tenants()
+        return SuperAdminController.list_all_tenants()
 
 
 @blp_super_admin.route("/impersonate/<int:tenant_id>")
-@jwt_required()
-@role_authorization(["super-admin"])
 class SuperAdminListImpersonatesRoute(MethodView):
 
+    @jwt_required()
+    @role_authorization(["super-admin", "admin"])
+    @blp_super_admin.doc(security=[{"BearerAuth": []}])
     @blp_super_admin.response(201, SuperAdminListImpersonateResponseSchema)
     def post(self, tenant_id):
-
+ 
         return SuperAdminController.impersonate(tenant_id)

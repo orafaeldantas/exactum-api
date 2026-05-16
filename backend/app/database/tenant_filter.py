@@ -9,6 +9,9 @@ def init_tenant_filter(db):
 
         if not execute_state.is_select:
             return
+        
+        if execute_state.execution_options.get("skip_tenant_filter"):
+            return
 
         tenant_id = getattr(g, "tenant_id", None)
 

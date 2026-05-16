@@ -62,12 +62,7 @@ class TenantService:
     def get_tenant(tenant_id):
         
         return TenantRepository.get_tenant(tenant_id)
-    
-    @staticmethod
-    def list_all_tenants():
-
-        return TenantRepository.list_all_tenants()
-    
+      
     @staticmethod
     def update_tenant(tenant_id, data):
 
