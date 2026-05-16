@@ -3,14 +3,14 @@ from marshmallow import Schema, fields
 
 class ListRevenueAnalyticsQuerySchema(Schema):
 
-    month = fields.Str(required=True)
+    period = fields.Str(required=True)
 
 
 class GetRevenueMetricsSchema(Schema):
     
-    total_revenue = fields.Decimal()
+    total_revenue = fields.Decimal(places=2)
 
-    average_ticket = fields.Decimal()
+    average_ticket = fields.Decimal(places=2)
 
     total_sales = fields.Int()
 
@@ -23,7 +23,7 @@ class GetPaymantMetricsSchema(Schema):
 
     quantity = fields.Int()
 
-    revenue = fields.Decimal()
+    revenue = fields.Decimal(places=2)
 
 class GetTopProductSchema(Schema):
     
@@ -31,7 +31,7 @@ class GetTopProductSchema(Schema):
 
     total_quantity = fields.Int()
 
-    item_revenue = fields.Decimal()
+    item_revenue = fields.Decimal(places=2)
 
 
 class ListRevenueAnalyticsResponseSchema(Schema):
