@@ -182,7 +182,7 @@ function Dashboard() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-black text-slate-900">{item.quantity} un.</p>
+                  <p className="text-sm font-black text-slate-900">{item.total_quantity} un.</p>
                   <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">Em alta</p>
                 </div>
               </div>

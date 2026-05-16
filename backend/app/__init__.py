@@ -49,7 +49,8 @@ def create_app():
     from app.routes.analytics.revenue_analytics_routes import blp_revenue_analytics
     from app.routes.super_admin_routes import blp_super_admin
 
-
+    app.url_map.strict_slashes = False
+    
     api.register_blueprint(blp_auth)
     api.register_blueprint(blp_users)
     api.register_blueprint(blp_tenants)
