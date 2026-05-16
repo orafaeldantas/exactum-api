@@ -74,7 +74,7 @@ function Dashboard() {
       icon: <DollarSign className="w-5 h-5" />, 
       change: "+18%", 
       isPositive: true,
-      path: "/finance"
+      path: "/revenue"
     },
     { 
       label: "Alertas de Estoque", 
