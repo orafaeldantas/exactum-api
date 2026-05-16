@@ -1,9 +1,21 @@
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, get_jwt_identity
 
 class TokenService:
 
     @staticmethod
-    def build_claims(user):
+    def build_claims(user, impersonate):
+
+        if impersonate:
+
+            claims = {
+
+                "tenant_id": user.tenant_id,
+                "role": user.role,
+                "is_impersonating": True,
+                "super_admin_id": get_jwt_identity()
+            }
+
+            return claims
 
         return {
             "tenant_id": user.tenant_id,
@@ -12,11 +24,11 @@ class TokenService:
         }
 
     @staticmethod
-    def generate_access_token(user):
+    def generate_access_token(user, impersonate=False):
 
         return create_access_token(
             identity=str(user.id),
             additional_claims=(
-                TokenService.build_claims(user)
+                TokenService.build_claims(user, impersonate)
             )
         )
