@@ -8,7 +8,7 @@ class RevenueAnalyticsController:
     @staticmethod
     def list_revenue_by_period(query_params):
 
-        return RevenueAnalyticsService.list_items_by_period(
+        return RevenueAnalyticsService.list_revenue_by_period(
             g.tenant_id,
             period=query_params["period"]
         )

@@ -3,9 +3,10 @@ from app.repositories.analytics.revenue_analytics_repository import RevenueAnaly
 from app.repositories.analytics.item_analytics_repository import ItemAnalyticsRepository
 
 
-@staticmethod
+
 class RevenueAnalyticsService:
 
+    @staticmethod
     def list_revenue_by_period(tenant_id, period):
 
         

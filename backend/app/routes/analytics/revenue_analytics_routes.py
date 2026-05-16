@@ -16,16 +16,16 @@ blp_revenue_analytics = Blueprint(
     "analytics-revenue",
     __name__,
     url_prefix="/analytics/revenue",
-    description="Item Analytics operations"
+    description="Revenue operations"
 )
 
 
 @blp_revenue_analytics.route("/")
-@jwt_required()
-@role_authorization(["admin", "super-admin", "user"])
 class RevenueAnalyticsListRoute(MethodView):
 
-
+    @jwt_required()
+    @role_authorization(["admin", "super-admin", "user"])
+    @blp_revenue_analytics.doc(security=[{"BearerAuth": []}])
     @blp_revenue_analytics.arguments(ListRevenueAnalyticsQuerySchema, location="query")
     @blp_revenue_analytics.response(200, ListRevenueAnalyticsResponseSchema)
     def get(self, query_params):
