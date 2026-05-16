@@ -9,6 +9,6 @@ from app.repositories.analytics.item_analytics_repository import ItemAnalyticsRe
 class ItemAnalyticsService:
     
     @staticmethod
-    def get_top_product(tenant_id, period):
+    def list_items_by_period(tenant_id, period):
 
-        return ItemAnalyticsRepository.get_top_product(tenant_id, period)
+        return ItemAnalyticsRepository.list_items_by_period(tenant_id, period)
