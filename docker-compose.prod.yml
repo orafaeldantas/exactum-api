@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+
+  api:
+    build: ./backend
+    container_name: exactum_api
+    restart: always
+
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - db
+    expose:
+      - "5000"
+    networks:
+      - exactum_network
+
+  db:
+    image: postgres:15
+    container_name: exactum_db
+    restart: always
+    env_file:
+    - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - exactum_network
+
+volumes:
+  pgdata:
+
+networks:
+  exactum_network:
