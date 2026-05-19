@@ -21,3 +21,4 @@ export function getTenantData() {
 
   return { tenantData, loadTenantData, loading };
 }
+

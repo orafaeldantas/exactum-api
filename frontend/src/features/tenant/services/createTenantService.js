@@ -1,7 +1,7 @@
 const API_URL = "http://localhost:5000"; 
 
 export async function createTenantDraft(companyData) {
-  const response = await fetch(`${API_URL}/tenants/create`, {
+  const response = await fetch(`${API_URL}/tenants`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -1,51 +1,44 @@
-from flask import Blueprint, request, jsonify
-from app.services import tenant_service
-from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
-from app.security import role_authorization
-from flask import g
-from app.models import User
+from flask.views import MethodView
+from flask_smorest import Blueprint
+from flask_jwt_extended import jwt_required
 
-superadmin_bp = Blueprint("superadmin", __name__, url_prefix="/superadmin")
+from app.schemas.super_admin_schema import (
+    SuperAdminListImpersonateResponseSchema, 
+    SuperAdminListTenantsResponseSchema
+)
 
+from app.controllers.super_admin_controller import SuperAdminController
 
-@superadmin_bp.route("/companies", methods=["GET"])
-@jwt_required()
-@role_authorization(['super-admin'])
-def list_all_tenants():
-
-    tenants = tenant_service.list_tenants()
-
-    return jsonify([
-        {
-            "id": t.id,
-            "name": t.name,
-            "fantasy_name": t.fantasy_name,
-            "slug": t.slug,
-            "plan": t.plan,
-            "cnpj": t.cnpj
-        }
-        for t in tenants
-        if t.id > 0 
-    ])
+from app.security import owner_required, role_authorization
 
 
-@superadmin_bp.route("/impersonate/<int:tenant_id>", methods=["POST"])
-@jwt_required()
-@role_authorization(['super-admin'])
-def impersonate(tenant_id):
-    
+blp_super_admin = Blueprint(
+    "super_admin",
+    __name__,
+    url_prefix="/super-admin",
+    description="Super admin operations"
+)
 
-    target_admin = User.query.filter_by(tenant_id=tenant_id, role='admin').first()
 
-    token = create_access_token(
-        identity=str(target_admin.id),
-        additional_claims={
-            "tenant_id": tenant_id,
-            "role": "admin",
-            "is_impersonating": True,
-            "real_admin_id": get_jwt_identity()
-        }
-    )
+@blp_super_admin.route("/tenants")
+class SuperAdminListTenantsRoute(MethodView):
 
-    return jsonify(token=token)
+    @jwt_required()
+    @role_authorization(["super-admin", "admin"])
+    @blp_super_admin.doc(security=[{"BearerAuth": []}])
+    @blp_super_admin.response(200, SuperAdminListTenantsResponseSchema(many=True))
+    def get(self):
 
+        return SuperAdminController.list_all_tenants()
+
+
+@blp_super_admin.route("/impersonate/<int:tenant_id>")
+class SuperAdminListImpersonatesRoute(MethodView):
+
+    @jwt_required()
+    @role_authorization(["super-admin", "admin"])
+    @blp_super_admin.doc(security=[{"BearerAuth": []}])
+    @blp_super_admin.response(201, SuperAdminListImpersonateResponseSchema)
+    def post(self, tenant_id):
+ 
+        return SuperAdminController.impersonate(tenant_id)

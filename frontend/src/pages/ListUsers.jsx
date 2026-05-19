@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext"
 import toast from "react-hot-toast";
 
 import { getUsers, toggleUserStatus } from "../services/userService";
@@ -11,6 +12,8 @@ export default function ListUsers() {
   const { users = [], loadUsers } = getUsers();  
 
   const [error, setError] = useState("");
+
+  const { impersonateMode } = useContext(AuthContext)
 
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -246,7 +249,7 @@ export default function ListUsers() {
                       className={`
                         grid grid-cols-2 gap-2 w-fit transition
                         ${
-                          ["admin"].includes(user.role)
+                          ["admin"].includes(user.role) && impersonateMode !== true
                             ? "pointer-events-none opacity-40 select-none"
                               : ""
                           }

@@ -16,7 +16,7 @@ import ListSales from "./pages/ListSales";
 import ListSaleItems from "./pages/ListSaleItems";
 import AdminSettings from "./pages/AdminSettings";
 import UserSettings from "./pages/UserSettings";
-import MonthlyIncome from "./pages/MonthlyIncome";
+import RevenuePeriod from "./pages/RevenuePeriod";
 import AverageTicketAnalytics from "./pages/AverageTicket";
 
 import Layout from "./layouts/MainLayout";
@@ -91,10 +91,10 @@ function App() {
           />
           
           <Route
-            path="/finance"
+            path="/revenue"
             element={
               <RoleRoute requiredRole={["admin", "super-admin"]}>
-                <MonthlyIncome />
+                <RevenuePeriod />
               </RoleRoute>
             }
           />
