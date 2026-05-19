@@ -7,17 +7,16 @@ logger = logging.getLogger(__name__)
 class GoalRepository:
 
     @staticmethod
-    def create_goal(data, tenant_id):
+    def create_goal(value, tenant_id):
 
-        if data.get("monthly_goal"):
-            goal = Goal(
-                    tenant_id=tenant_id,
-                    type="monthly",
-                    year=9999,
-                    month=9999,
-                    value=data.get("monthly_goal"),
-                    description="monthly"
-                )
+        goal = Goal(
+                tenant_id=tenant_id,
+                type="monthly",
+                year=9999,
+                month=9999,
+                value=value,
+                description="monthly"
+            )
 
         return goal
     

@@ -6,13 +6,12 @@ from app.repositories.goal_repository import GoalRepository
 
 from app.database.session import DatabaseSession
 
-from app.exceptions.user_exceptions import PasswordMismatchException
+from app.exceptions.user_exceptions import PasswordMismatchException, InvalidPasswordException
 from app.exceptions.tenant_exceptions import RegistrationFailed, TenantNotFound
 from app.exceptions.goal_exceptions import RegistrationFailedGoal
 
 
 class TenantService:
-
 
     @staticmethod
     def create_tenant(data):
@@ -27,13 +26,16 @@ class TenantService:
 
         if (admin.get("password") != admin.get("confirmPassword")):
             raise PasswordMismatchException()
+        
+        if len(admin.get("password")) < 8:
+            raise InvalidPasswordException()
 
         tenant = Tenant(
             name=company.get("name"),
             fantasy_name=company.get("fantasyName"),
             cnpj=clean_cnpj,
             plan=plan.get("type"),
-            slug=company.get("slug")
+            slug=company.get("slug"),
         )
 
         DatabaseSession.add(tenant)
@@ -44,7 +46,9 @@ class TenantService:
             email=admin.get("email"),
             tenant_id=tenant.id, 
             is_active=True,
-            role="admin"
+            role="admin",
+            password_reset=False
+            
         )
 
         user.set_password(admin.get("password"))
@@ -53,10 +57,7 @@ class TenantService:
         DatabaseSession.add(user)
         DatabaseSession.commit()
 
-        if tenant.id and user.id:
-            raise RegistrationFailed()
-
-        return tenant.id
+        return tenant
     
     @staticmethod
     def get_tenant(tenant_id):
@@ -85,8 +86,11 @@ class TenantService:
                 setattr(tenant, field, data[field])
         
         DatabaseSession.add(tenant)
+        
+        
 
-        if data.get("monthly_goal"):
+        if data.get("monthly_goal"):           
+
             goal = GoalRepository.get_goal(tenant_id)
             if goal:
                 goal.value = data.get("monthly_goal")

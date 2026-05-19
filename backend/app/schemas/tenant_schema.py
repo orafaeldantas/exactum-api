@@ -20,13 +20,13 @@ class PlanSchema(Schema):
         required=True,
         validate=validate.OneOf([
             "starter",
-            "pro",
+            "growth",
             "enterprise"
         ])
     )
 
 
-class UserSchema(Schema):
+class AdminSchema(Schema):
 
     firstName = fields.Str(required=True)
 
@@ -34,15 +34,19 @@ class UserSchema(Schema):
 
     email =  fields.Email(required=True)
 
+    password = fields.Str(required=True)
+
+    confirmPassword = fields.Str(required=True)
+
 
 class CreateTenantSchema(Schema):
 
-    user = fields.Nested(
-        UserSchema,
+    admin = fields.Nested(
+        AdminSchema,
         required=True
     )
 
-    tenant = fields.Nested(
+    company = fields.Nested(
         TenantSchema,
         required=True
     )
@@ -62,15 +66,17 @@ class ResponseTenantSchema(Schema):
 
     corporate_email = fields.Email()
 
+
 class UdateTenantSchema(Schema):
     
-    name = fields.Str()
+    name = fields.Str(data_key="companyName")
 
-    global_min_stock = fields.Int()
+    global_min_stock = fields.Int(data_key="minimumStock")
 
-    corporate_email = fields.Email()
+    corporate_email = fields.Email(data_key="companyEmail")
 
-    monthly_goal = fields.Int()
+    monthly_goal = fields.Int(data_key="monthlyGoal")
+
 
 class ResponseUdateTenantSchema(Schema):
 
