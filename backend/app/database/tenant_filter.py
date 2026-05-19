@@ -9,13 +9,16 @@ def init_tenant_filter(db):
 
         if not execute_state.is_select:
             return
+        
+        if execute_state.execution_options.get("skip_tenant_filter"):
+            return
 
         tenant_id = getattr(g, "tenant_id", None)
 
         if not tenant_id:
             return
 
-        from app.models import User, Product
+        from app.models import User, Product, Goal
 
         execute_state.statement = execute_state.statement.options(
             with_loader_criteria(
@@ -27,5 +30,11 @@ def init_tenant_filter(db):
                 Product,
                 lambda cls: cls.tenant_id == tenant_id,
                 include_aliases=True
+            ),
+            with_loader_criteria(
+                Goal,
+                lambda cls: cls.tenant_id == tenant_id,
+                include_aliases=True
             )
+           
         )

@@ -1,14 +1,20 @@
 import re
-from app.extensions import db
-from app.models import Tenant, User, Goal
-from flask import g
 
-import logging
+from app.models import User, Tenant, Goal
+from app.repositories.tenant_repository import TenantRepository
+from app.repositories.goal_repository import GoalRepository    
 
-logger = logging.getLogger(__name__)
+from app.database.session import DatabaseSession
 
-def create_tenant(data):
-    try:
+from app.exceptions.user_exceptions import PasswordMismatchException, InvalidPasswordException
+from app.exceptions.tenant_exceptions import RegistrationFailed, TenantNotFound
+from app.exceptions.goal_exceptions import RegistrationFailedGoal
+
+
+class TenantService:
+
+    @staticmethod
+    def create_tenant(data):
 
         company = data.get("company", {})
         admin = data.get("admin", {})
@@ -19,69 +25,85 @@ def create_tenant(data):
         clean_cnpj = re.sub(r'\D', '', raw_cnpj)
 
         if (admin.get("password") != admin.get("confirmPassword")):
-            return 'the password confirmation is incorrect.'
+            raise PasswordMismatchException()
+        
+        if len(admin.get("password")) < 8:
+            raise InvalidPasswordException()
 
         tenant = Tenant(
             name=company.get("name"),
             fantasy_name=company.get("fantasyName"),
             cnpj=clean_cnpj,
             plan=plan.get("type"),
-            slug=company.get("slug")
+            slug=company.get("slug"),
         )
 
-        db.session.add(tenant)
-        db.session.flush() # Generates the tenant.id
-
+        DatabaseSession.add(tenant)
+        DatabaseSession.flush()
 
         user = User(
             username=f"{admin.get('firstName')} {admin.get('lastName')}",
             email=admin.get("email"),
             tenant_id=tenant.id, 
             is_active=True,
-            role="admin"
+            role="admin",
+            password_reset=False
+            
         )
 
         user.set_password(admin.get("password"))
-        db.session.add(user)
+
+
+        DatabaseSession.add(user)
+        DatabaseSession.commit()
+
+        return tenant
+    
+    @staticmethod
+    def get_tenant(tenant_id):
         
-        db.session.commit()
-        return 'tenant created successfully!'
+        return TenantRepository.get_tenant(tenant_id)
+      
+    @staticmethod
+    def update_tenant(tenant_id, data):
 
-    except Exception as e:
-        db.session.rollback()
-        logger.error(e)
-        return 'error while trying to create the tenant.'
-    
-def list_tenants():
-    return Tenant.query.all()
+        tenant = TenantRepository.get_tenant(tenant_id)
 
-def get_tenant_by_id():
-    return Tenant.query.filter_by(id=g.tenant_id).first()
+        if not tenant_id:
 
-def update_tenant_by_id(data):
-    
-    tenant = get_tenant_by_id()
-    
-    if "companyName" in data: tenant.name = data.get("companyName")
-    if "companyEmail" in data: tenant.corporate_email = data.get("companyEmail")
-    if "minimumStock" in data: tenant.global_min_stock = data.get("minimumStock")
+            raise TenantNotFound()
 
-    db.session.commit() 
-    
-def get_goal():
-    return Goal.query.filter_by(tenant_id=g.tenant_id).order_by(Goal.id.desc()).first()
+        update_fields = [
+            "name",
+            "corporate_email",
+            "global_min_stock"
+        ]
 
-def create_goal(data):
+        for field in update_fields:
 
-    if "monthlyGoal" in data:
-        goal = Goal(
-                tenant_id=g.tenant_id,
-                type="monthly",
-                year=9999,
-                month=9999,
-                value=data.get("monthlyGoal"),
-                description="monthly"
-            )
+            if field in data:
 
-        db.session.add(goal)
-        db.session.commit()
+                setattr(tenant, field, data[field])
+        
+        DatabaseSession.add(tenant)
+        
+        
+
+        if data.get("monthly_goal"):           
+
+            goal = GoalRepository.get_goal(tenant_id)
+            if goal:
+                goal.value = data.get("monthly_goal")
+            
+            goal = GoalRepository.create_goal(data.get("monthly_goal"), tenant_id)
+
+            if not goal:
+                raise RegistrationFailedGoal()
+            
+            DatabaseSession.add(goal)
+
+
+        DatabaseSession.commit()
+
+        return tenant
+        

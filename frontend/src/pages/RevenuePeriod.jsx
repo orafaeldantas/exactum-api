@@ -1,5 +1,7 @@
-import { useMemo, useState, useEffect } from "react";
-import { getFinancePeriod } from "../services/financeService";
+import { useMemo, useState, useEffect, useContext } from "react";
+import { getRevenuePeriod } from "../services/revenueService";
+import { TenantContext } from "../context/TenantContext";
+
 
 import {
   CreditCard,
@@ -12,39 +14,53 @@ import {
   TrendingUp,
 } from "lucide-react";
 
-export default function FinancialAnalytics() {
+export default function RevenueAnalytics() {
 
   const [period, setPeriod] = useState("month");
-
-  const { financePeriod = {}, loadFinancePeriod, financeGoal = {}, loadFinanceGoal } = getFinancePeriod();
+  const { tenantData } = useContext(TenantContext); 
+  const { revenuePeriod = {}, loadRevenue, goal = {}, loadGoal } = getRevenuePeriod();
 
   useEffect(() => {
-    loadFinancePeriod(period);
-    loadFinanceGoal();
+    loadRevenue(period);
+    loadGoal();
   }, [period]);
 
   /*
     DATA
   */
 
-  const totalRevenue = financePeriod?.total_revenue ?? 0;
-  const totalSales = financePeriod?.total_sales ?? 0;
-  const ticketAverage = financePeriod?.average_ticket ?? 0;
-  const totalProductsSold = financePeriod?.total_products_sold ?? 0;
- 
+
+  const revenueMetrics = revenuePeriod.revenue_metrics ?? 0;
+  const paymentMetrics = revenuePeriod.payment_metrics ?? 0;
+  const topProduct = revenuePeriod.top_product ?? 0;
+
+
+  const paymentMoney = paymentMetrics && paymentMetrics.find(item => item.payment_method === "money");
+  const paymentCredit = paymentMetrics && paymentMetrics.find(item => item.payment_method === "credit");
+  const paymentPix = paymentMetrics && paymentMetrics.find(item => item.payment_method === "pix");
+  const paymentDebit = paymentMetrics && paymentMetrics.find(item => item.payment_method === "debit");
+  
+
+  const totalRevenue = revenueMetrics?.total_revenue ?? 0;
+  const totalSales = revenueMetrics?.total_sales ?? 0;
+  const ticketAverage = revenueMetrics?.average_ticket ?? 0;
+  const totalProductsSold = revenueMetrics?.total_products_sold ?? 0;
 
   /*
     GOAL
   */
 
-  const monthlyGoal = 150000;
+  const monthlyGoal = parseFloat(tenantData.goal);
+  
 
-  const goalPercentage = Math.min(
-    (financeGoal / monthlyGoal) * 100,
+  const goalPercentageAux = Math.min(
+    (totalRevenue / monthlyGoal) * 100,
     100
   );
 
-  const remainingGoal = monthlyGoal - financeGoal;
+  const goalPercentage = goalPercentageAux > 0 ? goalPercentageAux : 0
+
+  const remainingGoal = monthlyGoal - totalRevenue;
 
   /*
     PAYMENT METHODS
@@ -54,41 +70,41 @@ export default function FinancialAnalytics() {
     {
       id: 1,
       method: "PIX",
-      value: financePeriod?.pix ?? 0,
+      value: parseFloat(paymentPix?.revenue) ?? 0,
       percentage:
         totalRevenue > 0
-          ? (((financePeriod?.pix ?? 0) / totalRevenue) * 100).toFixed(2)
+          ? (((parseFloat(paymentPix?.revenue) ?? 0) / totalRevenue) * 100).toFixed(2)
           : 0,
     },
     {
       id: 2,
       method: "Crédito",
-      value: financePeriod?.credit ?? 0,
+      value: parseFloat(paymentCredit?.revenue) ?? 0,
       percentage:
         totalRevenue > 0
-          ? (((financePeriod?.credit ?? 0) / totalRevenue) * 100).toFixed(2)
+          ? (((parseFloat(paymentCredit?.revenue) ?? 0) / totalRevenue) * 100).toFixed(2)
           : 0,
     },
     {
       id: 3,
       method: "Débito",
-      value: financePeriod?.debit ?? 0,
+      value: parseFloat(paymentDebit?.revenue) ?? 0,
       percentage:
         totalRevenue > 0
-          ? (((financePeriod?.debit ?? 0) / totalRevenue) * 100).toFixed(2)
+          ? (((parseFloat(paymentDebit?.revenue) ?? 0) / totalRevenue) * 100).toFixed(2)
           : 0,
     },
-    {
+    {    
       id: 4,
       method: "Dinheiro",
-      value: financePeriod?.money ?? 0,
+      value: parseFloat(paymentMoney?.revenue) ?? 0,
       percentage:
         totalRevenue > 0
-          ? (((financePeriod?.money ?? 0) / totalRevenue) * 100).toFixed(2)
+          ? (((parseFloat(paymentMoney?.revenue) ?? 0) / totalRevenue) * 100).toFixed(2)
           : 0,
     },
   ];
-
+  
   /*
     CHANNELS
   */
@@ -117,11 +133,6 @@ export default function FinancialAnalytics() {
   /*
     TOP PRODUCT
   */
-
-  const topProduct = {
-    name: financePeriod?.top_product ?? "---",
-    quantity: financePeriod?.qtd_top_product ?? 0,
-  };
 
   const formatCurrency = (value = 0) => {
     return Number(value).toLocaleString("pt-BR", {
@@ -293,7 +304,7 @@ export default function FinancialAnalytics() {
                 </p>
 
                 <h3 className="text-lg font-bold text-white">
-                  {formatCurrency(financeGoal)}
+                  {formatCurrency(totalRevenue)}
                 </h3>
               </div>
 
@@ -541,7 +552,7 @@ export default function FinancialAnalytics() {
                 </p>
 
                 <h2 className="text-2xl font-bold text-gray-800">
-                  {topProduct.name}
+                  {topProduct.product_name}
                 </h2>
               </div>
 
@@ -563,7 +574,7 @@ export default function FinancialAnalytics() {
                 text-amber-700
               "
             >
-              {topProduct.quantity} unidades vendidas
+              {topProduct.total_quantity} unidades vendidas
             </div>
           </div>
         </div>

@@ -24,7 +24,7 @@ export default function SaleDetails() {
     );
   }
 
-  const sale = saleItems;
+  const sale = saleItems?.sale;
   const items = (saleItems?.items || []).slice(0, 10);
 
   if (!sale) {

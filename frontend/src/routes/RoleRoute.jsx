@@ -2,11 +2,14 @@ import { useContext } from "react"
 import { Navigate } from "react-router-dom"
 import { AuthContext } from "../context/AuthContext"
 import Loader from "../components/Loader/Loader";
+import { useLocation } from "react-router-dom";
+
+
 
 export default function RoleRoute({ children, requiredRole }) {
 
-  const { user, loading } = useContext(AuthContext)
-
+  const { user, loading, impersonateMode } = useContext(AuthContext)
+  const location = useLocation();
 
   if (loading) {
     return <Loader message="Carregando..." />;
@@ -16,7 +19,8 @@ export default function RoleRoute({ children, requiredRole }) {
     return <Navigate to="/" replace />
   }
   
-  if (user?.password_reset === true && window.location.pathname !== "/reset-password") {
+  if (user?.password_reset === true && location.pathname !== "/reset-password" 
+      && user?.role !== "super-admin" && impersonateMode !== true) {
     return <Navigate to="/reset-password" replace />;
   }
 

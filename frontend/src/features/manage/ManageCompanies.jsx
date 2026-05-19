@@ -25,7 +25,7 @@ export default function ManageCompanies() {
 
   async function loadTenants() {
     try {
-      const response = await apiFetch("/superadmin/companies");
+      const response = await apiFetch("/super-admin/tenants");
       if (!response.ok) throw new Error("Erro ao carregar instâncias");
       const data = await response.json();
       setTenants(data);
@@ -49,14 +49,14 @@ export default function ManageCompanies() {
   async function handleImpersonate(tenantId) {
     try {
       setLoadingId(tenantId);
-      const response = await apiFetch(`/superadmin/impersonate/${tenantId}`, { method: "POST" });
+      const response = await apiFetch(`/super-admin/impersonate/${tenantId}`, { method: "POST" });
       
       if (!response.ok) throw new Error("Erro ao gerar acesso");
       
-      const { token } = await response.json();
+      const { impersonate_token } = await response.json();
 
       // Call context function to handle state and storage
-      await impersonate(token);
+      await impersonate(impersonate_token);
 
       toast.success("Acesso autorizado!");
       navigate("/dashboard");
