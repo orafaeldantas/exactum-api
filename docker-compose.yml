@@ -8,7 +8,6 @@ services:
       - "5000:5000"
     env_file:
       - ./backend/.env
-    #command: sh -c "./wait-for-db.sh && python run.py"
     depends_on:
       - db
     volumes:

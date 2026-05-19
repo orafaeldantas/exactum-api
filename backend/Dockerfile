@@ -15,4 +15,4 @@ RUN chmod +x /entrypoint.sh
 COPY . /app
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["flask", "run", "--no-reload"]
+CMD ["gunicorn", "-c", "gunicorn.conf.py", "run:app"]
