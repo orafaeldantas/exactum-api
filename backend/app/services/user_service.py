@@ -2,7 +2,10 @@ from app.models import User
 from app.repositories.user_repository import UserRepository
 from app.database.session import DatabaseSession
 
-from app.exceptions.user_exceptions import UserNotFound
+from app.exceptions.user_exceptions import (
+    UserNotFound, PasswordMismatchException,
+    InvalidPasswordException
+)
 
 
 class UserService:
@@ -44,7 +47,7 @@ class UserService:
     @staticmethod
     def update_user(data, user_id):
 
-        user = UserRepository.get(user_id)
+        user = UserRepository.get_user(user_id)
 
         if not user:
             raise UserNotFound()
@@ -75,15 +78,15 @@ class UserService:
     @staticmethod
     def update_profile(data, user_id):
         
-        user = UserRepository.get(user_id)
+        user = UserRepository.get_user(user_id)
 
-        if data.get("currentPassword"):
+        if data.get("current_password"):
 
-            if not user.check_password(data["currentPassword"]):
-                raise   
+            if not user.check_password(data["current_password"]):
+                raise InvalidPasswordException()
             
-            if data.get("password") != data.get("confirmPassword"):
-                raise
+            if data.get("password") != data.get("confirm_password"):
+                raise PasswordMismatchException()
         
         user.set_password(data["password"])
 

@@ -25,11 +25,11 @@ export default function CreateTenant() {
     },
     plan: {
       type: "growth",
-      features: {
+      /*features: {
         predictive: true,
         alerts: true,
         import: false,
-      }
+      }*/
     },
   });
 
@@ -72,14 +72,14 @@ export default function CreateTenant() {
         steps={steps}
         currentStep={step}
         onStepClick={(clickedStep) => {
-          // Permite voltar passos clicando, mas não avançar sem validar
+          // Allows you to go back a few steps by clicking, but not move forward without validating
           if (clickedStep < step) {
             setStep(clickedStep);
           }
         }}
       />
   
-      {/* Área do Formulário */}
+      {/* Form Area */}
       <main className="flex-1 overflow-y-auto overflow-x-hidden">
         <div className="mx-auto max-w-5xl px-8 py-12 md:px-16 lg:py-20">
           

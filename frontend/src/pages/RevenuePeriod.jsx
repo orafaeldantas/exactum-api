@@ -51,11 +51,14 @@ export default function RevenueAnalytics() {
   */
 
   const monthlyGoal = parseFloat(tenantData.goal);
+  
 
-  const goalPercentage = Math.min(
+  const goalPercentageAux = Math.min(
     (totalRevenue / monthlyGoal) * 100,
     100
   );
+
+  const goalPercentage = goalPercentageAux > 0 ? goalPercentageAux : 0
 
   const remainingGoal = monthlyGoal - totalRevenue;
 

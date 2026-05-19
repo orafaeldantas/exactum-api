@@ -50,8 +50,8 @@ class ProfileSchema(Schema):
 
     password = fields.Str(load_only=True)
 
-    confirmPassword = fields.Str(load_only=True)
+    confirm_password = fields.Str(data_key="confirmPassword", load_only=True)
 
-    currentPassword = fields.Str(load_only=True)
+    current_password = fields.Str(data_key="currentPassword", load_only=True)
 
    

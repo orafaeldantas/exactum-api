@@ -93,12 +93,12 @@ export default function SettingsPage() {
   
     try {
       const [responseUser, responseTenant] = await Promise.all([
-        apiFetch(`/users/${profile.id}`, {
+        apiFetch(`/users/profile/${profile.id}`, {
           method: "PATCH",
           body: JSON.stringify(dataUser),
         }),
   
-        apiFetch("/tenants/data", {
+        apiFetch("/tenants", {
           method: "PATCH",
           body: JSON.stringify(dataTenant),
         }),
@@ -114,6 +114,7 @@ export default function SettingsPage() {
       toast.error("Erro de conexão");
       console.error(error);
     }
+    console.log(dataTenant)
   }
   
   return (
