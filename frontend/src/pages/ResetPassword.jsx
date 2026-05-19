@@ -1,5 +1,6 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
 import { AuthContext } from "../context/AuthContext"
 import { Lock, ShieldCheck, AlertCircle, Save } from "lucide-react";
 import { apiFetch } from "../services/api";
@@ -8,13 +9,15 @@ import toast from "react-hot-toast";
 export default function ResetPassword() {
   const navigate = useNavigate();
 
-  const { user } = useContext(AuthContext)
+  const { profile } = useContext(UserContext);
+  const { bootstrap } = useContext(AuthContext);
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
- 
+
+  
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -30,22 +33,25 @@ export default function ResetPassword() {
 
     setLoading(true);
 
-    console.log(user.id)
 
     const data = {
       "password": password,
+      "confirmPassword": confirmPassword,
       "password_reset": false,
     }
 
     try {
 
-      const response = await apiFetch(`/users/psw/${user.id}`, {
+      const response = await apiFetch(`/users/new_password/${profile.id}`, {
         method: "PATCH",
         body: JSON.stringify(data)
       });
       
       if (response.ok) {
         toast.success("Senha alterada com sucesso!");
+        
+        await bootstrap()
+
         navigate("/dashboard");
       }
 

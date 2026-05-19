@@ -52,8 +52,12 @@ class UserService:
         if not user:
             raise UserNotFound()
         
-        if data.get("password") and (data.get("password_reset") == True):
+        if data.get("confirme_password"): 
+            if (data.get("password")) != data.get("confirme_password"):
 
+                raise PasswordMismatchException()
+
+        if data.get("password"):    
             user.set_password(data["password"])
 
         update_fields = [

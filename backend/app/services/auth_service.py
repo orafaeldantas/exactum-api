@@ -22,12 +22,12 @@ class AuthService:
         email = data.get("email")
         user = UserRepository.get_user_by_email(email)
 
-        
-
         if not user:
+
             raise InvalidCredentials()       
 
         if not user.check_password(data.get("password")):
+
             raise InvalidCredentials()
         
 

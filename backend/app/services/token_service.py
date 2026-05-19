@@ -4,9 +4,9 @@ class TokenService:
 
     @staticmethod
     def build_claims(user, impersonate):
-
+        print(impersonate)
         if impersonate:
-
+            
             claims = {
 
                 "tenant_id": user.tenant_id,
@@ -16,7 +16,7 @@ class TokenService:
             }
 
             return claims
-
+        
         return {
             "tenant_id": user.tenant_id,
             "role": user.role,
