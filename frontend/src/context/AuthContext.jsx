@@ -2,15 +2,18 @@ import { createContext, useEffect, useState, useContext } from "react";
 import { apiFetch } from "../services/api";
 import { UserContext } from "../context/UserContext";
 import { TenantContext } from "../context/TenantContext";
+import { jwtDecode } from "jwt-decode";
 
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
 
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(null);
+  const [impersonateMode, setImpersonateMode] = useState(false);
   const { setProfile } = useContext(UserContext);
   const { setTenantData } = useContext(TenantContext);
+  
   
 
   async function bootstrap() {
@@ -27,7 +30,16 @@ export function AuthProvider({ children }) {
       setTenantData(data.tenant);
       setProfile(data.user);
       setUser(data.auth);
-    
+
+      const impersonateToken = sessionStorage.getItem("access_token")
+      const claims = impersonateToken ? jwtDecode(impersonateToken) : false
+
+      if (claims?.is_impersonating === true) {
+        setImpersonateMode(true)
+      } else {
+        setImpersonateMode(false)
+      }       
+
     } catch {
       setTenantData(null);
       setProfile(null);
@@ -55,11 +67,13 @@ export function AuthProvider({ children }) {
       // 1. Backup your master access_token
       const masterToken = sessionStorage.getItem('access_token');
       sessionStorage.setItem('super_token', masterToken);
-
       // 2. Set the tenant token as the primary one
       sessionStorage.setItem('access_token', tenantToken);
 
+      
+
       // 3. Reload user to update global state with tenant info
+      console.log("ModoImpersonate: " + false)
       await bootstrap();
       
       // 4. Force a hard reload to clear any remaining state in other components
@@ -76,11 +90,10 @@ export function AuthProvider({ children }) {
       if (backupToken) {
         // 1. Restore your original super-admin token
         sessionStorage.setItem('access_token', backupToken);
-        sessionStorage.removeItem('super_token');
-
+        sessionStorage.removeItem('super_token');             
         // 2. Reload user to restore your original identity
         await bootstrap();
-
+        console.log("ModoImpersonate: " + false)
         // 3. Return to your control panel
         window.location.href = "/manage-companies";
       }
@@ -102,7 +115,9 @@ export function AuthProvider({ children }) {
       login, 
       logout, 
       impersonate,       
-      stopImpersonating  
+      stopImpersonating,
+      impersonateMode,
+      bootstrap  
     }}>
       {children}
     </AuthContext.Provider>

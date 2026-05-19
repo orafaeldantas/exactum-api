@@ -54,4 +54,15 @@ class ProfileSchema(Schema):
 
     current_password = fields.Str(data_key="currentPassword", load_only=True)
 
+class NewPasswordUserSchema(Schema):
+    
+    password = fields.Str(load_only=True, required=True)
+
+    confirm_password = fields.Str(data_key="confirmPassword", load_only=True, required=True)
+
+    password_reset = fields.Bool(load_only=True, required=True)
+
+class NewPassworUserResponseSchema(Schema):
+
+    pass
    

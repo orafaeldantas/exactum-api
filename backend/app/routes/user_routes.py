@@ -4,7 +4,7 @@ from flask_jwt_extended import jwt_required
 
 from app.schemas.user_schema import (
     UserResponseSchema, CreateUserSchema, UpdateUserSchema,
-    ProfileSchema
+    ProfileSchema, NewPasswordUserSchema, NewPassworUserResponseSchema
 )
 
 from app.controllers.user_controller import UserController
@@ -62,7 +62,19 @@ class UserDetailRoute(MethodView):
     def patch(self, data, user_id ):
         
         return UserController.update_user(data, user_id)
-    
+
+@blp_users.route("/new_password/<int:user_id>")
+class UserNewPasswordRoute(MethodView):
+
+    @jwt_required()
+    @role_authorization(["admin", "super-admin", "user"])
+    @blp_users.doc(security=[{"BearerAuth": []}])
+    @blp_users.arguments(NewPasswordUserSchema)
+    @blp_users.response(200, NewPassworUserResponseSchema)
+    def patch(self, data, user_id ):
+        
+        return UserController.update_user(data, user_id)
+
 @blp_users.route("/profile/<int:user_id>")
 class UserProfileRoute(MethodView):
 
