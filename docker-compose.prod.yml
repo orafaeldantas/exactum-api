@@ -1,0 +1,57 @@
+version: "3.9"
+
+services:
+
+  nginx:
+    image: nginx:latest
+    container_name: exactum_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+      - frontend
+    networks:
+      - exactum_network
+
+  frontend:
+    build: ./frontend
+    container_name: exactum_frontend
+    restart: unless-stopped
+    networks:
+      - exactum_network
+
+  api:
+    build: ./backend
+    container_name: exactum_api
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - db
+    expose:
+      - "5000"
+    networks:
+      - exactum_network
+
+  db:
+    image: postgres:15
+    container_name: exactum_db
+    restart: unless-stopped
+    env_file:
+    - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - exactum_network
+
+volumes:
+  pgdata:
+
+networks:
+  exactum_network:
