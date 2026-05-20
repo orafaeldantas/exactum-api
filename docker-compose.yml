@@ -7,8 +7,7 @@ services:
     ports:
       - "5000:5000"
     env_file:
-      - ./backend/.env
-    #command: sh -c "./wait-for-db.sh && python run.py"
+      - .env
     depends_on:
       - db
     volumes:
@@ -19,10 +18,12 @@ services:
     image: postgres:15
     container_name: exactum_db
     restart: always
+    env_file:
+    - .env
     environment:
-      POSTGRES_DB: exactum_db
-      POSTGRES_USER: exactum_admin
-      POSTGRES_PASSWORD: exactum_dev_pass
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5433:5432"
     volumes:
