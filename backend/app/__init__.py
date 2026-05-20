@@ -4,7 +4,8 @@ from .extensions import db, migrate, jwt
 from config import Config
 from app.middlewares.context import init_request_context
 from app.database.tenant_filter import init_tenant_filter
-import logging
+from werkzeug.middleware.proxy_fix import ProxyFix
+import logging, os
 
 from flask_smorest import Api
 
@@ -36,6 +37,15 @@ def create_app():
     jwt.init_app(app)
     init_request_context(app)
     init_tenant_filter(db)
+
+    if os.getenv("ENV") == "production":
+        app.wsgi_app = ProxyFix(
+            app.wsgi_app,
+            x_for=1,
+            x_proto=1,
+            x_host=1,
+            x_port=1
+        )
     
 
     from app.models import product, user
