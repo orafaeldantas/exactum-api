@@ -26,7 +26,7 @@ services:
     container_name: exactum_api
     restart: unless-stopped
     env_file:
-      - ./backend/.env
+      - .env
     depends_on:
       - db
     expose:
