@@ -18,6 +18,8 @@ services:
     build: ./frontend
     container_name: exactum_frontend
     restart: unless-stopped
+    ports:
+    - "80:80"
     networks:
       - exactum_network
 
