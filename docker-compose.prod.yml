@@ -2,17 +2,17 @@ version: "3.9"
 
 services:
 
-  nginx:
-    image: nginx:latest
-    container_name: exactum_nginx
-    restart: unless-stopped
-    ports:
-      - "80:80"
-    depends_on:
-      - api
-      - frontend
-    networks:
-      - exactum_network
+  #nginx:
+   # image: nginx:latest
+    #container_name: exactum_nginx
+    #restart: unless-stopped
+    #ports:
+     # - "80:80"
+    #depends_on:
+     # - api
+      #- frontend
+    #networks:
+     # - exactum_network
 
   frontend:
     build: ./frontend
