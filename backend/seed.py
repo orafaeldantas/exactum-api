@@ -1,25 +1,39 @@
 import os 
 from run import app
 from app.extensions import db
-from app.models import User
+from app.models import User, Tenant
 
 def seed_database():
     with app.app_context():
-        admin_password = os.getenv("", "root777")
+        admin_password = os.getenv("SUPER_ADMIN_PASSWORD")
 
-        if not User.query.filter_by(username="Rafael Dantas").first():
-            user = User(
-                id=0,
-                username="Rafael Dantas", 
-                role="super-admin",
-                email="rafaeldantas",
-                password_reset=False,
-                tenant_id=0
-            )
-            user.set_password(admin_password)
-            db.session.add(user)
-            db.session.commit()
-            print("Created superadmin!")
+        tenant = Tenant(
+            name="SYSTEM",
+            fantasy_name="SYSTEM",
+            cnpj=00000000000000,
+            plan="SYSTEM",
+            slug="SYSTEM",
+        )
+
+        db.add(tenant)
+        db.flush()
+
+        user = User(
+            username="Rafael Dantas",
+            email="rafael@exactum.app.br",
+            tenant_id=tenant.id, 
+            is_active=True,
+            role="super-admin",
+            password_reset=False
+            
+        )
+
+        user.set_password(admin_password)
+
+        db.add(user)
+        db.commit()
+
+        print("Created super-admin!")
 
 if __name__ == '__main__':
     seed_database()
