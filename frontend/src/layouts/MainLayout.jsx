@@ -1,11 +1,14 @@
 import { Outlet } from "react-router-dom"
 import Navbar from "../components/Navbar/Navbar"
 import Sidebar from "../components/Sidebar/Sidebar"
+import MobileWarning from "../features/mobile-warning/MobileWarning";
 
 function Layout() {
   return (
     <div className="flex h-screen w-full overflow-hidden bg-gray-50">
       
+      <MobileWarning />
+
       <Sidebar />
 
       <div className="flex flex-1 flex-col overflow-hidden">
@@ -15,6 +18,9 @@ function Layout() {
         <main className="flex-1 min-h-0 overflow-hidden p-6 md:p-10">
           
         <div className="mx-auto max-w-screen-2xl h-full min-h-0 flex flex-col">
+
+          
+
           <Outlet />
         </div>
 
