@@ -15,8 +15,8 @@ def seed_database():
             slug="SYSTEM",
         )
 
-        db.add(tenant)
-        db.flush()
+        db.session.add(tenant)
+        db.session.flush()
 
         user = User(
             username="Rafael Dantas",
@@ -30,10 +30,11 @@ def seed_database():
 
         user.set_password(admin_password)
 
-        db.add(user)
-        db.commit()
+        db.session.add(user)
+        db.session.commit()
 
         print("Created super-admin!")
 
 if __name__ == '__main__':
     seed_database()
+
