@@ -26,7 +26,6 @@ import CreateProduct from "./pages/CreateProduct";
 import EditProduct from "./pages/EditProduct";
 import ResetPassword from "./pages/ResetPassword";
 import LowStockProducts from "./pages/LowStock";
-import { User } from "lucide-react";
 
 
 function App() {
@@ -44,8 +43,9 @@ function App() {
         }}
       />
 
-
+      
       <Routes>
+
           
         <Route path="/" element={<Home />} />
         <Route path="/create-tenant" element={<CreateTenant />} />
