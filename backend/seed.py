@@ -5,7 +5,11 @@ from app.models import User, Tenant
 
 def seed_database():
     with app.app_context():
-        admin_password = os.getenv("SUPER_ADMIN_PASSWORD")
+        
+        tenant = Tenant.query.filter_by(id=1, name="SYSTEM").first()
+
+        if tenant:
+            return
 
         tenant = Tenant(
             name="SYSTEM",
@@ -19,8 +23,8 @@ def seed_database():
         db.session.flush()
 
         user = User(
-            username="Rafael Dantas",
-            email="rafael@exactum.app.br",
+            username=os.getenv("SUPER_ADMIN_NAME"),
+            email=os.getenv("SUPER_ADMIN_EMAIL"),
             tenant_id=tenant.id, 
             is_active=True,
             role="super-admin",
@@ -28,6 +32,7 @@ def seed_database():
             
         )
 
+        admin_password = os.getenv("SUPER_ADMIN_PASSWORD")
         user.set_password(admin_password)
 
         db.session.add(user)
