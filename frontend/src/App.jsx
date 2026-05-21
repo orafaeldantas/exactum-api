@@ -112,7 +112,7 @@ function App() {
           <Route
             path="/user-settings"
             element={
-              <RoleRoute requiredRole={["user"]}>
+              <RoleRoute requiredRole={["user", "super-admin"]}>
                 <UserSettings />
               </RoleRoute>
             }

@@ -12,6 +12,7 @@ class Sale(db.Model):
     quantity_items = db.Column(db.Integer, nullable=False, default=1)
     tenant_id = db.Column(db.Integer, db.ForeignKey('tenants.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    channel = db.Column(db.String(50), default="physical")
 
     items = db.relationship('ItemSale', backref='sale', lazy=True)
 
@@ -28,3 +29,4 @@ class ItemSale(db.Model):
     sale_id = db.Column(db.Integer, db.ForeignKey('sales.id'), nullable=False)
     tenant_id = db.Column(db.Integer, db.ForeignKey('tenants.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    channel = db.Column(db.String(50), default="physical")

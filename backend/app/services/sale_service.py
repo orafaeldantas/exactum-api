@@ -22,7 +22,8 @@ class SaleService:
             payment_method = sale.get("payment_method"),
             quantity_items = sale.get("quantity_items"),
             tenant_id = tenant_id,
-            user_id = user_id
+            user_id = user_id,
+            channel = sale.get("channel")
         )
         
         DatabaseSession.add(new_sale)
@@ -36,7 +37,8 @@ class SaleService:
                 item_price = item.get("item_price"),
                 sale_id = new_sale.id,
                 tenant_id = tenant_id,
-                user_id = user_id
+                user_id = user_id,
+                channel = sale.get("channel")
 
             )
            
