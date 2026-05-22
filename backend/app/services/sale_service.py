@@ -38,6 +38,7 @@ class SaleService:
                 sale_id = new_sale.id,
                 tenant_id = tenant_id,
                 user_id = user_id,
+                product_id = item.get("id"),
                 channel = sale.get("channel")
 
             )

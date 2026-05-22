@@ -28,5 +28,6 @@ class ItemSale(db.Model):
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     sale_id = db.Column(db.Integer, db.ForeignKey('sales.id'), nullable=False)
     tenant_id = db.Column(db.Integer, db.ForeignKey('tenants.id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     channel = db.Column(db.String(50), default="physical")

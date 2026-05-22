@@ -26,17 +26,18 @@ class ItemSchema(Schema):
 
     sku = fields.Str(required=True)
 
-    item_price = fields.Decimal(required=True)
+    item_price = fields.Decimal(required=True, data_key="itemPrice")
 
 
 class SaleSchema(Schema):
 
-    total_price = fields.Decimal(required=True)
+    total_price = fields.Decimal(required=True, data_key="totalToPay")
 
-    payment_method = fields.Str(required=True)
+    payment_method = fields.Str(required=True, data_key="paymentMethod")
 
-    quantity_items =  fields.Int(required=True)
+    quantity_items =  fields.Int(required=True, data_key="itemQuantity")
 
+    channel = fields.Str(required=True)
 
 
 class CreateSaleSchema(Schema):
