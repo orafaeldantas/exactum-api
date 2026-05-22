@@ -20,6 +20,17 @@ import {
   Star
 } from "lucide-react"
 
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ReferenceLine
+} from "recharts";
+
 /**
  * @component Dashboard
  * @description Interface de comando central com KPIs, Gráficos de Meta e Insights de IA.
@@ -49,6 +60,20 @@ function Dashboard() {
   })
   const goalValue = tenantData.goal ? parseInt(tenantData.goal) : 0;
 
+  const salesGoalChart = [
+    { day: "01", revenue: 4200 },
+    { day: "05", revenue: 9200 },
+    { day: "10", revenue: 17500 },
+    { day: "15", revenue: 26000 },
+    { day: "20", revenue: 39000 },
+    { day: "25", revenue: 57000 },
+    { day: "30", revenue: 78000 }
+  ];
+  
+  const progress =
+    goalValue > 0
+      ? Math.min((invoicing / goalValue) * 100, 100)
+      : 0;
 
 
   const stats = [
@@ -148,19 +173,61 @@ function Dashboard() {
               </p>
             </div>
           </div>
-          <div className="relative h-64 w-full border-b border-l border-slate-100 px-4">
-            <div className="absolute w-full border-t-2 border-dashed border-slate-200" style={{ bottom: '70%' }}>
-              <span className="absolute -top-5 right-0 text-[10px] font-bold text-slate-400 uppercase tracking-tight">Meta: R$ {goalValue}</span>
-            </div>
-            <svg className="absolute bottom-0 left-0 w-full h-full" preserveAspectRatio="none">
-              <polyline fill="none" stroke="#2563eb" strokeWidth="3" points="0,250 100,220 200,210 300,160 400,140 500,90 600,40" strokeLinecap="round" className="drop-shadow-lg" />
-            </svg>
-            <div className="flex justify-between absolute bottom-[-25px] w-full text-[10px] font-bold text-slate-400 uppercase">
-              <span>Dia 01</span>
-              <span>Dia 15</span>
-              <span>Dia 30</span>
-            </div>
-          </div>
+          <ResponsiveContainer width="100%" height={250}>
+
+            <AreaChart data={salesGoalChart}>
+
+              <defs>
+
+                <linearGradient
+                  id="salesGradient"
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="1"
+                >
+                  <stop offset="0%" stopColor="#2563eb" stopOpacity={0.35}/>
+                  <stop offset="100%" stopColor="#2563eb" stopOpacity={0}/>
+                </linearGradient>
+
+              </defs>
+
+              <CartesianGrid
+                vertical={false}
+                strokeDasharray="4 4"
+              />
+
+              <XAxis
+                dataKey="day"
+                axisLine={false}
+                tickLine={false}
+              />
+
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+              />
+
+              <Tooltip />
+
+              <ReferenceLine
+                y={goalValue}
+                stroke="#f59e0b"
+                strokeDasharray="6 6"
+                label="META"
+              />
+
+              <Area
+                type="monotone"
+                dataKey="revenue"
+                stroke="#2563eb"
+                strokeWidth={4}
+                fill="url(#salesGradient)"
+              />
+
+            </AreaChart>
+
+          </ResponsiveContainer>
         </div>
 
         <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
