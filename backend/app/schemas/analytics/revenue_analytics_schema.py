@@ -43,5 +43,8 @@ class ListRevenueAnalyticsResponseSchema(Schema):
     top_product = fields.Nested(GetTopProductSchema) 
 
 
+class ListAccumulatedRevenueDaySchema(Schema):
 
+    day = fields.Int()
 
+    revenue = fields.Decimal(places=2)

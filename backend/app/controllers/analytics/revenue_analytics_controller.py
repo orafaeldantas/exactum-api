@@ -12,3 +12,11 @@ class RevenueAnalyticsController:
             g.tenant_id,
             period=query_params["period"]
         )
+    
+    @staticmethod
+    def list_accumulated_revenue_day(query_params):
+
+        return RevenueAnalyticsService.list_accumulated_revenue_day(
+            g.tenant_id,
+            period=query_params["period"]
+        )

@@ -67,3 +67,28 @@ class RevenueAnalyticsRepository:
             db.func.sum(Sale.total_price).desc()
 
         ).all()
+    
+    @staticmethod
+    def get_daily_revenue(tenant_id, period):
+        start_date, end_date = DateService.get_period_range(period)
+
+        return db.session.query(
+
+            db.func.date(Sale.created_at).label("day"),
+            db.func.sum(Sale.total_price).label("revenue_day")
+
+        ).filter(
+
+            Sale.tenant_id == tenant_id,
+
+            Sale.created_at.between(start_date, end_date)
+
+        ).group_by(
+
+            db.func.date(Sale.created_at)
+
+        ).order_by(
+
+            db.func.date(Sale.created_at)
+
+        ).all()
