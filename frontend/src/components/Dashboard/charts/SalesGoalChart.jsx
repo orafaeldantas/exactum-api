@@ -27,19 +27,12 @@ import {
 
 function SalesGoalChart({
     goalValue,
-    invoicing
+    invoicing,
+    accumulatedRevenueDaily
 
 }) {
 
-    const salesGoalChart = [
-        { day: "01", revenue: 4200 },
-        { day: "05", revenue: 9200 },
-        { day: "10", revenue: 17500 },
-        { day: "15", revenue: 26000 },
-        { day: "20", revenue: 39000 },
-        { day: "25", revenue: 57000 },
-        { day: "30", revenue: 78000 }
-      ];
+    const salesGoalChart = accumulatedRevenueDaily;
 
     const progress =
         goalValue > 0
@@ -135,7 +128,7 @@ function SalesGoalChart({
 
                 tick={{
                   fill: "#64748b",
-                  fontSize: 11
+                  fontSize: 15
                 }}
 
                 tickFormatter={(value) => {
@@ -161,7 +154,7 @@ function SalesGoalChart({
 
                 formatter={(value) => [
                   `R$ ${Number(value).toLocaleString("pt-BR")}`,
-                  "Receita"
+                  "Receita acumulada"
                 ]}
               />
 

@@ -3,7 +3,8 @@ import { UserContext } from "../context/UserContext";
 import { TenantContext } from "../context/TenantContext";
 import { getProducts } from "../services/productService"; 
 import { getUsers } from "../services/userService"; 
-import { getSales, getTopItems } from "../services/saleService"; 
+import { getSales, getTopItems } from "../services/saleService";
+import { getRevenueDaily } from "../services/revenueService"; 
 
 import DashboardHeader from "../components/Dashboard/DashboardHeader";
 import DashboardStats from "../components/Dashboard/DashboardStats";
@@ -23,6 +24,7 @@ function Dashboard() {
   const { users = [], loadUsers } = getUsers();
   const { sales = [], invoicing, loadSales } = getSales();
   const { topItems = [], loadTopItems } = getTopItems();
+  const { accumulatedRevenueDaily = [], loadAccumulatedRevenueDaily } = getRevenueDaily()
   
   const today = new Date();
   const [month] = useState((today.getMonth() + 1).toString().padStart(2, '0'));
@@ -50,6 +52,7 @@ function Dashboard() {
     loadUsers();
     loadSales(month, year);
     loadTopItems(month, year);
+    loadAccumulatedRevenueDaily()
   }, [month, year]);
 
   return (
@@ -73,6 +76,7 @@ function Dashboard() {
         <SalesGoalChart
           goalValue={goalValue}
           invoicing={invoicing}
+          accumulatedRevenueDaily={accumulatedRevenueDaily}
         />
 
         <TopProductsCard
