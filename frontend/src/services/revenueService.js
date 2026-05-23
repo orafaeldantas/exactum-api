@@ -5,6 +5,7 @@ export function getRevenuePeriod() {
   const [revenuePeriod, setRevenuePeriod] = useState([]);
   const [goal, setGoal] = useState([]);
   const [loading, setLoading] = useState(false);
+  
 
   async function loadRevenue(period) {
     try {
@@ -31,10 +32,38 @@ export function getRevenuePeriod() {
       setLoading(false);
     }
   }
-    
 
+  
   return { revenuePeriod, loadRevenue, goal, loadGoal};
 }
+
+
+export function getRevenueDaily(){
+  
+  const [accumulatedRevenueDaily, setAccumulatedRevenueDaily] = useState([])
+  const [loading, setLoading] = useState(false);
+  
+  async function loadAccumulatedRevenueDaily() {
+    try {
+      setLoading(true);
+      const response = await apiFetch("analytics/revenue/accumulated-revenue-day?period=month");
+      const data = await response.json();
+      setAccumulatedRevenueDaily(data);
+    } catch (err) {
+      console.error("Erro ao carregar:", err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return { accumulatedRevenueDaily, loadAccumulatedRevenueDaily};
+}
+
+
+  
+
+
+
 
 
   
