@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Box, BarChart3, Bell, LayoutDashboard, ArrowRight, CheckCircle2 } from "lucide-react";
 
 export default function Home() {
@@ -37,14 +37,17 @@ export default function Home() {
 
       {/* HERO SECTION */}
       <section className="relative overflow-hidden bg-gray-50/50 py-24 px-6">
+        
         <div className="mx-auto max-w-4xl text-center">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-blue-50 px-4 py-1.5 text-sm font-semibold text-blue-700 border border-blue-100">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"></span>
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-600"></span>
-            </span>
-            Nova versão 2.0 disponível
-          </div>
+          {/*
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-blue-50 px-4 py-1.5 text-sm font-semibold text-blue-700 border border-blue-100">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"></span>
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-600"></span>
+              </span>
+              Nova versão 2.0 disponível
+            </div>
+            */}
           
           <h2 className="mb-6 text-5xl font-extrabold tracking-tight text-slate-900 md:text-6xl">
             Controle seu estoque com <span className="text-blue-600">inteligência</span>
@@ -112,7 +115,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FOOTER - Simples e Limpo */}
+      {/* FOOTER */}
       <footer className="border-t border-gray-100 py-12 px-6 bg-gray-50/50">
         <div className="mx-auto max-w-7xl flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-2 opacity-50">
@@ -123,8 +126,13 @@ export default function Home() {
             © 2026 Exactum Tecnologia. Inteligência em cada unidade.
           </p>
           <div className="flex gap-6 text-sm text-slate-400">
-            <a href="#" className="hover:text-blue-600">Privacidade</a>
-            <a href="#" className="hover:text-blue-600">Termos</a>
+            <Link to="/privacy" className="hover:text-blue-600">
+              Privacidade
+            </Link>
+
+            <Link to="/terms" className="hover:text-blue-600">
+              Termos
+            </Link>
           </div>
         </div>
       </footer>

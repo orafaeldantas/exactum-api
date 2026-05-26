@@ -5,6 +5,10 @@ import Home from "./features/home/Home";
 import CreateTenant from "./features/tenant/pages/CreateTenant";
 import SuccessPage from "./features/tenant/pages/SuccessPage";
 import ManageCompanies from "./features/manage/ManageCompanies";
+import AboutPage from "./features/informations/AboutPage";
+import PrivacyPage from "./features/informations/Privacy";
+import TermsPage from "./features/informations/Terms";
+import InfoLayout from "./features/informations/InfoLayout";
 
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -19,6 +23,7 @@ import UserSettings from "./pages/UserSettings";
 import RevenuePeriod from "./pages/RevenuePeriod";
 import AverageTicketAnalytics from "./pages/AverageTicket";
 import ListProductsSales from "./pages/ListProductsSales"
+
 
 import Layout from "./layouts/MainLayout";
 import RoleRoute from "./routes/RoleRoute";
@@ -46,6 +51,12 @@ function App() {
 
       
       <Routes>
+
+        <Route element={<InfoLayout />}>
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+        </Route>
 
           
         <Route path="/" element={<Home />} />
