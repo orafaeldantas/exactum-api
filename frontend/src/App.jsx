@@ -18,6 +18,7 @@ import AdminSettings from "./pages/AdminSettings";
 import UserSettings from "./pages/UserSettings";
 import RevenuePeriod from "./pages/RevenuePeriod";
 import AverageTicketAnalytics from "./pages/AverageTicket";
+import ListProductsSales from "./pages/ListProductsSales"
 
 import Layout from "./layouts/MainLayout";
 import RoleRoute from "./routes/RoleRoute";
@@ -122,6 +123,15 @@ function App() {
             element={
               <RoleRoute requiredRole={["admin"]}>
                 <AdminSettings />
+              </RoleRoute>
+            }
+          />
+
+          <Route
+            path="/products-sales"
+            element={
+              <RoleRoute requiredRole={["admin", "super-admin"]}>
+                <ListProductsSales />
               </RoleRoute>
             }
           />

@@ -1,4 +1,5 @@
 from datetime import datetime, timezone, timedelta
+import re
 
 from app.exceptions.helpers.date_exceptions import InvalidPeriod
 
@@ -22,7 +23,29 @@ class DateService:
     
     @staticmethod
     def get_period_range(period):
-        
+           
+        if "month" and "year" in period:
+
+            data = re.findall(r'\d+', period)
+
+            if len(data) >= 2:
+
+                year = int(next(n for n in data if len(n) == 4))
+                month = int(next(n for n in data if len(n) <= 2))
+
+            start_date = datetime(year, month, 1)
+
+            if month == 12:
+
+                end_date = datetime(year + 1, 1, 1)
+
+            else:
+
+                end_date = datetime(year, month + 1, 1)
+
+            return start_date, end_date 
+
+
         date_now = datetime.now(timezone.utc)
 
         if period == "today":

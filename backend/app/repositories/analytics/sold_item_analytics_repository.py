@@ -9,26 +9,31 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-class ItemAnalyticsRepository:
+class SoldItemAnalyticsRepository:
 
     @staticmethod
-    def list_items_by_period(tenant_id, period, quantity=5):
+    def list_sold_items_by_period(tenant_id, period, quantity=None):
 
         start_date, end_date = DateService.get_period_range(period)
 
         return db.session.query(
             ItemSale.name,
             ItemSale.sku,
+            ItemSale.product_id,
             db.func.sum(
                 ItemSale.quantity
-            ).label("total_quantity")
+            ).label("total_quantity"),
+            db.func.sum(
+                ItemSale.item_price * ItemSale.quantity
+            ).label("revenue")
         ).filter(
             ItemSale.tenant_id == tenant_id,
             ItemSale.created_at >= start_date,
             ItemSale.created_at < end_date
         ).group_by(
             ItemSale.name,
-            ItemSale.sku
+            ItemSale.sku,
+            ItemSale.product_id
         ).order_by(
             db.func.sum(
                 ItemSale.quantity
