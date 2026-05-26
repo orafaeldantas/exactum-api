@@ -112,21 +112,9 @@ export default function RevenueAnalytics() {
     {
       id: 1,
       channel: "Loja Física",
-      value: 68450.90,
-      percentage: 53,
-    },
-    {
-      id: 2,
-      channel: "E-commerce",
-      value: 38250.50,
-      percentage: 30,
-    },
-    {
-      id: 3,
-      channel: "Marketplace",
-      value: 21749.50,
-      percentage: 17,
-    },
+      value: totalRevenue,
+      percentage: 100,
+    }
   ];
 
   /*
