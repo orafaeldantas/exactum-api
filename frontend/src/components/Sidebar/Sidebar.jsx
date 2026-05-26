@@ -172,9 +172,15 @@ function Sidebar() {
               <span className="text-[10px] font-bold uppercase tracking-tight">Impersonate Mode</span>
             </div>
           )}
-          <div className="p-4 rounded-2xl bg-slate-800/50">
-            <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Versão</p>
-            <p className="text-xs text-slate-300">v2.0.26 - Pro</p>
+          <div className="rounded-2xl bg-slate-800/50 p-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-700">
+              <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Versão</p>
+              <p className="text-xs text-slate-300">v0.3.11</p>
+            </div>
+            <div className="flex items-center justify-between pt-3">
+              <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Plano</p>
+              <p className="text-xs text-blue-300">Starter</p>
+            </div>
           </div>
         </div>
       )}
