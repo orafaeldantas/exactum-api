@@ -1,6 +1,6 @@
 
 from app.repositories.analytics.revenue_analytics_repository import RevenueAnalyticsRepository 
-from app.repositories.analytics.item_analytics_repository import ItemAnalyticsRepository
+from app.repositories.analytics.sold_item_analytics_repository import SoldItemAnalyticsRepository
 from app.services.helpers.date_service import DateService
 
 
@@ -12,7 +12,7 @@ class RevenueAnalyticsService:
         
         revenue_metrics = RevenueAnalyticsRepository.get_revenue_metrics(tenant_id, period)
         payment_methods = RevenueAnalyticsRepository.get_payment_methods_metrics(tenant_id, period)
-        top_product = ItemAnalyticsRepository.get_top_product(tenant_id, period)
+        top_product = SoldItemAnalyticsRepository.get_top_product(tenant_id, period)
         
     
 

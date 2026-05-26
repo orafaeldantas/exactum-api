@@ -55,7 +55,7 @@ def create_app():
     from app.routes.tenant_routes import blp_tenants
     from app.routes.product_routes import blp_products
     from app.routes.sale_routes import blp_sales
-    from app.routes.analytics.item_analytics_routes import blp_item_analytics
+    from app.routes.analytics.sold_item_analytics_routes import blp_item_analytics
     from app.routes.analytics.revenue_analytics_routes import blp_revenue_analytics
     from app.routes.super_admin_routes import blp_super_admin
 

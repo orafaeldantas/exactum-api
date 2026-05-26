@@ -181,7 +181,7 @@ function TopProductsCard({
           <div className="p-4 border-t border-slate-100">
 
             <button
-              onClick={() => navigate("/products")}
+              onClick={() => navigate("/products-sales")}
               className="
                 w-full
                 h-12
