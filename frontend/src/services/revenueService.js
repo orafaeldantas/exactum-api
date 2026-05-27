@@ -46,7 +46,7 @@ export function getRevenueDaily(){
   async function loadAccumulatedRevenueDaily() {
     try {
       setLoading(true);
-      const response = await apiFetch("analytics/revenue/accumulated-revenue-day?period=month");
+      const response = await apiFetch("/analytics/revenue/accumulated-revenue-day?period=month");
       const data = await response.json();
       setAccumulatedRevenueDaily(data);
     } catch (err) {
@@ -57,6 +57,29 @@ export function getRevenueDaily(){
   }
 
   return { accumulatedRevenueDaily, loadAccumulatedRevenueDaily};
+}
+
+export function getAverageTicketMetrics(){
+  
+  
+  const [averageTicketMetrics, setAverageTicketMetric] = useState([])
+  const [loading, setLoading] = useState(false);
+  
+  async function loadAverageTicketMetrics(month, year) {
+    try {
+      setLoading(true);
+      const response = await apiFetch(`/analytics/revenue/ticket-average?period=month${month}year${year}`);
+      const data = await response.json();
+      setAverageTicketMetric(data);
+      console.log(data)
+    } catch (err) {
+      console.error("Erro ao carregar:", err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return { averageTicketMetrics, loadAverageTicketMetrics };
 }
 
 
