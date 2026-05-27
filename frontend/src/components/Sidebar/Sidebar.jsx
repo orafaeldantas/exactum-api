@@ -175,7 +175,7 @@ function Sidebar() {
           <div className="rounded-2xl bg-slate-800/50 p-4">
             <div className="flex items-center justify-between pb-3 border-b border-slate-700">
               <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Versão</p>
-              <p className="text-xs text-slate-300">v0.3.11</p>
+              <p className="text-xs text-slate-300">v0.1.0-alpha</p>
             </div>
             <div className="flex items-center justify-between pt-3">
               <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Plano</p>

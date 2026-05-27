@@ -109,6 +109,7 @@ O **Exactum** centraliza o fluxo de entradas, saídas e PDV, utilizando o histó
 * **Docker & Docker Compose:** Containerização de todo o ambiente, eliminando o comportamento de "funciona na minha máquina".
 * **Nginx (Reverse Proxy):** Gateway central que gerencia o roteamento de tráfego TLS/HTTP para o frontend e para a API.
 * **CI/CD:** Pipeline automatizado via **GitHub Actions** realizando testes integrados e deploy automatizado na VPS (**Hetzner**).
+> O deploy em VPS foi realizado ainda na fase Alpha para validar o comportamento do sistema fora do ambiente local e orientar futuras decisões de infraestrutura, observabilidade e escalabilidade.
 
 ### 🚀 Roadmap Técnico (Próximos Passos)
 - [ ] Implementação de cache de alta performance com **Redis**
