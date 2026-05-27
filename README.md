@@ -1,10 +1,14 @@
 # Exactum
 
-> ERP Web Fullstack para gestão de estoque e PDV de pequenos e médios comércios — substituindo o "achismo" por decisões baseadas em dados históricos, com arquitetura multi-tenant isolada por middleware e pronta para escala.
+> ERP Web Fullstack para gestão de estoque, vendas e PDV de pequenos e médios comércios.
+
+> O Exactum centraliza operações de estoque e utiliza dados históricos para apoiar tomadas de decisão no varejo.
+
+> Arquitetura multi-tenant, autenticação JWT, CI/CD automatizado e deploy containerizado em VPS Linux.
 
 🔗 **[Demo ao Vivo](https://exactum.app.br/)** · 🐛 **[Reportar Bug](https://github.com/orafaeldantas/exactum-api/issues)**
 
-⚠️ **Nota:** O projeto encontra-se atualmente em **fase Alpha**. A estrutura central de segurança, multi-tenancy e PDV já estão totalmente operacionais, enquanto recursos preditivos e otimizações de infraestrutura estão sendo implantados ativamente (veja nosso Roadmap).
+⚠️ **Nota:** O projeto encontra-se atualmente em **fase Alpha**. Os módulos centrais de segurança, multi-tenancy e PDV já estão operacionais, enquanto recursos preditivos e melhorias de infraestrutura continuam em desenvolvimento ativo (veja o Roadmap).
 
 <p align="left">
   <img src="https://img.shields.io/badge/Status-Alpha-orange?style=for-the-badge" alt="Status Alpha" />
@@ -60,7 +64,7 @@
 
 A gestão de estoque no pequeno varejo ainda é feita com base na intuição ("no olho"). O resultado disso é um ciclo prejudicial: capital imobilizado em mercadoria parada ou perda de faturamento por falta de produto.
 
-O **Exactum** centraliza o fluxo de entradas, saídas e PDV, utilizando o histórico de movimentação para automatizar a inteligência do negócio. Através de alertas estruturados e modelos de previsão de demanda por período, o sistema transforma a reposição de estoque em uma decisão puramente técnica e orientada a dados.
+O **Exactum** centraliza o fluxo de entradas, saídas e PDV, utilizando o histórico de movimentação para automatizar a inteligência do negócio. Através de alertas estruturados e modelos de previsão de demanda por período, o sistema transforma a reposição de estoque em uma decisão orientada a dados.
 
 ---
 
@@ -81,20 +85,23 @@ O **Exactum** centraliza o fluxo de entradas, saídas e PDV, utilizando o histó
 | Versionamento de banco e automação de schemas (Flask-Migrate / Alembic) | ✅ Produção | DevOps / Backend |
 | **Análise preditiva de estoque (Machine Learning)** | 🔄 Desenvolvimento | AI / Backend |
 | Geração de Nota Fiscal Eletrônica (API simulada) | 📋 Roadmap | Backend |
+| Hub de Integração Omnichannel (Marketplaces e E-commerce - API Simulada) | 📋 Roadmap | Backend |
 | Exportação de relatórios gerenciais (CSV/PDF) | 📋 Roadmap | Fullstack |
 | Logs de auditoria e segurança (Trail Audit) | 📋 Roadmap | Backend |
+| Sistema de Avisos e Comunicação Interna (Mural do Tenant) | 📋 Roadmap | Fullstack |
+| Integração de Notificações em Tempo Real via Bot do Telegram | 📋 Roadmap | Backend |
 
 ---
 
 ## 🧳 Arquitetura e Stack Tecnológica
 
 ### Backend
-* **Flask (Estrutura MVC Patrão):** Utiliza **Flask-Smorest** para roteamento estrito e geração automática da documentação OpenAPI/Swagger. Validação robusta de payloads com **Marshmallow** e qualidade de código assegurada via **Ruff**.
+* **Flask (Estrutura MVC):** Utiliza **Flask-Smorest** para roteamento estrito e geração automática da documentação OpenAPI/Swagger. Validação robusta de payloads com **Marshmallow** e qualidade de código assegurada via **Ruff**.
 * **SQLAlchemy (ORM):** Abstração de banco com queries explicitamente filtradas por Tenant ID em nível de repositório, mitigando riscos de vazamento de dados.
-* **PostgreSQL:** Banco de dados relacional utilizando transações ACID estritas para garantir a consistência do histórico de movimentações do PDV.
+* **PostgreSQL:** Banco de dados relacional utilizando transações ACID para garantir a consistência do histórico de movimentações do PDV.
 
 ### Frontend
-* **React (Vite):** SPA rápida, com estado previsível e componentização limpa.
+* **React (Vite):** SPA rápida e componentização limpa.
 * **Tailwind CSS:** Estilização baseada em classes utilitárias para garantir uma UI fluida, responsiva e de alta performance.
 * **Nginx:** Atua como servidor web estático de alta performance para a build do React.
 
@@ -107,16 +114,19 @@ O **Exactum** centraliza o fluxo de entradas, saídas e PDV, utilizando o histó
 - [ ] Implementação de cache de alta performance com **Redis**
 - [ ] Processamento de tarefas assíncronas com **Celery + RabbitMQ**
 - [ ] Observabilidade centralizada com **Prometheus + Grafana**
-- [ ] Migração de arquitetura para **DDD (Domain-Driven Design)**
+- [ ] Maior separação por domínio e evolução arquitetural inspirada em **DDD**
 - [ ] Integração com **Groq API** (LLM) para insights e análises preditivas na UI
+- [ ] Arquitetura de Webhooks e consumo de APIs externas (Mercado Livre, Shopee, WooCommerce)
+- [ ] Sistema de notificações push/mensageria e integração com **Telegram Bot API**
+- [ ] Mural de avisos internos utilizando arquitetura orientada a eventos
 
 ---
 
 ## ⚖️ Decisões Técnicas
 
-### 🔒 Dupla Camada de Segurança no Tenant (Zero-Trust)
-A maioria das aplicações multi-tenant confia em um único filtro para isolar os dados dos clientes, o que abre margem para falhas humanas em queries complexas. No Exactum, adotamos uma abordagem de "paranoia intencional" com dupla validação:
-1. **Validação via Middleware (O Guardião):** Toda requisição que entra na API é interceptada. O middleware identifica o usuário, valida suas permissões e estabelece de forma imutável o contexto do tenant para aquela sessão. 
+### 🔒 Dupla Camada de Segurança no Tenant (Estratégia de isolamento redundante de tenants)
+A maioria das aplicações multi-tenant confia em um único filtro para isolar os dados dos clientes, o que abre margem para falhas humanas em queries complexas. No Exactum, adotamos uma abordagem com dupla validação:
+1. **Validação via Middleware:** Toda requisição que entra na API é interceptada. O middleware identifica o usuário, valida suas permissões e estabelece de forma imutável o contexto do tenant para aquela sessão. 
 2. **Filtro Explícito na Query:** A camada de persistência não confia cegamente no contexto. Todas as queries possuem obrigatoriamente um filtro explícito de tenant. 
 
 > As duas camadas precisam bater perfeitamente para que qualquer dado seja exposto. Esse isolamento redundante elimina o risco de vazamento de informações entre contas.
@@ -126,7 +136,7 @@ Em vez do fluxo tradicional de e-mail com links de expiração rápida, o admini
 
 ### 🔑 Estratégia de Autenticação: JWT & Evolução de Segurança
 Atualmente, o sistema utiliza **JWT (JSON Web Tokens)** para autenticação stateless, com o token armazenado temporariamente no `sessionStorage` do cliente.
- 
+
 **Próxima iteração de segurança:** Para mitigar riscos de ataques do tipo XSS (Cross-Site Scripting), o Roadmap de segurança prevê a migração do armazenamento do token para **Cookies HttpOnly/Secure** gerenciados pelo backend. Isso garante que o ecossistema React não tenha acesso direto ao token via JavaScript, elevando o projeto para os padrões recomendados de segurança de mercado.
 
 ### ⚡ Flask-Smorest + Marshmallow vs FastAPI
@@ -173,7 +183,7 @@ Certifique-se de ter instalado em sua máquina:
 
 ### 1. Clonar o repositório
 ```bash
-git clone [https://github.com/orafaeldantas/exactum-api.git](https://github.com/orafaeldantas/exactum-api.git)
+git clone https://github.com/orafaeldantas/exactum-api.git
 cd exactum-api
 ```
 ###  2. Configurar o Ambiente Backend
