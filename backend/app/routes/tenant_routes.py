@@ -1,29 +1,24 @@
 from flask.views import MethodView
-from flask_smorest import Blueprint
 from flask_jwt_extended import jwt_required
-
-from app.schemas.tenant_schema import (
-    CreateTenantSchema, ResponseTenantSchema,
-    UdateTenantSchema, ResponseCreateTenantSchema,
-    ResponseUdateTenantSchema
-)
+from flask_smorest import Blueprint
 
 from app.controllers.tenant_controller import TenantController
-
-from app.security import owner_required, role_authorization
-
+from app.schemas.tenant_schema import (
+    CreateTenantSchema,
+    ResponseCreateTenantSchema,
+    ResponseTenantSchema,
+    ResponseUdateTenantSchema,
+    UdateTenantSchema,
+)
+from app.security import role_authorization
 
 blp_tenants = Blueprint(
-    "tenants",
-    __name__,
-    url_prefix="/tenants",
-    description="Tenants operations"
+    "tenants", __name__, url_prefix="/tenants", description="Tenants operations"
 )
 
 
 @blp_tenants.route("/")
 class TenantCreateRoute(MethodView):
-
     @jwt_required()
     @role_authorization(["admin", "super-admin"])
     @blp_tenants.doc(security=[{"BearerAuth": []}])
@@ -37,7 +32,7 @@ class TenantCreateRoute(MethodView):
     def post(self, data):
 
         return TenantController.create_tenant(data)
-    
+
     @jwt_required()
     @role_authorization(["admin", "super-admin"])
     @blp_tenants.doc(security=[{"BearerAuth": []}])
@@ -46,5 +41,3 @@ class TenantCreateRoute(MethodView):
     def patch(self, data):
 
         return TenantController.update_tenant(data)
-
-        

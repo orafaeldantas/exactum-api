@@ -1,25 +1,23 @@
-from marshmallow import Schema, fields, validate
+from marshmallow import Schema, fields
 
 
 class SoldItemQuerySchema(Schema):
-
-    period = fields.Str() 
+    period = fields.Str()
 
 
 class SoldItemBaseSchema(Schema):
-
     name = fields.Str()
 
     total_quantity = fields.Int()
 
     sku = fields.Str()
 
-class BestSellersSchema(SoldItemBaseSchema):
 
+class BestSellersSchema(SoldItemBaseSchema):
     pass
 
-class SoldItemSchema(SoldItemBaseSchema):
 
+class SoldItemSchema(SoldItemBaseSchema):
     revenue = fields.Decimal(places=2)
 
     product_id = fields.Int()
