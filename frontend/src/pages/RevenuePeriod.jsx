@@ -33,8 +33,7 @@ export default function RevenueAnalytics() {
   const revenueMetrics = revenuePeriod.revenue_metrics ?? 0;
   const paymentMetrics = revenuePeriod.payment_metrics ?? 0;
   const topProduct = revenuePeriod.top_product ?? 0;
-
-
+  
   const paymentMoney = paymentMetrics && paymentMetrics.find(item => item.payment_method === "money");
   const paymentCredit = paymentMetrics && paymentMetrics.find(item => item.payment_method === "credit");
   const paymentPix = paymentMetrics && paymentMetrics.find(item => item.payment_method === "pix");
@@ -113,21 +112,9 @@ export default function RevenueAnalytics() {
     {
       id: 1,
       channel: "Loja Física",
-      value: 68450.90,
-      percentage: 53,
-    },
-    {
-      id: 2,
-      channel: "E-commerce",
-      value: 38250.50,
-      percentage: 30,
-    },
-    {
-      id: 3,
-      channel: "Marketplace",
-      value: 21749.50,
-      percentage: 17,
-    },
+      value: totalRevenue,
+      percentage: 100,
+    }
   ];
 
   /*

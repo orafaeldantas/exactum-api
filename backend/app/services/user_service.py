@@ -1,15 +1,14 @@
+from app.database.session import DatabaseSession
+from app.exceptions.user_exceptions import (
+    InvalidPasswordException,
+    PasswordMismatchException,
+    UserNotFound,
+)
 from app.models import User
 from app.repositories.user_repository import UserRepository
-from app.database.session import DatabaseSession
-
-from app.exceptions.user_exceptions import (
-    UserNotFound, PasswordMismatchException,
-    InvalidPasswordException
-)
 
 
 class UserService:
-
     @staticmethod
     def list_users(tenant_id):
 
@@ -24,7 +23,7 @@ class UserService:
             is_active=data.get("is_active"),
             role=data.get("role", "user"),
             email=data.get("email"),
-            password_reset=True
+            password_reset=True,
         )
 
         user.set_password(data.get("password"))
@@ -33,7 +32,7 @@ class UserService:
         DatabaseSession.commit()
 
         return user
-    
+
     @staticmethod
     def get_user(user_id):
 
@@ -41,9 +40,9 @@ class UserService:
 
         if not user:
             raise UserNotFound()
-        
+
         return user
-    
+
     @staticmethod
     def update_user(data, user_id):
 
@@ -51,47 +50,37 @@ class UserService:
 
         if not user:
             raise UserNotFound()
-        
-        if data.get("confirme_password"): 
-            if (data.get("password")) != data.get("confirme_password"):
 
+        if data.get("confirme_password"):
+            if (data.get("password")) != data.get("confirme_password"):
                 raise PasswordMismatchException()
 
-        if data.get("password"):    
+        if data.get("password"):
             user.set_password(data["password"])
 
-        update_fields = [
-            "username",
-            "email",
-            "role",
-            "is_active",
-            "password_reset"
-        ]
+        update_fields = ["username", "email", "role", "is_active", "password_reset"]
 
         for field in update_fields:
-
             if field in data:
-
                 setattr(user, field, data[field])
-        
+
         DatabaseSession.add(user)
         DatabaseSession.commit()
 
         return user
-    
+
     @staticmethod
     def update_profile(data, user_id):
-        
+
         user = UserRepository.get_user(user_id)
 
         if data.get("current_password"):
-
             if not user.check_password(data["current_password"]):
                 raise InvalidPasswordException()
-            
+
             if data.get("password") != data.get("confirm_password"):
                 raise PasswordMismatchException()
-        
+
         user.set_password(data["password"])
 
         update_fields = [
@@ -100,16 +89,10 @@ class UserService:
         ]
 
         for field in update_fields:
-
             if field in data:
-
                 setattr(user, field, data[field])
 
         DatabaseSession.add(user)
         DatabaseSession.commit()
 
         return user
-
-        
-        
-

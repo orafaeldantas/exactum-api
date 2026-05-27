@@ -1,10 +1,7 @@
-
 from marshmallow import Schema, fields, validate
 
 
-
 class TenantSchema(Schema):
-
     name = fields.Str(required=True)
 
     fantasyName = fields.Str(required=True)
@@ -15,24 +12,17 @@ class TenantSchema(Schema):
 
 
 class PlanSchema(Schema):
-
     type = fields.Str(
-        required=True,
-        validate=validate.OneOf([
-            "starter",
-            "growth",
-            "enterprise"
-        ])
+        required=True, validate=validate.OneOf(["starter", "growth", "enterprise"])
     )
 
 
 class AdminSchema(Schema):
-
     firstName = fields.Str(required=True)
 
     lastName = fields.Str(required=True)
 
-    email =  fields.Email(required=True)
+    email = fields.Email(required=True)
 
     password = fields.Str(required=True)
 
@@ -40,24 +30,14 @@ class AdminSchema(Schema):
 
 
 class CreateTenantSchema(Schema):
+    admin = fields.Nested(AdminSchema, required=True)
 
-    admin = fields.Nested(
-        AdminSchema,
-        required=True
-    )
+    company = fields.Nested(TenantSchema, required=True)
 
-    company = fields.Nested(
-        TenantSchema,
-        required=True
-    )
+    plan = fields.Nested(PlanSchema, required=True)
 
-    plan = fields.Nested(
-        PlanSchema,
-        required=True
-    )
 
 class ResponseTenantSchema(Schema):
-
     id = fields.Int(dump_only=True)
 
     name = fields.Str()
@@ -68,7 +48,6 @@ class ResponseTenantSchema(Schema):
 
 
 class UdateTenantSchema(Schema):
-    
     name = fields.Str(data_key="companyName")
 
     global_min_stock = fields.Int(data_key="minimumStock")
@@ -79,11 +58,10 @@ class UdateTenantSchema(Schema):
 
 
 class ResponseUdateTenantSchema(Schema):
-
     id = fields.Int(dump_only=True)
 
     name = fields.Str()
 
+
 class ResponseCreateTenantSchema(ResponseUdateTenantSchema):
-    
     pass

@@ -1,12 +1,11 @@
-from app.extensions import db
-
 import logging
+
+from app.extensions import db
 
 logger = logging.getLogger(__name__)
 
 
 class DatabaseSession:
-
     @staticmethod
     def add(instance):
 
@@ -21,11 +20,9 @@ class DatabaseSession:
     def commit():
 
         try:
-
             db.session.commit()
 
         except Exception:
-
             db.session.rollback()
 
             logger.exception("Error committing transaction")

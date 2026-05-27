@@ -1,5 +1,7 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
+
 from app.extensions import db
+
 
 class Goal(db.Model):
     __tablename__ = "goals"
@@ -9,6 +11,6 @@ class Goal(db.Model):
     type = db.Column(db.String(50), nullable=False)
     year = db.Column(db.Integer, nullable=False)
     month = db.Column(db.Integer, nullable=False)
-    value = db.Column(db.Numeric(12,2), nullable=False)
+    value = db.Column(db.Numeric(12, 2), nullable=False)
     description = db.Column(db.String(255))
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))

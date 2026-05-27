@@ -58,10 +58,10 @@ export function getTopItems() {
   const [topItems, setTopItems] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  async function loadTopItems(month, year) {
+  async function loadTopItems(period) {
     try {
       setLoading(true);
-      const response = await apiFetch("/analytics/items/best-sellers?period=month");
+      const response = await apiFetch("/analytics/sold-items/best-sellers?period=month");
       const data = await response.json();
       setTopItems(data);
     } catch (err) {
@@ -72,5 +72,33 @@ export function getTopItems() {
   }
 
   return { topItems, loadTopItems, loading };
+
+}
+
+export function getSoldItems() { 
+  const [soldItems, setSoldItems] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  async function loadSoldItems({ period = null, month = null, year = null } = {}) {
+    try {
+      setLoading(true);
+      let url = " "
+      if (period !== null) {
+         url = `/analytics/sold-items?period=${period}`
+      } else {
+        url = `/analytics/sold-items?period=month${month}year${year}`
+      }
+      const response = await apiFetch(url);
+      
+      const data = await response.json();
+      setSoldItems(data);
+    } catch (err) {
+      console.error("Erro ao carregar:", err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return { soldItems, loadSoldItems, loading };
 
 }

@@ -1,6 +1,4 @@
-
 class AppException(Exception):
-
     status_code = 400
 
     message = "Application error"
