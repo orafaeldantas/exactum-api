@@ -42,7 +42,6 @@ def create_app():
     if os.getenv("ENV") == "production":
         app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1)
 
-    from app.models import product, user
     from app.routes.analytics.revenue_analytics_routes import blp_revenue_analytics
     from app.routes.analytics.sold_item_analytics_routes import blp_item_analytics
     from app.routes.auth_routes import blp_auth
