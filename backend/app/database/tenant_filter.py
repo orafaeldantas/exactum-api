@@ -1,6 +1,7 @@
+from flask import g
 from sqlalchemy import event
 from sqlalchemy.orm import with_loader_criteria
-from flask import g
+
 
 def init_tenant_filter(db):
 
@@ -9,7 +10,7 @@ def init_tenant_filter(db):
 
         if not execute_state.is_select:
             return
-        
+
         if execute_state.execution_options.get("skip_tenant_filter"):
             return
 
@@ -18,23 +19,16 @@ def init_tenant_filter(db):
         if not tenant_id:
             return
 
-        from app.models import User, Product, Goal
+        from app.models import Goal, Product, User
 
         execute_state.statement = execute_state.statement.options(
             with_loader_criteria(
-                User,
-                lambda cls: cls.tenant_id == tenant_id,
-                include_aliases=True
+                User, lambda cls: cls.tenant_id == tenant_id, include_aliases=True
             ),
             with_loader_criteria(
-                Product,
-                lambda cls: cls.tenant_id == tenant_id,
-                include_aliases=True
+                Product, lambda cls: cls.tenant_id == tenant_id, include_aliases=True
             ),
             with_loader_criteria(
-                Goal,
-                lambda cls: cls.tenant_id == tenant_id,
-                include_aliases=True
-            )
-           
+                Goal, lambda cls: cls.tenant_id == tenant_id, include_aliases=True
+            ),
         )

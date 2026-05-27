@@ -1,34 +1,25 @@
 from flask.views import MethodView
-from flask_smorest import Blueprint
 from flask_jwt_extended import jwt_required
-
-from app.schemas.product_schema import (
-    CreateProductSchema, CreateProductResponseSchema,
-    ListProductResponseSchema, UpdateProductSchema,
-    UpdateProductResponseSchema, GetProductResponseSchema,
-    DeleteProductResponseSchema
-)
-
-
-
-
+from flask_smorest import Blueprint
 
 from app.controllers.product_controller import ProductController
-
-from app.security import owner_required, role_authorization
-
+from app.schemas.product_schema import (
+    CreateProductResponseSchema,
+    CreateProductSchema,
+    GetProductResponseSchema,
+    ListProductResponseSchema,
+    UpdateProductResponseSchema,
+    UpdateProductSchema,
+)
+from app.security import role_authorization
 
 blp_products = Blueprint(
-    "products",
-    __name__,
-    url_prefix="/products",
-    description="Product operations"
+    "products", __name__, url_prefix="/products", description="Product operations"
 )
 
 
 @blp_products.route("/")
 class ProductListRoute(MethodView):
-
     @jwt_required()
     @role_authorization(["admin", "super-admin", "users"])
     @blp_products.doc(security=[{"BearerAuth": []}])
@@ -38,7 +29,6 @@ class ProductListRoute(MethodView):
 
         return ProductController.create_product(data)
 
-
     @jwt_required()
     @role_authorization(["admin", "super-admin", "users"])
     @blp_products.doc(security=[{"BearerAuth": []}])
@@ -46,12 +36,10 @@ class ProductListRoute(MethodView):
     def get(self):
 
         return ProductController.list_all_products()
-    
-    
+
 
 @blp_products.route("/<int:product_id>")
 class ProductDetailRoute(MethodView):
-    
     @jwt_required()
     @role_authorization(["admin", "super-admin", "users"])
     @blp_products.doc(security=[{"BearerAuth": []}])
@@ -60,7 +48,6 @@ class ProductDetailRoute(MethodView):
     def patch(self, data, product_id):
 
         return ProductController.update_product(data, product_id)
-    
 
     @jwt_required()
     @role_authorization(["admin", "super-admin", "users"])
@@ -69,7 +56,6 @@ class ProductDetailRoute(MethodView):
     def get(self, product_id):
 
         return ProductController.get_product(product_id)
-    
 
     @jwt_required()
     @role_authorization(["admin", "super-admin", "users"])
@@ -79,5 +65,4 @@ class ProductDetailRoute(MethodView):
 
         ProductController.delete_product(product_id)
 
-        return ''
-
+        return ""

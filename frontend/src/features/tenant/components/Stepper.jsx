@@ -4,7 +4,7 @@ export default function Stepper({ steps, currentStep, onStepClick }) {
   return (
     <aside className="w-80 min-h-screen bg-slate-900 text-white p-8 flex flex-col border-r border-slate-800">
       
-      {/* Header do Setup */}
+      
       <div className="mb-12 flex items-center gap-3">
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white shadow-lg shadow-blue-900/20">
           <Box className="w-6 h-6" />
@@ -17,9 +17,9 @@ export default function Stepper({ steps, currentStep, onStepClick }) {
         </div>
       </div>
 
-      {/* Lista de Passos */}
+      
       <div className="flex flex-col gap-8 relative">
-        {/* Linha conectora vertical (opcional, dá um toque profissional) */}
+        
         <div className="absolute left-[15px] top-2 bottom-2 w-px bg-slate-800" />
 
         {steps.map((step, index) => {
@@ -33,7 +33,7 @@ export default function Stepper({ steps, currentStep, onStepClick }) {
               onClick={() => onStepClick?.(stepNumber)}
               className={`flex items-start gap-4 cursor-pointer group transition-all`}
             >
-              {/* Círculo do Passo */}
+              {/* Step Circle */}
               <div
                 className={`
                   relative z-10 w-8 h-8 flex items-center justify-center rounded-full text-sm font-bold transition-all duration-300
@@ -49,7 +49,7 @@ export default function Stepper({ steps, currentStep, onStepClick }) {
                 {isCompleted ? <Check className="w-4 h-4 stroke-[3px]" /> : stepNumber}
               </div>
 
-              {/* Textos do Passo */}
+              {/* Step Texts */}
               <div className="flex flex-col">
                 <p className={`
                   text-[10px] uppercase tracking-wider font-bold mb-0.5 transition-colors
