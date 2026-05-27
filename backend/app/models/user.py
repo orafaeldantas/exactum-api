@@ -1,20 +1,23 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
+
+from werkzeug.security import check_password_hash, generate_password_hash
+
 from app.extensions import db
-from werkzeug.security import generate_password_hash, check_password_hash
+
 
 class User(db.Model):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
-    tenant_id = db.Column(db.Integer, db.ForeignKey('tenants.id'), nullable=False)
+    tenant_id = db.Column(db.Integer, db.ForeignKey("tenants.id"), nullable=False)
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     is_active = db.Column(db.Boolean, default=True)
     password_reset = db.Column(db.Boolean, default=True)
-    role = db.Column(db.String(20), default="user") 
+    role = db.Column(db.String(20), default="user")
 
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)

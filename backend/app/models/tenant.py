@@ -1,5 +1,7 @@
+from datetime import UTC, datetime
+
 from app.extensions import db
-from datetime import datetime, timezone
+
 
 class Tenant(db.Model):
     __tablename__ = "tenants"
@@ -13,7 +15,6 @@ class Tenant(db.Model):
     global_min_stock = db.Column(db.Integer, nullable=True, default=10)
     corporate_email = db.Column(db.String(255), unique=True, nullable=True)
 
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
 
     users = db.relationship("User", backref="tenant")
-

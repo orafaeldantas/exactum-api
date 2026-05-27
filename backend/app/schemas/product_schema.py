@@ -1,8 +1,7 @@
-from marshmallow import Schema, fields, validate
+from marshmallow import Schema, fields
 
 
 class CreateProductSchema(Schema):
-
     name = fields.Str(required=True)
 
     description = fields.Str()
@@ -19,12 +18,10 @@ class CreateProductSchema(Schema):
 
 
 class CreateProductResponseSchema(Schema):
-
     id = fields.Int(dump_only=True)
 
 
 class UpdateProductSchema(Schema):
-
     name = fields.Str()
 
     description = fields.Str()
@@ -37,25 +34,20 @@ class UpdateProductSchema(Schema):
 
     is_active = fields.Bool()
 
-    
+
 class ListProductResponseSchema(UpdateProductSchema):
+    id = fields.Int(dump_only=True)
 
-    id = fields.Int(dump_only=True) 
-
-    stock_quantity = fields.Int() 
+    stock_quantity = fields.Int()
 
 
 class UpdateProductResponseSchema(CreateProductResponseSchema):
+    pass
 
-    pass 
 
 class GetProductResponseSchema(ListProductResponseSchema):
-
     pass
+
 
 class DeleteProductResponseSchema(CreateProductResponseSchema):
-
     pass
-
-
-
