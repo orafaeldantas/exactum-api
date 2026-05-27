@@ -22,7 +22,17 @@ class DateService:
         return start_date, end_date
     
     @staticmethod
-    def get_period_range(period):
+    def get_period_range(period, force_year=False):
+
+        if force_year:
+
+            data = re.findall(r'\d+', period)
+            year = int(next(n for n in data if len(n) == 4))
+
+            start_date = datetime(year, 1, 1)
+            end_date = datetime(year + 1, 1, 1)
+
+            return start_date, end_date
            
         if "month" and "year" in period:
 
