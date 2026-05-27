@@ -1,8 +1,10 @@
-from flask import g
-from flask_jwt_extended import get_jwt, verify_jwt_in_request, get_jwt_identity
 import logging
 
+from flask import g
+from flask_jwt_extended import get_jwt, get_jwt_identity, verify_jwt_in_request
+
 logger = logging.getLogger(__name__)
+
 
 def init_request_context(app):
     @app.before_request
@@ -18,7 +20,12 @@ def init_request_context(app):
             g.username = claims.get("username")
             g.password_reset = claims.get("password_reset")
 
-            logger.info(f"TENANT: {g.tenant_id}, USER ID: {g.user_id}, ROLE: {g.role}, EMAIL: {g.email}")
+            logger.info(
+                f"TENANT: {g.tenant_id}, "
+                f"USER ID: {g.user_id}, "
+                f"ROLE: {g.role}, "
+                f"EMAIL: {g.email}"
+            )
 
         except Exception:
             g.user_id = None

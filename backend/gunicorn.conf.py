@@ -1,5 +1,3 @@
-
-
 bind = "0.0.0.0:5000"
 workers = 2
 worker_class = "sync"
@@ -10,7 +8,4 @@ errorlog = "-"
 loglevel = "info"
 capture_output = True
 
-access_log_format = (
-    '%(h)s %(l)s %(u)s %(t)s '
-    '"%(r)s" %(s)s %(b)s'
-)
+access_log_format = '%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s'

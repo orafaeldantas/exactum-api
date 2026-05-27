@@ -92,10 +92,8 @@ const VendaLocal = () => {
       setCartItems([...cartItems, {
         id: product.id,
         name: product.name,
-        item_price: Number(product.price),
+        itemPrice: Number(product.price),
         quantity: 1,
-        stock: product.stock_quantity || 0,
-        prediction: product.previsao_dias || 5,
         sku: product.sku
       }]);
     }
@@ -118,12 +116,11 @@ const VendaLocal = () => {
       "sale": {
         "paymentMethod": paymentMethod,
         "totalToPay": totalToPay,
-        "item_quantity": cartItems.length
+        "itemQuantity": cartItems.reduce((sum, item) => sum + item.quantity, 0),
+        "channel": "physical"
       },
-      "itemsSale": cartItems
+      "items": cartItems
     }
-
-    console.log(data)
 
     try {
 
@@ -149,7 +146,7 @@ const VendaLocal = () => {
   }
 
   // Financial summary calculations
-  const subtotal = cartItems.reduce((acc, item) => acc + (item.item_price * item.quantity), 0);
+  const subtotal = cartItems.reduce((acc, item) => acc + (item.itemPrice * item.quantity), 0);
   const discountAmount = subtotal * (discountPercent / 100);
   const totalToPay = subtotal - discountAmount;
   const changeAmount = Number(amountReceived) > totalToPay ? Number(amountReceived) - totalToPay : 0;
@@ -238,8 +235,8 @@ const VendaLocal = () => {
                         <button onClick={() => updateQty(item.id, 1)} className="p-1 hover:bg-white rounded-md text-slate-600 shadow-sm"><Plus size={14}/></button>
                       </div>
                     </td>
-                    <td className="p-4 text-slate-600 font-medium text-sm">R$ {item.item_price.toFixed(2)}</td>
-                    <td className="p-4 text-right font-bold text-slate-900 text-sm">R$ {(item.item_price * item.quantity).toFixed(2)}</td>
+                    <td className="p-4 text-slate-600 font-medium text-sm">R$ {item.itemPrice.toFixed(2)}</td>
+                    <td className="p-4 text-right font-bold text-slate-900 text-sm">R$ {(item.itemPrice * item.quantity).toFixed(2)}</td>
                     <td className="p-4 text-right text-sm">
                       <button onClick={() => setCartItems(prev => prev.filter(i => i.id !== item.id))} className="text-slate-300 hover:text-red-500 p-2"><Trash2 size={18}/></button>
                     </td>
