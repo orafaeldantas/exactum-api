@@ -1,11 +1,12 @@
-import os 
-from run import app
+import os
+
 from app.extensions import db
-from app.models import User, Tenant
+from app.models import Tenant, User
+from run import app
+
 
 def seed_database():
     with app.app_context():
-        
         tenant = Tenant.query.filter_by(id=1, name="SYSTEM").first()
 
         if tenant:
@@ -25,11 +26,10 @@ def seed_database():
         user = User(
             username=os.getenv("SUPER_ADMIN_NAME"),
             email=os.getenv("SUPER_ADMIN_EMAIL"),
-            tenant_id=tenant.id, 
+            tenant_id=tenant.id,
             is_active=True,
             role="super-admin",
-            password_reset=False
-            
+            password_reset=False,
         )
 
         admin_password = os.getenv("SUPER_ADMIN_PASSWORD")
@@ -40,6 +40,6 @@ def seed_database():
 
         print("Created super-admin!")
 
-if __name__ == '__main__':
-    seed_database()
 
+if __name__ == "__main__":
+    seed_database()
