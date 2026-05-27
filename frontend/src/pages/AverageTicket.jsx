@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getAverageTicketMetrics } from "../services/revenueService"
 
 import {
-  ArrowUpRight,
   Calendar,
   DollarSign,
   ShoppingCart,
@@ -25,10 +25,11 @@ import {
   CartesianGrid,
 } from "recharts";
 
-import { getSales } from "../services/saleService";
 
 export default function AverageTicketAnalytics() {
   const navigate = useNavigate();
+
+  const { averageTicketMetrics = {}, loadAverageTicketMetrics, loading} = getAverageTicketMetrics()
 
   const today = new Date();
 
@@ -38,75 +39,41 @@ export default function AverageTicketAnalytics() {
 
   const [year, setYear] = useState(today.getFullYear().toString());
 
-  const { sales = [], invoicing, loadSales, isLoading } = getSales();
-
   useEffect(() => {
-    loadSales(month, year);
+    loadAverageTicketMetrics(month, year);
   }, [month, year]);
-
-  // -----------------------------
-  // STATIC MOCKS (future backend)
-  // -----------------------------
-  const historicalAverageTicket = [
-    { month: "Jan", value: 182 },
-    { month: "Fev", value: 196 },
-    { month: "Mar", value: 214 },
-    { month: "Abr", value: 228 },
-    { month: "Mai", value: 242 },
-    { month: "Jun", value: 256 },
-    { month: "Jul", value: 248 },
-    { month: "Ago", value: 274 },
-    { month: "Set", value: 281 },
-    { month: "Out", value: 295 },
-    { month: "Nov", value: 318 },
-    { month: "Dez", value: 344 },
-  ];
-
-  const weeklyTicket = [
-    { day: "Seg", value: 220 },
-    { day: "Ter", value: 240 },
-    { day: "Qua", value: 280 },
-    { day: "Qui", value: 260 },
-    { day: "Sex", value: 340 },
-    { day: "Sáb", value: 410 },
-    { day: "Dom", value: 295 },
-  ];
 
   // -----------------------------
   // CALCULATIONS
   // -----------------------------
-  const totalOrders = sales.length;
 
-  const averageTicket =
-    totalOrders > 0 ? Number(invoicing || 0) / totalOrders : 0;
+  // avgMonthly: { labels: [...], values: [...] } → [{ month, value }]
+  const historicalAverageTicket = useMemo(() => {
+    const raw = averageTicketMetrics.avgMonthly;
+    if (!raw?.labels || !raw?.values) return [];
+    return raw.labels.map((label, i) => ({
+      month: label,
+      value: parseFloat(raw.values[i]) || 0,
+    }));
+  }, [averageTicketMetrics.avgMonthly]);
 
-  const highestSale = useMemo(() => {
-    if (!sales.length) return 0;
+  // avgWeekday: { labels: [...], values: [...] } → [{ day, value }]
+  const weeklyTicket = useMemo(() => {
+    const raw = averageTicketMetrics.avgWeekday;
+    if (!raw?.labels || !raw?.values) return [];
+    return raw.labels.map((label, i) => ({
+      day: label,
+      value: parseFloat(raw.values[i]) || 0,
+    }));
+  }, [averageTicketMetrics.avgWeekday]);
 
-    return Math.max(...sales.map((sale) => Number(sale.total_price)));
-  }, [sales]);
+  const totalOrders = averageTicketMetrics.quantityOrder ?? 0;
 
-  const lowestSale = useMemo(() => {
-    if (!sales.length) return 0;
+  const averageTicket = parseFloat(averageTicketMetrics.averageTicket) || 0;
 
-    return Math.min(...sales.map((sale) => Number(sale.total_price)));
-  }, [sales]);
+  const highestSale = parseFloat(averageTicketMetrics.biggestSale) || 0;
 
-  const growth =
-    historicalAverageTicket.length >= 2
-      ? (
-          ((historicalAverageTicket[
-            historicalAverageTicket.length - 1
-          ].value -
-            historicalAverageTicket[
-              historicalAverageTicket.length - 2
-            ].value) /
-            historicalAverageTicket[
-              historicalAverageTicket.length - 2
-            ].value) *
-          100
-        ).toFixed(1)
-      : 0;
+  const lowestSale = parseFloat(averageTicketMetrics.lowestSale) || 0;
 
   const yearOptions = useMemo(() => {
     const years = [];
@@ -213,10 +180,6 @@ export default function AverageTicketAnalytics() {
             })}
           </h3>
 
-          <div className="mt-3 flex items-center gap-1 text-sm font-semibold text-emerald-600">
-            <ArrowUpRight className="h-4 w-4" />
-            +{growth}% em relação ao mês anterior
-          </div>
         </div>
 
         <div className="rounded-2xl border border-gray-200 border-l-4 border-l-emerald-500 bg-white p-6 shadow-sm">
@@ -389,7 +352,7 @@ export default function AverageTicketAnalytics() {
               </div>
 
               <p className="text-sm leading-relaxed text-purple-700">
-                Sexta e sábado possuem os maiores tickets médios da
+                Quinta e sexta possuem os maiores tickets médios da
                 semana.
               </p>
             </div>
@@ -431,7 +394,7 @@ export default function AverageTicketAnalytics() {
       </div>
 
       {/* Loading Overlay */}
-      {isLoading && (
+      {loading && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/60 backdrop-blur-sm">
           <div className="flex flex-col items-center gap-3">
             <Loader2 className="h-12 w-12 animate-spin text-blue-600" />

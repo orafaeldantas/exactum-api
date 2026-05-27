@@ -1,16 +1,5 @@
 import { 
-    Users, 
-    TrendingUp, 
-    AlertTriangle, 
-    ArrowUpRight, 
-    ArrowDownRight,
-    DollarSign,
-    ShoppingCart,
-    Target,
-    PieChart,
-    Zap,
-    ChevronRight,
-    Star
+    Target
   } from "lucide-react"
   
   import {
@@ -33,11 +22,6 @@ function SalesGoalChart({
 }) {
 
     const salesGoalChart = accumulatedRevenueDaily;
-
-    const progress =
-        goalValue > 0
-        ? Math.min((invoicing / goalValue) * 100, 100)
-        : 0;
 
     const chartMax = Math.max(
         goalValue,
