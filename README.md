@@ -68,7 +68,8 @@ O **Exactum** centraliza o fluxo de entradas, saídas e PDV, utilizando o histó
 
 | Módulo / Funcionalidade | Status | Camada |
 | :--- | :---: | :---: |
-| Autenticação com recuperação via senha temporária | ✅ Produção | Backend / Frontend |
+| Gestão de Sessão via JWT com plano de migração para HttpOnly Cookies | ✅ Produção | Backend / Frontend |
+| Fluxo de Credenciais com Reset Administrativo e Senha Temporária | ✅ Produção | Backend / Frontend |
 | RBAC com 3 níveis (Super Admin, Admin, Operário) | ✅ Produção | Backend / Frontend |
 | Multi-tenant com isolamento lógico via Middleware | ✅ Produção | Backend |
 | Impersonate de usuários (Diagnóstico técnico como admin) | ✅ Produção | Backend |
@@ -122,6 +123,11 @@ A maioria das aplicações multi-tenant confia em um único filtro para isolar o
 
 ### 🔑 Recuperação de Senha via Credencial Temporária
 Em vez do fluxo tradicional de e-mail com links de expiração rápida, o administrador define uma senha temporária para o usuário. No primeiro login, o sistema força a troca imediata para uma senha definitiva. Esse fluxo foi desenhado sob medida para o perfil do pequeno varejo, onde o gestor tem contato direto com sua equipe de frente de caixa.
+
+### 🔑 Estratégia de Autenticação: JWT & Evolução de Segurança
+Atualmente, o sistema utiliza **JWT (JSON Web Tokens)** para autenticação stateless, com o token armazenado temporariamente no `sessionStorage` do cliente.
+ 
+**Próxima iteração de segurança:** Para mitigar riscos de ataques do tipo XSS (Cross-Site Scripting), o Roadmap de segurança prevê a migração do armazenamento do token para **Cookies HttpOnly/Secure** gerenciados pelo backend. Isso garante que o ecossistema React não tenha acesso direto ao token via JavaScript, elevando o projeto para os padrões recomendados de segurança de mercado.
 
 ### ⚡ Flask-Smorest + Marshmallow vs FastAPI
 O Flask-Smorest entrega o melhor dos dois mundos: mantém a flexibilidade e a maturidade do ecossistema Flask enquanto gera documentação OpenAPI automaticamente a partir dos schemas Marshmallow. Isso elimina a duplicação de código e centraliza a validação e a serialização em uma única fonte de verdade.
