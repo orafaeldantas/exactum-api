@@ -1,6 +1,6 @@
 import logging
 
-from app.models import Goal
+from app.models.goals import Goal
 
 logger = logging.getLogger(__name__)
 

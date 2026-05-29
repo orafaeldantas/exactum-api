@@ -1,6 +1,6 @@
 import logging
 
-from app.models import Tenant
+from app.models.tenant import Tenant
 
 logger = logging.getLogger(__name__)
 

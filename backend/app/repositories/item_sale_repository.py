@@ -1,6 +1,6 @@
 import logging
 
-from app.models import ItemSale
+from app.models.sale import ItemSale
 
 # from app.services.helpers.date_service import DateService
 

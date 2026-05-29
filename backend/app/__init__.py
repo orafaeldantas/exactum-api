@@ -14,9 +14,12 @@ from config import Config
 from .extensions import db, jwt, migrate
 
 
-def create_app():
+def create_app(config=None):
     app = Flask(__name__)
     app.config.from_object(Config)
+
+    if config:
+        app.config.update(config)
     api = Api(app)
 
     register_error_handlers(app)
@@ -39,7 +42,7 @@ def create_app():
     init_request_context(app)
     init_tenant_filter(db)
 
-    if os.getenv("ENV") == "production":
+    if os.getenv("FLASK_ENV") == "production":
         app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1)
 
     from app.routes.analytics.revenue_analytics_routes import blp_revenue_analytics
