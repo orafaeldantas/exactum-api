@@ -1,7 +1,7 @@
 import logging
 
 from app.database.session import DatabaseSession
-from app.models import Product
+from app.models.product import Product
 
 logger = logging.getLogger(__name__)
 

@@ -1,7 +1,7 @@
 import logging
 
 from app.extensions import db
-from app.models import ItemSale
+from app.models.sale import ItemSale
 from app.services.helpers.date_service import DateService
 
 logger = logging.getLogger(__name__)

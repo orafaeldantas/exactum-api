@@ -7,7 +7,8 @@ from app.exceptions.user_exceptions import (
     InvalidPasswordException,
     PasswordMismatchException,
 )
-from app.models import Tenant, User
+from app.models.tenant import Tenant
+from app.models.user import User
 from app.repositories.goal_repository import GoalRepository
 from app.repositories.tenant_repository import TenantRepository
 

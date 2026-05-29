@@ -1,6 +1,7 @@
 import logging
 
-from app.models import Tenant, User
+from app.models.tenant import Tenant
+from app.models.user import User
 
 logger = logging.getLogger(__name__)
 
