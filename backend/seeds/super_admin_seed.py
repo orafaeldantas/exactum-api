@@ -1,12 +1,17 @@
+import logging
 import os
 
 from app.extensions import db
-from app.models import Tenant, User
-from run import app
+from app.models.tenant import Tenant
+from app.models.user import User
+
+logger = logging.getLogger(__name__)
 
 
-def seed_database():
-    with app.app_context():
+def super_admin_seed():
+    """Create the super administrator and the system tenant"""
+
+    try:
         tenant = Tenant.query.filter_by(id=1, name="SYSTEM").first()
 
         if tenant:
@@ -38,8 +43,15 @@ def seed_database():
         db.session.add(user)
         db.session.commit()
 
-        print("Created super-admin!")
+        logger.info("Created super-admin!")
+
+        return True
+
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Error creating super administrator: {e}")
+        return False
 
 
 if __name__ == "__main__":
-    seed_database()
+    super_admin_seed()
