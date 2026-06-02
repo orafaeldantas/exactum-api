@@ -14,11 +14,18 @@ function DashboardHeader({
                         Bem-vindo, <span className="font-semibold text-blue-600">{username || 'Administrador'}</span>.
                     </p>
             </div>
-            {totalUsers && (
-                <div className="flex items-center gap-3 bg-white p-2 rounded-xl border border-slate-200 shadow-sm text-sm">
-                    <div className="px-3 py-1 bg-slate-100 rounded-md flex items-center gap-2">
-                        <Users size={14} className="text-slate-400" />
-                        <span className="font-bold text-slate-700">{totalUsers} Usuários</span>
+            
+            {totalUsers > 0 && (
+                <div className="flex items-center gap-2.5 bg-white pl-3 pr-1.5 py-1.5 rounded-xl border border-slate-200 shadow-sm text-xs">
+                    <span className="flex items-center gap-1.5 text-slate-400 font-medium">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                        Time
+                    </span>
+                    <div className="px-2.5 py-1 bg-slate-50 border border-slate-100 rounded-lg flex items-center gap-1.5 font-bold text-slate-700">
+                        <Users size={13} className="text-slate-400" />
+                        <span>
+                            {totalUsers} {totalUsers === 1 ? 'Usuário' : 'Usuários'}
+                        </span>
                     </div>
                 </div>
             )}

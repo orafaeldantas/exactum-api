@@ -120,27 +120,31 @@ function SalesGoalChart({
                 }}
               />
 
-              <Tooltip
-                cursor={{
-                  stroke: "#2563eb",
-                  strokeWidth: 1
-                }}
+                <Tooltip
+                  animationDuration={200}
+                  animationEasing="ease-out"
 
-                contentStyle={{
-                  borderRadius: 18,
-                  border: "none",
+                  cursor={{
+                    fill: "rgba(241, 245, 249, 0.5)",
+                    radius: 12
+                  }}
 
-                  boxShadow:
-                    "0 10px 30px rgba(0,0,0,.08)",
+                  contentStyle={{
+                    borderRadius: 14,
+                    border: "1px solid #e2e8f0",
+                    backgroundColor: "#ffffff",
+                    boxShadow: "0 12px 30px rgba(19, 65, 172, 0.08)",
+                    padding: "10px 14px"
+                  }}
 
-                  padding: 12
-                }}
+                  labelStyle={{ color: "#94a3b8", fontSize: "11px", fontWeight: 700, textTransform: "uppercase", marginBottom: "4px" }}
+                  itemStyle={{ color: "#2563eb", fontWeight: 800, fontSize: "15px" }}
 
-                formatter={(value) => [
-                  `R$ ${Number(value).toLocaleString("pt-BR")}`,
-                  "Receita acumulada"
-                ]}
-              />
+                  formatter={(value) => [
+                    `R$ ${Number(value).toLocaleString("pt-BR")}`,
+                    "Ticket"
+                  ]}
+                />
 
               <ReferenceLine
                 y={goalValue}

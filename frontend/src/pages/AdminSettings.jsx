@@ -86,7 +86,7 @@ export default function SettingsPage() {
   
     const dataTenant = {
       companyName: form.companyName,
-      companyEmail: form.companyEmail,
+      companyEmail: form.companyEmail.trim() === "" ? null : form.companyEmail,
       minimumStock: form.minimumStock,
       monthlyGoal: form.monthlyGoal,
     };
@@ -189,10 +189,21 @@ export default function SettingsPage() {
                     </span>
 
                     <input
-                      type="number"
+                      type="text" 
+                      inputMode="numeric" 
                       name="monthlyGoal"
-                      value={form.monthlyGoal}
-                      onChange={handleChange}
+                                          
+                      value={
+                        form.monthlyGoal
+                          ? Number(form.monthlyGoal).toLocaleString("pt-BR")
+                          : ""
+                      }                     
+                      onChange={(e) => {
+                        const onlyDigits = e.target.value.replace(/\D/g, "");
+                        e.target.value = onlyDigits;
+                        handleChange(e);
+                      }}
+
                       className="
                         w-full rounded-xl border border-gray-200 bg-white
                         py-3 pl-12 pr-4 text-sm shadow-sm outline-none transition
