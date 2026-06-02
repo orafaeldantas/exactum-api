@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAverageTicketMetrics } from "../services/revenueService"
+import { getAverageTicketMetrics } from "../../services/revenueService"
 
 import {
   Calendar,
@@ -162,85 +162,105 @@ export default function AverageTicketAnalytics() {
         </select>
       </div>
 
-      {/* KPI Cards */}
       <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
-        <div className="rounded-2xl border border-gray-200 border-l-4 border-l-blue-500 bg-white p-6 shadow-sm">
-          <div className="mb-3 flex items-center gap-2">
-            <Wallet className="h-4 w-4 text-blue-500" />
-
-            <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
-              Ticket Médio
-            </p>
+        
+        {/* TICKET MÉDIO */}
+        <div className="overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg">
+          <div className="p-6">
+            <div className="mb-5 flex items-center justify-between">
+              <div>
+                <p className="mb-1 text-sm font-medium text-gray-500">
+                  Ticket Médio
+                </p>
+                <h2 className="text-3xl font-bold text-gray-800">
+                  R${" "}
+                  {averageTicket.toLocaleString("pt-BR", {
+                    minimumFractionDigits: 2,
+                  })}
+                </h2>
+              </div>
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-100">
+                <Wallet className="h-7 w-7 text-blue-600" />
+              </div>
+            </div>
+            <div className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
+              Valor médio por venda
+            </div>
           </div>
-
-          <h3 className="text-3xl font-black text-gray-800">
-            R${" "}
-            {averageTicket.toLocaleString("pt-BR", {
-              minimumFractionDigits: 2,
-            })}
-          </h3>
-
         </div>
 
-        <div className="rounded-2xl border border-gray-200 border-l-4 border-l-emerald-500 bg-white p-6 shadow-sm">
-          <div className="mb-3 flex items-center gap-2">
-            <ShoppingCart className="h-4 w-4 text-emerald-500" />
-
-            <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
-              Total de Pedidos
-            </p>
+        {/* TOTAL ORDERS */}
+        <div className="overflow-hidden rounded-2xl border border-emerald-100 bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg">
+          <div className="p-6">
+            <div className="mb-5 flex items-center justify-between">
+              <div>
+                <p className="mb-1 text-sm font-medium text-gray-500">
+                  Total de Pedidos
+                </p>
+                <h2 className="text-3xl font-bold text-gray-800">
+                  {totalOrders}
+                </h2>
+              </div>
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100">
+                <ShoppingCart className="h-7 w-7 text-emerald-600" />
+              </div>
+            </div>
+            <div className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+              Pedidos processados no período
+            </div>
           </div>
-
-          <h3 className="text-3xl font-black text-gray-800">
-            {totalOrders}
-          </h3>
-
-          <p className="mt-3 text-sm text-gray-500">
-            Pedidos processados no período
-          </p>
         </div>
 
-        <div className="rounded-2xl border border-gray-200 border-l-4 border-l-purple-500 bg-white p-6 shadow-sm">
-          <div className="mb-3 flex items-center gap-2">
-            <TrendingUp className="h-4 w-4 text-purple-500" />
-
-            <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
-              Maior Venda
-            </p>
+        {/* BIGGEST SALE */}
+        <div className="overflow-hidden rounded-2xl border border-purple-100 bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg">
+          <div className="p-6">
+            <div className="mb-5 flex items-center justify-between">
+              <div>
+                <p className="mb-1 text-sm font-medium text-gray-500">
+                  Maior Venda
+                </p>
+                <h2 className="text-3xl font-bold text-gray-800">
+                  R${" "}
+                  {highestSale.toLocaleString("pt-BR", {
+                    minimumFractionDigits: 2,
+                  })}
+                </h2>
+              </div>
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-purple-100">
+                <TrendingUp className="h-7 w-7 text-purple-600" />
+              </div>
+            </div>
+            <div className="inline-flex items-center gap-1 rounded-full bg-purple-100 px-3 py-1 text-xs font-semibold text-purple-700">
+              Melhor desempenho individual
+            </div>
           </div>
-
-          <h3 className="text-3xl font-black text-gray-800">
-            R${" "}
-            {highestSale.toLocaleString("pt-BR", {
-              minimumFractionDigits: 2,
-            })}
-          </h3>
-
-          <p className="mt-3 text-sm text-gray-500">
-            Melhor desempenho individual
-          </p>
         </div>
 
-        <div className="rounded-2xl border border-gray-200 border-l-4 border-l-amber-500 bg-white p-6 shadow-sm">
-          <div className="mb-3 flex items-center gap-2">
-            <Target className="h-4 w-4 text-amber-500" />
-
-            <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
-              Menor Venda
-            </p>
+        {/* LOWEST SALE */}
+        <div className="overflow-hidden rounded-2xl border border-amber-100 bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg">
+          <div className="p-6">
+            <div className="mb-5 flex items-center justify-between">
+              <div>
+                <p className="mb-1 text-sm font-medium text-gray-500">
+                  Menor Venda
+                </p>
+                <h2 className="text-3xl font-bold text-gray-800">
+                  R${" "}
+                  {lowestSale.toLocaleString("pt-BR", {
+                    minimumFractionDigits: 2,
+                  })}
+                </h2>
+              </div>
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-100">
+                <Target className="h-7 w-7 text-amber-600" />
+              </div>
+            </div>
+            <div className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
+              Menor pedido registrado
+            </div>
           </div>
-
-          <h3 className="text-3xl font-black text-gray-800">
-            R${" "}
-            {lowestSale.toLocaleString("pt-BR", {
-              minimumFractionDigits: 2,
-            })}
-          </h3>
-
-          <p className="mt-3 text-sm text-gray-500">
-            Menor pedido registrado
-          </p>
         </div>
+
       </div>
 
       {/* Charts */}

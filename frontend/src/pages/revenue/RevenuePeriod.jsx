@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect, useContext } from "react";
-import { getRevenuePeriod } from "../services/revenueService";
-import { TenantContext } from "../context/TenantContext";
+import { getRevenuePeriod } from "../../services/revenueService";
+import { TenantContext } from "../../context/TenantContext";
 
 
 import {

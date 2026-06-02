@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from "react"; 
 import { useNavigate } from "react-router-dom";
-import { getProducts } from "../services/productService"; 
-import { TenantContext } from "../context/TenantContext";
+import { getProducts } from "../../services/productService"; 
+import { TenantContext } from "../../context/TenantContext";
 
 
 import { Pencil, ShoppingCart, AlertCircle, TrendingDown } from 'lucide-react';

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
-import { apiFetch } from "../services/api";
+import { apiFetch } from "../../services/api";
 
 import { Eye, Pencil, Power, Trash2, AlertTriangle } from 'lucide-react';
 

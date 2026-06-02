@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { apiFetch } from "../services/api";
-import ProductForm from "../components/ProductForm/ProductForm";
+import { apiFetch } from "../../services/api";
+import ProductForm from "../../features/product-form/ProductForm";
 
 export default function CreateProduct() {
 

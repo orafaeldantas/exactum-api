@@ -1,5 +1,5 @@
 import { useContext } from "react"
-import { Navigate } from "react-router-dom"
+import { Navigate, Outlet } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext"
 import Loader from "../components/Loader/Loader";
 import { useLocation } from "react-router-dom";
@@ -30,5 +30,5 @@ export default function RoleRoute({ children, requiredRole }) {
 
 
 
-  return children
+  return children ? children : <Outlet />;
 }

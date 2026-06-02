@@ -1,17 +1,17 @@
 import { useContext, useEffect, useState } from "react"
-import { UserContext } from "../context/UserContext";
-import { TenantContext } from "../context/TenantContext";
-import { getProducts } from "../services/productService"; 
-import { getUsers } from "../services/userService"; 
-import { getSales, getTopItems } from "../services/saleService";
-import { getRevenueDaily } from "../services/revenueService"; 
+import { UserContext } from "../../context/UserContext";
+import { TenantContext } from "../../context/TenantContext";
+import { getProducts } from "../../services/productService"; 
+import { getUsers } from "../../services/userService"; 
+import { getSales, getTopItems } from "../../services/saleService";
+import { getRevenueDaily } from "../../services/revenueService"; 
 
-import DashboardHeader from "../components/Dashboard/DashboardHeader";
-import DashboardStats from "../components/Dashboard/DashboardStats";
-import SalesGoalChart from "../components/Dashboard/charts/SalesGoalChart";
-import TopProductsCard from "../components/Dashboard/cards/TopProductsCard";
-import SalesChannelsCard from "../components/Dashboard/cards/SalesChannelsCard";
-import AiInsightsCard from "../components/Dashboard/cards/AiInsightsCard";
+import DashboardHeader from "../../features/dashboard/DashboardHeader";
+import DashboardStats from "../../features/dashboard/DashboardStats";
+import SalesGoalChart from "../../features/dashboard/charts/SalesGoalChart";
+import TopProductsCard from "../../features/dashboard/cards/TopProductsCard";
+import SalesChannelsCard from "../../features/dashboard/cards/SalesChannelsCard";
+import AiInsightsCard from "../../features/dashboard/cards/AiInsightsCard";
 
 /**
  * @component Dashboard

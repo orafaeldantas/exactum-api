@@ -1,9 +1,9 @@
 import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext"
+import { AuthContext } from "../../context/AuthContext"
 import toast from "react-hot-toast";
 
-import { getUsers, toggleUserStatus } from "../services/userService";
+import { getUsers, toggleUserStatus } from "../../services/userService";
 
 import { Eye, Pencil, Power, AlertTriangle } from 'lucide-react';
 

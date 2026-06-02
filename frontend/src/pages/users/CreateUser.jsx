@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { apiFetch } from "../services/api";
-import UserForm from "../components/UserForm/UserForm";
+import { apiFetch } from "../../services/api";
+import UserForm from "../../features/user-form/UserForm";
 
 export default function CreateUser() {
 
