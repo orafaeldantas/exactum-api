@@ -1,7 +1,7 @@
 import { useContext, useState, useRef, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { UserContext } from "../../context/UserContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -78,30 +78,31 @@ function Navbar() {
         <div className="flex h-16 items-center justify-between">
 
           {/* Left side */}
-          <div className="flex items-center gap-2">
-            <div
-              className="
-                flex
-                h-8
-                w-8
-                items-center
-                justify-center
-                rounded-lg
-                bg-gradient-to-br
-                from-blue-600
-                to-indigo-600
-                text-white
-                shadow-sm
-                shadow-blue-500/20
-              "
-            >
-              <Box className="h-5 w-5" />
-            </div>
+          
+            <Link to="/dashboard" className="flex items-center gap-2">
+              <div
+                className="
+                  flex
+                  h-8
+                  w-8
+                  items-center
+                  justify-center
+                  rounded-lg
+                  bg-gradient-to-br
+                  from-blue-600
+                  to-indigo-600
+                  text-white
+                  shadow-sm
+                  shadow-blue-500/20
+                "
+              >
+                <Box className="h-5 w-5" />
+              </div>
 
-            <span className="text-xl font-bold tracking-tight text-gray-900">
-              Exactum
-            </span>
-          </div>
+              <span className="text-xl font-bold tracking-tight text-gray-900">
+                Exactum
+              </span>
+            </Link>
 
           {/* Right side */}
           <div className="flex items-center gap-4">

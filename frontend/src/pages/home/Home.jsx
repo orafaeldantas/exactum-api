@@ -11,12 +11,13 @@ export default function Home() {
       <header className="sticky top-0 z-50 w-full border-b border-gray-100 bg-white/80 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
           
-          <div className="flex items-center gap-2 select-none">
+        
+          <Link to="/dashboard" className="flex items-center gap-2 select-none">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white shadow-sm shadow-blue-500/10">
               <Box className="w-5 h-5" />
             </div>
             <span className="text-xl font-bold tracking-tight">Exactum</span>
-          </div>
+          </Link>
 
           <div className="flex items-center gap-4">
             <button

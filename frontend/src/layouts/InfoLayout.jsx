@@ -27,7 +27,7 @@ export default function InfoLayout() {
 
         <div className="mx-auto max-w-5xl px-8 py-8">
 
-          <div className="flex items-center gap-3 mb-8">
+          <Link to="/" className="flex items-center gap-3 mb-8">
 
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white">
               <Box className="w-5 h-5" />
@@ -43,7 +43,7 @@ export default function InfoLayout() {
               </p>
             </div>
 
-          </div>
+          </Link>
 
           {/* Tabs */}
           <nav className="flex gap-2">
