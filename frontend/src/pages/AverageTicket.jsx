@@ -285,7 +285,31 @@ export default function AverageTicketAnalytics() {
 
                 <YAxis />
 
-                <Tooltip formatter={(value) => [`R$ ${value}`, "Ticket"]} />
+                <Tooltip
+                  animationDuration={200}
+                  animationEasing="ease-out"
+
+                  cursor={{
+                    fill: "rgba(241, 245, 249, 0.5)",
+                    radius: 12
+                  }}
+
+                  contentStyle={{
+                    borderRadius: 14,
+                    border: "1px solid #e2e8f0",
+                    backgroundColor: "#ffffff",
+                    boxShadow: "0 12px 30px rgba(19, 65, 172, 0.08)",
+                    padding: "10px 14px"
+                  }}
+
+                  labelStyle={{ color: "#94a3b8", fontSize: "11px", fontWeight: 700, textTransform: "uppercase", marginBottom: "4px" }}
+                  itemStyle={{ color: "#2563eb", fontWeight: 800, fontSize: "15px" }}
+
+                  formatter={(value) => [
+                    `R$ ${Number(value).toLocaleString("pt-BR")}`,
+                    "Ticket"
+                  ]}
+                />
 
                 <Area
                   type="monotone"
@@ -375,18 +399,60 @@ export default function AverageTicketAnalytics() {
         <div className="h-[320px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={weeklyTicket}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
 
-              <XAxis dataKey="day" />
+              <XAxis 
+                dataKey="day" 
+                tickLine={false} 
+                axisLine={false}
+                dy={10}
+                style={{ fontSize: '12px', fill: '#94a3b8', fontWeight: 500 }}
+              />
 
-              <YAxis />
+              <YAxis 
+                tickLine={false} 
+                axisLine={false}
+                dx={-10}
+                style={{ fontSize: '12px', fill: '#94a3b8', fontWeight: 500 }}
+              />
 
-              <Tooltip formatter={(value) => [`R$ ${value}`, "Ticket"]} />
+              <Tooltip
+                animationDuration={200}
+                animationEasing="ease-out"
+
+                cursor={{
+                  fill: "rgba(241, 245, 249, 0.5)",
+                  radius: 12
+                }}
+
+                contentStyle={{
+                  borderRadius: 14,
+                  border: "1px solid #e2e8f0",
+                  backgroundColor: "#ffffff",
+                  boxShadow: "0 12px 30px rgba(19, 65, 172, 0.08)",
+                  padding: "10px 14px"
+                }}
+
+                labelStyle={{ color: "#94a3b8", fontSize: "11px", fontWeight: 700, textTransform: "uppercase", marginBottom: "4px" }}
+                itemStyle={{ color: "#0f172a", fontWeight: 800, fontSize: "15px" }}
+
+                formatter={(value) => [
+                  `R$ ${Number(value).toLocaleString("pt-BR")}`,
+                  "Ticket"
+                ]}
+              />
 
               <Bar
                 dataKey="value"
                 radius={[10, 10, 0, 0]}
                 fill="#10b981"
+                maxBarSize={150}
+                
+                activeBar={{
+                  fill: "#059669",
+                  radius: [10, 10, 0, 0],
+                  style: { transition: "fill 0.2s ease" }
+                }}
               />
             </BarChart>
           </ResponsiveContainer>
