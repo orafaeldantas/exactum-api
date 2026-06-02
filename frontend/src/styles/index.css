@@ -1,0 +1,100 @@
+@import "tailwindcss";
+
+/* ====== THEME SETTINGS (TAILWIND v4) ====== */
+@theme {
+  
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  
+  --color-brand-primary: var(--color-blue-600);
+  --color-brand-hover: var(--color-blue-700);
+}
+
+/* ====== BASIC SYSTEM STYLES ====== */
+@layer base {
+  *, ::after, ::before {
+    box-sizing: border-box;
+  }
+
+  html, body, #root {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  #root {
+    text-align: left; 
+  }
+
+  body {
+    background-color: var(--color-slate-50);
+    color: var(--color-slate-900);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Removes the default outline from form elements globally */
+  input, select, textarea {
+    @apply outline-none;
+  }
+}
+
+/* ===APP GLOBAL SCROLLBAR (Chrome, Safari, Edge) === */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-slate-300);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-slate-400);
+}
+
+/* === CUSTOMIZED SCROLLBAR (For tables, inner panels, and modals) === */
+.custom-scroll {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(100, 116, 139, 0.4) transparent;
+}
+
+/* Chrome, Edge, Safari inside containers with .custom-scroll */
+.custom-scroll::-webkit-scrollbar {
+  width: 10px;
+}
+.custom-scroll::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 6px 0;
+}
+.custom-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(100, 116, 139, 0.35);
+  border-radius: 9999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+.custom-scroll:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(100, 116, 139, 0.55);
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #3b82f6aa);
+}
+
+@keyframes logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .logo-react {
+    animation: logo-spin infinite 20s linear;
+  }
+}

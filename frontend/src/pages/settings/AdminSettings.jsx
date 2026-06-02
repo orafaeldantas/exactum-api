@@ -1,10 +1,10 @@
 import { useState, useEffect, useContext } from "react";
 import toast from "react-hot-toast";
-import { apiFetch } from "../services/api";
-import Loader from "../components/Loader/Loader";
-import { UserContext } from "../context/UserContext";
-import { TenantContext } from "../context/TenantContext";
-import { AuthContext } from "../context/AuthContext";
+import { apiFetch } from "../../services/api";
+import Loader from "../../components/Loader/Loader";
+import { UserContext } from "../../context/UserContext";
+import { TenantContext } from "../../context/TenantContext";
+import { AuthContext } from "../../context/AuthContext";
 
 import {
   Settings,

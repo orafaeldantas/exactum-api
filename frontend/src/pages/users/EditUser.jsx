@@ -1,42 +1,42 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { apiFetch } from "../services/api";
-import ProductForm from "../components/ProductForm/ProductForm";
+import { apiFetch } from "../../services/api";
+import UserForm from "../../features/user-form/UserForm";
 
-export default function EditProduct() {
+export default function EditUser() {
 
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [product, setProduct] = useState(null);
+  const [user, setUser] = useState(null);
 
-  async function loadProduct() {
+  async function loadUser() {
 
-    const response = await apiFetch(`/products/${id}`);
+    const response = await apiFetch(`/users/${id}`);
 
     const data = await response.json();
 
-    setProduct(data);
+    setUser(data);
   }
 
   useEffect(() => {
-    loadProduct();
+    loadUser();
   }, []);
 
   async function handleUpdate(data) {
 
-    const response = await apiFetch(`/products/${id}`, {
+    const response = await apiFetch(`/users/${id}`, {
       method: "PATCH",
       body: JSON.stringify(data)
     });
 
     if (response.ok) {
-      navigate("/products");
+      navigate("/users");
     }
 
   }
 
-  if (!product) {
+  if (!user) {
     return <p>Carregando...</p>;
   }
 
@@ -44,10 +44,10 @@ export default function EditProduct() {
 
     <div>
 
-      <ProductForm
-        initialData={product}
+      <UserForm
+        initialData={user}
         onSubmit={handleUpdate}
-        submitText="Salvar"
+        submitText="Atualizar usuário"
       />
 
     </div>

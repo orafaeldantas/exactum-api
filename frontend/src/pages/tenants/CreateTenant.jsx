@@ -1,9 +1,9 @@
 import { useState } from "react";
-import Stepper from "../components/Stepper";
-import CompanyStep from "../steps/CompanyStep";
-import AdminStep from "../steps/AdminStep";
-import PlanStep from "../steps/PlanStep";
-import ReviewStep from "../steps/ReviewStep";
+import Stepper from "../../features/tenants/components/Stepper";
+import CompanyStep from "../../features/tenants/steps/CompanyStep";
+import AdminStep from "../../features/tenants/steps/AdminStep";
+import PlanStep from "../../features/tenants/steps/PlanStep";
+import ReviewStep from "../../features/tenants/steps/ReviewStep";
 
 export default function CreateTenant() {
   

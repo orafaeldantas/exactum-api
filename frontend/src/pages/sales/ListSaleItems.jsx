@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getSaleItems } from "../services/saleService";  
+import { getSaleItems } from "../../services/saleService";  
 import { 
   ArrowLeft, Package, Tag, Hash, ShoppingBag, ShoppingCart, Loader2, Printer, Info 
 } from "lucide-react";

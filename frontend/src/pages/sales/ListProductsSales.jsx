@@ -1,36 +1,28 @@
 import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { getSales } from "../services/saleService"; 
+import { getSoldItems } from "../../services/saleService";
 import { 
   Search, 
   Eye, 
   Calendar,
   DollarSign,
-  Hash,
-  ShoppingBag,
   Loader2,
   TrendingUp
 } from "lucide-react";
 
-export default function ListSales() {
+export default function ListSoldItems() {
   const navigate = useNavigate();
 
-  // Date States
-  const today = new Date();
-  const [month, setMonth] = useState((today.getMonth() + 1).toString().padStart(2, '0'));
-  const [year, setYear] = useState(today.getFullYear().toString());
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
-  const salesPerPage = 10;
+  const itemsPerPage = 10;
 
-  // Custom hook for fetching sales based on month/year
-  const { sales = [], invoicing, loadSales, isLoading } = getSales();
+  const today = new Date();
+  const [month, setMonth] = useState((today.getMonth() + 1).toString().padStart(2, '0'));
+  const [year, setYear] = useState(today.getFullYear().toString());
 
-  // Re-fetch when month or year changes
-  useEffect(() => {  
-    loadSales(month, year);
-  }, [month, year]); 
+  const { soldItems = [], loadSoldItems, loading } = getSoldItems();
 
   // Dynamic Year Options
   const yearOptions = useMemo(() => {
@@ -48,19 +40,26 @@ export default function ListSales() {
     { value: "11", label: "Novembro" }, { value: "12", label: "Dezembro" },
   ];
 
-  // Local filter for quick search (ID or Payment Method)
-  const filteredSales = sales.filter((sale) => 
-    sale.id.toString().includes(search) || 
-    sale.payment_method?.toLowerCase().includes(search.toLowerCase())
+  const filteredSoldItems = soldItems.filter((item) => 
+    item.sku.toString().includes(search) || 
+    item.name.toLowerCase().includes(search.toLowerCase())
   );
 
-  // Pagination logic
-  const startIndex = (page - 1) * salesPerPage;
-  const endIndex = startIndex + salesPerPage;
+  const startIndex = (page - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
 
-  const paginatedSales = filteredSales.slice(startIndex, endIndex);
+  const paginatedItems = filteredSoldItems.slice(startIndex, endIndex);
 
-  const totalPages = Math.ceil(filteredSales.length / salesPerPage);
+  const totalPages = Math.ceil(filteredSoldItems.length / itemsPerPage);
+
+
+  const totalItemsSold = soldItems.reduce((acc, item) => acc + parseFloat(item.total_quantity), 0);
+
+  console.log(totalPages)
+
+  useEffect(() => {  
+    loadSoldItems({ month: month, year: year });
+  }, [month, year]); 
 
   return (
     <div className="min-h-screen bg-gray-50 p-6 relative">
@@ -68,18 +67,10 @@ export default function ListSales() {
       {/* Header */}
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Vendas</h1>
+          <h1 className="text-3xl font-bold text-gray-800">Produtos Vendidos</h1>
           <p className="mt-1 text-sm text-gray-500">
             Exibindo registros de {monthOptions.find(m => m.value === month)?.label} de {year}
           </p>
-        </div>
-        <div className="w-70">
-          <button 
-            className="w-full rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:scale-[1.02] hover:bg-blue-700 active:scale-[0.98] flex items-center justify-center gap-2" 
-            onClick={() => navigate("/checkout")}
-          >
-            <ShoppingBag className="w-4 h-4" /> Registrar Venda
-          </button>
         </div>
       </div>
 
@@ -87,21 +78,21 @@ export default function ListSales() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm border-l-4 border-l-blue-500">
           <div className="flex items-center gap-3 mb-2">
-            <DollarSign className="w-4 h-4 text-blue-500" />
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Faturamento Mensal</p>
+            <TrendingUp className="w-4 h-4 text-emerald-500" />
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Produtos Vendidos</p>
           </div>
           <h3 className="text-2xl font-black text-gray-800">
-            R$ {(invoicing || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              {filteredSoldItems.length} {filteredSoldItems.length === 1 ? 'produto' : 'produtos'}
           </h3>
         </div>
 
         <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm border-l-4 border-l-emerald-500">
           <div className="flex items-center gap-3 mb-2">
             <TrendingUp className="w-4 h-4 text-emerald-500" />
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Total de Pedidos</p>
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Unidades Vendidas</p>
           </div>
           <h3 className="text-2xl font-black text-gray-800">
-            {filteredSales.length} {filteredSales.length === 1 ? 'venda' : 'vendas'}
+              {totalItemsSold} {totalItemsSold === 1 ? 'unidade' : 'unidades'}
           </h3>
         </div>
       </div>
@@ -144,10 +135,10 @@ export default function ListSales() {
         </div>
       </div>
 
-      {/* Sales Table */}
+      {/* Items Table */}
       <div className="relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
         {/* Loading Overlay */}
-        {isLoading && (
+        {loading && (
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/60 backdrop-blur-sm">
             <div className="flex flex-col items-center gap-2">
               <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
@@ -164,53 +155,44 @@ export default function ListSales() {
                   <div className="flex items-center gap-2">ID</div>
                 </th>
                 <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-600">
-                  <div className="flex items-center gap-2">Data</div>
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-600">
-                   Pagamento
-                </th>
-                <th className="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider text-gray-600">
-                   Total
+                  Nome
                 </th>
                 <th className="px-6 py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-600">
-                  Ações
+                  SKU
                 </th>
+                <th className="px-6 py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-600">
+                   Total Vendidos
+                </th>
+                <th className="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider text-gray-600">
+                   Faturado
+                </th>              
               </tr>
             </thead>
             <tbody>
-              {paginatedSales.map((sale) => (
-                <tr key={sale.id} className="border-t border-gray-100 transition-colors hover:bg-gray-50 group">
-                  <td className="px-6 py-4 text-sm font-medium text-gray-700">#{sale.id}</td>
-                  <td className="px-6 py-4 text-sm text-gray-500">
-                    {new Date(sale.created_at).toLocaleDateString('pt-BR', { 
-                      day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' 
-                    })}
-                  </td>
-                  <td className="px-6 py-4">
+              {paginatedItems.map((item) => (
+                <tr key={item.name} className="border-t border-gray-100 transition-colors hover:bg-gray-50 group">
+                  <td className="px-6 py-4 text-sm font-medium text-gray-700">#{item.product_id ?? null}</td>
+                  <td className="px-6 py-4 text-sm font-medium text-gray-700">{item.name}</td>
+                  <td className="px-6 py-4 text-center">
                     <span className="inline-flex items-center rounded-lg bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
-                      {sale.payment_method}
+                      {item.sku}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-sm font-black text-gray-800 text-right">
-                    R$ {Number(sale.total_price).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                  <td className="px-6 py-4 text-center">
+                    <span className="inline-flex items-center rounded-lg bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
+                      {item.total_quantity}
+                    </span>  
                   </td>
-                  <td className="px-6 py-4">
-                    <div className="flex justify-center">
-                      <button 
-                        className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-medium text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:border-slate-300" 
-                        onClick={() => navigate(`/sales/${sale.id}`)}
-                      >
-                        <Eye className="w-4 h-4 text-slate-400 group-hover:text-blue-500" /> Detalhes
-                      </button>
-                    </div>
+                  <td className="px-6 py-4 text-sm font-black text-gray-800 text-right">
+                    R$ {Number(item.revenue).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                   </td>
                 </tr>
               ))}
               
-              {!isLoading && filteredSales.length === 0 && (
+              {!loading && filteredSoldItems.length === 0 && (
                 <tr>
                   <td colSpan="5" className="px-6 py-12 text-center text-sm text-gray-500">
-                    Nenhuma venda encontrada para o período selecionado.
+                    Nenhum produto encontrado para o período selecionado.
                   </td>
                 </tr>
               )}

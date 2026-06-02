@@ -7,12 +7,9 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import {
   LogOut,
-  User,
   ShieldCheck,
   Box,
   ChevronDown,
-  Mail,
-  Activity,
   Sparkles,
 } from "lucide-react";
 
@@ -31,7 +28,7 @@ function Navbar() {
     navigate("/");
   }
 
-  // Fecha o menu ao clicar fora
+  // Close the menu when you click outside.
   useEffect(() => {
     function handleClickOutside(event) {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -106,7 +103,7 @@ function Navbar() {
             </span>
           </div>
 
-          {/* Rigth side */}
+          {/* Right side */}
           <div className="flex items-center gap-4">
             {profile && (
               <div className="relative" ref={menuRef}>
@@ -226,10 +223,10 @@ function Navbar() {
                         rounded-2xl
                         border
                         border-gray-200/80
-                        bg-white/100
-                        backdrop-blur-xl
+                        bg-white
                         shadow-2xl
                         shadow-black/5
+                        z-50
                       "
                     >
                       {/* Workspace */}
@@ -242,138 +239,88 @@ function Navbar() {
                           to-indigo-50/40
                           px-5
                           py-3
+                          flex
+                          items-center
+                          justify-between
                         "
                       >
                         <div className="flex items-center gap-2">
                           <Sparkles className="h-4 w-4 text-blue-600" />
-
                           <span className="text-xs font-semibold uppercase tracking-wider text-gray-700">
                             Exactum Workspace
                           </span>
                         </div>
-
-                        <p className="mt-1 text-xs text-gray-500">
-                          Production Environment
-                        </p>
+                        <span className="flex h-2 w-2 rounded-full bg-emerald-500" title="Sistema sincronizado"></span>
                       </div>
 
-                      {/* Header */}
-                      <div className="border-b border-gray-100 px-5 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="relative">
-                            {profile?.avatar ? (
-                              <img
-                                src={profile.avatar}
-                                alt={profile.username}
-                                className="
-                                  h-14
-                                  w-14
-                                  rounded-full
-                                  border
-                                  border-gray-200
-                                  object-cover
-                                  shadow-sm
-                                "
-                              />
-                            ) : (
-                              <div
-                                className="
-                                  flex
-                                  h-14
-                                  w-14
-                                  items-center
-                                  justify-center
-                                  rounded-full
-                                  bg-gradient-to-br
-                                  from-blue-600
-                                  to-indigo-600
-                                  text-base
-                                  font-bold
-                                  text-white
-                                "
-                              >
-                                {userInitial}
-                              </div>
-                            )}
-
-                            <div
-                              className="
-                                absolute
-                                bottom-0
-                                right-0
-                                h-3
-                                w-3
-                                rounded-full
-                                border-2
-                                border-white
-                                bg-emerald-500
-                              "
-                            ></div>
-                          </div>
-
-                          <div className="min-w-0">
-                            <p className="truncate text-sm font-semibold text-gray-900">
-                              {profile.username}
-                            </p>
-
-                            <p className="truncate text-xs text-gray-500">
-                              {profile.email || "Sem email"}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Informations */}
-                      <div className="space-y-4 px-5 py-4">
-
-                        {/* Email */}
-                        <div className="flex items-center gap-3 text-sm text-gray-600">
-                          <Mail className="h-4 w-4 text-gray-400" />
-
-                          <span className="truncate">
+                      {/* Header / Perfil */}
+                      <div className="border-b border-gray-100 px-5 py-4 flex flex-col gap-3">
+                        <div className="min-w-0 w-full">
+                          <p className="truncate text-sm font-semibold text-gray-900">
+                            {profile.username}
+                          </p>
+                          <p 
+                            className="truncate text-xs text-gray-500 mt-0.5" 
+                            title={profile.email}
+                          >
                             {profile.email || "Sem email"}
-                          </span>
+                          </p>
                         </div>
 
-                        {/* Role */}
-                        <div className="flex items-center gap-3 text-sm text-gray-600">
-                          {isAdmin ? (
-                            <ShieldCheck className="h-4 w-4 text-purple-600" />
-                          ) : (
-                            <User className="h-4 w-4 text-blue-600" />
-                          )}
-
+                        <div className="flex">
                           <span
                             className={`
-                              rounded-full
+                              inline-flex
+                              items-center
+                              gap-1.5
+                              rounded-md
                               border
                               px-2.5
-                              py-1
-                              text-xs
-                              font-semibold
-                              capitalize
-
+                              py-0.5
+                              text-[10px]
+                              font-bold
+                              uppercase
+                              tracking-wider
                               ${
                                 isAdmin
-                                  ? "border-purple-100 bg-purple-50 text-purple-700"
+                                  ? "border-purple-200 bg-purple-50 text-purple-700 shadow-sm shadow-purple-100/50"
                                   : "border-blue-100 bg-blue-50 text-blue-700"
                               }
                             `}
                           >
-                            {user.role}
+                            {isAdmin && <ShieldCheck className="h-3 w-3 text-purple-500" />}
+                            {user?.role || "User"}
                           </span>
-                        </div>
-
-                        {/* Status */}
-                        <div className="flex items-center gap-3 text-sm text-gray-600">
-                          <Activity className="h-4 w-4 text-emerald-500" />
-
-                          <span>Sistema sincronizado</span>
                         </div>
                       </div>
 
-                      {/* Footer */}
-                      <div className="border-t border-gray-100 p-2">
+                      {/* Ações - Apenas Configurações com fonte original */}
+                      <div className="p-2 border-b border-gray-100">
+                        <button
+                          onClick={() => { /* sua lógica de navegação */ }}
+                          className="
+                            flex
+                            w-full
+                            items-center
+                            gap-2
+                            rounded-xl
+                            px-3
+                            py-2.5
+                            text-sm
+                            font-medium
+                            text-gray-600
+                            transition-all
+                            duration-200
+                            hover:bg-gray-50
+                          "
+                        >
+                          <ShieldCheck className="h-4 w-4 text-gray-400" />
+                          <span>Configurações</span>
+                        </button>
+                      </div>
+
+                      {/* Footer / Logout */}
+                      <div className="p-2">
                         <button
                           onClick={handleLogout}
                           className="
@@ -394,7 +341,6 @@ function Navbar() {
                           "
                         >
                           <LogOut className="h-4 w-4" />
-
                           <span>Sair</span>
                         </button>
                       </div>

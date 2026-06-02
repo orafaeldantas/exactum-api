@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
-import { apiFetch } from "../services/api";
+import { AuthContext } from "../../context/AuthContext";
+import { apiFetch } from "../../services/api";
 import toast from "react-hot-toast";
 import { 
   Search, 

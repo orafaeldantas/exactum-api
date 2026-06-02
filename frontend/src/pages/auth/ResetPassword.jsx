@@ -1,9 +1,9 @@
 import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../context/UserContext";
-import { AuthContext } from "../context/AuthContext"
+import { UserContext } from "../../context/UserContext";
+import { AuthContext } from "../../context/AuthContext"
 import { Lock, ShieldCheck, AlertCircle, Save } from "lucide-react";
-import { apiFetch } from "../services/api";
+import { apiFetch } from "../../services/api";
 import toast from "react-hot-toast";
 
 export default function ResetPassword() {

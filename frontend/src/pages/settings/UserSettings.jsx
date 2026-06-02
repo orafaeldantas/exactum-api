@@ -1,8 +1,8 @@
 import { useState, useContext, useEffect } from "react";
 import toast from "react-hot-toast";
-import { UserContext } from "../context/UserContext";
-import { AuthContext } from "../context/AuthContext";
-import { apiFetch } from "../services/api";
+import { UserContext } from "../../context/UserContext";
+import { AuthContext } from "../../context/AuthContext";
+import { apiFetch } from "../../services/api";
 
 import {
   Settings,
