@@ -14,12 +14,14 @@ function DashboardHeader({
                         Bem-vindo, <span className="font-semibold text-blue-600">{username || 'Administrador'}</span>.
                     </p>
             </div>
-            <div className="flex items-center gap-3 bg-white p-2 rounded-xl border border-slate-200 shadow-sm text-sm">
-                <div className="px-3 py-1 bg-slate-100 rounded-md flex items-center gap-2">
-                    <Users size={14} className="text-slate-400" />
-                    <span className="font-bold text-slate-700">{totalUsers} Usuários</span>
+            {totalUsers && (
+                <div className="flex items-center gap-3 bg-white p-2 rounded-xl border border-slate-200 shadow-sm text-sm">
+                    <div className="px-3 py-1 bg-slate-100 rounded-md flex items-center gap-2">
+                        <Users size={14} className="text-slate-400" />
+                        <span className="font-bold text-slate-700">{totalUsers} Usuários</span>
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 }

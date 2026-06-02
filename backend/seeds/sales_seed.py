@@ -10,7 +10,9 @@ from app.models.sale import ItemSale, Sale
 logger = logging.getLogger(__name__)
 
 
-def sales_database_seed(tenant_id: int, user_id: int, month: int, year: int):
+def sales_database_seed(
+    tenant_id: int, user_id: int, month: int, year: int, force_day: bool
+):
 
     try:
         products = Product.query.filter_by(tenant_id=tenant_id).all()
@@ -20,7 +22,12 @@ def sales_database_seed(tenant_id: int, user_id: int, month: int, year: int):
         _, last_day = calendar.monthrange(year, month)
 
         current_day = datetime(year, month, 1, tzinfo=UTC)
-        end_date = datetime(year, month, last_day, tzinfo=UTC)
+
+        if force_day:
+            today = datetime.now(UTC).day
+            end_date = datetime(year, month, today, tzinfo=UTC)
+        else:     
+            end_date = datetime(year, month, last_day, tzinfo=UTC)
 
         while current_day <= end_date:
             sales_number = random.randint(5, 50)
@@ -89,6 +96,8 @@ def sales_database_seed(tenant_id: int, user_id: int, month: int, year: int):
             )
 
             current_day += timedelta(days=1)
+
+        db.session.commit()
 
         return True
 

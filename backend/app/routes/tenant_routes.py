@@ -18,7 +18,7 @@ blp_tenants = Blueprint(
 
 
 @blp_tenants.route("/")
-class TenantCreateRoute(MethodView):
+class TenantRoute(MethodView):
     @jwt_required()
     @role_authorization(["admin", "super-admin"])
     @blp_tenants.doc(security=[{"BearerAuth": []}])
