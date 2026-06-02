@@ -81,7 +81,7 @@ class UserService:
             if data.get("password") != data.get("confirm_password"):
                 raise PasswordMismatchException()
 
-        user.set_password(data["password"])
+            user.set_password(data["password"])
 
         update_fields = [
             "username",

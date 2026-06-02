@@ -90,14 +90,14 @@ export default function SettingsPage() {
       minimumStock: form.minimumStock,
       monthlyGoal: form.monthlyGoal,
     };
-  
+    console.log(dataTenant)
     try {
       const [responseUser, responseTenant] = await Promise.all([
         apiFetch(`/users/profile/${profile.id}`, {
           method: "PATCH",
           body: JSON.stringify(dataUser),
         }),
-  
+        
         apiFetch("/tenants", {
           method: "PATCH",
           body: JSON.stringify(dataTenant),

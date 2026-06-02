@@ -40,6 +40,8 @@ function Dashboard() {
     maximumFractionDigits: 2,
   })
 
+  const isAdmin = (role) => ["admin", "super-admin"].includes(role);
+
   /* CHARTS */ 
   const goalValue = tenantData.goal ? parseInt(tenantData.goal) : 0;
 
@@ -49,7 +51,9 @@ function Dashboard() {
 
   useEffect(() => {   
     loadProducts();
-    loadUsers();
+    if (isAdmin(profile.role)) {
+      loadUsers();
+    }
     loadSales(month, year);
     loadTopItems(month, year);
     loadAccumulatedRevenueDaily()
