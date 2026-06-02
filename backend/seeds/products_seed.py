@@ -25,7 +25,6 @@ def products_database_seed(tenant_id: int, products: dict):
 
         logger.info(f"Created products (tenant_id: {tenant_id})")
 
-
         return True
 
     except Exception as e:

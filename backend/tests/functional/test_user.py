@@ -14,7 +14,7 @@ def test_create_user_success(client, auth_headers):
         "email": "new_user@exactum.app.br",
         "password": "pswabcd1234",
         "is_active": True,
-        "role": "user"
+        "role": "user",
     }
 
     response = client.post("/users/", json=payload, headers=auth_headers)

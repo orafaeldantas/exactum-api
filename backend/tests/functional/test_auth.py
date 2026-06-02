@@ -10,14 +10,10 @@ def test_login_success(client, default_user):
     """
     # GIVEN
     payload = {"email": "user@pytest.com", "password": "pytestuserpsw"}
-    
-    # WHEN 
+
+    # WHEN
     response = client.post("/auth/login", json=payload)
 
     # THEN
     assert response.status_code == 200
     assert "access_token" in response.json
-
-
-
-    
