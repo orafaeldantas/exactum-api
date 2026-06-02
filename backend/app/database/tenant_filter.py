@@ -22,7 +22,6 @@ def init_tenant_filter(db):
         from app.models.goals import Goal
         from app.models.product import Product
         from app.models.user import User
-        
 
         execute_state.statement = execute_state.statement.options(
             with_loader_criteria(

@@ -65,8 +65,8 @@ def tenant_database_seed(**kwargs):
         db.session.commit()
 
         logger.info(
-            f"Created tenant (id: {tenant.id}, {tenant.name}), " 
-            f"admin (id: {admin.id}, {admin.username}) and " 
+            f"Created tenant (id: {tenant.id}, {tenant.name}), "
+            f"admin (id: {admin.id}, {admin.username}) and "
             f"user (id: {user.id}, {user.username})"
         )
 

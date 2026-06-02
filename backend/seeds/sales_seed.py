@@ -26,7 +26,7 @@ def sales_database_seed(
         if force_day:
             today = datetime.now(UTC).day
             end_date = datetime(year, month, today, tzinfo=UTC)
-        else:     
+        else:
             end_date = datetime(year, month, last_day, tzinfo=UTC)
 
         while current_day <= end_date:

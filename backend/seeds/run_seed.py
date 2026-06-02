@@ -1,6 +1,6 @@
 import logging
 import time
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from run import app
 from seeds.mocks.products_mock import (
@@ -105,7 +105,7 @@ if __name__ == "__main__":
                     start_year=2026,
                     end_year=2026,
                     max_month=6,
-                    force_day=True
+                    force_day=True,
                 )
 
             end_time = time.perf_counter()

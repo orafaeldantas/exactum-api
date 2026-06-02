@@ -54,7 +54,6 @@ product_one = {
 }
 
 
-
 product_two = {
     "Produto 1": ["Arroz Tipo 1 5Kg", "AR-T1-001", 29.90],
     "Produto 2": ["Feijão Carioca 1Kg", "FE-CAR-002", 8.90],
@@ -77,7 +76,6 @@ product_two = {
     "Produto 19": ["Chocolate ao Leite 90g", "CH-LEI-019", 6.49],
     "Produto 20": ["Água Mineral 1.5L", "AG-MIN-020", 3.49],
 }
-
 
 
 product_three = {
