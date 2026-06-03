@@ -1,4 +1,4 @@
-export default function Loader({ message = "Carregando configurações..." }) {
+export default function GlobalLoader({ message = "Carregando configurações..." }) {
     return (
       <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-50 transition-opacity duration-300 ease-out">
         

@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { getSales } from "../../services/saleService"; 
+import { getSales } from "../../services/saleService";
+import Skeleton from "../../components/Loader/Skeleton"; 
 import { 
   Search, 
   Eye, 
@@ -25,7 +26,7 @@ export default function ListSales() {
   const salesPerPage = 10;
 
   // Custom hook for fetching sales based on month/year
-  const { sales = [], invoicing, loadSales, isLoading } = getSales();
+  const { sales = [], invoicing, loadSales, loading } = getSales();
 
   // Re-fetch when month or year changes
   useEffect(() => {  
@@ -147,13 +148,25 @@ export default function ListSales() {
       {/* Sales Table */}
       <div className="relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
         {/* Loading Overlay */}
-        {isLoading && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/60 backdrop-blur-sm">
-            <div className="flex flex-col items-center gap-2">
-              <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
-              <span className="text-xs font-bold text-blue-600 uppercase">Atualizando Dados...</span>
-            </div>
+        {loading && (
+          <div className="p-6 space-y-6 w-full max-w-4xl mx-auto">
+          <div className="flex justify-between items-center">
+            <Skeleton className="h-8 w-48" />
+            <Skeleton className="h-10 w-24" />
           </div>
+  
+          <div className="grid grid-cols-3 gap-4">
+            <Skeleton className="h-20 w-full" />
+            <Skeleton className="h-20 w-full" />
+            <Skeleton className="h-20 w-full" />
+          </div>
+    
+          <div className="space-y-2">
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-16 w-full" />
+            <Skeleton className="h-16 w-full" />
+          </div>
+        </div>
         )}
 
         <div className="overflow-x-auto">
@@ -207,7 +220,7 @@ export default function ListSales() {
                 </tr>
               ))}
               
-              {!isLoading && filteredSales.length === 0 && (
+              {!loading && filteredSales.length === 0 && (
                 <tr>
                   <td colSpan="5" className="px-6 py-12 text-center text-sm text-gray-500">
                     Nenhuma venda encontrada para o período selecionado.

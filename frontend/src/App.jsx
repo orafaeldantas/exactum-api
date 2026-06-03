@@ -2,6 +2,8 @@ import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
+import GlobalLoader from "./components/Loader/GlobalLoader";
+
 // Layouts and Security Routes
 import Layout from "./layouts/MainLayout";
 import InfoLayout from "./layouts/InfoLayout"; 
@@ -50,14 +52,6 @@ const UserSettings = lazy(() => import("./pages/settings/UserSettings"));
 const AdminSettings = lazy(() => import("./pages/settings/AdminSettings"));
 
 
-const PageLoader = () => <div 
-  className="h-screen w-screen bg-slate-50 
-             flex items-center justify-center 
-             text-sm text-slate-500 font-medium 
-             animate-pulse">
-             Carregando ambiente...
-</div>;
-
 function App() {
   return (
     <>
@@ -69,7 +63,7 @@ function App() {
         }}
       />
 
-      <Suspense fallback={<PageLoader />}>
+      <Suspense fallback={<GlobalLoader message="Carregando Exactum..." />}>
         <Routes>
           
           {/* 1. PUBLIC / INSTITUTIONAL ROUTES */}
