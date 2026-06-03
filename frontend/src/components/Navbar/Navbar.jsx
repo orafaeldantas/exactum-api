@@ -295,10 +295,9 @@ function Navbar() {
                         </div>
                       </div>
 
-                      {/* Ações - Apenas Configurações com fonte original */}
                       <div className="p-2 border-b border-gray-100">
                         <button
-                          onClick={() => { /* sua lógica de navegação */ }}
+                          onClick={() => navigate(isAdmin ? "/admin-settings" : "/user-settings")}
                           className="
                             flex
                             w-full
