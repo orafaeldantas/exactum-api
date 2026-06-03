@@ -18,7 +18,6 @@ import {
 export default function UserSettingsPage() {
   const { loading } = useContext(AuthContext);
   const { profile } = useContext(UserContext);
-  const [loadingUserSettings, setLoadingUserSettings] = useState(false)
 
   const [form, setForm] = useState({
     username: "",
@@ -43,9 +42,25 @@ export default function UserSettingsPage() {
     
   }, [profile]);
      
-  if (loading) {
-    return <Loader message="Carregando..." />;
-  }
+   if (loading) {
+      return (
+        <div className="p-6 flex flex-col gap-6 w-full max-w-2xl">      
+          <Skeleton className="h-8 w-64 mb-4" />  
+
+          <div className="flex flex-col gap-2">
+            <Skeleton className="h-5 w-32" /> 
+            <Skeleton className="h-10 w-full" /> 
+          </div>
+    
+          <div className="flex flex-col gap-2">
+            <Skeleton className="h-5 w-40" /> 
+            <Skeleton className="h-10 w-full" /> 
+          </div>
+    
+          <Skeleton className="h-10 w-32 mt-4 rounded-md" />      
+        </div>
+      );
+    }
 
   function handleChange(e) {
     const { name, value, type, checked } = e.target;

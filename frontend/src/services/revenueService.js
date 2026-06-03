@@ -34,7 +34,7 @@ export function getRevenuePeriod() {
   }
 
   
-  return { revenuePeriod, loadRevenue, goal, loadGoal};
+  return { revenuePeriod, loadRevenue, goal, loadGoal, loading};
 }
 
 
@@ -56,7 +56,7 @@ export function getRevenueDaily(){
     }
   }
 
-  return { accumulatedRevenueDaily, loadAccumulatedRevenueDaily};
+  return { accumulatedRevenueDaily, loadAccumulatedRevenueDaily, loading};
 }
 
 export function getAverageTicketMetrics(){
@@ -71,7 +71,6 @@ export function getAverageTicketMetrics(){
       const response = await apiFetch(`/analytics/revenue/ticket-average?period=month${month}year${year}`);
       const data = await response.json();
       setAverageTicketMetric(data);
-      console.log(data)
     } catch (err) {
       console.error("Erro ao carregar:", err);
     } finally {
@@ -79,7 +78,7 @@ export function getAverageTicketMetrics(){
     }
   }
 
-  return { averageTicketMetrics, loadAverageTicketMetrics };
+  return { averageTicketMetrics, loadAverageTicketMetrics, loading };
 }
 
 

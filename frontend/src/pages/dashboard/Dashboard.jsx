@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react"
+import { AuthContext } from "../../context/AuthContext";
 import { UserContext } from "../../context/UserContext";
 import { TenantContext } from "../../context/TenantContext";
 import { getProducts } from "../../services/productService"; 
@@ -13,11 +14,14 @@ import TopProductsCard from "../../features/dashboard/cards/TopProductsCard";
 import SalesChannelsCard from "../../features/dashboard/cards/SalesChannelsCard";
 import AiInsightsCard from "../../features/dashboard/cards/AiInsightsCard";
 
+import DashboardSkeleton from "../../components/Loader/DashboardSkeleton";
+
 /**
  * @component Dashboard
  * @description Interface de comando central com KPIs, Gráficos de Meta e Insights de IA.
  */
 function Dashboard() {
+  const { loading } = useContext(AuthContext);
   const { profile } = useContext(UserContext);
   const { tenantData } = useContext(TenantContext);
   const { lowStock = [], loadProducts } = getProducts();
@@ -25,10 +29,14 @@ function Dashboard() {
   const { sales = [], invoicing, loadSales } = getSales();
   const { topItems = [], loadTopItems } = getTopItems();
   const { accumulatedRevenueDaily = [], loadAccumulatedRevenueDaily } = getRevenueDaily()
-  
+
+  const [isInitializing, setIsInitializing] = useState(true);
+
   const today = new Date();
   const [month] = useState((today.getMonth() + 1).toString().padStart(2, '0'));
   const [year] = useState(today.getFullYear().toString());
+
+  const [showSkeleton, setShowSkeleton] = useState(false);
 
   const invoicingFormated = invoicing.toLocaleString("pt-BR", {
     minimumFractionDigits: 2,
@@ -42,24 +50,40 @@ function Dashboard() {
 
   const isAdmin = (role) => ["admin", "super-admin"].includes(role);
 
-  /* CHARTS */ 
   const goalValue = tenantData.goal ? parseInt(tenantData.goal) : 0;
 
-  
-
-  /* END CHARTS */ 
-
   useEffect(() => {   
-    loadProducts();
-    if (isAdmin(profile.role)) {
+
+    if (isAdmin(profile.role)){
       loadUsers();
     }
-    loadSales(month, year);
-    loadTopItems(month, year);
-    loadAccumulatedRevenueDaily()
+    
+    const initData = async () => {
+      try {
+        // 2. Executa todos os carregamentos em paralelo
+        await Promise.all([
+          loadProducts(),
+          loadSales(month, year),
+          loadTopItems(month, year),
+          loadAccumulatedRevenueDaily()
+        ]);
+      } catch (error) {
+        console.error("Erro ao inicializar dashboard:", error);
+      } finally {
+        setIsInitializing(false);
+      }
+    };
+
+    initData();
+
   }, [month, year]);
 
+  if (isInitializing) {
+    return <DashboardSkeleton />;
+  }
+
   return (
+    
     <div className="animate-in fade-in duration-500 pb-10 h-full min-h-0 overflow-y-auto pr-3 custom-scroll">
       
       <DashboardHeader

@@ -4,6 +4,7 @@ import { getSaleItems } from "../../services/saleService";
 import { 
   ArrowLeft, Package, Tag, Hash, ShoppingBag, ShoppingCart, Loader2, Printer, Info 
 } from "lucide-react";
+import Skeleton from "../../components/Loader/Skeleton";
 
 export default function SaleDetails() {
   const { id } = useParams();
@@ -17,9 +18,23 @@ export default function SaleDetails() {
 
   if (loading) {
     return (
-      <div className="flex h-screen w-full flex-col items-center justify-center gap-4 bg-gray-50">
-        <Loader2 className="h-12 w-12 animate-spin text-blue-600" />
-        <p className="font-bold text-gray-500 uppercase tracking-widest text-xs">Carregando Detalhes...</p>
+      <div className="p-6 space-y-6 w-full max-w-4xl mx-auto">
+        <div className="flex justify-between items-center">
+          <Skeleton className="h-8 w-48" />
+          <Skeleton className="h-10 w-24" />
+        </div>
+
+        <div className="grid grid-cols-3 gap-4">
+          <Skeleton className="h-20 w-full" />
+          <Skeleton className="h-20 w-full" />
+          <Skeleton className="h-20 w-full" />
+        </div>
+  
+        <div className="space-y-2">
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-16 w-full" />
+          <Skeleton className="h-16 w-full" />
+        </div>
       </div>
     );
   }
