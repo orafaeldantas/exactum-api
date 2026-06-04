@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { getSoldItems } from "../../services/saleService";
-import Skeleton from "../../components/Loader/Skeleton"; 
+import LoadingOverlay from "../../components/Loader/LoadingOverlay";
 import { 
   Search, 
   Eye, 
@@ -60,185 +60,167 @@ export default function ListSoldItems() {
 
   useEffect(() => {  
     loadSoldItems({ month: month, year: year });
-  }, [month, year]); 
+  }, [month, year]);
+  
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6 relative">
-      
-      {/* Header */}
-      <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-800">Produtos Vendidos</h1>
-          <p className="mt-1 text-sm text-gray-500">
-            Exibindo registros de {monthOptions.find(m => m.value === month)?.label} de {year}
-          </p>
-        </div>
-      </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm border-l-4 border-l-blue-500">
-          <div className="flex items-center gap-3 mb-2">
-            <TrendingUp className="w-4 h-4 text-emerald-500" />
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Produtos Vendidos</p>
+    <LoadingOverlay loading={loading} minDuration={250} message="Buscando dados...">
+      <div className="min-h-screen bg-gray-50 p-6 relative">
+        
+        {/* Header */}
+        <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-800">Produtos Vendidos</h1>
+            <p className="mt-1 text-sm text-gray-500">
+              Exibindo registros de {monthOptions.find(m => m.value === month)?.label} de {year}
+            </p>
           </div>
-          <h3 className="text-2xl font-black text-gray-800">
-              {filteredSoldItems.length} {filteredSoldItems.length === 1 ? 'produto' : 'produtos'}
-          </h3>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm border-l-4 border-l-emerald-500">
-          <div className="flex items-center gap-3 mb-2">
-            <TrendingUp className="w-4 h-4 text-emerald-500" />
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Unidades Vendidas</p>
+        {/* KPI Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm border-l-4 border-l-blue-500">
+            <div className="flex items-center gap-3 mb-2">
+              <TrendingUp className="w-4 h-4 text-emerald-500" />
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Produtos Vendidos</p>
+            </div>
+            <h3 className="text-2xl font-black text-gray-800">
+                {filteredSoldItems.length} {filteredSoldItems.length === 1 ? 'produto' : 'produtos'}
+            </h3>
           </div>
-          <h3 className="text-2xl font-black text-gray-800">
-              {totalItemsSold} {totalItemsSold === 1 ? 'unidade' : 'unidades'}
-          </h3>
-        </div>
-      </div>
 
-      {/* Filters Section */}
-      <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between bg-white p-4 rounded-2xl border border-gray-200 shadow-sm">
-        <div className="relative w-full max-w-sm">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input 
-            type="text" 
-            placeholder="Buscar por ID ou pagamento..." 
-            value={search} 
-            onChange={(e) => {
-              setSearch(e.target.value)
-              setPage(1); 
-            }}           
-            className="w-full rounded-xl border border-gray-200 bg-gray-50 pl-11 pr-4 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100" 
-          />
+          <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm border-l-4 border-l-emerald-500">
+            <div className="flex items-center gap-3 mb-2">
+              <TrendingUp className="w-4 h-4 text-emerald-500" />
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Unidades Vendidas</p>
+            </div>
+            <h3 className="text-2xl font-black text-gray-800">
+                {totalItemsSold} {totalItemsSold === 1 ? 'unidade' : 'unidades'}
+            </h3>
+          </div>
         </div>
 
-        <div className="flex flex-wrap gap-3 items-center">
-          <div className="flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-gray-400" />
+        {/* Filters Section */}
+        <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between bg-white p-4 rounded-2xl border border-gray-200 shadow-sm">
+          <div className="relative w-full max-w-sm">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input 
+              type="text" 
+              placeholder="Buscar por ID ou pagamento..." 
+              value={search} 
+              onChange={(e) => {
+                setSearch(e.target.value)
+                setPage(1); 
+              }}           
+              className="w-full rounded-xl border border-gray-200 bg-gray-50 pl-11 pr-4 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100" 
+            />
+          </div>
+
+          <div className="flex flex-wrap gap-3 items-center">
+            <div className="flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-gray-400" />
+              <select 
+                value={month} 
+                onChange={(e) => setMonth(e.target.value)}
+                className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm outline-none focus:border-blue-500"
+              >
+                {monthOptions.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
+              </select>
+            </div>
+
             <select 
-              value={month} 
-              onChange={(e) => setMonth(e.target.value)}
+              value={year} 
+              onChange={(e) => setYear(e.target.value)}
               className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm outline-none focus:border-blue-500"
             >
-              {monthOptions.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
+              {yearOptions.map(y => <option key={y} value={y}>{y}</option>)}
             </select>
           </div>
-
-          <select 
-            value={year} 
-            onChange={(e) => setYear(e.target.value)}
-            className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm outline-none focus:border-blue-500"
-          >
-            {yearOptions.map(y => <option key={y} value={y}>{y}</option>)}
-          </select>
         </div>
-      </div>
 
-      {/* Items Table */}
-      <div className="relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-        {/* Loading Overlay */}
-        {loading && (
-          <div className="p-6 space-y-6 w-full max-w-4xl mx-auto">
-            <div className="flex justify-between items-center">
-                <Skeleton className="h-8 w-48" />
-                <Skeleton className="h-10 w-24" />
-            </div>
-            
-            <div className="grid grid-cols-3 gap-4">
-                <Skeleton className="h-20 w-full" />
-                <Skeleton className="h-20 w-full" />
-                <Skeleton className="h-20 w-full" />
-            </div>
-              
-            <div className="space-y-2">
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-16 w-full" />
-                <Skeleton className="h-16 w-full" />
-                </div>
-          </div>
-        )}
-
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-600">
-                  <div className="flex items-center gap-2">ID</div>
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-600">
-                  Nome
-                </th>
-                <th className="px-6 py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-600">
-                  SKU
-                </th>
-                <th className="px-6 py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-600">
-                   Total Vendidos
-                </th>
-                <th className="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider text-gray-600">
-                   Faturado
-                </th>              
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedItems.map((item) => (
-                <tr key={item.name} className="border-t border-gray-100 transition-colors hover:bg-gray-50 group">
-                  <td className="px-6 py-4 text-sm font-medium text-gray-700">#{item.product_id ?? null}</td>
-                  <td className="px-6 py-4 text-sm font-medium text-gray-700">{item.name}</td>
-                  <td className="px-6 py-4 text-center">
-                    <span className="inline-flex items-center rounded-lg bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
-                      {item.sku}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    <span className="inline-flex items-center rounded-lg bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
-                      {item.total_quantity}
-                    </span>  
-                  </td>
-                  <td className="px-6 py-4 text-sm font-black text-gray-800 text-right">
-                    R$ {Number(item.revenue).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                  </td>
-                </tr>
-              ))}
-              
-              {!loading && filteredSoldItems.length === 0 && (
+        {/* Items Table */}
+        <div className="relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse">
+              <thead className="bg-gray-100">
                 <tr>
-                  <td colSpan="5" className="px-6 py-12 text-center text-sm text-gray-500">
-                    Nenhum produto encontrado para o período selecionado.
-                  </td>
+                  <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-600">
+                    <div className="flex items-center gap-2">ID</div>
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-600">
+                    Nome
+                  </th>
+                  <th className="px-6 py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-600">
+                    SKU
+                  </th>
+                  <th className="px-6 py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-600">
+                    Total Vendidos
+                  </th>
+                  <th className="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider text-gray-600">
+                    Faturado
+                  </th>              
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {paginatedItems.map((item) => (
+                  <tr key={item.name} className="border-t border-gray-100 transition-colors hover:bg-gray-50 group">
+                    <td className="px-6 py-4 text-sm font-medium text-gray-700">#{item.product_id ?? null}</td>
+                    <td className="px-6 py-4 text-sm font-medium text-gray-700">{item.name}</td>
+                    <td className="px-6 py-4 text-center">
+                      <span className="inline-flex items-center rounded-lg bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
+                        {item.sku}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <span className="inline-flex items-center rounded-lg bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
+                        {item.total_quantity}
+                      </span>  
+                    </td>
+                    <td className="px-6 py-4 text-sm font-black text-gray-800 text-right">
+                      R$ {Number(item.revenue).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    </td>
+                  </tr>
+                ))}
+                
+                {!loading && filteredSoldItems.length === 0 && (
+                  <tr>
+                    <td colSpan="5" className="px-6 py-12 text-center text-sm text-gray-500">
+                      Nenhum produto encontrado para o período selecionado.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        {/* Pagination Controls */}
+        <div className="mt-6 flex items-center justify-center gap-1">
+          <div className="flex w-30 justify-end">    
+            <button
+              disabled={page === 1}
+              onClick={() => setPage(page - 1)}
+              className="flex items-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-600 shadow-sm transition-all hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              ← Anterior
+            </button>
+          </div>  
+          <div className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm">
+            <span className="text-blue-600">{page}</span>
+            <span className="mx-1 text-gray-400">/</span>
+            <span>{totalPages || 1}</span>
+          </div>
+          <div className="w-30">        
+            <button
+              disabled={page === totalPages || totalPages === 0}
+              onClick={() => setPage(page + 1)}
+              className="flex items-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-600 shadow-sm transition-all hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              Próxima →
+            </button>
+          </div>
         </div>
       </div>
-      {/* Pagination Controls */}
-      <div className="mt-6 flex items-center justify-center gap-1">
-        <div className="flex w-30 justify-end">    
-          <button
-            disabled={page === 1}
-            onClick={() => setPage(page - 1)}
-            className="flex items-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-600 shadow-sm transition-all hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            ← Anterior
-          </button>
-        </div>  
-        <div className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm">
-          <span className="text-blue-600">{page}</span>
-          <span className="mx-1 text-gray-400">/</span>
-          <span>{totalPages || 1}</span>
-        </div>
-        <div className="w-30">        
-          <button
-            disabled={page === totalPages || totalPages === 0}
-            onClick={() => setPage(page + 1)}
-            className="flex items-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-600 shadow-sm transition-all hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            Próxima →
-          </button>
-        </div>
-      </div>
-    </div>
+    </LoadingOverlay>
   );
 }
