@@ -18,7 +18,7 @@ import DashboardSkeleton from "../../components/Loader/DashboardSkeleton";
 
 /**
  * @component Dashboard
- * @description Interface de comando central com KPIs, Gráficos de Meta e Insights de IA.
+ * @description Central command interface with KPIs, Target Charts, and AI Insights
  */
 function Dashboard() {
   const { loading } = useContext(AuthContext);
@@ -35,8 +35,6 @@ function Dashboard() {
   const today = new Date();
   const [month] = useState((today.getMonth() + 1).toString().padStart(2, '0'));
   const [year] = useState(today.getFullYear().toString());
-
-  const [showSkeleton, setShowSkeleton] = useState(false);
 
   const invoicingFormated = invoicing.toLocaleString("pt-BR", {
     minimumFractionDigits: 2,
@@ -60,7 +58,6 @@ function Dashboard() {
     
     const initData = async () => {
       try {
-        // 2. Executa todos os carregamentos em paralelo
         await Promise.all([
           loadProducts(),
           loadSales(month, year),
