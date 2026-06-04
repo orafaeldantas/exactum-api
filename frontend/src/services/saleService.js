@@ -3,7 +3,7 @@ import { apiFetch } from "./api";
 
 export function getSales() { 
   const [sales, setSales] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   async function loadSales(month, year) {
     try {
@@ -34,7 +34,7 @@ export function getSales() {
 
 export function getSaleItems() { 
   const [saleItems, setSaleItems] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   async function loadSaleItems(id) {
     try {
@@ -77,7 +77,7 @@ export function getTopItems() {
 
 export function getSoldItems() { 
   const [soldItems, setSoldItems] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   async function loadSoldItems({ period = null, month = null, year = null } = {}) {
     try {

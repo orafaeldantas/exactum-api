@@ -11,6 +11,7 @@ import {
   Target,
   BarChart3,
   Loader2,
+  ArrowLeft
 } from "lucide-react";
 
 import {
@@ -102,28 +103,29 @@ export default function AverageTicketAnalytics() {
 
   return (
 
-    <LoadingOverlay loading={loading} message="Buscando dados...">
+    <LoadingOverlay loading={loading} minDuration={250} message="Buscando dados...">
       <div className="animate-in fade-in duration-500 pb-10 h-full min-h-0 overflow-y-auto pr-3 custom-scroll">
         {/* Header */}
         <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-800">
-              Ticket Médio
-            </h1>
-
+            <div className="flex items-center gap-3">
+              <button 
+                onClick={() => navigate(-1)}
+                className="group flex h-10 w-10 items-center justify-center rounded-full 
+                          bg-white border border-gray-200 shadow-sm transition-all hover:bg-gray-100"
+              >
+                <ArrowLeft className="h-5 w-5 text-gray-600 group-hover:text-blue-600" />
+              </button>
+              <h1 className="text-3xl font-bold text-gray-800">
+                Ticket Médio
+              </h1>
+            </div>
             <p className="mt-1 text-sm text-gray-500">
               Análise financeira do comportamento de consumo dos clientes
             </p>
           </div>
 
           <div className="flex gap-3">
-            <button
-              onClick={() => navigate("/sales")}
-              className="rounded-xl border border-gray-200 bg-white px-5 py-3 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-gray-100"
-            >
-              Voltar
-            </button>
-
             <button
               onClick={() => navigate("/checkout")}
               className="rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-md transition-all hover:bg-blue-700 hover:scale-[1.02]"

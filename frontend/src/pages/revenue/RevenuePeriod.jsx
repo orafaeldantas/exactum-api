@@ -1,4 +1,5 @@
-import { useMemo, useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { getRevenuePeriod } from "../../services/revenueService";
 import { TenantContext } from "../../context/TenantContext";
 import LoadingOverlay from "../../components/Loader/LoadingOverlay";
@@ -11,6 +12,7 @@ import {
   ShoppingCart,
   Target,
   TrendingUp,
+  ArrowLeft,
 } from "lucide-react";
 
 export default function RevenueAnalytics() {
@@ -18,6 +20,8 @@ export default function RevenueAnalytics() {
   const [period, setPeriod] = useState("month");
   const { tenantData } = useContext(TenantContext); 
   const { revenuePeriod = {}, loadRevenue, loading, loadGoal } = getRevenuePeriod();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadRevenue(period);
@@ -63,36 +67,36 @@ export default function RevenueAnalytics() {
     {
       id: 1,
       method: "PIX",
-      value: parseFloat(paymentPix?.revenue) ?? 0,
+      value: paymentPix?.revenue ? parseFloat(paymentPix?.revenue) : 0,
       percentage:
-        totalRevenue > 0
-          ? (((parseFloat(paymentPix?.revenue) ?? 0) / totalRevenue) * 100).toFixed(2)
+        paymentPix?.revenue
+          ? (((parseFloat(paymentPix?.revenue)) / totalRevenue) * 100).toFixed(2)
           : 0,
     },
     {
       id: 2,
       method: "Crédito",
-      value: parseFloat(paymentCredit?.revenue) ?? 0,
+      value: paymentCredit?.revenue ? parseFloat(paymentCredit?.revenue) : 0,
       percentage:
-        totalRevenue > 0
+        paymentCredit?.revenue
           ? (((parseFloat(paymentCredit?.revenue) ?? 0) / totalRevenue) * 100).toFixed(2)
           : 0,
     },
     {
       id: 3,
       method: "Débito",
-      value: parseFloat(paymentDebit?.revenue) ?? 0,
+      value: paymentDebit?.revenue ? parseFloat(paymentDebit?.revenue) : 0,
       percentage:
-        totalRevenue > 0
+        paymentDebit?.revenue
           ? (((parseFloat(paymentDebit?.revenue) ?? 0) / totalRevenue) * 100).toFixed(2)
           : 0,
     },
     {    
       id: 4,
       method: "Dinheiro",
-      value: parseFloat(paymentMoney?.revenue) ?? 0,
+      value: paymentMoney?.revenue ? parseFloat(paymentMoney?.revenue) : 0,
       percentage:
-        totalRevenue > 0
+        paymentMoney?.revenue
           ? (((parseFloat(paymentMoney?.revenue) ?? 0) / totalRevenue) * 100).toFixed(2)
           : 0,
     },
@@ -124,7 +128,7 @@ export default function RevenueAnalytics() {
 
   return (
 
-    <LoadingOverlay loading={loading} message="Buscando dados...">
+    <LoadingOverlay loading={loading} minDuration={250} message="Buscando dados...">
 
       <div className="
           animate-in fade-in duration-500
@@ -144,14 +148,14 @@ export default function RevenueAnalytics() {
 
             <div className="mb-2 flex items-center gap-3">
 
-              <div
-                className="
-                  flex h-11 w-11 items-center justify-center
-                  rounded-2xl bg-emerald-600
-                  shadow-lg shadow-emerald-500/20
-                "
-              >
-                <DollarSign className="h-5 w-5 text-white" />
+              <div className="flex items-center gap-4">
+                <button 
+                  onClick={() => navigate(-1)}
+                  className="group flex h-10 w-10 items-center justify-center rounded-full 
+                            bg-white border border-gray-200 shadow-sm transition-all hover:bg-gray-100"
+                >
+                  <ArrowLeft className="h-5 w-5 text-gray-600 group-hover:text-blue-600" />
+                </button>
               </div>
 
               <h1 className="text-3xl font-bold text-gray-800">

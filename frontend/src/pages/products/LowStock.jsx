@@ -2,6 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { getProducts } from "../../services/productService"; 
 import { TenantContext } from "../../context/TenantContext";
+import Skeleton from "../../components/Loader/Skeleton"; 
 
 
 import { Pencil, ShoppingCart, AlertCircle, TrendingDown } from 'lucide-react';
@@ -9,18 +10,31 @@ import { Pencil, ShoppingCart, AlertCircle, TrendingDown } from 'lucide-react';
 export default function LowStockProducts() {
   const navigate = useNavigate();
   
-  const { lowStock = [], loadProducts } = getProducts(); 
+  const { lowStock = [], loadProducts, loading } = getProducts(); 
   const { tenantData } = useContext(TenantContext);
 
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [showSkeleton, setShowSkeleton] = useState(false);
   const productsPerPage = 10;
 
   const LOW_STOCK_THRESHOLD = tenantData.global_min_stock;
 
+  
   useEffect(() => {
     loadProducts();
   }, []);
+
+  useEffect(() => {
+    if (!loading) {
+      setShowSkeleton(false);
+      return;
+    }
+
+    const timer = setTimeout(() => setShowSkeleton(true), 200);
+    return () => clearTimeout(timer);
+  }, [loading]);
+
 
   const filteredProducts = lowStock.filter((product) =>
     product.name.toLowerCase().includes(search.toLowerCase())
@@ -29,6 +43,19 @@ export default function LowStockProducts() {
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
   const startIndex = (page - 1) * productsPerPage;
   const paginatedProducts = filteredProducts.slice(startIndex, startIndex + productsPerPage);
+
+  if (showSkeleton) {
+    return (
+      <div className="absolute inset-0 z-50 bg-white/70 backdrop-blur-[2px] flex items-center justify-center p-6">
+        <div className="w-full max-w-4xl space-y-4">
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-16 w-full" />
+          <Skeleton className="h-16 w-full" />
+          <Skeleton className="h-16 w-full" />
+        </div>
+      </div>
+    );
+  }  
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">

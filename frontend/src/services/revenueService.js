@@ -4,7 +4,7 @@ import { apiFetch } from "./api";
 export function getRevenuePeriod() { 
   const [revenuePeriod, setRevenuePeriod] = useState([]);
   const [goal, setGoal] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   
 
   async function loadRevenue(period) {
@@ -63,7 +63,7 @@ export function getAverageTicketMetrics(){
   
   
   const [averageTicketMetrics, setAverageTicketMetric] = useState([])
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   
   async function loadAverageTicketMetrics(month, year) {
     try {

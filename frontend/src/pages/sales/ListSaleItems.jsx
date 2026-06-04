@@ -4,7 +4,7 @@ import { getSaleItems } from "../../services/saleService";
 import { 
   ArrowLeft, Package, Tag, Hash, ShoppingBag, ShoppingCart, Loader2, Printer, Info 
 } from "lucide-react";
-import Skeleton from "../../components/Loader/Skeleton";
+import LoadingOverlay from "../../components/Loader/LoadingOverlay";
 
 export default function SaleDetails() {
   const { id } = useParams();
@@ -16,33 +16,10 @@ export default function SaleDetails() {
     if (id) loadSaleItems(id);
   }, [id]);
 
-  if (loading) {
-    return (
-      <div className="p-6 space-y-6 w-full max-w-4xl mx-auto">
-        <div className="flex justify-between items-center">
-          <Skeleton className="h-8 w-48" />
-          <Skeleton className="h-10 w-24" />
-        </div>
-
-        <div className="grid grid-cols-3 gap-4">
-          <Skeleton className="h-20 w-full" />
-          <Skeleton className="h-20 w-full" />
-          <Skeleton className="h-20 w-full" />
-        </div>
-  
-        <div className="space-y-2">
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-16 w-full" />
-          <Skeleton className="h-16 w-full" />
-        </div>
-      </div>
-    );
-  }
-
   const sale = saleItems?.sale;
-  const items = (saleItems?.items || []).slice(0, 10);
+  const items = (saleItems?.items || [])
 
-  if (!sale) {
+  if (!sale && !loading) {
     return (
       <div className="p-8 text-center bg-gray-50 min-h-screen">
         <p className="text-gray-600">Venda não encontrada ou erro ao carregar.</p>
@@ -54,6 +31,8 @@ export default function SaleDetails() {
   }
 
   return (
+
+    <LoadingOverlay loading={loading} minDuration={250} message="Buscando dados..."> 
     <div className="min-h-screen bg-gray-50 p-6">
       {/* Header Section */}
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -67,7 +46,7 @@ export default function SaleDetails() {
           <div>
             <h1 className="text-3xl font-bold text-gray-800">Detalhes da Venda</h1>
             <p className="text-sm text-gray-500 font-medium">
-              Pedido #{sale.id} • {sale.created_at ? new Date(sale.created_at).toLocaleDateString('pt-BR') : 'Data Indisponível'}
+              Pedido #{sale?.id} • {sale?.created_at ? new Date(sale?.created_at).toLocaleDateString('pt-BR') : 'Data Indisponível'}
             </p>
           </div>
         </div>
@@ -83,9 +62,9 @@ export default function SaleDetails() {
             <Info className="w-4 h-4" />
             <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Informações Gerais</p>
           </div>
-          <p className="text-sm font-semibold text-gray-600">Pagamento: <span className="text-gray-800">{sale.payment_method || "N/A"}</span></p>
+          <p className="text-sm font-semibold text-gray-600">Pagamento: <span className="text-gray-800">{sale?.payment_method || "N/A"}</span></p>
           <p className="text-sm font-semibold text-gray-600">Hora: <span className="text-gray-800">
-            {sale.created_at ? new Date(sale.created_at).toLocaleTimeString('pt-BR') : '--:--'}
+            {sale?.created_at ? new Date(sale?.created_at).toLocaleTimeString('pt-BR') : '--:--'}
           </span></p>
         </div>
 
@@ -106,7 +85,7 @@ export default function SaleDetails() {
             <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Valor Total</p>
           </div>
           <h3 className="text-2xl font-black text-gray-800">
-            R$ {Number(sale.total_price || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+            R$ {Number(sale?.total_price || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
           </h3>
         </div>
       </div>
@@ -157,11 +136,12 @@ export default function SaleDetails() {
           <div className="flex justify-end px-6 py-4">
              <span className="text-sm font-bold text-gray-500 uppercase tracking-widest mr-8 flex items-center">Total do Pedido:</span>
              <span className="text-xl font-black text-blue-600">
-                R$ {Number(sale.total_price || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                R$ {Number(sale?.total_price || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
              </span>
           </div>
         </div>
       </div>
     </div>
+    </LoadingOverlay> 
   );
 }
