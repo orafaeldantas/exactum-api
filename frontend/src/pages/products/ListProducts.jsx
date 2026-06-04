@@ -24,7 +24,7 @@ export default function ListProducts() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
 
-  const productsPerPage = 5;
+  const productsPerPage = 8;
 
   const navigate = useNavigate();
 

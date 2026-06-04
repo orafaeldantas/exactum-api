@@ -107,7 +107,7 @@ function App() {
             <Route path="/products" element={<ListProducts />} />
             <Route path="/low-stock" element={<LowStockProducts />} />
             <Route path="/products/create" element={<CreateProduct />} />
-            <Route path="/product/edit/:id" element={<RoleRoute requiredRole={["admin", "super-admin"]}><EditProduct /></RoleRoute>} />
+            <Route path="/product/edit/:id" element={<EditProduct />} />
 
             {/* Sub-block: Critical Settings and Levels */}
             <Route path="/user-settings" element={<RoleRoute requiredRole={["user", "super-admin"]}><UserSettings /></RoleRoute>} />
