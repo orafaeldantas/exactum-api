@@ -2,6 +2,9 @@ import calendar
 import logging
 import random
 from datetime import UTC, datetime, timedelta
+from decimal import Decimal
+
+from sqlalchemy import select
 
 from app.extensions import db
 from app.models.product import Product
@@ -12,10 +15,13 @@ logger = logging.getLogger(__name__)
 
 def sales_database_seed(
     tenant_id: int, user_id: int, month: int, year: int, force_day: bool
-):
+) -> bool:
 
     try:
-        products = Product.query.filter_by(tenant_id=tenant_id).all()
+
+        stmt = select(Product).filter_by(tenant_id=tenant_id)
+        
+        products = db.session.scalars(stmt).all()
 
         payment_method = ["pix", "debit", "money", "credit"]
 
@@ -39,7 +45,7 @@ def sales_database_seed(
                 random_sale_date = current_day.replace(hour=hour, minute=minute)
 
                 list_item_sold = []
-                total_price = 0
+                total_price = Decimal("0.00")
                 max_itens = len(products)
                 quantity_items_sold = random.randint(1, max_itens)
 

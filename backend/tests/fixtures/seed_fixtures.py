@@ -1,15 +1,16 @@
 import pytest
+from sqlalchemy import select
 
-from app.extensions import db
 from app.models.tenant import Tenant
 from app.models.user import User
 
 
 @pytest.fixture(scope="function")
 def default_tenant(db_session):
-    """Creates a default tenant in the test database for routes that require context."""
+    """Creates a default tenant using modern SQLAlchemy 2.x patterns."""
 
-    tenant = Tenant.query.filter_by(id=1).first()
+    stmt = select(Tenant).where(Tenant.id == 1)
+    tenant = db_session.scalars(stmt).first()
 
     if tenant:
         return tenant
@@ -18,21 +19,21 @@ def default_tenant(db_session):
         id=1,
         name="PYTEST",
         fantasy_name="PYTEST",
-        cnpj=00000000000000,
+        cnpj=0,
         plan="PYTEST",
         slug="PYTEST",
     )
-    db.session.add(tenant)
-    db.session.commit()
+    db_session.add(tenant)
+    db_session.commit()
     return tenant
 
 
 @pytest.fixture(scope="function")
 def default_user(db_session, default_tenant):
-    """Creates a default user associated with the tenant
-    for testing authenticated routes."""
+    """Creates a default user associated with the tenant using modern patterns."""
 
-    user = User.query.filter_by(id=1).first()
+    stmt = select(User).where(User.id == 1)
+    user = db_session.scalars(stmt).first()
 
     if user:
         return user
@@ -46,6 +47,6 @@ def default_user(db_session, default_tenant):
         password_reset=False,
     )
     user.set_password("pytestuserpsw")
-    db.session.add(user)
-    db.session.commit()
+    db_session.add(user)
+    db_session.commit()
     return user

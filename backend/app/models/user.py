@@ -1,26 +1,35 @@
 from datetime import UTC, datetime
+from typing import TYPE_CHECKING
 
+from sqlalchemy import ForeignKey, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from app.extensions import db
+from app.extensions import Base
 
+if TYPE_CHECKING:
+    from app.models.tenant import Tenant
 
-class User(db.Model):
+class User(Base):
     __tablename__ = "users"
 
-    id = db.Column(db.Integer, primary_key=True)
-    tenant_id = db.Column(db.Integer, db.ForeignKey("tenants.id"), nullable=False)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(255), unique=True, nullable=False)
-    password_hash = db.Column(db.String(255), nullable=False)
-    is_active = db.Column(db.Boolean, default=True)
-    password_reset = db.Column(db.Boolean, default=True)
-    role = db.Column(db.String(20), default="user")
+    id: Mapped[int] = mapped_column(primary_key=True)
+    tenant_id: Mapped[int] = mapped_column(ForeignKey("tenants.id"))
 
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
+    username: Mapped[str] = mapped_column(String(80), unique=True)
+    email: Mapped[str] = mapped_column(String(255), unique=True)
+    password_hash: Mapped[str] = mapped_column(String(255))
 
-    def set_password(self, password):
+    is_active: Mapped[bool] = mapped_column(default=True)
+    password_reset: Mapped[bool] = mapped_column(default=True)
+    role: Mapped[str] = mapped_column(String(20), default="user")
+
+    created_at: Mapped[datetime] = mapped_column(default=lambda: datetime.now(UTC))
+
+    tenant: Mapped["Tenant"] = relationship(back_populates="users")
+
+    def set_password(self, password: str) -> None:
         self.password_hash = generate_password_hash(password)
 
-    def check_password(self, password):
+    def check_password(self, password: str) -> bool:
         return check_password_hash(self.password_hash, password)

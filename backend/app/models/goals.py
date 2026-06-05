@@ -1,16 +1,25 @@
 from datetime import UTC, datetime
+from decimal import Decimal
 
-from app.extensions import db
+from sqlalchemy import ForeignKey, Numeric, String
+from sqlalchemy.orm import Mapped, mapped_column
+
+from app.extensions import Base
 
 
-class Goal(db.Model):
+class Goal(Base):
     __tablename__ = "goals"
 
-    id = db.Column(db.Integer, primary_key=True)
-    tenant_id = db.Column(db.Integer, db.ForeignKey("tenants.id"), nullable=False)
-    type = db.Column(db.String(50), nullable=False)
-    year = db.Column(db.Integer, nullable=False)
-    month = db.Column(db.Integer, nullable=False)
-    value = db.Column(db.Numeric(12, 2), nullable=False)
-    description = db.Column(db.String(255))
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
+    id: Mapped[int] = mapped_column(primary_key=True)
+
+    tenant_id: Mapped[int] = mapped_column(ForeignKey("tenants.id"))
+
+    type: Mapped[str] = mapped_column(String(50))
+
+    year: Mapped[int] = mapped_column()
+    month: Mapped[int] = mapped_column()
+    value: Mapped[Decimal] = mapped_column(Numeric(12, 2))
+
+    description: Mapped[str | None] = mapped_column(String(255), default=None)
+
+    created_at: Mapped[datetime] = mapped_column(default=lambda: datetime.now(UTC))
