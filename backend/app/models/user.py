@@ -10,6 +10,7 @@ from app.extensions import Base
 if TYPE_CHECKING:
     from app.models.tenant import Tenant
 
+
 class User(Base):
     __tablename__ = "users"
 
