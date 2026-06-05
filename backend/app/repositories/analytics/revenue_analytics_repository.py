@@ -1,4 +1,7 @@
 import logging
+from collections.abc import Sequence
+
+from sqlalchemy import Row, func, select
 
 from app.extensions import db
 from app.models.sale import Sale
@@ -9,142 +12,139 @@ logger = logging.getLogger(__name__)
 
 class RevenueAnalyticsRepository:
     @staticmethod
-    def get_revenue_metrics(tenant_id, period):
-
+    def get_revenue_metrics(tenant_id: int, period: str) -> Row | None:
         start_date, end_date = DateService.get_period_range(period)
 
-        return (
-            db.session.query(
-                db.func.sum(Sale.total_price).label("total_revenue"),
-                db.func.avg(Sale.total_price).label("average_ticket"),
-                db.func.count(Sale.id).label("total_sales"),
-                db.func.sum(Sale.quantity_items).label("total_products_sold"),
-            )
-            .filter(
-                Sale.tenant_id == tenant_id,
-                Sale.created_at.between(start_date, end_date),
-            )
-            .first()
+        stmt = select(
+            func.sum(Sale.total_price).label("total_revenue"),
+            func.avg(Sale.total_price).label("average_ticket"),
+            func.count(Sale.id).label("total_sales"),
+            func.sum(Sale.quantity_items).label("total_products_sold"),
+        ).where(
+            Sale.tenant_id == tenant_id,
+            Sale.created_at.between(start_date, end_date),
         )
 
-    @staticmethod
-    def get_payment_methods_metrics(tenant_id, period):
+        return db.session.execute(stmt).first()
 
+    @staticmethod
+    def get_payment_methods_metrics(tenant_id: int, period: str) -> Sequence[Row]:
         start_date, end_date = DateService.get_period_range(period)
 
-        return (
-            db.session.query(
+        stmt = (
+            select(
                 Sale.payment_method,
-                db.func.count(Sale.id).label("quantity"),
-                db.func.sum(Sale.total_price).label("revenue"),
+                func.count(Sale.id).label("quantity"),
+                func.sum(Sale.total_price).label("revenue"),
             )
-            .filter(
+            .where(
                 Sale.tenant_id == tenant_id,
                 Sale.created_at.between(start_date, end_date),
             )
             .group_by(Sale.payment_method)
-            .order_by(db.func.sum(Sale.total_price).desc())
-            .all()
+            .order_by(func.sum(Sale.total_price).desc())
         )
 
+        return db.session.execute(stmt).all()
+
     @staticmethod
-    def get_daily_revenue(tenant_id, period):
+    def get_daily_revenue(tenant_id: int, period: str) -> Sequence[Row]:
         start_date, end_date = DateService.get_period_range(period)
 
-        return (
-            db.session.query(
-                db.func.date(Sale.created_at).label("day"),
-                db.func.sum(Sale.total_price).label("revenue_day"),
+        date_expr = func.date(Sale.created_at)
+
+        stmt = (
+            select(
+                date_expr.label("day"),
+                func.sum(Sale.total_price).label("revenue_day"),
             )
-            .filter(
+            .where(
                 Sale.tenant_id == tenant_id,
                 Sale.created_at.between(start_date, end_date),
             )
-            .group_by(db.func.date(Sale.created_at))
-            .order_by(db.func.date(Sale.created_at))
-            .all()
+            .group_by(date_expr)
+            .order_by(date_expr)
         )
 
-    @staticmethod
-    def get_ticket_average(tenant_id, period):
+        return db.session.execute(stmt).all()
 
+    @staticmethod
+    def get_ticket_average(tenant_id: int, period: str) -> Row | None:
         start_date, end_date = DateService.get_period_range(period)
 
-        return (
-            db.session.query(db.func.avg(Sale.total_price).label("average_ticket"))
-            .filter(
-                Sale.tenant_id == tenant_id,
-                Sale.created_at.between(start_date, end_date),
-            )
-            .first()
+        stmt = select(func.avg(Sale.total_price).label("average_ticket")).where(
+            Sale.tenant_id == tenant_id,
+            Sale.created_at.between(start_date, end_date),
         )
 
-    @staticmethod
-    def get_quantity_of_orders(tenant_id, period):
+        return db.session.execute(stmt).first()
 
+    @staticmethod
+    def get_quantity_of_orders(tenant_id: int, period: str) -> Row | None:
         start_date, end_date = DateService.get_period_range(period)
 
-        return (
-            db.session.query(db.func.count(Sale.id).label("quantity_order"))
-            .filter(
-                Sale.tenant_id == tenant_id,
-                Sale.created_at.between(start_date, end_date),
-            )
-            .first()
+        stmt = select(func.count(Sale.id).label("quantity_order")).where(
+            Sale.tenant_id == tenant_id,
+            Sale.created_at.between(start_date, end_date),
         )
 
-    @staticmethod
-    def get_biggest_lowest_sale(tenant_id, period):
+        return db.session.execute(stmt).first()
 
+    @staticmethod
+    def get_biggest_lowest_sale(tenant_id: int, period: str) -> Row | None:
         start_date, end_date = DateService.get_period_range(period)
 
-        return (
-            db.session.query(
-                db.func.max(Sale.total_price).label("biggest_sale"),
-                db.func.min(Sale.total_price).label("lowest_sale"),
-            )
-            .filter(
-                Sale.tenant_id == tenant_id,
-                Sale.created_at.between(start_date, end_date),
-            )
-            .first()
+        stmt = select(
+            func.max(Sale.total_price).label("biggest_sale"),
+            func.min(Sale.total_price).label("lowest_sale"),
+        ).where(
+            Sale.tenant_id == tenant_id,
+            Sale.created_at.between(start_date, end_date),
         )
 
-    @staticmethod
-    def get_monthly_average_ticket_by_year(tenant_id, period):
+        return db.session.execute(stmt).first()
 
+    @staticmethod
+    def get_monthly_average_ticket_by_year(
+        tenant_id: int, period: str
+    ) -> Sequence[Row]:
         start_date, end_date = DateService.get_period_range(period, force_year=True)
 
-        return (
-            db.session.query(
-                db.func.date_trunc("month", Sale.created_at).label("month"),
-                db.func.avg(Sale.total_price).label("average_ticket"),
+        month_trunc = func.date_trunc("month", Sale.created_at)
+
+        stmt = (
+            select(
+                month_trunc.label("month"),
+                func.avg(Sale.total_price).label("average_ticket"),
             )
-            .filter(
+            .where(
                 Sale.tenant_id == tenant_id,
                 Sale.created_at >= start_date,
                 Sale.created_at < end_date,
             )
-            .group_by("month")
-            .order_by("month")
-            .all()
+            .group_by(month_trunc)
+            .order_by(month_trunc)
         )
 
-    @staticmethod
-    def get_weekday_average_ticket(tenant_id, period):
+        return db.session.execute(stmt).all()
 
+    @staticmethod
+    def get_weekday_average_ticket(tenant_id: int, period: str) -> Sequence[Row]:
         start_date, end_date = DateService.get_period_range(period)
 
-        return (
-            db.session.query(
-                db.func.extract("dow", Sale.created_at).label("weekday"),
-                db.func.avg(Sale.total_price).label("average_ticket"),
+        dow_extract = func.extract("dow", Sale.created_at)
+
+        stmt = (
+            select(
+                dow_extract.label("weekday"),
+                func.avg(Sale.total_price).label("average_ticket"),
             )
-            .filter(
+            .where(
                 Sale.tenant_id == tenant_id,
                 Sale.created_at.between(start_date, end_date),
             )
-            .group_by("weekday")
-            .order_by("weekday")
-            .all()
+            .group_by(dow_extract)
+            .order_by(dow_extract)
         )
+
+        return db.session.execute(stmt).all()

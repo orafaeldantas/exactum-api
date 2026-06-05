@@ -1,24 +1,29 @@
 from datetime import UTC, datetime
+from decimal import Decimal
 
-from app.extensions import db
+from sqlalchemy import ForeignKey, Numeric, String
+from sqlalchemy.orm import Mapped, mapped_column
+
+from app.extensions import Base
 
 
-class Product(db.Model):
+class Product(Base):
     __tablename__ = "products"
 
-    id = db.Column(db.Integer, primary_key=True)
-    tenant_id = db.Column(db.Integer, db.ForeignKey("tenants.id"), nullable=False)
-    name = db.Column(db.String(120), nullable=False)
-    description = db.Column(db.String(255))
-    price = db.Column(db.Numeric(10, 2), nullable=False)
-    stock_quantity = db.Column(db.Integer, nullable=False, default=0)
-    sku = db.Column(db.String(255), unique=True, nullable=False)
-    category = db.Column(db.String(120), nullable=False)
-    is_active = db.Column(db.Boolean, default=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    tenant_id: Mapped[int] = mapped_column(ForeignKey("tenants.id"))
 
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
-    updated_at = db.Column(
-        db.DateTime,
+    name: Mapped[str] = mapped_column(String(120))
+    description: Mapped[str | None] = mapped_column(String(255), default=None)
+    price: Mapped[Decimal] = mapped_column(Numeric(10, 2))
+    stock_quantity: Mapped[int] = mapped_column(default=0)
+    sku: Mapped[str] = mapped_column(String(255), unique=True)
+    category: Mapped[str] = mapped_column(String(120))
+
+    is_active: Mapped[bool] = mapped_column(default=True)
+
+    created_at: Mapped[datetime] = mapped_column(default=lambda: datetime.now(UTC))
+    updated_at: Mapped[datetime] = mapped_column(
         default=lambda: datetime.now(UTC),
         onupdate=lambda: datetime.now(UTC),
     )

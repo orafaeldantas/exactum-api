@@ -25,6 +25,8 @@ dev = [
     "pytest-cov==7.1.0",
     "coverage==7.14.1",
     "ruff==0.15.14",
+    "pip-audit>=2.10.0",
+    "mypy>=2.1.0",
 ]
 
 [tool.ruff]
@@ -47,3 +49,22 @@ ignore = []
 
 quote-style = "double"
 indent-style = "space"
+
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = false
+warn_unused_configs = true
+allow_subclassing_any = true
+
+disallow_untyped_defs = false  
+check_untyped_defs = false
+
+[[tool.mypy.overrides]]
+module = [
+    "flask_sqlalchemy.*",
+    "flask_migrate.*",
+    "flask_smorest.*",
+    "flask_cors.*"
+]
+ignore_missing_imports = true
