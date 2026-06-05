@@ -67,10 +67,12 @@ Returns a 422 with a descriptive error message on failure.
 | `feat` | A new feature or resource |
 | `fix` | A bug fix |
 | `refactor` | Code restructuring that neither fixes a bug nor adds a feature |
-| `format` | Formatting only — spaces, semicolons, Prettier output. **Not** CSS/UI styling |
+| `format` | Code formatting only — spaces, semicolons, or running tools like Ruff format and Prettier. **Not** CSS/UI styling |
 | `perf` | A change that improves performance |
 | `chore` | Dependency updates, build tools, or package upgrades |
 | `docs` | Documentation-only changes — READMEs, inline comments |
+| `style` | Visual styling changes — UI layout or adjustments to components that affect the screen appearance |
+| `ci` | CI/CD configuration changes — workflows, build scripts, automation pipelines |
 
 > **Why `format` instead of `style`?** The type `style` is commonly confused with CSS or UI styling. Using `format` removes that ambiguity entirely.
 
@@ -248,7 +250,7 @@ npm install --save-dev @commitlint/cli @commitlint/config-conventional husky
 module.exports = {
   extends: ['@commitlint/config-conventional'],
   rules: {
-    'type-enum': [2, 'always', ['feat', 'fix', 'refactor', 'format', 'perf', 'chore', 'docs']],
+    'type-enum': [2, 'always', ['feat', 'fix', 'refactor', 'format', 'perf', 'chore', 'docs', 'ci', `style`]],
     'scope-enum': [2, 'always', ['ui', 'frontend', 'api', 'backend', 'db', 'infra', 'repo']],
   },
 };
