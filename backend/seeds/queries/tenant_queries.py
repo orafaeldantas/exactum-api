@@ -9,7 +9,7 @@ class TenantQueries:
     def get_users_by_tenant(tenant_id: int) -> int | None:
 
         stmt = select(User).filter_by(tenant_id=tenant_id, role="admin")
-        
+
         user = db.session.scalars(stmt).first()
 
         if user is None:

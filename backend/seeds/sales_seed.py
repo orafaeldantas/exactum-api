@@ -18,9 +18,8 @@ def sales_database_seed(
 ) -> bool:
 
     try:
-
         stmt = select(Product).filter_by(tenant_id=tenant_id)
-        
+
         products = db.session.scalars(stmt).all()
 
         payment_method = ["pix", "debit", "money", "credit"]
