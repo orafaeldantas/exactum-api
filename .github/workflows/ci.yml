@@ -1,29 +1,43 @@
-name: CI
-
-on:
-  pull_request:
-    branches:
-      - main
-      - develop
-
-jobs:
-  check:
-
-    runs-on: ubuntu-latest
-
-    steps:
-
+steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v5
         with:
-          python-version: "3.11"
+          version: "latest"
+          enable-cache: true
 
-      - name: Install Ruff
-        run: pip install ruff
+      - name: Setup Python
+        run: uv python install
+
+      - name: Install dependencies
+        run: uv sync --frozen
+        working-directory: backend
 
       - name: Ruff Check
-        run: ruff check .
+        run: uv run ruff check .
+        working-directory: backend
+
+      - name: Ruff Format Check
+        run: uv run ruff format --check .
+        working-directory: backend
+
+      - name: Type Checking
+        run: uv run mypy .
+        working-directory: backend
+
+      - name: Dependency Security Audit
+        run: uv run pip-audit --strict
+        working-directory: backend
+
+      - name: Check Database Migrations
+        run: uv run alembic check
+        working-directory: backend
+
+      - name: Run Tests with Pytest & Coverage
+        env:
+          DATABASE_URL: postgresql://postgres:password@localhost:5432/exactum_test
+          FLASK_ENV: testing
+        run: uv run pytest --cov=. --cov-fail-under=89
+        working-directory: backend

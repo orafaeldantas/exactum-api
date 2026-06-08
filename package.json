@@ -1,0 +1,29 @@
+{
+  "name": "exactum-api",
+  "version": "0.1.0",
+  "description": "> Sistema ERP Web para gestão de estoque, vendas e PDV de pequenos e médios comércios.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/orafaeldantas/exactum-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/orafaeldantas/exactum-api/issues"
+  },
+  "homepage": "https://github.com/orafaeldantas/exactum-api#readme",
+  "devDependencies": {
+    "@commitlint/cli": "^21.0.2",
+    "@commitlint/config-conventional": "^21.0.2",
+    "husky": "^9.1.7"
+  }
+}

@@ -3,7 +3,7 @@ from datetime import timedelta
 
 
 class Config:
-    SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key")
+    SECRET_KEY = os.getenv("SECRET_KEY")
     DEBUG = os.getenv("DEBUG", "False") == "True"
 
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")

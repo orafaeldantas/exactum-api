@@ -52,7 +52,9 @@ class UdateTenantSchema(Schema):
 
     global_min_stock = fields.Int(data_key="minimumStock")
 
-    corporate_email = fields.Email(data_key="companyEmail")
+    corporate_email = fields.Email(
+        data_key="companyEmail", load_default=None, allow_none=True
+    )
 
     monthly_goal = fields.Int(data_key="monthlyGoal")
 

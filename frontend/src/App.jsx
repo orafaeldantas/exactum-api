@@ -1,240 +1,122 @@
+import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
-import Home from "./features/home/Home";
-import CreateTenant from "./features/tenant/pages/CreateTenant";
-import SuccessPage from "./features/tenant/pages/SuccessPage";
-import ManageCompanies from "./features/manage/ManageCompanies";
-import AboutPage from "./features/informations/AboutPage";
-import PrivacyPage from "./features/informations/Privacy";
-import TermsPage from "./features/informations/Terms";
-import InfoLayout from "./features/informations/InfoLayout";
+import GlobalLoader from "./components/Loader/GlobalLoader";
 
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
-import CreateUser from "./pages/CreateUser";
-import ListUsers from "./pages/ListUsers";
-import EditUser from "./pages/EditUser";
-import LocalSales from "./pages/LocalSales";
-import ListSales from "./pages/ListSales";
-import ListSaleItems from "./pages/ListSaleItems";
-import AdminSettings from "./pages/AdminSettings";
-import UserSettings from "./pages/UserSettings";
-import RevenuePeriod from "./pages/RevenuePeriod";
-import AverageTicketAnalytics from "./pages/AverageTicket";
-import ListProductsSales from "./pages/ListProductsSales"
-
-
+// Layouts and Security Routes
 import Layout from "./layouts/MainLayout";
+import InfoLayout from "./layouts/InfoLayout"; 
 import RoleRoute from "./routes/RoleRoute";
-import ListProducts from "./pages/ListProducts";
-import CreateProduct from "./pages/CreateProduct";
-import EditProduct from "./pages/EditProduct";
-import ResetPassword from "./pages/ResetPassword";
-import LowStockProducts from "./pages/LowStock";
+
+// ======= On-Demand Loading (Lazy Pages) =======
+// Public & Institutional
+const Home = lazy(() => import("./pages/home/Home"));
+const AboutPage = lazy(() => import("./pages/informations/AboutPage"));
+const PrivacyPage = lazy(() => import("./pages/informations/Privacy"));
+const TermsPage = lazy(() => import("./pages/informations/Terms"));
+
+// Authentication
+const Login = lazy(() => import("./pages/auth/Login"));
+const ResetPassword = lazy(() => import("./pages/auth/ResetPassword"));
+
+// Tenants / Onboarding
+const CreateTenant = lazy(() => import("./pages/tenants/CreateTenant"));
+const SuccessPage = lazy(() => import("./pages/tenants/SuccessPage"));
+
+// Dashboard & Metrics
+const Dashboard = lazy(() => import("./pages/dashboard/Dashboard"));
+const RevenuePeriod = lazy(() => import("./pages/revenue/RevenuePeriod"));
+const AverageTicketAnalytics = lazy(() => import("./pages/revenue/AverageTicket"));
+
+// Sales & PDV
+const LocalSales = lazy(() => import("./pages/pdv/LocalSales"));
+const ListSales = lazy(() => import("./pages/sales/ListSales"));
+const ListSaleItems = lazy(() => import("./pages/sales/ListSaleItems"));
+const ListProductsSales = lazy(() => import("./pages/sales/ListProductsSales"));
+
+// Products
+const ListProducts = lazy(() => import("./pages/products/ListProducts"));
+const CreateProduct = lazy(() => import("./pages/products/CreateProduct"));
+const EditProduct = lazy(() => import("./pages/products/EditProduct"));
+const LowStockProducts = lazy(() => import("./pages/products/LowStock"));
+
+// Users & Management
+const ListUsers = lazy(() => import("./pages/users/ListUsers"));
+const CreateUser = lazy(() => import("./pages/users/CreateUser"));
+const EditUser = lazy(() => import("./pages/users/EditUser"));
+const ManageCompanies = lazy(() => import("./pages/manage/ManageCompanies"));
+
+// Settings
+const UserSettings = lazy(() => import("./pages/settings/UserSettings"));
+const AdminSettings = lazy(() => import("./pages/settings/AdminSettings"));
 
 
 function App() {
   return (
     <>
-
       <Toaster 
         position="top-right" 
         toastOptions={{
           duration: 3000,
-          style: {
-            background: "#333",
-            color: "#fff"
-          }
+          style: { background: "#1e293b", color: "#fff" }
         }}
       />
 
-      
-      <Routes>
-
-        <Route element={<InfoLayout />}>
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/privacy" element={<PrivacyPage />} />
-          <Route path="/terms" element={<TermsPage />} />
-        </Route>
-
+      <Suspense fallback={<GlobalLoader message="Carregando Exactum..." />}>
+        <Routes>
           
-        <Route path="/" element={<Home />} />
-        <Route path="/create-tenant" element={<CreateTenant />} />
-        <Route path="/success" element={<SuccessPage />} />
-        
-        <Route path="/login" element={<Login />} />
-        
+          {/* 1. PUBLIC / INSTITUTIONAL ROUTES */}
+          <Route element={<InfoLayout />}>
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/terms" element={<TermsPage />} />
+          </Route>
 
-        <Route
-            path="/checkout"
-            element={
-              <RoleRoute>
-                <LocalSales />
-              </RoleRoute>
-            }
-          />
+          <Route path="/" element={<Home />} />
+          <Route path="/create-tenant" element={<CreateTenant />} />
+          <Route path="/success" element={<SuccessPage />} />
+          <Route path="/login" element={<Login />} />
 
-        <Route path="/reset-password" 
-            element={
-              <RoleRoute>
-                <ResetPassword />
-              </RoleRoute>
-            } 
-        />
-        
-        <Route
-          element={
-              <RoleRoute>
-                <Layout />
-              </RoleRoute>
-          }
-        >
-
-          <Route path="/dashboard" element={<Dashboard />} />
-
-          <Route
-            path="/manage-companies"
-            element={
-              <RoleRoute requiredRole={["super-admin"]}>
-                <ManageCompanies />
-              </RoleRoute>
-            }
-          />
+          {/* 2. PROTECTED ROUTES WITHOUT GLOBAL LAYOUT */}
+          <Route path="/checkout" element={<RoleRoute><LocalSales /></RoleRoute>} />
+          <Route path="/reset-password" element={<RoleRoute><ResetPassword /></RoleRoute>} />
           
-          <Route
-            path="/revenue"
-            element={
-              <RoleRoute requiredRole={["admin", "super-admin"]}>
-                <RevenuePeriod />
-              </RoleRoute>
-            }
-          />
+          {/* 3. INTERNAL SYSTEM (DASHBOARD & BACK OFFICE WITH LAYOUT AND SESSION FILTER) */}
+          <Route element={<RoleRoute><Layout /></RoleRoute>}>
+            
+            <Route path="/dashboard" element={<Dashboard />} />
 
-          <Route
-            path="/average-ticket"
-            element={
-              <RoleRoute requiredRole={["admin", "super-admin"]}>
-                <AverageTicketAnalytics />
-              </RoleRoute>
-            }
-          />
-          
-          
-          <Route
-            path="/user-settings"
-            element={
-              <RoleRoute requiredRole={["user", "super-admin"]}>
-                <UserSettings />
-              </RoleRoute>
-            }
-          />
-          <Route
-            path="/admin-settings"
-            element={
-              <RoleRoute requiredRole={["admin"]}>
-                <AdminSettings />
-              </RoleRoute>
-            }
-          />
+            {/* Sub-block: Billing (Admin / Super Admin) */}
+            <Route element={<RoleRoute requiredRole={["admin", "super-admin"]} />}>
+              <Route path="/revenue" element={<RevenuePeriod />} />
+              <Route path="/average-ticket" element={<AverageTicketAnalytics />} />
+              <Route path="/products-sales" element={<ListProductsSales />} />
+              <Route path="/sales" element={<ListSales />} />
+              <Route path="/sales/:id" element={<ListSaleItems />} />
+            </Route>
 
-          <Route
-            path="/products-sales"
-            element={
-              <RoleRoute requiredRole={["admin", "super-admin"]}>
-                <ListProductsSales />
-              </RoleRoute>
-            }
-          />
+            {/* Sub-block: User Control */}
+            <Route element={<RoleRoute requiredRole={["admin", "super-admin"]} />}>
+              <Route path="/users" element={<ListUsers />} />
+              <Route path="/users/create" element={<CreateUser />} />
+              <Route path="/users/edit/:id" element={<EditUser />} />
+            </Route>
 
-          <Route
-            path="/sales"
-            element={
-              <RoleRoute requiredRole={["admin", "super-admin"]}>
-                <ListSales />
-              </RoleRoute>
-            }
-          />
+            {/* Sub-block: Products (Accessible to all authenticated users, except editors) */}
+            <Route path="/products" element={<ListProducts />} />
+            <Route path="/low-stock" element={<LowStockProducts />} />
+            <Route path="/products/create" element={<CreateProduct />} />
+            <Route path="/product/edit/:id" element={<EditProduct />} />
 
-          <Route
-            path="/sales/:id"
-            element={
-              <RoleRoute requiredRole={["admin", "super-admin"]}>
-                <ListSaleItems />
-              </RoleRoute>
-            }
-          />
+            {/* Sub-block: Critical Settings and Levels */}
+            <Route path="/user-settings" element={<RoleRoute requiredRole={["user", "super-admin"]}><UserSettings /></RoleRoute>} />
+            <Route path="/admin-settings" element={<RoleRoute requiredRole={["admin"]}><AdminSettings /></RoleRoute>} />
+            <Route path="/manage-companies" element={<RoleRoute requiredRole={["super-admin"]}><ManageCompanies /></RoleRoute>} />
 
-          <Route
-            path="/users"
-            element={
-              <RoleRoute requiredRole={["admin", "super-admin"]}>
-                <ListUsers />
-              </RoleRoute>
-            }
-          />
-   
-
-          <Route
-            path="/users/create"
-            element={
-              <RoleRoute requiredRole={["admin", "super-admin"]}>
-                <CreateUser />
-              </RoleRoute>
-            }
-          />
-
-          <Route
-            path="/users/edit/:id"
-            element={
-              <RoleRoute requiredRole={["admin", "super-admin"]}>
-                <EditUser />
-              </RoleRoute>
-            }
-          />
-
-
-
-          <Route
-            path="/products"
-            element={
-              <RoleRoute>
-                <ListProducts />
-              </RoleRoute>
-            }
-          />
-
-          <Route
-            path="/low-stock"
-            element={
-              <RoleRoute>
-                <LowStockProducts />
-              </RoleRoute>
-            }
-          />
-
-          <Route
-            path="/products/create"
-            element={
-              <RoleRoute>
-                <CreateProduct />
-              </RoleRoute>
-            }
-          />
-
-          <Route
-            path="/product/edit/:id"
-            element={
-              <RoleRoute requiredRole={["admin", "super-admin"]}>
-                <EditProduct />
-              </RoleRoute>
-            }
-          />
-
-        </Route>
-
-      </Routes>
-
+          </Route>
+        </Routes>
+      </Suspense>
     </>
   );
 }

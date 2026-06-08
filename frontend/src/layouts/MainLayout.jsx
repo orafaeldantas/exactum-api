@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom"
 import Navbar from "../components/Navbar/Navbar"
 import Sidebar from "../components/Sidebar/Sidebar"
-import MobileWarning from "../features/mobile-warning/MobileWarning";
+import MobileWarning from "../components/MobileWarning/MobileWarning";
 
 function Layout() {
   return (

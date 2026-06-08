@@ -28,6 +28,8 @@ class UserBootstrapSchema(Schema):
 
     email = fields.Email()
 
+    role = fields.Str()
+
 
 class AuthBootstrapSchema(Schema):
     user_id = fields.Int(dump_only=True)
