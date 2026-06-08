@@ -1,6 +1,6 @@
 from app.database.session import DatabaseSession
 from app.exceptions.product_exceptions import ProductNotFound
-from app.models import Product
+from app.models.product import Product
 from app.repositories.product_repository import ProductRepository
 
 

@@ -1,20 +1,32 @@
 from datetime import UTC, datetime
+from typing import TYPE_CHECKING
 
-from app.extensions import db
+from sqlalchemy import String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from app.extensions import Base
+
+if TYPE_CHECKING:
+    from app.models.user import User
 
 
-class Tenant(db.Model):
+class Tenant(Base):
     __tablename__ = "tenants"
 
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), nullable=False)
-    fantasy_name = db.Column(db.String(120), nullable=True)
-    slug = db.Column(db.String(100), unique=True, nullable=False)
-    plan = db.Column(db.String(100), nullable=False)
-    cnpj = db.Column(db.String(18), unique=True)
-    global_min_stock = db.Column(db.Integer, nullable=True, default=10)
-    corporate_email = db.Column(db.String(255), unique=True, nullable=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
 
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
+    name: Mapped[str] = mapped_column(String(120))
+    slug: Mapped[str] = mapped_column(String(100), unique=True)
+    plan: Mapped[str] = mapped_column(String(100))
 
-    users = db.relationship("User", backref="tenant")
+    fantasy_name: Mapped[str | None] = mapped_column(String(120), default=None)
+    cnpj: Mapped[str | None] = mapped_column(String(18), unique=True, default=None)
+    corporate_email: Mapped[str | None] = mapped_column(
+        String(255), unique=True, default=None
+    )
+
+    global_min_stock: Mapped[int | None] = mapped_column(default=10)
+
+    created_at: Mapped[datetime] = mapped_column(default=lambda: datetime.now(UTC))
+
+    users: Mapped[list["User"]] = relationship(back_populates="tenant")

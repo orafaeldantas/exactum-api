@@ -51,7 +51,7 @@ class RevenueAnalyticsService:
             row.day.day: float(row.revenue_day or 0) for row in daily_revenue_query
         }
 
-        start_date, end_date = DateService.get_period_range(period)
+        _, end_date = DateService.get_period_range(period)
         revenue = 0
         last_day = int(end_date.day) + 1
         daily_total_revenue = []

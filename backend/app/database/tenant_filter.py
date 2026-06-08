@@ -19,7 +19,9 @@ def init_tenant_filter(db):
         if not tenant_id:
             return
 
-        from app.models import Goal, Product, User
+        from app.models.goals import Goal
+        from app.models.product import Product
+        from app.models.user import User
 
         execute_state.statement = execute_state.statement.options(
             with_loader_criteria(

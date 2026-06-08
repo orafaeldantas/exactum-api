@@ -4,7 +4,7 @@ from app.exceptions.user_exceptions import (
     PasswordMismatchException,
     UserNotFound,
 )
-from app.models import User
+from app.models.user import User
 from app.repositories.user_repository import UserRepository
 
 
@@ -81,7 +81,7 @@ class UserService:
             if data.get("password") != data.get("confirm_password"):
                 raise PasswordMismatchException()
 
-        user.set_password(data["password"])
+            user.set_password(data["password"])
 
         update_fields = [
             "username",

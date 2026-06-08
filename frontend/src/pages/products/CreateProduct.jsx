@@ -1,0 +1,32 @@
+import { useNavigate } from "react-router-dom";
+import { apiFetch } from "../../services/api";
+import ProductForm from "../../features/product-form/ProductForm";
+
+export default function CreateProduct() {
+
+  const navigate = useNavigate();
+
+  async function handleCreate(data) {
+    console.log(data)
+    const response = await apiFetch("/products", {
+      method: "POST",
+      body: JSON.stringify(data)
+    });
+
+    if (response.ok) {
+      navigate("/products");
+    }
+
+  }
+
+  return (
+    <div>
+      
+      <ProductForm
+        onSubmit={handleCreate}
+        submitText="Criar produto"
+      />
+
+    </div>
+  );
+}

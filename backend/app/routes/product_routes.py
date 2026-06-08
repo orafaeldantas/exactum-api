@@ -21,7 +21,7 @@ blp_products = Blueprint(
 @blp_products.route("/")
 class ProductListRoute(MethodView):
     @jwt_required()
-    @role_authorization(["admin", "super-admin", "users"])
+    @role_authorization(["admin", "super-admin", "user"])
     @blp_products.doc(security=[{"BearerAuth": []}])
     @blp_products.arguments(CreateProductSchema)
     @blp_products.response(201, CreateProductResponseSchema)
@@ -30,7 +30,7 @@ class ProductListRoute(MethodView):
         return ProductController.create_product(data)
 
     @jwt_required()
-    @role_authorization(["admin", "super-admin", "users"])
+    @role_authorization(["admin", "super-admin", "user"])
     @blp_products.doc(security=[{"BearerAuth": []}])
     @blp_products.response(200, ListProductResponseSchema(many=True))
     def get(self):
@@ -41,16 +41,16 @@ class ProductListRoute(MethodView):
 @blp_products.route("/<int:product_id>")
 class ProductDetailRoute(MethodView):
     @jwt_required()
-    @role_authorization(["admin", "super-admin", "users"])
+    @role_authorization(["admin", "super-admin", "user"])
     @blp_products.doc(security=[{"BearerAuth": []}])
     @blp_products.arguments(UpdateProductSchema)
-    @blp_products.response(201, UpdateProductResponseSchema)
+    @blp_products.response(200, UpdateProductResponseSchema)
     def patch(self, data, product_id):
 
         return ProductController.update_product(data, product_id)
 
     @jwt_required()
-    @role_authorization(["admin", "super-admin", "users"])
+    @role_authorization(["admin", "super-admin", "user"])
     @blp_products.doc(security=[{"BearerAuth": []}])
     @blp_products.response(200, GetProductResponseSchema)
     def get(self, product_id):
@@ -58,7 +58,7 @@ class ProductDetailRoute(MethodView):
         return ProductController.get_product(product_id)
 
     @jwt_required()
-    @role_authorization(["admin", "super-admin", "users"])
+    @role_authorization(["admin", "super-admin", "user"])
     @blp_products.doc(security=[{"BearerAuth": []}])
     @blp_products.response(204)
     def delete(self, product_id):
