@@ -62,7 +62,9 @@ jobs:
       - name: Check Database Migrations
         env:
           DATABASE_URL: postgresql://postgres:password@localhost:5432/exactum_test
-        run: uv run flask db check
+        run: |
+          uv run flask db upgrade
+          uv run flask db check
         working-directory: backend
 
       - name: Run Tests with Pytest & Coverage
