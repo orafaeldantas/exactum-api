@@ -61,14 +61,19 @@ class TenantService:
     @staticmethod
     def get_tenant(tenant_id):
 
-        return TenantRepository.get_tenant(tenant_id)
+        tenant = TenantRepository.get_tenant(tenant_id)
+
+        if not tenant:
+            raise TenantNotFound()
+
+        return tenant
 
     @staticmethod
     def update_tenant(tenant_id, data):
 
         tenant = TenantRepository.get_tenant(tenant_id)
 
-        if not tenant_id:
+        if not tenant:
             raise TenantNotFound()
 
         update_fields = ["name", "corporate_email", "global_min_stock"]

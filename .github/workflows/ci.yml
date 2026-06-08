@@ -39,5 +39,5 @@ steps:
         env:
           DATABASE_URL: postgresql://postgres:password@localhost:5432/exactum_test
           FLASK_ENV: testing
-        run: uv run pytest --cov=. --cov-fail-under=40
+        run: uv run pytest --cov=. --cov-fail-under=89
         working-directory: backend
