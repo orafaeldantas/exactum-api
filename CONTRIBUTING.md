@@ -73,6 +73,7 @@ Returns a 422 with a descriptive error message on failure.
 | `docs` | Documentation-only changes — READMEs, inline comments |
 | `style` | Visual styling changes — UI layout or adjustments to components that affect the screen appearance |
 | `ci` | CI/CD configuration changes — workflows, build scripts, automation pipelines |
+| `test` | Add missing tests or correct existing tests — unit tests, integration tests, automation validation |
 
 > **Why `format` instead of `style`?** The type `style` is commonly confused with CSS or UI styling. Using `format` removes that ambiguity entirely.
 

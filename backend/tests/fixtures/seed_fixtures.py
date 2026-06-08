@@ -1,13 +1,15 @@
 import pytest
 from sqlalchemy import select
 
+from app.models.product import Product
+from app.models.sale import ItemSale, Sale
 from app.models.tenant import Tenant
 from app.models.user import User
 
 
 @pytest.fixture(scope="function")
 def default_tenant(db_session):
-    """Creates a default tenant using modern SQLAlchemy 2.x patterns."""
+    """Creates a default tenant."""
 
     stmt = select(Tenant).where(Tenant.id == 1)
     tenant = db_session.scalars(stmt).first()
@@ -30,7 +32,7 @@ def default_tenant(db_session):
 
 @pytest.fixture(scope="function")
 def default_user(db_session, default_tenant):
-    """Creates a default user associated with the tenant using modern patterns."""
+    """Creates a default user associated with the tenant."""
 
     stmt = select(User).where(User.id == 1)
     user = db_session.scalars(stmt).first()
@@ -50,3 +52,68 @@ def default_user(db_session, default_tenant):
     db_session.add(user)
     db_session.commit()
     return user
+
+
+@pytest.fixture(scope="function")
+def default_product(db_session, default_tenant):
+    """Creates a default product associated with the tenant."""
+
+    stmt = select(Product).where(Product.id == 1)
+    product = db_session.scalars(stmt).first()
+
+    if product:
+        return product
+
+    product = Product(
+        tenant_id=default_tenant.id,
+        name="PYTEST PRODUCT",
+        description="PYTEST PRODUCT",
+        price=1000.00,
+        stock_quantity=25,
+        sku="PYT",
+        category="PYTEST",
+        is_active=True,
+    )
+
+    db_session.add(product)
+    db_session.commit()
+    return product
+
+
+@pytest.fixture(scope="function")
+def default_sale(db_session, default_tenant, default_user, default_product):
+    """Creates a default sale associated with the tenant and product."""
+
+    stmt = select(Sale).where(Sale.id == 1)
+    sale = db_session.scalars(stmt).first()
+
+    if sale:
+        return sale
+
+    sale = Sale(
+        total_price=default_product.price,
+        payment_method="pix",
+        quantity_items=1,
+        tenant_id=default_tenant.id,
+        user_id=default_user.id,
+        channel="physical",
+    )
+
+    db_session.add(sale)
+    db_session.flush()
+
+    item = ItemSale(
+        name=default_product.name,
+        quantity=1,
+        sku=default_product.sku,
+        item_price=default_product.price,
+        sale_id=sale.id,
+        tenant_id=default_tenant.id,
+        user_id=default_user.id,
+        product_id=default_product.id,
+        channel="physical",
+    )
+
+    db_session.add(item)
+    db_session.commit()
+    return sale

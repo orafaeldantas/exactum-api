@@ -37,7 +37,7 @@ class TenantRoute(MethodView):
     @role_authorization(["admin", "super-admin"])
     @blp_tenants.doc(security=[{"BearerAuth": []}])
     @blp_tenants.arguments(UdateTenantSchema)
-    @blp_tenants.response(201, ResponseUdateTenantSchema)
+    @blp_tenants.response(200, ResponseUdateTenantSchema)
     def patch(self, data):
 
         return TenantController.update_tenant(data)

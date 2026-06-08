@@ -44,7 +44,7 @@ class ProductDetailRoute(MethodView):
     @role_authorization(["admin", "super-admin", "user"])
     @blp_products.doc(security=[{"BearerAuth": []}])
     @blp_products.arguments(UpdateProductSchema)
-    @blp_products.response(201, UpdateProductResponseSchema)
+    @blp_products.response(200, UpdateProductResponseSchema)
     def patch(self, data, product_id):
 
         return ProductController.update_product(data, product_id)
