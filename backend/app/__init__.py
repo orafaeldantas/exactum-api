@@ -22,6 +22,9 @@ def create_app(config=None):
         app.config.update(config)
     api = Api(app)
 
+    print("config arg =", config)
+    print("uri before db =", app.config.get("SQLALCHEMY_DATABASE_URI"))
+
     register_error_handlers(app)
 
     logging.basicConfig(
