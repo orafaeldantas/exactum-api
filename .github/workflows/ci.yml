@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DATABASE_URL: postgresql://postgres:password@localhost:5432/exactum_test
+      DATABASE_TESTS_URL: postgresql://postgres:password@localhost:5432/exactum_test
 
     services:
       postgres:
