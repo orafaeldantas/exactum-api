@@ -53,80 +53,85 @@ def generate_sales(
                 )
 
 
-if __name__ == "__main__":
+def run_seed(app):
     logger.info("Starting database seed...")
     start_time = time.perf_counter()
+    with app.app_context():
+        try:
+            tenants = [
+                tenant_one,
+                tenant_two,
+                tenant_three,
+                tenant_four,
+                tenant_five,
+            ]
+            products = [
+                product_one,
+                product_two,
+                product_three,
+                product_four,
+                product_five,
+            ]
+            tenants_created = []
 
-    def run_seed(app):
-        with app.app_context():
-            try:
-                tenants = [
-                    tenant_one,
-                    tenant_two,
-                    tenant_three,
-                    tenant_four,
-                    tenant_five,
-                ]
-                products = [
-                    product_one,
-                    product_two,
-                    product_three,
-                    product_four,
-                    product_five,
-                ]
-                tenants_created = []
+            # 1. Create super administrator
+            if not super_admin_seed():
+                raise RuntimeError("Error creating super administrator.")
 
-                # 1. Create super administrator
-                if not super_admin_seed():
-                    raise RuntimeError("Error creating super administrator.")
+            # 2. Create the tenants and products.
+            for tenant, product in zip(tenants, products):
+                tenant_id = tenant_database_seed(**tenant)
+                if not tenant_id:
+                    raise RuntimeError(f"Error seeding the tenant: {tenant}")
+                tenants_created.append(tenant_id)
 
-                # 2. Create the tenants and products.
-                for tenant, product in zip(tenants, products):
-                    tenant_id = tenant_database_seed(**tenant)
-                    if not tenant_id:
-                        raise RuntimeError(f"Error seeding the tenant: {tenant}")
-                    tenants_created.append(tenant_id)
-
-                    if not products_database_seed(tenant_id, product):
-                        raise RuntimeError(
-                            f"Error seeding products for the tenant: {tenant}"
-                        )
-
-                # 3. Generate sales history (2020 to May 2026)
-                for tenant_id in tenants_created:
-                    # Generation from 2020 to 2025 (full year)
-                    user_id = TenantQueries.get_users_by_tenant(tenant_id)
-                    if not user_id:
-                        raise RuntimeError(
-                            f"Error: User not found in tenant (tenant_id: {tenant_id})"
-                        )
-                    generate_sales(
-                        tenant_id=tenant_id,
-                        user_id=user_id,
-                        start_year=2020,
-                        end_year=2025,
+                if not products_database_seed(tenant_id, product):
+                    raise RuntimeError(
+                        f"Error seeding products for the tenant: {tenant}"
                     )
 
-                    # Generates the year 2026 up to the month of May (5)
-                    generate_sales(
-                        tenant_id=tenant_id,
-                        user_id=user_id,
-                        start_year=2026,
-                        end_year=2026,
-                        max_month=6,
-                        force_day=True,
+            # 3. Generate sales history (2020 to May 2026)
+            for tenant_id in tenants_created:
+                # Generation from 2020 to 2025 (full year)
+                user_id = TenantQueries.get_users_by_tenant(tenant_id)
+                if not user_id:
+                    raise RuntimeError(
+                        f"Error: User not found in tenant (tenant_id: {tenant_id})"
                     )
+                generate_sales(
+                    tenant_id=tenant_id,
+                    user_id=user_id,
+                    start_year=2020,
+                    end_year=2025,
+                )
 
-                end_time = time.perf_counter()
-                total_seconds = end_time - start_time
-                duration = timedelta(seconds=int(total_seconds))
+                # Generates the year 2026 up to the month of May (5)
+                generate_sales(
+                    tenant_id=tenant_id,
+                    user_id=user_id,
+                    start_year=2026,
+                    end_year=2026,
+                    max_month=6,
+                    force_day=True,
+                )
 
-                logger.info("Seed completed successfully!")
-                logger.info(f"Total execution time: {duration}")
+            end_time = time.perf_counter()
+            total_seconds = end_time - start_time
+            duration = timedelta(seconds=int(total_seconds))
 
-            except Exception as e:
-                end_time = time.perf_counter()
-                total_seconds = end_time - start_time
-                duration = timedelta(seconds=int(total_seconds))
+            logger.info("Seed completed successfully!")
+            logger.info(f"Total execution time: {duration}")
 
-                logger.error(f"An error occurred in the seed after {duration}: {e}")
+        except Exception as e:
+            end_time = time.perf_counter()
+            total_seconds = end_time - start_time
+            duration = timedelta(seconds=int(total_seconds))
+
+            logger.error(f"An error occurred in the seed after {duration}: {e}")
+
+
+if __name__ == "__main__":
+    from app import create_app
+
+    app = create_app()
+    run_seed(app)
