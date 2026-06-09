@@ -4,7 +4,6 @@ from flask_jwt_extended import create_access_token, get_jwt_identity
 class TokenService:
     @staticmethod
     def build_claims(user, impersonate):
-        print(impersonate)
         if impersonate:
             claims = {
                 "tenant_id": user.tenant_id,

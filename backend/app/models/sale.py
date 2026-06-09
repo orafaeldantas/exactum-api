@@ -1,34 +1,47 @@
 from datetime import UTC, datetime
+from decimal import Decimal
 
-from app.extensions import db
+from sqlalchemy import ForeignKey, Numeric, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from app.extensions import Base
 
 
-class Sale(db.Model):
+class Sale(Base):
     __tablename__ = "sales"
 
-    id = db.Column(db.Integer, primary_key=True)
-    total_price = db.Column(db.Numeric(10, 2), nullable=False)
-    payment_method = db.Column(db.String(50), nullable=False)
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
-    quantity_items = db.Column(db.Integer, nullable=False, default=1)
-    tenant_id = db.Column(db.Integer, db.ForeignKey("tenants.id"), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    channel = db.Column(db.String(50), default="physical")
+    id: Mapped[int] = mapped_column(primary_key=True)
+    tenant_id: Mapped[int] = mapped_column(ForeignKey("tenants.id"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
 
-    items = db.relationship("ItemSale", backref="sale", lazy=True)
+    total_price: Mapped[Decimal] = mapped_column(Numeric(10, 2))
+    payment_method: Mapped[str] = mapped_column(String(50))
+    quantity_items: Mapped[int] = mapped_column(default=1)
+    channel: Mapped[str] = mapped_column(String(50), default="physical")
+
+    created_at: Mapped[datetime] = mapped_column(default=lambda: datetime.now(UTC))
+
+    items: Mapped[list["ItemSale"]] = relationship(back_populates="sale", lazy=True)
 
 
-class ItemSale(db.Model):
+class ItemSale(Base):
     __tablename__ = "items_sales"
 
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), nullable=False)
-    quantity = db.Column(db.Integer, nullable=False, default=1)
-    sku = db.Column(db.String(50), db.ForeignKey("products.sku"), nullable=False)
-    item_price = db.Column(db.Numeric(10, 2), nullable=False)
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
-    sale_id = db.Column(db.Integer, db.ForeignKey("sales.id"), nullable=False)
-    tenant_id = db.Column(db.Integer, db.ForeignKey("tenants.id"), nullable=False)
-    product_id = db.Column(db.Integer, db.ForeignKey("products.id"))
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    channel = db.Column(db.String(50), default="physical")
+    id: Mapped[int] = mapped_column(primary_key=True)
+    sale_id: Mapped[int] = mapped_column(ForeignKey("sales.id"))
+    tenant_id: Mapped[int] = mapped_column(ForeignKey("tenants.id"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+
+    product_id: Mapped[int | None] = mapped_column(
+        ForeignKey("products.id"), default=None
+    )
+    sku: Mapped[str] = mapped_column(String(50), ForeignKey("products.sku"))
+
+    name: Mapped[str] = mapped_column(String(255))
+    quantity: Mapped[int] = mapped_column(default=1)
+    item_price: Mapped[Decimal] = mapped_column(Numeric(10, 2))
+    channel: Mapped[str] = mapped_column(String(50), default="physical")
+
+    created_at: Mapped[datetime] = mapped_column(default=lambda: datetime.now(UTC))
+
+    sale: Mapped["Sale"] = relationship(back_populates="items")

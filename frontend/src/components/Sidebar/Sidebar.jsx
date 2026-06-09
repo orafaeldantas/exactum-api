@@ -16,7 +16,8 @@ import {
   ShieldCheck,
   Activity,
   Terminal,
-  LogOut // Import for the exit icon
+  LogOut,
+  Receipt
 } from "lucide-react";
 
 function Sidebar() {
@@ -90,7 +91,15 @@ function Sidebar() {
           <Box size={20} className={collapsed ? "mx-auto" : ""} />
           {!collapsed && <span className="font-medium">Produtos</span>}
         </NavLink>
-        
+
+        <NavLink
+          to="/low-stock"
+          className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
+        >
+          <CircleDot size={20} className={collapsed ? "mx-auto" : ""} />
+          {!collapsed && <span className="font-medium">Estoque Baixo</span>}
+        </NavLink>
+                
         {roles.includes(user?.role) && (
           <NavLink 
             to="/users" 
@@ -101,7 +110,23 @@ function Sidebar() {
           </NavLink>
         )}
 
-        {user?.role in roles && (
+        <NavLink 
+          to="/checkout" 
+          className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
+        >
+          <ShoppingCart size={20} className={collapsed ? "mx-auto" : ""} />
+          {!collapsed && <span className="font-medium">PDV</span>}
+        </NavLink>
+
+        <NavLink
+          to="/sales"
+          className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
+        >
+          <Receipt size={20} className={collapsed ? "mx-auto" : ""} />
+          {!collapsed && <span className="font-medium">Histórico de Vendas</span>}
+        </NavLink>
+
+        {roles.includes(user?.role) && (
           <NavLink 
             to="/logs" 
             className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
@@ -110,14 +135,6 @@ function Sidebar() {
             {!collapsed && <span className="font-medium">Logs</span>}
           </NavLink>
         )}
-
-        <NavLink 
-          to="/checkout" 
-          className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
-        >
-          <ShoppingCart size={20} className={collapsed ? "mx-auto" : ""} />
-          {!collapsed && <span className="font-medium">PDV</span>}
-        </NavLink>
 
         {user?.role === 'super-admin' && (
           <>
