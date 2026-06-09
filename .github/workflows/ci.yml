@@ -10,9 +10,6 @@ jobs:
   test-and-lint:
     runs-on: ubuntu-latest
 
-    env:
-      DATABASE_TESTS_URL: postgresql://postgres:password@localhost:5432/exactum_test
-
     services:
       postgres:
         image: postgres:15
@@ -62,12 +59,14 @@ jobs:
         working-directory: backend
 
       - name: Check Database Migrations
+        env:
+          DATABASE_URL: postgresql://postgres:password@localhost:5432/exactum_test
         run: uv run flask db upgrade && uv run flask db check
         working-directory: backend
 
       - name: Run Tests with Pytest & Coverage
         env:
-          DATABASE_URL: postgresql://postgres:password@localhost:5432/exactum_test
+          DATABASE_TESTS_URL: postgresql://postgres:password@localhost:5432/exactum_test
           FLASK_ENV: testing
         run: uv run pytest --cov=. --cov-fail-under=89
         working-directory: backend
