@@ -7,7 +7,8 @@ from app.exceptions.user_exceptions import (
     InvalidPasswordException,
     PasswordMismatchException,
 )
-from app.models import Tenant, User
+from app.models.tenant import Tenant
+from app.models.user import User
 from app.repositories.goal_repository import GoalRepository
 from app.repositories.tenant_repository import TenantRepository
 
@@ -60,14 +61,19 @@ class TenantService:
     @staticmethod
     def get_tenant(tenant_id):
 
-        return TenantRepository.get_tenant(tenant_id)
+        tenant = TenantRepository.get_tenant(tenant_id)
+
+        if not tenant:
+            raise TenantNotFound()
+
+        return tenant
 
     @staticmethod
     def update_tenant(tenant_id, data):
 
         tenant = TenantRepository.get_tenant(tenant_id)
 
-        if not tenant_id:
+        if not tenant:
             raise TenantNotFound()
 
         update_fields = ["name", "corporate_email", "global_min_stock"]

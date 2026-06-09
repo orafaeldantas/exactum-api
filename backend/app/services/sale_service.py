@@ -1,6 +1,6 @@
 from app.database.session import DatabaseSession
 from app.exceptions.sale_exceptions import SaleNotFound
-from app.models import ItemSale, Sale
+from app.models.sale import ItemSale, Sale
 from app.repositories.item_sale_repository import ItemSaleRepository
 from app.repositories.product_repository import ProductRepository
 from app.repositories.sale_repository import SaleRepository

@@ -30,7 +30,7 @@ class DateService:
 
             return start_date, end_date
 
-        if "month" and "year" in period:
+        if "month" in period and "year" in period:
             data = re.findall(r"\d+", period)
 
             if len(data) >= 2:

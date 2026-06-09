@@ -1,8 +1,8 @@
-from app.repositories.goal_repository import UserRepository
+from app.repositories.goal_repository import GoalRepository
 
 
-class goalService:
+class GoalService:
     @staticmethod
     def get_goal(tenant_id):
 
-        return UserRepository.get_goal(tenant_id)
+        return GoalRepository.get_goal(tenant_id)

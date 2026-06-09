@@ -1,6 +1,6 @@
 # Exactum
 
-> ERP Web Fullstack para gestão de estoque, vendas e PDV de pequenos e médios comércios.
+> Sistema ERP Web para gestão de estoque, vendas e PDV de pequenos e médios comércios.
 
 > O Exactum centraliza operações de estoque e utiliza dados históricos para apoiar tomadas de decisão no varejo.
 

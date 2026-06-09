@@ -1,29 +1,73 @@
 name: CI
 
 on:
+  push:
+    branches: [ "main", "develop" ]
   pull_request:
-    branches:
-      - main
-      - develop
+    branches: [ "main", "develop" ]
 
 jobs:
-  check:
-
+  test-and-lint:
     runs-on: ubuntu-latest
 
-    steps:
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: exactum_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
+    steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v5
         with:
-          python-version: "3.11"
+          version: "latest"
+          enable-cache: true
 
-      - name: Install Ruff
-        run: pip install ruff
+      - name: Setup Python
+        run: uv python install
+
+      - name: Install dependencies
+        run: uv sync --frozen
+        working-directory: backend
 
       - name: Ruff Check
-        run: ruff check .
+        run: uv run ruff check .
+        working-directory: backend
+
+      - name: Ruff Format Check
+        run: uv run ruff format --check .
+        working-directory: backend
+
+      - name: Type Checking
+        run: uv run mypy .
+        working-directory: backend
+
+      - name: Dependency Security Audit
+        run: uv run pip-audit --strict
+        working-directory: backend
+
+      - name: Check Database Migrations
+        env:
+          DATABASE_URL: postgresql://postgres:password@localhost:5432/exactum_test
+        run: uv run flask db upgrade && uv run flask db check
+        working-directory: backend
+
+      - name: Run Tests with Pytest & Coverage
+        env:
+          DATABASE_TESTS_URL: postgresql://postgres:password@localhost:5432/exactum_test
+          FLASK_ENV: testing
+          JWT_SECRET_KEY: test-secret-key
+        run: uv run pytest --cov=app --cov-fail-under=89
+        working-directory: backend

@@ -15,7 +15,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
 
     <style>
-      /* Splash Screen / Loader inicial simples e leve */
       body {
         margin: 0;
         padding: 0;
@@ -23,19 +22,14 @@
         font-family: 'Inter', sans-serif;
       }
 
-      #initial-loader {
+      .initial-loader {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         height: 100vh;
         width: 100vw;
-        position: fixed;
-        top: 0;
-        left: 0;
         background: #f8fafc;
-        z-index: 9999;
-        transition: opacity 0.3s ease-out;
       }
 
       .spinner {
@@ -62,23 +56,15 @@
     </style>
   </head>
   <body>
-    <div id="initial-loader">
-      <div class="spinner"></div>
-      <p class="loader-text">Carregando Exactum...</p>
+    
+    <div id="root">
+      <div class="initial-loader">
+        <div class="spinner"></div>
+        <p class="loader-text">Carregando Exactum...</p>
+      </div>
     </div>
 
-    <div id="root"></div>
-
     <script type="module" src="/src/main.jsx"></script>
-
-    <script>
-      window.addEventListener('load', () => {
-        const loader = document.getElementById('initial-loader');
-        if (loader) {
-          loader.style.opacity = '0';
-          setTimeout(() => loader.remove(), 300);
-        }
-      });
-    </script>
+    
   </body>
 </html>
