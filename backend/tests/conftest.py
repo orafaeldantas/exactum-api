@@ -14,6 +14,8 @@ def app():
     """Configure the Flask app for the test environment."""
 
     database_uri = os.getenv("DATABASE_TESTS_URL") or os.getenv("DATABASE_URL")
+    if not database_uri:
+        raise RuntimeError("DATABASE_TESTS_URL must be set for running tests")
 
     app = create_app(
         {
