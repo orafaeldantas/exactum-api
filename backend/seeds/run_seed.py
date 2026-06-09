@@ -2,7 +2,6 @@ import logging
 import time
 from datetime import timedelta
 
-from run import app
 from seeds.mocks.products_mock import (
     product_five,
     product_four,
@@ -54,13 +53,18 @@ def generate_sales(
                 )
 
 
-if __name__ == "__main__":
+def run_seed(app):
     logger.info("Starting database seed...")
     start_time = time.perf_counter()
-
     with app.app_context():
         try:
-            tenants = [tenant_one, tenant_two, tenant_three, tenant_four, tenant_five]
+            tenants = [
+                tenant_one,
+                tenant_two,
+                tenant_three,
+                tenant_four,
+                tenant_five,
+            ]
             products = [
                 product_one,
                 product_two,
@@ -95,7 +99,10 @@ if __name__ == "__main__":
                         f"Error: User not found in tenant (tenant_id: {tenant_id})"
                     )
                 generate_sales(
-                    tenant_id=tenant_id, user_id=user_id, start_year=2020, end_year=2025
+                    tenant_id=tenant_id,
+                    user_id=user_id,
+                    start_year=2020,
+                    end_year=2025,
                 )
 
                 # Generates the year 2026 up to the month of May (5)
@@ -121,3 +128,10 @@ if __name__ == "__main__":
             duration = timedelta(seconds=int(total_seconds))
 
             logger.error(f"An error occurred in the seed after {duration}: {e}")
+
+
+if __name__ == "__main__":
+    from app import create_app
+
+    app = create_app()
+    run_seed(app)
