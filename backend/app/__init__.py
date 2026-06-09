@@ -6,6 +6,7 @@ from flask_cors import CORS
 from flask_smorest import Api
 from werkzeug.middleware.proxy_fix import ProxyFix
 
+from app.cli import register_cli
 from app.database.tenant_filter import init_tenant_filter
 from app.exceptions.handlers import register_error_handlers
 from app.middlewares.context import init_request_context
@@ -17,6 +18,7 @@ from .extensions import db, jwt, migrate
 def create_app(config=None):
     app = Flask(__name__)
     app.config.from_object(Config)
+    register_cli(app)
 
     if config:
         app.config.update(config)
