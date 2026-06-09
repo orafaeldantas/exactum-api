@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: CI
 
 on:
   push:
@@ -68,5 +68,6 @@ jobs:
         env:
           DATABASE_TESTS_URL: postgresql://postgres:password@localhost:5432/exactum_test
           FLASK_ENV: testing
+          JWT_SECRET_KEY: test-secret-key
         run: uv run pytest --cov=. --cov-fail-under=89
         working-directory: backend
