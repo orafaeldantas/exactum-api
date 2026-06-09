@@ -13,7 +13,7 @@ pytest_plugins = ["tests.fixtures.seed_fixtures", "tests.fixtures.auth_header_fi
 def app():
     """Configure the Flask app for the test environment."""
 
-    database_uri = os.getenv("DATABASE_TESTS_URL")
+    database_uri = os.getenv("DATABASE_TESTS_URL") or os.getenv("DATABASE_URL")
 
     app = create_app(
         {
