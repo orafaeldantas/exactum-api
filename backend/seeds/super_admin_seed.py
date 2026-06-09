@@ -1,6 +1,8 @@
 import logging
 import os
 
+from sqlalchemy import select
+
 from app.extensions import db
 from app.models.tenant import Tenant
 from app.models.user import User
@@ -12,10 +14,11 @@ def super_admin_seed():
     """Create the super administrator and the system tenant"""
 
     try:
-        tenant = Tenant.query.filter_by(id=1, name="SYSTEM").first()
+        stmt = select(Tenant).where(Tenant.name == "SYSTEM")
+        tenant = db.session.scalars(stmt).first()
 
         if tenant:
-            return
+            return tenant
 
         tenant = Tenant(
             name="SYSTEM",
