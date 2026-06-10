@@ -33,7 +33,6 @@ export default function ListUsers() {
     loadUsers();
   }, []);
 
-  // Function to trigger the custom modal
   function openConfirmModal(user) {
     setUserToToggle(user);
     setIsModalOpen(true);
@@ -77,7 +76,6 @@ export default function ListUsers() {
     user.username.toLowerCase().includes(search.toLowerCase())
   );
 
-  // Pagination logic
   const startIndex = (page - 1) * usersPerPage;
   const endIndex = startIndex + usersPerPage;
 
@@ -88,7 +86,6 @@ export default function ListUsers() {
   return (
     <div className="min-h-screen bg-gray-50 p-6 relative">
 
-      {/* PROFESSIONAL CONFIRMATION MODAL */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           {/* Overlay */}

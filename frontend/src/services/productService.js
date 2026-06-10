@@ -5,7 +5,7 @@ import { TenantContext } from "../context/TenantContext";
 
 export function getProducts() { 
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const { tenantData } = useContext(TenantContext); 
 
   async function loadProducts() {
