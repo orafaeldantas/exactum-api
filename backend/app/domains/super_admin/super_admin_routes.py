@@ -2,8 +2,8 @@ from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from flask_smorest import Blueprint
 
-from app.controllers.super_admin_controller import SuperAdminController
-from app.schemas.super_admin_schema import (
+from app.domains.super_admin.super_admin_controller import SuperAdminController
+from app.domains.super_admin.super_admin_schema import (
     SuperAdminListImpersonateResponseSchema,
     SuperAdminListTenantsResponseSchema,
 )
