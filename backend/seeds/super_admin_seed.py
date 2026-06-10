@@ -18,7 +18,7 @@ def super_admin_seed():
         tenant = db.session.scalars(stmt).first()
 
         if tenant:
-            return tenant
+            raise ValueError("Tenant already exists")
 
         tenant = Tenant(
             name="SYSTEM",
