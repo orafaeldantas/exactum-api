@@ -47,8 +47,8 @@ function Navbar() {
   const userInitial =
   profile?.username?.charAt(0)?.toUpperCase() || "U";
 
-  const isAdmin =
-  user?.role === "admin" || user?.role === "super-admin";
+  const isAdmin = user?.role === "admin";
+  const isSuperAdmin = user?.role === "super-admin";
 
   return (
     <nav
@@ -282,14 +282,17 @@ function Navbar() {
                               font-bold
                               uppercase
                               tracking-wider
-                              ${
-                                isAdmin
+                              ${                               
+                                isSuperAdmin
+                                  ? "border-slate-300 bg-slate-100 text-slate-800 shadow-sm shadow-slate-200/50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                                  : isAdmin
                                   ? "border-purple-200 bg-purple-50 text-purple-700 shadow-sm shadow-purple-100/50"
                                   : "border-blue-100 bg-blue-50 text-blue-700"
                               }
                             `}
                           >
                             {isAdmin && <ShieldCheck className="h-3 w-3 text-purple-500" />}
+                            {isSuperAdmin && <ShieldCheck className="h-3 w-3 text-slate-700 dark:text-slate-300" />}
                             {user?.role || "User"}
                           </span>
                         </div>
