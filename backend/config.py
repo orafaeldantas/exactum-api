@@ -26,6 +26,11 @@ class Config:
 
     JWT_COOKIE_CSRF_PROTECT = False
 
+    # Redis
+    REDIS_HOST = os.getenv("REDIS_HOST", "redis")
+    REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
+    REDIS_DB = int(os.getenv("REDIS_DB", 0))
+
     # Swagger
     API_TITLE = "Exactum API"
     API_VERSION = "v1"

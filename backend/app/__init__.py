@@ -7,6 +7,7 @@ from flask_smorest import Api
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from app.cli import register_cli
+from app.core.cache.redis_client import init_redis
 from app.database.tenant_filter import init_tenant_filter
 from app.exceptions.handlers import register_error_handlers
 from app.middlewares.context import init_request_context
@@ -43,10 +44,12 @@ def create_app(config=None):
     jwt.init_app(app)
     init_request_context(app)
     init_tenant_filter(db)
+    init_redis(app)
 
     if os.getenv("FLASK_ENV") == "production":
         app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1)
 
+    from app.core.monitoring.health_routes import blp_health
     from app.domains.super_admin.super_admin_routes import blp_super_admin
     from app.routes.analytics.revenue_analytics_routes import blp_revenue_analytics
     from app.routes.analytics.sold_item_analytics_routes import blp_item_analytics
@@ -66,5 +69,6 @@ def create_app(config=None):
     api.register_blueprint(blp_item_analytics)
     api.register_blueprint(blp_revenue_analytics)
     api.register_blueprint(blp_super_admin)
+    api.register_blueprint(blp_health)
 
     return app

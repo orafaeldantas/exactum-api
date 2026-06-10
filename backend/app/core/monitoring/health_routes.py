@@ -1,0 +1,24 @@
+from flask_smorest import Blueprint
+
+from app.core.monitoring.health_schema import HealthResponseSchema
+from app.core.monitoring.health_service import HealthService
+
+blp_health = Blueprint(
+    "health",
+    __name__,
+    url_prefix="/health",
+    description="Health Check",
+)
+
+
+@blp_health.get("/")
+@blp_health.response(200, HealthResponseSchema)
+@blp_health.response(503, HealthResponseSchema)
+def health():
+
+    result = HealthService.check_services()
+
+    return {
+        "status": result["status"],
+        "services": result["services"],
+    }, result["http_status"]
