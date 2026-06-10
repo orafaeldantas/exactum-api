@@ -1,5 +1,9 @@
 import logging
+from collections.abc import Sequence
 
+from sqlalchemy import select
+
+from app.extensions import db
 from app.models.tenant import Tenant
 from app.models.user import User
 
@@ -8,15 +12,18 @@ logger = logging.getLogger(__name__)
 
 class SuperAdminRepository:
     @staticmethod
-    def list_all_tenants():
-
-        return Tenant.query.execution_options(skip_tenant_filter=True).all()
+    def list_all_tenants() -> Sequence[Tenant]:
+        """Search all tenants in the system, ignoring filters."""
+        stmt = select(Tenant).execution_options(skip_tenant_filter=True)
+        return db.session.scalars(stmt).all()
 
     @staticmethod
-    def impersonate(tenant_id):
+    def impersonate(tenant_id: int) -> User | None:
+        """Search for the administrator user of a specific tenant for impersonation."""
 
-        return (
-            User.query.execution_options(skip_tenant_filter=True)
-            .filter_by(tenant_id=tenant_id, role="admin")
-            .first()
+        stmt = (
+            select(User)
+            .where(User.tenant_id == tenant_id, User.role == "admin")
+            .execution_options(skip_tenant_filter=True)
         )
+        return db.session.scalars(stmt).first()

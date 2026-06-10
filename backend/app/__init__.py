@@ -47,12 +47,12 @@ def create_app(config=None):
     if os.getenv("FLASK_ENV") == "production":
         app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1)
 
+    from app.domains.super_admin.super_admin_routes import blp_super_admin
     from app.routes.analytics.revenue_analytics_routes import blp_revenue_analytics
     from app.routes.analytics.sold_item_analytics_routes import blp_item_analytics
     from app.routes.auth_routes import blp_auth
     from app.routes.product_routes import blp_products
     from app.routes.sale_routes import blp_sales
-    from app.routes.super_admin_routes import blp_super_admin
     from app.routes.tenant_routes import blp_tenants
     from app.routes.user_routes import blp_users
 
