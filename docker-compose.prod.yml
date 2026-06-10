@@ -39,6 +39,8 @@ services:
     image: postgres:15
     container_name: exactum_db
     restart: unless-stopped
+    ports:
+      - "${DB_PORT_MAPPING}"
     env_file:
     - .env
     environment:
