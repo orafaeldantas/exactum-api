@@ -10,6 +10,16 @@ class LoginSchema(Schema):
 class ResponseLoginSchema(Schema):
     access_token = fields.Str(dump_only=True)
 
+    refresh_token = fields.Str(dump_only=True)
+
+
+class RefreshResponseSchema(Schema):
+    access_token = fields.Str(dump_only=True)
+
+
+class LogoutResponseSchema(Schema):
+    message = fields.String(required=True)
+
 
 class TenantBootstrapSchema(Schema):
     name = fields.Str()
