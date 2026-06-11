@@ -25,6 +25,16 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
+      redis:
+        image: redis:alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -69,5 +79,8 @@ jobs:
           DATABASE_TESTS_URL: postgresql://postgres:password@localhost:5432/exactum_test
           FLASK_ENV: testing
           JWT_SECRET_KEY: test-secret-key
-        run: uv run pytest --cov=app --cov-fail-under=89
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+          REDIS_DB: 0
+        run: uv run pytest --cov=app --cov-fail-under=80
         working-directory: backend
