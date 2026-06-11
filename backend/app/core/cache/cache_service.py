@@ -16,12 +16,10 @@ class CacheService:
 
         return None
 
-    @staticmethod
     def set(key, value, ttl=300):
-
         redis = current_app.extensions["redis"]
 
-        redis.setex(key, ttl, json.dumps(value))
+        redis.set(key, json.dumps(value), ex=ttl)
 
     @staticmethod
     def delete(key):
