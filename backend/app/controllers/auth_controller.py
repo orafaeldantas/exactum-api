@@ -13,3 +13,13 @@ class AuthController:
     def bootstrap():
 
         return AuthService.bootstrap(g.user_id, g.tenant_id)
+
+    @staticmethod
+    def refresh_access_token():
+
+        return AuthService.refresh_access_token()
+
+    @staticmethod
+    def logout():
+
+        return AuthService.logout()

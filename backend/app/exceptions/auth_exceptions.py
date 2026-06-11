@@ -17,3 +17,15 @@ class BootstrapNotFound(AppException):
     status_code = 404
 
     message = "Bootstrap data not found"
+
+
+class RefreshTokenRevoked(AppException):
+    status_code = 401
+
+    message = "Refresh token revoked"
+
+
+class UnauthorizedUser(AppException):
+    status_code = 401
+
+    message = "User not found"
