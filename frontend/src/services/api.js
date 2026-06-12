@@ -1,26 +1,17 @@
 const API_URL = import.meta.env.VITE_API_URL || "/api";
 
-export async function apiFetch(endpoint, options = {}) {
+export async function apiFetch(url, options = {}) {
   const token = sessionStorage.getItem("access_token");
 
   const headers = {
-    ...(token && { Authorization: `Bearer ${token}` }),
     ...options.headers,
+    Authorization: token
+      ? `Bearer ${token}`
+      : undefined,
   };
 
-  if (options.body) {
-    headers["Content-Type"] = "application/json";
-  }
-
-  const response = await fetch(`${API_URL}${endpoint}`, {
+  return fetch(url, {
     ...options,
     headers,
   });
-
-  if (response.status === 401) {
-    localStorage.removeItem("access_token");
-    throw new Error("Sessão expirada");
-  }
-
-  return response;
 }
