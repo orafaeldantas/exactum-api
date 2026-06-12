@@ -2,7 +2,6 @@ import { createContext, useEffect, useState, useContext } from "react";
 import { apiFetch } from "../services/api";
 import { UserContext } from "../context/UserContext";
 import { TenantContext } from "../context/TenantContext";
-import { jwtDecode } from "jwt-decode";
 
 export const AuthContext = createContext();
 
@@ -41,9 +40,10 @@ export function AuthProvider({ children }) {
   }
 
   async function login(responseData) {
+    sessionStorage.setItem("access_token", responseData);
     await bootstrap();
   }
-  
+
   async function logout() {
     try {
       await apiFetch("/auth/logout", {
