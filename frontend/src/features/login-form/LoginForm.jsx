@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom"
 import { useContext, useState } from "react"
-import { loginRequest } from "../../services/auth"
+import { apiFetch } from "../../services/api"
 import { AuthContext } from "../../context/AuthContext"
 import { Mail, Lock, LogIn, AlertCircle, Box } from "lucide-react"
 
@@ -19,7 +19,16 @@ export default function LoginForm() {
     setLoading(true)
 
     try {
-      const data = await loginRequest(email, password)
+      const response = await apiFetch('/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({
+          email: email,
+          password: password
+        })
+      });
+
+      const data = await response.json();
+      console.log(data)
       await login(data.access_token)
 
    
