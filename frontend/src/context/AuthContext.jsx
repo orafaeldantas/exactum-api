@@ -14,32 +14,23 @@ export function AuthProvider({ children }) {
   const { setProfile } = useContext(UserContext);
   const { setTenantData } = useContext(TenantContext);
   
-  
-
   async function bootstrap() {
-    if (!sessionStorage.getItem('access_token')) {
-      setProfile(null);
-      setTenantData(null);
-      setUser(null)
-      setLoading(false);
-      return; 
-    }
     try {
       const response = await apiFetch("/auth/bootstrap");
+  
+      if (!response.ok) {
+        throw new Error();
+      }
+  
       const data = await response.json();
+  
       setTenantData(data.tenant);
       setProfile(data.user);
       setUser(data.auth);
 
-      const impersonateToken = sessionStorage.getItem("access_token")
-      const claims = impersonateToken ? jwtDecode(impersonateToken) : false
-
-      if (claims?.is_impersonating === true) {
-        setImpersonateMode(true)
-      } else {
-        setImpersonateMode(false)
-      }       
-
+      const isImpersonating = data.auth?.is_impersonating ?? false;
+      setImpersonateMode(isImpersonating);
+  
     } catch {
       setTenantData(null);
       setProfile(null);
@@ -49,18 +40,21 @@ export function AuthProvider({ children }) {
     }
   }
 
-  async function login(token) {
-    sessionStorage.setItem('access_token', token);
+  async function login(responseData) {
     await bootstrap();
   }
-
-  function logout() {
-    sessionStorage.removeItem('access_token');
-    sessionStorage.removeItem('super_token'); // Clean up backup on logout
-    setUser(null);
+  
+  async function logout() {
+    try {
+      await apiFetch("/auth/logout", {
+        method: "POST"
+      });
+    } finally {
+      setProfile(null);
+      setTenantData(null);
+      setUser(null);
+    }
   }
-
-  // --- NEW: Impersonation Logic ---
 
   async function impersonate(tenantToken) {
     try {
@@ -101,8 +95,6 @@ export function AuthProvider({ children }) {
       console.error("Failed to restore identity", error);
     }
   }
-
-  // --- END: Impersonation Logic ---
 
   useEffect(() => {
     bootstrap();  
