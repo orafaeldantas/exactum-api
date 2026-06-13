@@ -159,7 +159,7 @@ class AuthService:
         return response
 
     @staticmethod
-    def logout() -> dict:
+    def logout() -> Response:
         claims = get_jwt()
 
         user_id = int(get_jwt_identity())

@@ -16,7 +16,7 @@ def test_login_success(client, default_user):
 
     # THEN
     assert response.status_code == 200
-    assert "access_token" in response.json
+    assert response.json == {"message": "Login successful"}
 
 
 @pytest.mark.functional
