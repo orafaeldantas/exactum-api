@@ -40,7 +40,6 @@ export function AuthProvider({ children }) {
   }
 
   async function login(responseData) {
-    sessionStorage.setItem("access_token", responseData);
     await bootstrap();
   }
 
@@ -58,19 +57,10 @@ export function AuthProvider({ children }) {
 
   async function impersonate(tenantToken) {
     try {
-      // 1. Backup your master access_token
-      const masterToken = sessionStorage.getItem('access_token');
-      sessionStorage.setItem('super_token', masterToken);
-      // 2. Set the tenant token as the primary one
-      sessionStorage.setItem('access_token', tenantToken);
 
-      
-
-      // 3. Reload user to update global state with tenant info
       console.log("ModoImpersonate: " + false)
       await bootstrap();
       
-      // 4. Force a hard reload to clear any remaining state in other components
       window.location.href = "/dashboard";
     } catch (error) {
       console.error("Impersonation failed", error);
@@ -79,16 +69,11 @@ export function AuthProvider({ children }) {
 
   async function stopImpersonating() {
     try {
-      const backupToken = sessionStorage.getItem('super_token');
 
       if (backupToken) {
-        // 1. Restore your original super-admin token
-        sessionStorage.setItem('access_token', backupToken);
-        sessionStorage.removeItem('super_token');             
-        // 2. Reload user to restore your original identity
+           
         await bootstrap();
         console.log("ModoImpersonate: " + false)
-        // 3. Return to your control panel
         window.location.href = "/manage-companies";
       }
     } catch (error) {
