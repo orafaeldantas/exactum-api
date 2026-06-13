@@ -10,6 +10,7 @@ from app.cli import register_cli
 from app.core.cache.redis_client import init_redis
 from app.database.tenant_filter import init_tenant_filter
 from app.exceptions.handlers import register_error_handlers
+from app.exceptions.jwt_handlers import register_jwt_handlers
 from app.middlewares.context import init_request_context
 from config import Config
 
@@ -45,6 +46,8 @@ def create_app(config=None):
     init_request_context(app)
     init_tenant_filter(db)
     init_redis(app)
+
+    register_jwt_handlers(jwt)
 
     if os.getenv("FLASK_ENV") == "production":
         app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1)

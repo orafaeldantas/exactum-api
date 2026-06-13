@@ -2,13 +2,10 @@ const API_URL = import.meta.env.VITE_API_URL || "/api";
 
 
 function buildHeaders(customHeaders = {}) {
-  const token = sessionStorage.getItem("access_token");
 
   return {
     ...customHeaders,
-    Authorization: token
-      ? `Bearer ${token}`
-      : undefined,
+    credentials: "include",
   };
 }
 
@@ -28,11 +25,6 @@ async function refreshAccessToken() {
   }
 
   const data = await response.json();
-
-  sessionStorage.setItem(
-    "access_token",
-    data.access_token
-  );
 
   return true;
 }
