@@ -3,6 +3,8 @@ class AppException(Exception):
 
     message = "Application error"
 
+    clear_auth_cookies = False
+
     def __init__(self, message=None):
 
         if message:
