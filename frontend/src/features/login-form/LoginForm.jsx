@@ -28,7 +28,6 @@ export default function LoginForm() {
       });
 
       const data = await response.json();
-      console.log(data)
       await login(data.access_token)
 
    

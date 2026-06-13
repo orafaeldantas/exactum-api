@@ -20,9 +20,15 @@ class Config:
         seconds=int(os.getenv("JWT_REFRESH_TOKEN_EXPIRES", 2592000))
     )
 
-    JWT_TOKEN_LOCATION = ["headers"]
-    JWT_HEADER_NAME = "Authorization"
-    JWT_HEADER_TYPE = "Bearer"
+    JWT_TOKEN_LOCATION = ["cookies"]
+
+    JWT_ACCESS_COOKIE_NAME = "access_token"
+    JWT_REFRESH_COOKIE_NAME = "refresh_token"
+
+    JWT_COOKIE_HTTPONLY = True
+
+    JWT_COOKIE_SECURE = False
+    JWT_COOKIE_SAMESITE = "Lax"
 
     JWT_COOKIE_CSRF_PROTECT = False
 
