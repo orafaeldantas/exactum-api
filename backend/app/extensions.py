@@ -9,25 +9,5 @@ class Base(DeclarativeBase):
 
 
 db = SQLAlchemy(model_class=Base)
-
-
-migrate = Migrate(directory="migrations")
 jwt = JWTManager()
-
-
-@jwt.invalid_token_loader
-def invalid_token(reason):
-    print("JWT INVALID:", reason)
-    return {"error": reason}, 422
-
-
-@jwt.unauthorized_loader
-def missing_token(reason):
-    print("JWT MISSING:", reason)
-    return {"error": reason}, 401
-
-
-@jwt.expired_token_loader
-def expired(jwt_header, jwt_payload):
-    print("JWT EXPIRED")
-    return {"error": "expired"}, 401
+migrate = Migrate(directory="migrations")

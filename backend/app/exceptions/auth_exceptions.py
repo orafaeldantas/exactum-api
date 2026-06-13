@@ -24,8 +24,12 @@ class RefreshTokenRevoked(AppException):
 
     message = "Refresh token revoked"
 
+    clear_auth_cookies = True
+
 
 class UnauthorizedUser(AppException):
     status_code = 401
 
     message = "User not found"
+
+    clear_auth_cookies = True

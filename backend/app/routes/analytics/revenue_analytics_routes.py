@@ -25,7 +25,7 @@ blp_revenue_analytics = Blueprint(
 class RevenueAnalyticsListRoute(MethodView):
     @jwt_required()
     @role_authorization(["admin", "super-admin", "user"])
-    @blp_revenue_analytics.doc(security=[{"BearerAuth": []}])
+    @blp_revenue_analytics.doc(security=[{"CookieAuth": []}])
     @blp_revenue_analytics.arguments(RevenueAnalyticsQuerySchema, location="query")
     @blp_revenue_analytics.response(200, ListRevenueAnalyticsResponseSchema)
     def get(self, query_params):
@@ -37,7 +37,7 @@ class RevenueAnalyticsListRoute(MethodView):
 class AccumulatedRevenueDayRoute(MethodView):
     @jwt_required()
     @role_authorization(["admin", "super-admin", "user"])
-    @blp_revenue_analytics.doc(security=[{"BearerAuth": []}])
+    @blp_revenue_analytics.doc(security=[{"CookieAuth": []}])
     @blp_revenue_analytics.arguments(RevenueAnalyticsQuerySchema, location="query")
     @blp_revenue_analytics.response(200, ListAccumulatedRevenueDaySchema(many=True))
     def get(self, query_params):
@@ -49,7 +49,7 @@ class AccumulatedRevenueDayRoute(MethodView):
 class AverageTicketRoute(MethodView):
     @jwt_required()
     @role_authorization(["admin", "super-admin", "user"])
-    @blp_revenue_analytics.doc(security=[{"BearerAuth": []}])
+    @blp_revenue_analytics.doc(security=[{"CookieAuth": []}])
     @blp_revenue_analytics.arguments(RevenueAnalyticsQuerySchema, location="query")
     @blp_revenue_analytics.response(200, TicketAverageSchema)
     def get(self, query_params):

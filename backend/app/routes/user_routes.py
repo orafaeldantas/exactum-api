@@ -22,7 +22,7 @@ blp_users = Blueprint(
 class UserListRoute(MethodView):
     @jwt_required()
     @role_authorization(["admin", "super-admin"])
-    @blp_users.doc(security=[{"BearerAuth": []}])
+    @blp_users.doc(security=[{"CookieAuth": []}])
     @blp_users.response(200, UserResponseSchema(many=True))
     def get(self):
 
@@ -30,7 +30,7 @@ class UserListRoute(MethodView):
 
     @jwt_required()
     @role_authorization(["admin", "super-admin"])
-    @blp_users.doc(security=[{"BearerAuth": []}])
+    @blp_users.doc(security=[{"CookieAuth": []}])
     @blp_users.arguments(CreateUserSchema)
     @blp_users.response(201, UserResponseSchema)
     def post(self, data):
@@ -42,7 +42,7 @@ class UserListRoute(MethodView):
 class UserDetailRoute(MethodView):
     @jwt_required()
     @role_authorization(["admin", "super-admin"])
-    @blp_users.doc(security=[{"BearerAuth": []}])
+    @blp_users.doc(security=[{"CookieAuth": []}])
     @blp_users.response(200, UserResponseSchema)
     def get(self, user_id):
 
@@ -50,7 +50,7 @@ class UserDetailRoute(MethodView):
 
     @jwt_required()
     @role_authorization(["admin", "super-admin"])
-    @blp_users.doc(security=[{"BearerAuth": []}])
+    @blp_users.doc(security=[{"CookieAuth": []}])
     @blp_users.arguments(UpdateUserSchema)
     @blp_users.response(200, UserResponseSchema)
     def patch(self, data, user_id):
@@ -62,7 +62,7 @@ class UserDetailRoute(MethodView):
 class UserNewPasswordRoute(MethodView):
     @jwt_required()
     @role_authorization(["admin", "super-admin", "user"])
-    @blp_users.doc(security=[{"BearerAuth": []}])
+    @blp_users.doc(security=[{"CookieAuth": []}])
     @blp_users.arguments(NewPasswordUserSchema)
     @blp_users.response(200, NewPassworUserResponseSchema)
     def patch(self, data, user_id):
@@ -75,7 +75,7 @@ class UserProfileRoute(MethodView):
     @jwt_required()
     @role_authorization(["admin", "super-admin", "user"])
     @owner_required()
-    @blp_users.doc(security=[{"BearerAuth": []}])
+    @blp_users.doc(security=[{"CookieAuth": []}])
     @blp_users.response(200, ProfileSchema)
     def get(self, user_id):
 
@@ -84,7 +84,7 @@ class UserProfileRoute(MethodView):
     @jwt_required()
     @role_authorization(["admin", "super-admin", "user"])
     @owner_required()
-    @blp_users.doc(security=[{"BearerAuth": []}])
+    @blp_users.doc(security=[{"CookieAuth": []}])
     @blp_users.arguments(ProfileSchema)
     @blp_users.response(200, ProfileSchema)
     def patch(self, data, user_id):

@@ -39,7 +39,7 @@ function Sidebar() {
 
   const activeLinkClass = "bg-blue-600 !text-white shadow-lg shadow-blue-900/20";
 
-  const isImpersonating = !!sessionStorage.getItem("super_token");
+  const isImpersonating = ""
 
   return (
     <aside 

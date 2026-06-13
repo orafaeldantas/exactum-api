@@ -20,9 +20,15 @@ class Config:
         seconds=int(os.getenv("JWT_REFRESH_TOKEN_EXPIRES", 2592000))
     )
 
-    JWT_TOKEN_LOCATION = ["headers"]
-    JWT_HEADER_NAME = "Authorization"
-    JWT_HEADER_TYPE = "Bearer"
+    JWT_TOKEN_LOCATION = ["cookies"]
+
+    JWT_ACCESS_COOKIE_NAME = "access_token"
+    JWT_REFRESH_COOKIE_NAME = "refresh_token"
+
+    JWT_COOKIE_HTTPONLY = True
+
+    JWT_COOKIE_SECURE = False
+    JWT_COOKIE_SAMESITE = "Lax"
 
     JWT_COOKIE_CSRF_PROTECT = False
 
@@ -33,7 +39,7 @@ class Config:
 
     # Swagger
     API_TITLE = "Exactum API"
-    API_VERSION = "v1"
+    API_VERSION = "v0.1.0"
     OPENAPI_VERSION = "3.0.3"
     OPENAPI_URL_PREFIX = "/doc"
     OPENAPI_SWAGGER_UI_PATH = "/swagger"
@@ -42,10 +48,10 @@ class Config:
     API_SPEC_OPTIONS = {
         "components": {
             "securitySchemes": {
-                "BearerAuth": {
-                    "type": "http",
-                    "scheme": "bearer",
-                    "bearerFormat": "JWT",
+                "CookieAuth": {
+                    "type": "apiKey",
+                    "in": "cookie",
+                    "name": "access_token",
                 }
             }
         }

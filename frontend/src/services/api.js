@@ -1,26 +1,81 @@
 const API_URL = import.meta.env.VITE_API_URL || "/api";
 
-export async function apiFetch(endpoint, options = {}) {
-  const token = sessionStorage.getItem("access_token");
 
-  const headers = {
-    ...(token && { Authorization: `Bearer ${token}` }),
-    ...options.headers,
+function buildHeaders(customHeaders = {}) {
+
+  return {
+    ...customHeaders,
+    credentials: "include",
+  };
+}
+
+async function refreshAccessToken() {
+  const response = await fetch(
+    "/auth/refresh",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }
+  );
+
+  if (!response.ok) {
+    return false;
+  }
+
+  const data = await response.json();
+
+  return true;
+}
+
+export async function apiFetch(endpoint, options = {}) {
+  const defaultHeaders = options.body ? { 'Content-Type': 'application/json' } : {};
+
+  const fetchOptions = {
+    ...options,
+    headers: buildHeaders({
+      ...defaultHeaders,
+      ...options.headers,
+    }),
   };
 
-  if (options.body) {
-    headers["Content-Type"] = "application/json";
+  let response = await fetch(`${API_URL}${endpoint}`, fetchOptions);
+
+  const isRefreshCall = endpoint.includes("/auth/refresh");
+
+  if (response.status === 401 && !isRefreshCall) {
+    const refreshed = await refreshAccessToken();
+
+    if (!refreshed) {
+      throw new Error("Session expired");    
+    }
+
+    const retryOptions = {
+      ...options,
+      headers: buildHeaders({
+        ...defaultHeaders,
+        ...options.headers,
+      }),
+    };
+    
+    response = await fetch(`${API_URL}${endpoint}`, retryOptions);
+
+    if (response.status === 401) {
+      throw new Error("Session expired after refresh retry");
+    }
   }
 
-  const response = await fetch(`${API_URL}${endpoint}`, {
-    ...options,
-    headers,
-  });
-
-  if (response.status === 401) {
-    localStorage.removeItem("access_token");
-    throw new Error("Sessão expirada");
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
   }
 
-  return response;
+  if (response.status === 204) {
+    return null;
+  }
+
+  return response; 
 }
+
+

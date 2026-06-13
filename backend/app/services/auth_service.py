@@ -1,5 +1,11 @@
-from flask import current_app
-from flask_jwt_extended import get_jwt, get_jwt_identity
+from flask import Response, current_app, jsonify
+from flask_jwt_extended import (
+    get_jwt,
+    get_jwt_identity,
+    set_access_cookies,
+    set_refresh_cookies,
+    unset_jwt_cookies,
+)
 
 from app.core.cache.cache_keys import CacheKeys
 from app.core.cache.cache_service import CacheService
@@ -19,7 +25,7 @@ from app.services.token_service import TokenService
 
 class AuthService:
     @staticmethod
-    def login(data: dict) -> dict:
+    def login(data: dict) -> Response:
 
         if not data.get("email"):
             raise InvalidInputEmail()
@@ -42,7 +48,12 @@ class AuthService:
             tenant_id=user.tenant_id,
         )
 
-        return {"access_token": access_token, "refresh_token": refresh_token}
+        response = jsonify({"message": "Login successful"})
+
+        set_access_cookies(response, access_token)
+        set_refresh_cookies(response, refresh_token)
+
+        return response
 
     @staticmethod
     def bootstrap(user_id: int, tenant_id: int) -> dict:
@@ -107,7 +118,7 @@ class AuthService:
         CacheService.delete(cache_key)
 
     @staticmethod
-    def refresh_access_token() -> dict:
+    def refresh_access_token() -> Response:
 
         claims = get_jwt()
 
@@ -125,18 +136,38 @@ class AuthService:
         user = AuthRepository.get_user_by_id(user_id)
 
         if not user:
+            AuthService.revoke_refresh_token(jti, user_id)
             raise UnauthorizedUser()
 
-        access_token = TokenService.generate_access_token(user)
+        new_access_token = TokenService.generate_access_token(user)
+        new_refresh_token = TokenService.generate_refresh_token(user)
 
-        return {"access_token": access_token}
+        AuthService.revoke_refresh_token(jti, user_id)
+
+        AuthService.store_refresh_token(
+            refresh_token=new_refresh_token,
+            user_id=user.id,
+            tenant_id=user.tenant_id,
+        )
+
+        response = jsonify({"message": "Token refreshed"})
+
+        set_access_cookies(response, new_access_token)
+
+        set_refresh_cookies(response, new_refresh_token)
+
+        return response
 
     @staticmethod
-    def logout() -> dict:
+    def logout() -> Response:
         claims = get_jwt()
 
         user_id = int(get_jwt_identity())
 
         AuthService.revoke_refresh_token(claims["jti"], user_id)
 
-        return {"message": "Logout successful"}
+        response = jsonify({"message": "Logout successful"})
+
+        unset_jwt_cookies(response)
+
+        return response
