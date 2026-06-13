@@ -21,7 +21,7 @@ blp_tenants = Blueprint(
 class TenantRoute(MethodView):
     @jwt_required()
     @role_authorization(["admin", "super-admin"])
-    @blp_tenants.doc(security=[{"BearerAuth": []}])
+    @blp_tenants.doc(security=[{"CookieAuth": []}])
     @blp_tenants.response(200, ResponseTenantSchema)
     def get(self):
 
@@ -35,7 +35,7 @@ class TenantRoute(MethodView):
 
     @jwt_required()
     @role_authorization(["admin", "super-admin"])
-    @blp_tenants.doc(security=[{"BearerAuth": []}])
+    @blp_tenants.doc(security=[{"CookieAuth": []}])
     @blp_tenants.arguments(UdateTenantSchema)
     @blp_tenants.response(200, ResponseUdateTenantSchema)
     def patch(self, data):

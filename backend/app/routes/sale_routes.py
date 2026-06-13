@@ -21,7 +21,7 @@ blp_sales = Blueprint(
 class SaleListRoute(MethodView):
     @jwt_required()
     @role_authorization(["admin", "super-admin", "user"])
-    @blp_sales.doc(security=[{"BearerAuth": []}])
+    @blp_sales.doc(security=[{"CookieAuth": []}])
     @blp_sales.arguments(CreateSaleSchema)
     @blp_sales.response(201, CreateSaleResponseSchema)
     def post(self, data):
@@ -30,7 +30,7 @@ class SaleListRoute(MethodView):
 
     @jwt_required()
     @role_authorization(["admin", "super-admin", "user"])
-    @blp_sales.doc(security=[{"BearerAuth": []}])
+    @blp_sales.doc(security=[{"CookieAuth": []}])
     @blp_sales.arguments(ListSaleQuerySchema, location="query")
     @blp_sales.response(200, ListSaleResponseSchema(many=True))
     def get(self, query_params):
@@ -42,7 +42,7 @@ class SaleListRoute(MethodView):
 class SaleDetailRoute(MethodView):
     @jwt_required()
     @role_authorization(["admin", "super-admin", "user"])
-    @blp_sales.doc(security=[{"BearerAuth": []}])
+    @blp_sales.doc(security=[{"CookieAuth": []}])
     @blp_sales.response(200, ListSaleWithItemsResponseSchema)
     def get(self, sale_id):
 

@@ -22,7 +22,7 @@ blp_products = Blueprint(
 class ProductListRoute(MethodView):
     @jwt_required()
     @role_authorization(["admin", "super-admin", "user"])
-    @blp_products.doc(security=[{"BearerAuth": []}])
+    @blp_products.doc(security=[{"CookieAuth": []}])
     @blp_products.arguments(CreateProductSchema)
     @blp_products.response(201, CreateProductResponseSchema)
     def post(self, data):
@@ -31,7 +31,7 @@ class ProductListRoute(MethodView):
 
     @jwt_required()
     @role_authorization(["admin", "super-admin", "user"])
-    @blp_products.doc(security=[{"BearerAuth": []}])
+    @blp_products.doc(security=[{"CookieAuth": []}])
     @blp_products.response(200, ListProductResponseSchema(many=True))
     def get(self):
 
@@ -42,7 +42,7 @@ class ProductListRoute(MethodView):
 class ProductDetailRoute(MethodView):
     @jwt_required()
     @role_authorization(["admin", "super-admin", "user"])
-    @blp_products.doc(security=[{"BearerAuth": []}])
+    @blp_products.doc(security=[{"CookieAuth": []}])
     @blp_products.arguments(UpdateProductSchema)
     @blp_products.response(200, UpdateProductResponseSchema)
     def patch(self, data, product_id):
@@ -51,7 +51,7 @@ class ProductDetailRoute(MethodView):
 
     @jwt_required()
     @role_authorization(["admin", "super-admin", "user"])
-    @blp_products.doc(security=[{"BearerAuth": []}])
+    @blp_products.doc(security=[{"CookieAuth": []}])
     @blp_products.response(200, GetProductResponseSchema)
     def get(self, product_id):
 
@@ -59,7 +59,7 @@ class ProductDetailRoute(MethodView):
 
     @jwt_required()
     @role_authorization(["admin", "super-admin", "user"])
-    @blp_products.doc(security=[{"BearerAuth": []}])
+    @blp_products.doc(security=[{"CookieAuth": []}])
     @blp_products.response(204)
     def delete(self, product_id):
 

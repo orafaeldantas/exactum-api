@@ -18,6 +18,18 @@ blp_auth = Blueprint(
 
 @blp_auth.route("/login")
 class LoginRoute(MethodView):
+    @blp_auth.doc(
+        description="""
+        Authentication is performed via HttpOnly cookies.
+
+        On success, the API sets:
+
+        - access_token (HttpOnly)
+        - refresh_token (HttpOnly)
+
+        Tokens are not returned in the response body.
+        """
+    )
     @blp_auth.arguments(LoginSchema)
     @blp_auth.response(200, ResponseLoginSchema)
     def post(self, data):
@@ -28,7 +40,7 @@ class LoginRoute(MethodView):
 @blp_auth.route("/bootstrap")
 class BootstrapRoute(MethodView):
     @jwt_required()
-    @blp_auth.doc(security=[{"BearerAuth": []}])
+    @blp_auth.doc(security=[{"CookieAuth": []}])
     @blp_auth.response(200, ResponseBootstrapSchema)
     def get(self):
 
@@ -38,7 +50,7 @@ class BootstrapRoute(MethodView):
 @blp_auth.route("/refresh")
 class Refresh(MethodView):
     @jwt_required(refresh=True)
-    @blp_auth.doc(security=[{"BearerAuth": []}])
+    @blp_auth.doc(security=[{"CookieAuth": []}])
     @blp_auth.response(200, RefreshResponseSchema)
     def post(self):
 
@@ -48,7 +60,7 @@ class Refresh(MethodView):
 @blp_auth.route("/logout")
 class Logout(MethodView):
     @jwt_required(refresh=True)
-    @blp_auth.doc(security=[{"BearerAuth": []}])
+    @blp_auth.doc(security=[{"CookieAuth": []}])
     @blp_auth.response(200, LogoutResponseSchema)
     def post(self):
 
