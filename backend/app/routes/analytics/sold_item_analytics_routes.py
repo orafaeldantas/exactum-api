@@ -24,7 +24,7 @@ blp_item_analytics = Blueprint(
 class BestSellersResource(MethodView):
     @jwt_required()
     @role_authorization(["admin", "super-admin", "user"])
-    @blp_item_analytics.doc(security=[{"BearerAuth": []}])
+    @blp_item_analytics.doc(security=[{"CookieAuth": []}])
     @blp_item_analytics.arguments(SoldItemQuerySchema, location="query")
     @blp_item_analytics.response(200, BestSellersSchema(many=True))
     def get(self, query_params):
@@ -36,7 +36,7 @@ class BestSellersResource(MethodView):
 class SoldItemRoute(MethodView):
     @jwt_required()
     @role_authorization(["admin", "super-admin", "user"])
-    @blp_item_analytics.doc(security=[{"BearerAuth": []}])
+    @blp_item_analytics.doc(security=[{"CookieAuth": []}])
     @blp_item_analytics.arguments(SoldItemQuerySchema, location="query")
     @blp_item_analytics.response(200, SoldItemSchema(many=True))
     def get(self, query_params):

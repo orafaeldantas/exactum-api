@@ -39,7 +39,7 @@ class Config:
 
     # Swagger
     API_TITLE = "Exactum API"
-    API_VERSION = "v1"
+    API_VERSION = "v0.1.0"
     OPENAPI_VERSION = "3.0.3"
     OPENAPI_URL_PREFIX = "/doc"
     OPENAPI_SWAGGER_UI_PATH = "/swagger"
@@ -48,10 +48,10 @@ class Config:
     API_SPEC_OPTIONS = {
         "components": {
             "securitySchemes": {
-                "BearerAuth": {
-                    "type": "http",
-                    "scheme": "bearer",
-                    "bearerFormat": "JWT",
+                "CookieAuth": {
+                    "type": "apiKey",
+                    "in": "cookie",
+                    "name": "access_token",
                 }
             }
         }
