@@ -11,6 +11,7 @@ from app.core.cache.cache_keys import CacheKeys
 from app.core.cache.cache_service import CacheService
 from app.domains.super_admin.super_admin_repository import SuperAdminRepository
 from app.exceptions.auth_exceptions import (
+    AdminNotFound,
     BootstrapNotFound,
     InvalidCredentials,
     InvalidInputEmail,
@@ -100,7 +101,10 @@ class AuthService:
 
     @staticmethod
     def store_refresh_token(
-        refresh_token: str, user_id: int, tenant_id: int, impersonator_id: int = None
+        refresh_token: str,
+        user_id: int,
+        tenant_id: int,
+        impersonator_id: int | None = None,
     ) -> None:
 
         jti = TokenService.extract_jti(refresh_token)
@@ -205,6 +209,9 @@ class AuthService:
 
         target_admin = SuperAdminRepository.impersonate(tenant_id)
 
+        if not target_admin:
+            raise AdminNotFound()
+
         access_token = TokenService.generate_access_token(
             target_admin, impersonate=True
         )
@@ -242,6 +249,9 @@ class AuthService:
         AuthService.revoke_refresh_token(jti, user_id)
 
         super_admin_user = SuperAdminRepository.get_super_admin_user(original_user_id)
+
+        if not super_admin_user:
+            raise AdminNotFound()
 
         access_token = TokenService.generate_access_token(super_admin_user)
         refresh_token = TokenService.generate_refresh_token(super_admin_user)
