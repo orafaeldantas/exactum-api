@@ -12,7 +12,7 @@ class AuthController:
     @staticmethod
     def bootstrap():
 
-        return AuthService.bootstrap(g.user_id, g.tenant_id)
+        return AuthService.bootstrap(g.user_id, g.tenant_id, g.impersonate_mode)
 
     @staticmethod
     def refresh_access_token():
@@ -23,3 +23,13 @@ class AuthController:
     def logout():
 
         return AuthService.logout()
+
+    @staticmethod
+    def run_impersonate(tenant_id):
+
+        return AuthService.run_impersonate(tenant_id)
+
+    @staticmethod
+    def stop_impersonate():
+
+        return AuthService.stop_impersonate()

@@ -4,7 +4,6 @@ from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
     decode_token,
-    get_jwt_identity,
 )
 
 if TYPE_CHECKING:
@@ -19,8 +18,7 @@ class TokenService:
             return {
                 "tenant_id": user.tenant_id,
                 "role": user.role,
-                "is_impersonating": True,
-                "super_admin_id": get_jwt_identity(),
+                "impersonate_mode": True,
             }
 
         return {

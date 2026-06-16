@@ -9,7 +9,10 @@ from app.schemas.auth_schema import (
     RefreshResponseSchema,
     ResponseBootstrapSchema,
     ResponseLoginSchema,
+    RunImpersonateResponseSchema,
+    StopImpersonateResponseSchema,
 )
+from app.security import role_authorization
 
 blp_auth = Blueprint(
     "auth", __name__, url_prefix="/auth", description="Authentication operations"
@@ -65,3 +68,25 @@ class Logout(MethodView):
     def post(self):
 
         return AuthController.logout()
+
+
+@blp_auth.route("/run-impersonate/<int:tenant_id>")
+class RunImpersonateRoute(MethodView):
+    @jwt_required()
+    @role_authorization(["super-admin"])
+    @blp_auth.doc(security=[{"CookieAuth": []}])
+    @blp_auth.response(201, RunImpersonateResponseSchema)
+    def post(self, tenant_id):
+
+        return AuthController.run_impersonate(tenant_id)
+
+
+@blp_auth.route("/stop-impersonate")
+class StopImpersonateRoute(MethodView):
+    @jwt_required(refresh=True)
+    @role_authorization(["super-admin", "admin"])
+    @blp_auth.doc(security=[{"CookieAuth": []}])
+    @blp_auth.response(201, StopImpersonateResponseSchema)
+    def post(self):
+
+        return AuthController.stop_impersonate()
