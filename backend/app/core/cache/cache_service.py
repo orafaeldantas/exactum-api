@@ -16,7 +16,8 @@ class CacheService:
 
         return None
 
-    def set(key, value, ttl=300):
+    @staticmethod
+    def set_cache(key, value, ttl=300):
         redis = current_app.extensions["redis"]
 
         redis.set(key, json.dumps(value), ex=ttl)
