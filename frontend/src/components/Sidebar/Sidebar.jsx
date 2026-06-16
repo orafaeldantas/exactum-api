@@ -1,7 +1,9 @@
 import { NavLink } from "react-router-dom";
 import { useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import { apiFetch } from "../../services/api";
 import { useContext } from "react";
+import toast from "react-hot-toast";
 import {
   LayoutDashboard,
   Users,
@@ -22,10 +24,7 @@ import {
 
 function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
-
-  // Added stopImpersonating from context
-  const { user, stopImpersonating } = useContext(AuthContext);
-
+  const { user, impersonateMode } = useContext(AuthContext);
   const roles = ["admin", 'super-admin'];
 
   function toggleSidebar() {
@@ -39,7 +38,20 @@ function Sidebar() {
 
   const activeLinkClass = "bg-blue-600 !text-white shadow-lg shadow-blue-900/20";
 
-  const isImpersonating = ""
+  const isImpersonating = impersonateMode ?? false
+
+  async function handleImpersonate() {
+    try {
+      const response = await apiFetch('/auth/stop-impersonate', { method: "POST" });
+      
+      if (!response.ok) throw new Error("Erro ao finalizar acesso");
+      
+      window.location.href = "/manage-companies";
+
+    } catch (err) {
+      toast.error(err.message);
+    } 
+  }
 
   return (
     <aside 
@@ -65,10 +77,10 @@ function Sidebar() {
 
       <nav className="flex flex-col gap-2 px-3 overflow-y-auto max-h-[calc(100vh-200px)]">
         
-        {/* Return to Admin Button - Highlighted at the top when active */}
+        {/* Return to Admin Button*/}
         {isImpersonating && (
           <button
-            onClick={stopImpersonating}
+            onClick={handleImpersonate}
             className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-white mb-2"
           >
             <LogOut size={20} className={collapsed ? "mx-auto" : ""} />
