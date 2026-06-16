@@ -18,7 +18,7 @@ class SuperAdminRepository:
         return db.session.scalars(stmt).all()
 
     @staticmethod
-    def get_super_admin_user(original_user_id):
+    def get_super_admin_user(original_user_id: int) -> User | None:
         stmt = (
             select(User)
             .where(User.id == original_user_id)
