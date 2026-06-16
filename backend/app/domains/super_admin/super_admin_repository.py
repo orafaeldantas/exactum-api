@@ -18,6 +18,15 @@ class SuperAdminRepository:
         return db.session.scalars(stmt).all()
 
     @staticmethod
+    def get_super_admin_user(original_user_id):
+        stmt = (
+            select(User)
+            .where(User.id == original_user_id)
+            .execution_options(skip_tenant_filter=True)
+        )
+        return db.session.scalar(stmt)
+
+    @staticmethod
     def impersonate(tenant_id: int) -> User | None:
         """Search for the administrator user of a specific tenant for impersonation."""
 
