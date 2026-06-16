@@ -27,7 +27,7 @@ export function AuthProvider({ children }) {
       setProfile(data.user);
       setUser(data.auth);
 
-      const isImpersonating = data.auth?.is_impersonating ?? false;
+      const isImpersonating = data?.impersonate_mode ?? false;
       setImpersonateMode(isImpersonating);
   
     } catch {
@@ -39,45 +39,24 @@ export function AuthProvider({ children }) {
     }
   }
 
-  async function login(responseData) {
+  async function login() {
     await bootstrap();
   }
 
   async function logout() {
     try {
-      await apiFetch("/auth/logout", {
+      const response = await apiFetch("/auth/logout", {
         method: "POST"
       });
+
+      const data = await response.json();
+
+    } catch (err) {
+      console.log(err)  
     } finally {
       setProfile(null);
       setTenantData(null);
       setUser(null);
-    }
-  }
-
-  async function impersonate(tenantToken) {
-    try {
-
-      console.log("ModoImpersonate: " + false)
-      await bootstrap();
-      
-      window.location.href = "/dashboard";
-    } catch (error) {
-      console.error("Impersonation failed", error);
-    }
-  }
-
-  async function stopImpersonating() {
-    try {
-
-      if (backupToken) {
-           
-        await bootstrap();
-        console.log("ModoImpersonate: " + false)
-        window.location.href = "/manage-companies";
-      }
-    } catch (error) {
-      console.error("Failed to restore identity", error);
     }
   }
 
@@ -90,9 +69,7 @@ export function AuthProvider({ children }) {
       user, 
       loading, 
       login, 
-      logout, 
-      impersonate,       
-      stopImpersonating,
+      logout,        
       impersonateMode,
       bootstrap  
     }}>
