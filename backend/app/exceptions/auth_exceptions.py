@@ -33,3 +33,9 @@ class UnauthorizedUser(AppException):
     message = "User not found"
 
     clear_auth_cookies = True
+
+
+class AdminNotFound(AppException):
+    status_code = 404
+
+    message = "Admin not found"

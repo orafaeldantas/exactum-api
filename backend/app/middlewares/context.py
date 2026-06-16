@@ -19,6 +19,7 @@ def init_request_context(app):
             g.email = claims.get("email")
             g.username = claims.get("username")
             g.password_reset = claims.get("password_reset")
+            g.impersonate_mode = claims.get("impersonate_mode", False)
 
             logger.info(
                 f"TENANT: {g.tenant_id}, "

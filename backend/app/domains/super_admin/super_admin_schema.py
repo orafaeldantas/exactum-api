@@ -1,10 +1,6 @@
 from marshmallow import Schema, fields
 
 
-class SuperAdminListImpersonateResponseSchema(Schema):
-    impersonate_token = fields.Str(dump_only=True)
-
-
 class SuperAdminListTenantsResponseSchema(Schema):
     id = fields.Int()
 
