@@ -9,7 +9,9 @@ from flask_jwt_extended import (
 
 from app.core.cache.cache_keys import CacheKeys
 from app.core.cache.cache_service import CacheService
+from app.domains.super_admin.super_admin_repository import SuperAdminRepository
 from app.exceptions.auth_exceptions import (
+    AdminNotFound,
     BootstrapNotFound,
     InvalidCredentials,
     InvalidInputEmail,
@@ -56,7 +58,7 @@ class AuthService:
         return response
 
     @staticmethod
-    def bootstrap(user_id: int, tenant_id: int) -> dict:
+    def bootstrap(user_id: int, tenant_id: int, impersonate_mode: bool) -> dict:
 
         user = UserRepository.get_user(user_id)
         tenant = TenantRepository.get_tenant(tenant_id)
@@ -86,6 +88,15 @@ class AuthService:
             "auth": auth,
         }
 
+        if impersonate_mode:
+            bootstrap_data = {
+                "user": user,
+                "tenant": tenant_formated,
+                "goal": goal,
+                "auth": auth,
+                "impersonate_mode": impersonate_mode,
+            }
+
         return bootstrap_data
 
     @staticmethod
@@ -93,19 +104,20 @@ class AuthService:
         refresh_token: str,
         user_id: int,
         tenant_id: int,
+        impersonator_id: int | None = None,
     ) -> None:
 
         jti = TokenService.extract_jti(refresh_token)
-
         cache_key = CacheKeys.refresh_token(jti, user_id)
 
         ttl = int(current_app.config["JWT_REFRESH_TOKEN_EXPIRES"].total_seconds())
 
-        CacheService.set(
+        CacheService.set_cache(
             key=cache_key,
             value={
                 "user_id": user_id,
                 "tenant_id": tenant_id,
+                "impersonator_id": impersonator_id,
             },
             ttl=ttl,
         )
@@ -135,20 +147,33 @@ class AuthService:
 
         user = AuthRepository.get_user_by_id(user_id)
 
+        impersonator_id = session["impersonator_id"]
+
         if not user:
             AuthService.revoke_refresh_token(jti, user_id)
             raise UnauthorizedUser()
 
-        new_access_token = TokenService.generate_access_token(user)
-        new_refresh_token = TokenService.generate_refresh_token(user)
-
         AuthService.revoke_refresh_token(jti, user_id)
 
-        AuthService.store_refresh_token(
-            refresh_token=new_refresh_token,
-            user_id=user.id,
-            tenant_id=user.tenant_id,
-        )
+        if impersonator_id:
+            new_access_token = TokenService.generate_access_token(
+                user, impersonate=True
+            )
+            new_refresh_token = TokenService.generate_refresh_token(user)
+            AuthService.store_refresh_token(
+                refresh_token=new_refresh_token,
+                user_id=user.id,
+                tenant_id=user.tenant_id,
+                impersonator_id=int(impersonator_id),
+            )
+        else:
+            new_access_token = TokenService.generate_access_token(user)
+            new_refresh_token = TokenService.generate_refresh_token(user)
+            AuthService.store_refresh_token(
+                refresh_token=new_refresh_token,
+                user_id=user.id,
+                tenant_id=user.tenant_id,
+            )
 
         response = jsonify({"message": "Token refreshed"})
 
@@ -169,5 +194,77 @@ class AuthService:
         response = jsonify({"message": "Logout successful"})
 
         unset_jwt_cookies(response)
+
+        return response
+
+    @staticmethod
+    def run_impersonate(tenant_id) -> Response:
+        claims = get_jwt()
+
+        jti = claims["jti"]
+
+        original_user_id = int(get_jwt_identity())
+
+        AuthService.revoke_refresh_token(jti, original_user_id)
+
+        target_admin = SuperAdminRepository.impersonate(tenant_id)
+
+        if not target_admin:
+            raise AdminNotFound()
+
+        access_token = TokenService.generate_access_token(
+            target_admin, impersonate=True
+        )
+        refresh_token = TokenService.generate_refresh_token(target_admin)
+
+        AuthService.store_refresh_token(
+            refresh_token=refresh_token,
+            user_id=target_admin.id,
+            tenant_id=target_admin.tenant_id,
+            impersonator_id=original_user_id,
+        )
+
+        response = jsonify({"message": "Impersonate successful"})
+
+        set_access_cookies(response, access_token)
+        set_refresh_cookies(response, refresh_token)
+
+        return response
+
+    @staticmethod
+    def stop_impersonate() -> Response:
+
+        claims = get_jwt()
+
+        jti = claims["jti"]
+
+        user_id = int(get_jwt_identity())
+
+        cache_key = CacheKeys.refresh_token(jti, user_id)
+
+        original_user_data = CacheService.get(cache_key)
+
+        original_user_id = int(original_user_data["impersonator_id"])
+
+        AuthService.revoke_refresh_token(jti, user_id)
+
+        super_admin_user = SuperAdminRepository.get_super_admin_user(original_user_id)
+
+        if not super_admin_user:
+            raise AdminNotFound()
+
+        access_token = TokenService.generate_access_token(super_admin_user)
+        refresh_token = TokenService.generate_refresh_token(super_admin_user)
+
+        AuthService.store_refresh_token(
+            refresh_token=refresh_token,
+            user_id=super_admin_user.id,
+            tenant_id=super_admin_user.tenant_id,
+        )
+
+        response = jsonify({"message": "Impersonate stop"})
+
+        set_access_cookies(response, access_token)
+        set_refresh_cookies(response, refresh_token)
 
         return response

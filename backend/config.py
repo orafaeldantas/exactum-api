@@ -32,6 +32,9 @@ class Config:
 
     JWT_COOKIE_CSRF_PROTECT = False
 
+    JWT_ACCESS_COOKIE_PATH = "/"
+    JWT_REFRESH_COOKIE_PATH = "/api/auth"
+
     # Redis
     REDIS_HOST = os.getenv("REDIS_HOST", "redis")
     REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))

@@ -11,13 +11,11 @@ import {
 
 export default function ManageCompanies() {
   const [tenants, setTenants] = useState([]);
-  const [loadingId, setLoadingId] = useState(null);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const companiesPerPage = 6;
 
   const navigate = useNavigate();
-  const { impersonate } = useContext(AuthContext); // Hooking into AuthContext
 
   // Modal States
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
@@ -48,23 +46,14 @@ export default function ManageCompanies() {
   // Improved Impersonate function using AuthContext
   async function handleImpersonate(tenantId) {
     try {
-      setLoadingId(tenantId);
-      const response = await apiFetch(`/super-admin/impersonate/${tenantId}`, { method: "POST" });
+      const response = await apiFetch(`/auth/run-impersonate/${tenantId}`, { method: "POST" });
       
       if (!response.ok) throw new Error("Erro ao gerar acesso");
       
-      const { impersonate_token } = await response.json();
+      window.location.href = "/dashboard";
 
-      // Call context function to handle state and storage
-      await impersonate(impersonate_token);
-
-      toast.success("Acesso autorizado!");
-      navigate("/dashboard");
-      // window.location.reload() is now handled inside AuthContext for better sync
     } catch (err) {
       toast.error(err.message);
-    } finally {
-      setLoadingId(null);
     }
   }
 
@@ -111,9 +100,8 @@ export default function ManageCompanies() {
               <button 
                 onClick={() => handleImpersonate(t.id)}
                 className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                disabled={loadingId === t.id}
               >
-                <ShieldCheck className={`w-5 h-5 ${loadingId === t.id ? 'animate-pulse' : ''}`} />
+                <ShieldCheck className={'w-5 h-5 animate-pulse'} />
               </button>
             </div>
 

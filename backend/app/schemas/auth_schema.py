@@ -57,3 +57,13 @@ class ResponseBootstrapSchema(Schema):
     tenant = fields.Nested(TenantBootstrapSchema)
 
     auth = fields.Nested(AuthBootstrapSchema)
+
+    impersonate_mode = fields.Bool()
+
+
+class RunImpersonateResponseSchema(Schema):
+    message = fields.Str()
+
+
+class StopImpersonateResponseSchema(RunImpersonateResponseSchema):
+    pass
