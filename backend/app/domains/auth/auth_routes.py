@@ -2,8 +2,8 @@ from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from flask_smorest import Blueprint
 
-from app.controllers.auth_controller import AuthController
-from app.schemas.auth_schema import (
+from app.domains.auth.auth_controller import AuthController
+from app.domains.auth.auth_schema import (
     LoginSchema,
     LogoutResponseSchema,
     RefreshResponseSchema,
