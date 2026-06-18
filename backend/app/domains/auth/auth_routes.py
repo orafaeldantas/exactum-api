@@ -2,6 +2,7 @@ from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from flask_smorest import Blueprint
 
+from app.core.security.security import role_authorization
 from app.domains.auth.auth_controller import AuthController
 from app.domains.auth.auth_schema import (
     LoginSchema,
@@ -12,7 +13,6 @@ from app.domains.auth.auth_schema import (
     RunImpersonateResponseSchema,
     StopImpersonateResponseSchema,
 )
-from app.security import role_authorization
 
 blp_auth = Blueprint(
     "auth", __name__, url_prefix="/auth", description="Authentication operations"

@@ -4,9 +4,7 @@ from app.core.cache.cache_keys import CacheKeys
 from app.core.cache.cache_service import CacheService
 from app.core.config.settings import Settings
 from app.domains.auth.auth_dto import RefreshSession, SessionTokens
-from app.domains.auth.auth_repository import AuthRepository
-from app.domains.super_admin.super_admin_repository import SuperAdminRepository
-from app.exceptions.auth_exceptions import (
+from app.domains.auth.auth_exceptions import (
     AdminNotFound,
     BootstrapNotFound,
     InvalidCredentials,
@@ -14,10 +12,12 @@ from app.exceptions.auth_exceptions import (
     RefreshTokenRevoked,
     UnauthorizedUser,
 )
-from app.repositories.goal_repository import GoalRepository
-from app.repositories.tenant_repository import TenantRepository
-from app.repositories.user_repository import UserRepository
-from app.services.token_service import TokenService
+from app.domains.auth.auth_repository import AuthRepository
+from app.domains.auth.token_service import TokenService
+from app.domains.goal.goal_repository import GoalRepository
+from app.domains.super_admin.super_admin_repository import SuperAdminRepository
+from app.domains.tenant.tenant_repository import TenantRepository
+from app.domains.user.user_repository import UserRepository
 
 if TYPE_CHECKING:
     from app.models.user import User
@@ -216,6 +216,9 @@ class AuthService:
         original_user_id = session.impersonator_id
 
         AuthService.revoke_refresh_token(jti, user_id)
+
+        if not original_user_id:
+            raise AdminNotFound()
 
         super_admin_user = SuperAdminRepository.get_super_admin_user(original_user_id)
 
