@@ -2,11 +2,11 @@ from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from flask_smorest import Blueprint
 
+from app.core.security.security import role_authorization
 from app.domains.super_admin.super_admin_controller import SuperAdminController
 from app.domains.super_admin.super_admin_schema import (
     SuperAdminListTenantsResponseSchema,
 )
-from app.security import role_authorization
 
 blp_super_admin = Blueprint(
     "super_admin",
