@@ -8,10 +8,10 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 
 from app.cli import register_cli
 from app.core.cache.redis_client import init_redis
+from app.core.middlewares.context import init_request_context
 from app.database.tenant_filter import init_tenant_filter
 from app.exceptions.handlers import register_error_handlers
 from app.exceptions.jwt_handlers import register_jwt_handlers
-from app.middlewares.context import init_request_context
 from config import Config
 
 from .extensions import db, jwt, migrate
@@ -54,13 +54,13 @@ def create_app(config=None):
 
     from app.core.monitoring.health_routes import blp_health
     from app.domains.auth.auth_routes import blp_auth
+    from app.domains.product.product_routes import blp_products
+    from app.domains.sale.routes.revenue_analytics_routes import blp_revenue_analytics
+    from app.domains.sale.routes.sale_routes import blp_sales
+    from app.domains.sale.routes.sold_item_analytics_routes import blp_item_analytics
     from app.domains.super_admin.super_admin_routes import blp_super_admin
-    from app.routes.analytics.revenue_analytics_routes import blp_revenue_analytics
-    from app.routes.analytics.sold_item_analytics_routes import blp_item_analytics
-    from app.routes.product_routes import blp_products
-    from app.routes.sale_routes import blp_sales
-    from app.routes.tenant_routes import blp_tenants
-    from app.routes.user_routes import blp_users
+    from app.domains.tenant.tenant_routes import blp_tenants
+    from app.domains.user.user_routes import blp_users
 
     app.url_map.strict_slashes = False
 
