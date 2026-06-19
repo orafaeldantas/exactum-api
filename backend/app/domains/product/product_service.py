@@ -1,3 +1,6 @@
+from collections.abc import Sequence
+from uuid import UUID
+
 from app.database.session import DatabaseSession
 from app.domains.product.product_exceptions import ProductNotFound
 from app.domains.product.product_repository import ProductRepository
@@ -6,12 +9,12 @@ from app.models.product import Product
 
 class ProductService:
     @staticmethod
-    def list_all_products(tenant_id):
+    def list_all_products(tenant_id: int) -> Sequence[Product]:
 
         return ProductRepository.list_all_products(tenant_id)
 
     @staticmethod
-    def create_product(data, tenant_id):
+    def create_product(data: dict, tenant_id: int) -> Product:
 
         product = Product(
             tenant_id=tenant_id,
@@ -30,9 +33,9 @@ class ProductService:
         return product
 
     @staticmethod
-    def get_product(product_id):
+    def get_product(product_uuid: UUID) -> Product:
 
-        product = ProductRepository.get_product(product_id)
+        product = ProductRepository.get_product(product_uuid)
 
         if not product:
             raise ProductNotFound()
@@ -40,9 +43,9 @@ class ProductService:
         return product
 
     @staticmethod
-    def update_product(data, product_id):
+    def update_product(data: dict, product_uuid: UUID) -> Product:
 
-        product = ProductRepository.get_product(product_id)
+        product = ProductRepository.get_product(product_uuid)
 
         if not product:
             raise ProductNotFound()
@@ -59,8 +62,11 @@ class ProductService:
         return product
 
     @staticmethod
-    def delete_product(product_id):
+    def delete_product(product_uuid: UUID) -> None:
 
-        product = ProductRepository.get_product(product_id)
+        product = ProductRepository.get_product(product_uuid)
+
+        if not product:
+            raise ProductNotFound()
 
         ProductRepository.delete_product(product)
