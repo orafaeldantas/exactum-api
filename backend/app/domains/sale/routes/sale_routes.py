@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from flask_smorest import Blueprint
@@ -44,6 +46,6 @@ class SaleDetailRoute(MethodView):
     @role_authorization(["admin", "super-admin", "user"])
     @blp_sales.doc(security=[{"CookieAuth": []}])
     @blp_sales.response(200, ListSaleWithItemsResponseSchema)
-    def get(self, sale_id):
+    def get(self, sale_id: UUID):
 
         return SaleController.list_sale_with_items(sale_id)

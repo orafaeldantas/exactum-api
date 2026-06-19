@@ -1,5 +1,6 @@
 import logging
 from collections.abc import Sequence
+from uuid import UUID
 
 from sqlalchemy import select
 
@@ -16,8 +17,8 @@ class UserRepository:
         return db.session.scalars(stmt).all()
 
     @staticmethod
-    def get_user(user_id: int) -> User | None:
-        return db.session.get(User, user_id)
+    def get_user(user_uuid: UUID) -> User | None:
+        return db.session.get(User, user_uuid)
 
     @staticmethod
     def get_user_by_email(email: str) -> User | None:
