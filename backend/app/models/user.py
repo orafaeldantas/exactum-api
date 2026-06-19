@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 class User(Base):
     __tablename__ = "users"
 
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     uuid: Mapped[UUID] = mapped_column(
         SQLUUID(as_uuid=True),
         unique=True,

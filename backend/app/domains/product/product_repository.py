@@ -1,5 +1,6 @@
 import logging
 from collections.abc import Sequence
+from uuid import UUID
 
 from sqlalchemy import select
 
@@ -17,9 +18,9 @@ class ProductRepository:
         return db.session.scalars(stmt).all()
 
     @staticmethod
-    def get_product(product_id: int) -> Product | None:
+    def get_product(product_uuid: UUID) -> Product | None:
 
-        return db.session.get(Product, product_id)
+        return db.session.get(Product, product_uuid)
 
     @staticmethod
     def delete_product(product: Product) -> None:
