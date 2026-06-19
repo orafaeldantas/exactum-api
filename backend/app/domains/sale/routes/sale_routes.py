@@ -24,7 +24,7 @@ class SaleListRoute(MethodView):
     @blp_sales.doc(security=[{"CookieAuth": []}])
     @blp_sales.arguments(CreateSaleSchema)
     @blp_sales.response(201, CreateSaleResponseSchema)
-    def post(self, data):
+    def post(self, data: dict):
 
         return SaleController.create_sale(data)
 
@@ -33,12 +33,12 @@ class SaleListRoute(MethodView):
     @blp_sales.doc(security=[{"CookieAuth": []}])
     @blp_sales.arguments(ListSaleQuerySchema, location="query")
     @blp_sales.response(200, ListSaleResponseSchema(many=True))
-    def get(self, query_params):
+    def get(self, query_params: dict):
 
         return SaleController.list_sales_by_period(query_params)
 
 
-@blp_sales.route("/<int:sale_id>")
+@blp_sales.route("/<uuid:sale_id>")
 class SaleDetailRoute(MethodView):
     @jwt_required()
     @role_authorization(["admin", "super-admin", "user"])

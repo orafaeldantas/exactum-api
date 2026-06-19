@@ -1,14 +1,17 @@
+from collections.abc import Sequence
+from uuid import UUID
+
 from app.database.session import DatabaseSession
 from app.domains.product.product_repository import ProductRepository
 from app.domains.sale.repositories.item_sale_repository import ItemSaleRepository
 from app.domains.sale.repositories.sale_repository import SaleRepository
-from app.domains.sale.sale_exceptions import SaleNotFound
+from app.domains.sale.sale_exceptions import ProductNotFound, SaleNotFound
 from app.models.sale import ItemSale, Sale
 
 
 class SaleService:
     @staticmethod
-    def create_sale(data, tenant_id, user_id):
+    def create_sale(data: dict, tenant_id: int, user_id: int) -> Sale:
 
         sale = data.get("sale", {})
         items = data.get("items", {})
@@ -34,13 +37,16 @@ class SaleService:
                 sale_id=new_sale.id,
                 tenant_id=tenant_id,
                 user_id=user_id,
-                product_id=item.get("id"),
+                product_id=item.get("uuid"),
                 channel=sale.get("channel"),
             )
 
             DatabaseSession.add(new_item)
 
-            product = ProductRepository.get_product(item.get("id"))
+            product = ProductRepository.get_product(item.get("uuid"))
+
+            if not product:
+                raise ProductNotFound()
 
             remaining_stock = product.stock_quantity - new_item.quantity
 
@@ -53,18 +59,18 @@ class SaleService:
         return new_sale
 
     @staticmethod
-    def list_sale_with_items(sale_id, tenant_id):
+    def list_sale_with_items(sale_uuid: UUID, tenant_id: int) -> dict:
 
-        sale = SaleRepository.get_sale(sale_id, tenant_id)
+        sale = SaleRepository.get_sale(tenant_id, sale_uuid)
 
         if not sale:
             raise SaleNotFound()
 
-        items = ItemSaleRepository.get_items(sale_id, tenant_id)
+        items = ItemSaleRepository.get_items(sale.id, tenant_id)
 
         return {"sale": sale, "items": items}
 
     @staticmethod
-    def list_sales_by_period(tenant_id, month, year):
+    def list_sales_by_period(tenant_id: int, month: int, year: int) -> Sequence[Sale]:
 
         return SaleRepository.list_sales_by_period(tenant_id, month, year)
