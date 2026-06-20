@@ -93,21 +93,21 @@ function App() {
               <Route path="/average-ticket" element={<AverageTicketAnalytics />} />
               <Route path="/products-sales" element={<ListProductsSales />} />
               <Route path="/sales" element={<ListSales />} />
-              <Route path="/sales/:id" element={<ListSaleItems />} />
+              <Route path="/sales/:uuid" element={<ListSaleItems />} />
             </Route>
 
             {/* Sub-block: User Control */}
             <Route element={<RoleRoute requiredRole={["admin", "super-admin"]} />}>
               <Route path="/users" element={<ListUsers />} />
               <Route path="/users/create" element={<CreateUser />} />
-              <Route path="/users/edit/:id" element={<EditUser />} />
+              <Route path="/users/edit/:uuid" element={<EditUser />} />
             </Route>
 
             {/* Sub-block: Products (Accessible to all authenticated users, except editors) */}
             <Route path="/products" element={<ListProducts />} />
             <Route path="/low-stock" element={<LowStockProducts />} />
             <Route path="/products/create" element={<CreateProduct />} />
-            <Route path="/product/edit/:id" element={<EditProduct />} />
+            <Route path="/product/edit/:uuid" element={<EditProduct />} />
 
             {/* Sub-block: Critical Settings and Levels */}
             <Route path="/user-settings" element={<RoleRoute requiredRole={["user", "super-admin"]}><UserSettings /></RoleRoute>} />

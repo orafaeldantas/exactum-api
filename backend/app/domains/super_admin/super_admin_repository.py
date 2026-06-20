@@ -31,7 +31,8 @@ class SuperAdminRepository:
     def impersonate(tenant_uuid: UUID) -> User | None:
         """Search for the administrator user of a specific tenant for impersonation."""
 
-        tenant = db.session.get(Tenant, tenant_uuid)
+        stmt = select(Tenant).where(Tenant.uuid == tenant_uuid)
+        tenant = db.session.scalar(stmt)
 
         if not tenant:
             raise

@@ -100,7 +100,7 @@ export default function LowStockProducts() {
                   <tr key={product.id} className="transition-colors hover:bg-gray-50/50">
                     <td className="px-6 py-4">
                       <div className="font-semibold text-gray-800">{product.name}</div>
-                      <div className="text-xs text-gray-400">ID: #{product.id}</div>
+                      <div className="text-xs text-gray-400">ID: {product.uuid}</div>
                     </td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-bold ${product.stock_quantity <= 3 ? 'text-red-700 bg-red-100' : 'text-orange-700 bg-orange-100'}`}>

@@ -165,7 +165,7 @@ export default function ListSoldItems() {
               <tbody>
                 {paginatedItems.map((item) => (
                   <tr key={item.name} className="border-t border-gray-100 transition-colors hover:bg-gray-50 group">
-                    <td className="px-6 py-4 text-sm font-medium text-gray-700">#{item.product_id ?? null}</td>
+                    <td className="px-6 py-4 text-sm font-medium text-gray-700">{item.product_id ?? null}</td>
                     <td className="px-6 py-4 text-sm font-medium text-gray-700">{item.name}</td>
                     <td className="px-6 py-4 text-center">
                       <span className="inline-flex items-center rounded-lg bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
