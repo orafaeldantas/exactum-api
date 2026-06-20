@@ -21,6 +21,10 @@ class UserRepository:
         return db.session.get(User, user_uuid)
 
     @staticmethod
+    def get_user_by_id(user_id: int) -> User | None:
+        return db.session.get(User, user_id)
+
+    @staticmethod
     def get_user_by_email(email: str) -> User | None:
 
         stmt = select(User).where(User.email == email, User.is_active)
