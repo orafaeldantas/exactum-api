@@ -48,9 +48,9 @@ export function getUsers() {
   return { users, loadUsers, loading };
 }
 
-export async function toggleUserStatus(userId, currentStatus) {
+export async function toggleUserStatus(userUuid, currentStatus) {
 
-  const response = await apiFetch(`/users/${userId}`, {
+  const response = await apiFetch(`/users/${userUuid}`, {
     method: "PATCH",
     body: JSON.stringify({
       is_active: !currentStatus

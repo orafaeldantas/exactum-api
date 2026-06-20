@@ -62,13 +62,11 @@ export default function ListProducts() {
 
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
-  // Trigger professional status toggle modal
   function openConfirmModal(product) {
     setProductToToggle(product);
     setIsModalOpen(true);
   }
 
-  // Trigger professional delete modal
   function openDeleteModal(product) {
     setProductToDelete(product);
     setIsDeleteModalOpen(true);
@@ -82,9 +80,9 @@ export default function ListProducts() {
     setIsModalOpen(false);
 
     try {
-      setLoadingId(product.id);
+      setLoadingId(product.uuid);
 
-      const response = await apiFetch(`/products/${product.id}`, {
+      const response = await apiFetch(`/products/${product.uuid}`, {
         method: "PATCH",
         body: JSON.stringify({
           is_active: !product.is_active
@@ -97,7 +95,7 @@ export default function ListProducts() {
 
       setProducts((prev) =>
         prev.map((p) =>
-          p.id === product.id
+          p.uuid === product.uuid
             ? { ...p, is_active: !p.is_active }
             : p
         )
@@ -125,9 +123,9 @@ export default function ListProducts() {
     setIsDeleteModalOpen(false);
 
     try {
-      setLoadingId(product.id);
+      setLoadingId(product.uuid);
 
-      const response = await apiFetch(`/products/${product.id}`, {
+      const response = await apiFetch(`/products/${product.uuid}`, {
         method: "DELETE"
       });
 
@@ -135,7 +133,7 @@ export default function ListProducts() {
         throw new Error("Erro ao excluir produto");
       }
 
-      setProducts((prev) => prev.filter((p) => p.id !== product.id));
+      setProducts((prev) => prev.filter((p) => p.uuid !== product.uuid));
       toast.success("Produto excluído com sucesso");
 
     } catch (err) {
@@ -254,8 +252,8 @@ export default function ListProducts() {
             </thead>
             <tbody>
               {paginatedProducts.map((product) => (
-                <tr key={product.id} className="border-t border-gray-100 transition-colors hover:bg-gray-50">
-                  <td className="px-6 py-4 text-sm text-gray-700">#{product.id}</td>
+                <tr key={product.uuid} className="border-t border-gray-100 transition-colors hover:bg-gray-50">
+                  <td className="px-6 py-4 text-sm text-gray-700">{product.uuid}</td>
                   <td className="px-6 py-4"><div className="font-medium text-gray-800">{product.name}</div></td>
                   <td className="px-6 py-4 text-sm font-semibold text-gray-700">R$ {Number(product.price).toFixed(2)}</td>
                   <td className="px-6 py-4"><span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">{product.stock_quantity} un.</span></td>
@@ -267,15 +265,15 @@ export default function ListProducts() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="grid grid-cols-2 gap-2 w-fit">
-                      <button className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-medium text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:border-slate-300" onClick={() => navigate(`/products/${product.id}`)}>
+                      <button className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-medium text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:border-slate-300" onClick={() => navigate(`/products/${product.uuid}`)}>
                         <Eye className="w-4 h-4 text-slate-400" /> Detalhes
                       </button>
-                      <button className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-medium text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:border-slate-300" onClick={() => navigate(`/product/edit/${product.id}`)}>
+                      <button className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-medium text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:border-slate-300" onClick={() => navigate(`/product/edit/${product.uuid}`)}>
                         <Pencil className="w-4 h-4 text-slate-400" /> Editar
                       </button>
-                      <button className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-medium text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:border-slate-300 disabled:opacity-50" onClick={() => openConfirmModal(product)} disabled={loadingId === product.id}>
+                      <button className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-medium text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:border-slate-300 disabled:opacity-50" onClick={() => openConfirmModal(product)} disabled={loadingId === product.uuid}>
                         <Power className={`w-4 h-4 ${product.is_active ? 'text-amber-500' : 'text-emerald-500'}`} />
-                        {loadingId === product.id ? "..." : product.is_active ? "Desativar" : "Ativar"}
+                        {loadingId === product.uuid ? "..." : product.is_active ? "Desativar" : "Ativar"}
                       </button>
                       <button className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-medium text-red-600 shadow-sm transition-all hover:bg-red-50 hover:border-red-200" onClick={() => openDeleteModal(product)}>
                         <Trash2 className="w-4 h-4 text-red-500" /> Excluir

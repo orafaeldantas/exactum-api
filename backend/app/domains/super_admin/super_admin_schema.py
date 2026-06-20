@@ -2,7 +2,7 @@ from marshmallow import Schema, fields
 
 
 class SuperAdminListTenantsResponseSchema(Schema):
-    uuid = fields.UUID(dumps_only=True)
+    uuid = fields.UUID(dump_only=True)
 
     name = fields.Str(required=True)
 

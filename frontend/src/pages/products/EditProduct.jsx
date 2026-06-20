@@ -5,14 +5,14 @@ import ProductForm from "../../features/product-form/ProductForm";
 
 export default function EditProduct() {
 
-  const { id } = useParams();
+  const { uuid } = useParams();
   const navigate = useNavigate();
 
   const [product, setProduct] = useState(null);
 
   async function loadProduct() {
 
-    const response = await apiFetch(`/products/${id}`);
+    const response = await apiFetch(`/products/${uuid}`);
 
     const data = await response.json();
 
@@ -25,7 +25,7 @@ export default function EditProduct() {
 
   async function handleUpdate(data) {
 
-    const response = await apiFetch(`/products/${id}`, {
+    const response = await apiFetch(`/products/${uuid}`, {
       method: "PATCH",
       body: JSON.stringify(data)
     });

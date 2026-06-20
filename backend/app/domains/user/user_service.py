@@ -37,9 +37,9 @@ class UserService:
         return user
 
     @staticmethod
-    def get_user(user_uuid: UUID) -> User:
+    def get_user(tenant_id: int, user_uuid: UUID) -> User:
 
-        user = UserRepository.get_user(user_uuid)
+        user = UserRepository.get_user(tenant_id, user_uuid)
 
         if not user:
             raise UserNotFound()
@@ -47,9 +47,9 @@ class UserService:
         return user
 
     @staticmethod
-    def update_user(data: dict, user_uuid: UUID) -> User:
+    def update_user(data: dict, tenant_id: int, user_uuid: UUID) -> User:
 
-        user = UserRepository.get_user(user_uuid)
+        user = UserRepository.get_user(tenant_id, user_uuid)
 
         if not user:
             raise UserNotFound()
@@ -73,9 +73,9 @@ class UserService:
         return user
 
     @staticmethod
-    def update_profile(data: dict, user_uuid: UUID) -> User:
+    def update_profile(data: dict, tenant_id: int, user_uuid: UUID) -> User:
 
-        user = UserRepository.get_user(user_uuid)
+        user = UserRepository.get_user(tenant_id, user_uuid)
 
         if not user:
             raise UserNotFound()

@@ -66,7 +66,7 @@ class SaleService:
         if not sale:
             raise SaleNotFound()
 
-        items = ItemSaleRepository.get_items(sale.id, tenant_id)
+        items = ItemSaleRepository.get_items(tenant_id, sale.id)
 
         return {"sale": sale, "items": items}
 

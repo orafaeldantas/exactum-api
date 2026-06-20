@@ -24,14 +24,14 @@ class UserController:
     @staticmethod
     def get_user(user_uuid: UUID) -> "User":
 
-        return UserService.get_user(user_uuid)
+        return UserService.get_user(g.tenant_id, user_uuid)
 
     @staticmethod
     def update_user(data: dict, user_uuid: UUID) -> "User":
 
-        return UserService.update_user(data, user_uuid)
+        return UserService.update_user(data, g.tenant_id, user_uuid)
 
     @staticmethod
     def update_profile(data: dict, user_uuid: UUID) -> "User":
 
-        return UserService.update_profile(data, user_uuid)
+        return UserService.update_profile(data, g.tenant_id, user_uuid)
