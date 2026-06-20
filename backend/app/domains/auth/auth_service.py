@@ -79,8 +79,8 @@ class AuthService:
             raise BootstrapNotFound()
 
         auth = {
-            "user_id": user.id,
-            "tenant_id": tenant.id,
+            "user_id": user.uuid,
+            "tenant_id": tenant.uuid,
             "role": user.role,
             "password_reset": user.password_reset,
         }
