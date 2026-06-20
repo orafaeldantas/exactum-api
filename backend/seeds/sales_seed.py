@@ -89,7 +89,7 @@ def sales_database_seed(
                         sale_id=new_sale.id,
                         tenant_id=tenant_id,
                         user_id=user_id,
-                        product_id=item.get("id"),
+                        product_id=item.get("product_id"),
                         channel="physical",
                         created_at=random_sale_date,
                     )

@@ -1,36 +1,34 @@
 import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext"
+import { AuthContext } from "../../context/AuthContext";
 import toast from "react-hot-toast";
 
 import { getUsers, toggleUserStatus } from "../../services/userService";
 
-import { Eye, Pencil, Power, AlertTriangle } from 'lucide-react';
+import { Eye, Pencil, Power, AlertTriangle } from "lucide-react";
 
 export default function ListUsers() {
-
-  const { users = [], loadUsers } = getUsers();  
+  const { users = [], loadUsers } = getUsers();
 
   const [error, setError] = useState("");
-
-  const { impersonateMode } = useContext(AuthContext)
+  const { impersonateMode } = useContext(AuthContext);
 
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-
   const [loadingUserId, setLoadingUserId] = useState(null);
 
-  // Modal States
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userToToggle, setUserToToggle] = useState(null);
 
   const usersPerPage = 5;
-
   const navigate = useNavigate();
 
-
   useEffect(() => {
-    loadUsers();
+    const fetchDados = async () => {
+      await loadUsers();
+    };
+
+    fetchDados();
   }, []);
 
   function openConfirmModal(user) {
@@ -38,31 +36,24 @@ export default function ListUsers() {
     setIsModalOpen(true);
   }
 
-  // Handle status update after modal confirmation
   async function handleConfirmToggle() {
     if (!userToToggle) return;
-    
+
     const user = userToToggle;
     setIsModalOpen(false);
 
     try {
-      setLoadingUserId(user.id);
-      await toggleUserStatus(user.id, user.is_active);
+      setLoadingUserId(user.uuid);
 
-      setUsers((prevUsers) =>
-        prevUsers.map((u) =>
-          u.id === user.id
-            ? { ...u, is_active: !u.is_active }
-            : u
-        )
-      );
+      await toggleUserStatus(user.uuid, user.is_active);
+
+      await loadUsers();
 
       toast.success(
         user.is_active
           ? "Usuário desativado com sucesso"
           : "Usuário ativado com sucesso"
       );
-
     } catch (err) {
       toast.error("Erro ao atualizar usuário");
     } finally {
@@ -71,11 +62,11 @@ export default function ListUsers() {
     }
   }
 
-  // Search filter logic
   const filteredUsers = users.filter((user) =>
     user.username.toLowerCase().includes(search.toLowerCase())
   );
 
+  
   const startIndex = (page - 1) * usersPerPage;
   const endIndex = startIndex + usersPerPage;
 
@@ -219,8 +210,8 @@ export default function ListUsers() {
             </thead>
             <tbody>
               {paginatedUsers.map((user) => (
-                <tr key={user.id} className="border-t border-gray-100 transition-colors hover:bg-gray-50">
-                  <td className="px-6 py-4 text-sm text-gray-700">#{user.id}</td>
+                <tr key={user.uuid} className="border-t border-gray-100 transition-colors hover:bg-gray-50">
+                  <td className="px-6 py-4 text-sm text-gray-700">{user.uuid}</td>
                   <td className="px-6 py-4">
                     <div className="font-medium text-gray-800">{user.username}</div>
                   </td>
@@ -252,11 +243,10 @@ export default function ListUsers() {
                           }
                         `}
                       >
-                      {/* Edit Action */}
                       <button
                         className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-medium 
                                    text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:border-slate-300"
-                        onClick={() => navigate(`/users/edit/${user.id}`)}
+                        onClick={() => navigate(`/users/edit/${user.uuid}`)}
                         
                         title="Você não possui permissão para esta ação"
                       >
@@ -264,15 +254,14 @@ export default function ListUsers() {
                         Editar
                       </button>
 
-                      {/* Toggle Status Action */}
                       <button
                         className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-medium 
                                    text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:border-slate-300 disabled:opacity-50"
                         onClick={() => openConfirmModal(user)}
-                        disabled={loadingUserId === user.id}
+                        disabled={loadingUserId === user.uuid}
                       >
                         <Power className={`w-4 h-4 ${user.is_active ? 'text-amber-500' : 'text-emerald-500'}`} />
-                        {loadingUserId === user.id ? "..." : user.is_active ? "Desativar" : "Ativar"}
+                        {loadingUserId === user.uuid ? "..." : user.is_active ? "Desativar" : "Ativar"}
                       </button>
                     </div>
                   </td>

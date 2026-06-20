@@ -109,7 +109,7 @@ export default function SettingsPage() {
     console.log(dataTenant)
     try {
       const [responseUser, responseTenant] = await Promise.all([
-        apiFetch(`/users/profile/${profile.id}`, {
+        apiFetch(`/users/profile/${profile.uuid}`, {
           method: "PATCH",
           body: JSON.stringify(dataUser),
         }),
