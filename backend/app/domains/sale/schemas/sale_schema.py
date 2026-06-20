@@ -8,7 +8,7 @@ class ListSaleQuerySchema(Schema):
 
 
 class ItemSchema(Schema):
-    id = fields.Int(required=True)
+    uuid = fields.UUID(required=True)
 
     name = fields.Str(required=True)
 
@@ -36,11 +36,11 @@ class CreateSaleSchema(Schema):
 
 
 class CreateSaleResponseSchema(Schema):
-    id = fields.Int(dump_only=True)
+    uuid = fields.UUID(dump_only=True)
 
 
 class ListSaleResponseSchema(Schema):
-    id = fields.Int(dump_only=True)
+    uuid = fields.UUID(dump_only=True)
 
     total_price = fields.Decimal()
 

@@ -38,7 +38,7 @@ class CreateTenantSchema(Schema):
 
 
 class ResponseTenantSchema(Schema):
-    id = fields.Int(dump_only=True)
+    uuid = fields.UUID(dump_only=True)
 
     name = fields.Str()
 
@@ -60,7 +60,7 @@ class UdateTenantSchema(Schema):
 
 
 class ResponseUdateTenantSchema(Schema):
-    id = fields.Int(dump_only=True)
+    uuid = fields.UUID(dump_only=True)
 
     name = fields.Str()
 
