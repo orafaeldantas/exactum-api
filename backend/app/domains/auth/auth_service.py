@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING
+from uuid import UUID
 
 from app.core.cache.cache_keys import CacheKeys
 from app.core.cache.cache_service import CacheService
@@ -70,7 +71,7 @@ class AuthService:
     @staticmethod
     def bootstrap(user_id: int, tenant_id: int, impersonate_mode: bool) -> dict:
 
-        user = UserRepository.get_user(user_id)
+        user = UserRepository.get_user_by_id(user_id)
         tenant = TenantRepository.get_tenant(tenant_id)
         goal = GoalRepository.get_goal(tenant_id)
 
@@ -189,12 +190,12 @@ class AuthService:
 
     @staticmethod
     def run_impersonate(
-        tenant_id: int, original_user_id: int, jti: str
+        tenant_uuid: UUID, original_user_id: int, jti: str
     ) -> SessionTokens:
 
         AuthService.revoke_refresh_token(jti, original_user_id)
 
-        target_admin = SuperAdminRepository.impersonate(tenant_id)
+        target_admin = SuperAdminRepository.impersonate(tenant_uuid)
 
         if not target_admin:
             raise AdminNotFound()

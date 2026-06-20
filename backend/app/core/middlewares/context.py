@@ -16,22 +16,11 @@ def init_request_context(app):
             g.user_id = get_jwt_identity()
             g.tenant_id = claims.get("tenant_id")
             g.role = claims.get("role")
-            g.email = claims.get("email")
-            g.username = claims.get("username")
             g.password_reset = claims.get("password_reset")
             g.impersonate_mode = claims.get("impersonate_mode", False)
-
-            logger.info(
-                f"TENANT: {g.tenant_id}, "
-                f"USER ID: {g.user_id}, "
-                f"ROLE: {g.role}, "
-                f"EMAIL: {g.email}"
-            )
 
         except Exception:
             g.user_id = None
             g.tenant_id = None
             g.role = None
-            g.email = None
-            g.username = None
             g.password_reset = None
