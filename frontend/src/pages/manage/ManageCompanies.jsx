@@ -98,7 +98,7 @@ export default function ManageCompanies() {
                 ID: {t.id}
               </span>
               <button 
-                onClick={() => handleImpersonate(t.id)}
+                onClick={() => handleImpersonate(t.uuid)}
                 className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
               >
                 <ShieldCheck className={'w-5 h-5 animate-pulse'} />

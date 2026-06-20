@@ -52,7 +52,7 @@ export default function ListSales() {
 
   // Local filter for quick search (ID or Payment Method)
   const filteredSales = sales.filter((sale) => 
-    sale.id.toString().includes(search) || 
+    sale.uuid.toString().includes(search) || 
     sale.payment_method?.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -184,8 +184,8 @@ export default function ListSales() {
               </thead>
               <tbody>
                 {paginatedSales.map((sale) => (
-                  <tr key={sale.id} className="border-t border-gray-100 transition-colors hover:bg-gray-50 group">
-                    <td className="px-6 py-4 text-sm font-medium text-gray-700">#{sale.id}</td>
+                  <tr key={sale.uuid} className="border-t border-gray-100 transition-colors hover:bg-gray-50 group">
+                    <td className="px-6 py-4 text-sm font-medium text-gray-700">{sale.uuid}</td>
                     <td className="px-6 py-4 text-sm text-gray-500">
                       {new Date(sale.created_at).toLocaleDateString('pt-BR', { 
                         day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' 
@@ -203,7 +203,7 @@ export default function ListSales() {
                       <div className="flex justify-center">
                         <button 
                           className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-medium text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:border-slate-300" 
-                          onClick={() => navigate(`/sales/${sale.id}`)}
+                          onClick={() => navigate(`/sales/${sale.uuid}`)}
                         >
                           <Eye className="w-4 h-4 text-slate-400 group-hover:text-blue-500" /> Detalhes
                         </button>

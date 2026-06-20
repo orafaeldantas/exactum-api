@@ -24,12 +24,12 @@ class ProductController:
     @staticmethod
     def get_product(product_uuid: UUID) -> "Product":
 
-        return ProductService.get_product(product_uuid)
+        return ProductService.get_product(g.tenant_id, product_uuid)
 
     @staticmethod
     def update_product(data: dict, product_uuid: UUID) -> "Product":
 
-        return ProductService.update_product(data, product_uuid)
+        return ProductService.update_product(data, g.tenant_id, product_uuid)
 
     @staticmethod
     def delete_product(product_uuid: UUID) -> None:

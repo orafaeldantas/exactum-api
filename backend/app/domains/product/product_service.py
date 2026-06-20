@@ -33,9 +33,9 @@ class ProductService:
         return product
 
     @staticmethod
-    def get_product(product_uuid: UUID) -> Product:
+    def get_product(tenant_id: int, product_uuid: UUID) -> Product:
 
-        product = ProductRepository.get_product(product_uuid)
+        product = ProductRepository.get_product(tenant_id, product_uuid)
 
         if not product:
             raise ProductNotFound()
@@ -43,9 +43,9 @@ class ProductService:
         return product
 
     @staticmethod
-    def update_product(data: dict, product_uuid: UUID) -> Product:
+    def update_product(data: dict, tenant_id: int, product_uuid: UUID) -> Product:
 
-        product = ProductRepository.get_product(product_uuid)
+        product = ProductRepository.get_product(tenant_id, product_uuid)
 
         if not product:
             raise ProductNotFound()
