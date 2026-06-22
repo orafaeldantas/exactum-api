@@ -62,9 +62,9 @@ class ProductService:
         return product
 
     @staticmethod
-    def delete_product(product_uuid: UUID) -> None:
+    def delete_product(tenant_id: int, product_uuid: UUID) -> None:
 
-        product = ProductRepository.get_product(product_uuid)
+        product = ProductRepository.get_product(tenant_id, product_uuid)
 
         if not product:
             raise ProductNotFound()
