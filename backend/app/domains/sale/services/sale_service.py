@@ -29,6 +29,11 @@ class SaleService:
         DatabaseSession.flush()
 
         for item in items:
+            product = ProductRepository.get_product(tenant_id, item.get("uuid"))
+
+            if not product:
+                raise ProductNotFound()
+
             new_item = ItemSale(
                 name=item.get("name"),
                 quantity=item.get("quantity"),
@@ -37,16 +42,11 @@ class SaleService:
                 sale_id=new_sale.id,
                 tenant_id=tenant_id,
                 user_id=user_id,
-                product_id=item.get("uuid"),
+                product_id=product.id,
                 channel=sale.get("channel"),
             )
 
             DatabaseSession.add(new_item)
-
-            product = ProductRepository.get_product(item.get("uuid"))
-
-            if not product:
-                raise ProductNotFound()
 
             remaining_stock = product.stock_quantity - new_item.quantity
 

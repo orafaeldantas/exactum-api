@@ -23,7 +23,7 @@ def test_create_sale_success(client, auth_headers, default_product) -> None:
             "quantity": 2,
             "sku": "PYT",
             "itemPrice": 1000.00,
-            "id": default_product.id,
+            "uuid": default_product.uuid,
         }
     ]
 
@@ -34,7 +34,7 @@ def test_create_sale_success(client, auth_headers, default_product) -> None:
 
     # THEN
     assert response.status_code == 201
-    assert "id" in response.json
+    assert "uuid" in response.json
 
 
 @pytest.mark.functional
@@ -47,10 +47,10 @@ def test_list_sale_items_success(client, auth_headers, default_sale) -> None:
 
     # GIVEN
     # default_user
-    sale_id = default_sale.id
+    sale_uuid = default_sale.uuid
 
     # WHEN
-    response = client.get(f"/sales/{sale_id}", headers=auth_headers)
+    response = client.get(f"/sales/{sale_uuid}", headers=auth_headers)
 
     # THEN
     assert response.status_code == 200
