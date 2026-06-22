@@ -26,7 +26,7 @@ def test_create_product_success(client, auth_headers) -> None:
 
     # THEN
     assert response.status_code == 201
-    assert "id" in response.json
+    assert "uuid" in response.json
 
 
 @pytest.mark.functional
@@ -61,10 +61,10 @@ def test_get_product_success(client, auth_headers, default_product) -> None:
 
     # GIVEN
     # default_user
-    product_id = default_product.id
+    product_uuid = default_product.uuid
 
     # WHEN
-    response = client.get(f"/products/{product_id}", headers=auth_headers)
+    response = client.get(f"/products/{product_uuid}", headers=auth_headers)
 
     # THEN
     assert response.status_code == 200
@@ -81,16 +81,16 @@ def test_update_product_success(client, auth_headers, default_product) -> None:
     """
 
     # GIVEN
-    product_id = default_product.id
+    product_uuid = default_product.uuid
     payload = {"is_active": False}
 
     # WHEN
     response = client.patch(
-        f"/products/{product_id}", json=payload, headers=auth_headers
+        f"/products/{product_uuid}", json=payload, headers=auth_headers
     )
 
     # THEN
     assert response.status_code == 200
     product_data = response.json
 
-    assert "id" in product_data
+    assert "uuid" in product_data
