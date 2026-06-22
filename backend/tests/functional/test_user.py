@@ -55,16 +55,16 @@ def test_get_user_by_id_success(client, auth_headers, default_user):
     """
 
     # GIVEN
-    user_id = default_user.id
+    user_uuid = default_user.uuid
 
     # WHEN
-    response = client.get(f"/users/{user_id}", headers=auth_headers)
+    response = client.get(f"/users/{user_uuid}", headers=auth_headers)
 
     # THEN
     assert response.status_code == 200
     user_data = response.json
 
-    assert user_data["id"] == user_id
+    assert user_data["uuid"] == str(user_uuid)
     assert user_data["email"] == default_user.email
 
 
@@ -95,11 +95,11 @@ def test_update_user_success(client, auth_headers, default_user):
     """
 
     # GIVEN
-    user_id = default_user.id
+    user_uuid = default_user.uuid
     payload = {"is_active": False}
 
     # WHEN
-    response = client.patch(f"/users/{user_id}", json=payload, headers=auth_headers)
+    response = client.patch(f"/users/{user_uuid}", json=payload, headers=auth_headers)
 
     # THEN
     assert response.status_code == 200
@@ -117,12 +117,12 @@ def test_update_profile_success(client, auth_headers, default_user):
     """
 
     # GIVEN
-    user_id = default_user.id
+    user_uuid = default_user.uuid
     payload = {"username": "Pytest User Modified"}
 
     # WHEN
     response = client.patch(
-        f"/users/profile/{user_id}", json=payload, headers=auth_headers
+        f"/users/profile/{user_uuid}", json=payload, headers=auth_headers
     )
 
     # THEN
