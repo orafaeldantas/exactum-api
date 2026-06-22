@@ -1,5 +1,6 @@
 import logging
 from collections.abc import Sequence
+from uuid import UUID
 
 from sqlalchemy import select
 
@@ -12,8 +13,8 @@ logger = logging.getLogger(__name__)
 
 class SaleRepository:
     @staticmethod
-    def get_sale(tenant_id: int, sale_id: int) -> Sale | None:
-        stmt = select(Sale).where(Sale.tenant_id == tenant_id, Sale.id == sale_id)
+    def get_sale(tenant_id: int, sale_uuid: UUID) -> Sale | None:
+        stmt = select(Sale).where(Sale.tenant_id == tenant_id, Sale.uuid == sale_uuid)
 
         return db.session.scalars(stmt).first()
 

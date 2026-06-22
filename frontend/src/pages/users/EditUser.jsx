@@ -5,14 +5,14 @@ import UserForm from "../../features/user-form/UserForm";
 
 export default function EditUser() {
 
-  const { id } = useParams();
+  const { uuid } = useParams();
   const navigate = useNavigate();
 
   const [user, setUser] = useState(null);
 
   async function loadUser() {
 
-    const response = await apiFetch(`/users/${id}`);
+    const response = await apiFetch(`/users/${uuid}`);
 
     const data = await response.json();
 
@@ -25,7 +25,7 @@ export default function EditUser() {
 
   async function handleUpdate(data) {
 
-    const response = await apiFetch(`/users/${id}`, {
+    const response = await apiFetch(`/users/${uuid}`, {
       method: "PATCH",
       body: JSON.stringify(data)
     });

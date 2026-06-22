@@ -18,7 +18,7 @@ class CreateProductSchema(Schema):
 
 
 class CreateProductResponseSchema(Schema):
-    id = fields.Int(dump_only=True)
+    uuid = fields.UUID(dump_only=True)
 
 
 class UpdateProductSchema(Schema):
@@ -36,7 +36,7 @@ class UpdateProductSchema(Schema):
 
 
 class ListProductResponseSchema(UpdateProductSchema):
-    id = fields.Int(dump_only=True)
+    uuid = fields.UUID(dump_only=True)
 
     stock_quantity = fields.Int()
 

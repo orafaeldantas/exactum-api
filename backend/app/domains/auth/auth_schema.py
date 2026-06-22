@@ -32,7 +32,7 @@ class TenantBootstrapSchema(Schema):
 
 
 class UserBootstrapSchema(Schema):
-    id = fields.Int()
+    uuid = fields.UUID(dump_only=True)
 
     username = fields.Str()
 
@@ -42,9 +42,9 @@ class UserBootstrapSchema(Schema):
 
 
 class AuthBootstrapSchema(Schema):
-    user_id = fields.Int(dump_only=True)
+    user_uuid = fields.UUID(dump_only=True)
 
-    tenant_id = fields.Int(dump_only=True)
+    tenant_uuid = fields.UUID(dump_only=True)
 
     role = fields.Str()
 
