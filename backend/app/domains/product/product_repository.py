@@ -1,5 +1,6 @@
 import logging
 from collections.abc import Sequence
+from uuid import UUID
 
 from sqlalchemy import select
 
@@ -17,9 +18,12 @@ class ProductRepository:
         return db.session.scalars(stmt).all()
 
     @staticmethod
-    def get_product(product_id: int) -> Product | None:
+    def get_product(tenant_id: int, product_uuid: UUID) -> Product | None:
 
-        return db.session.get(Product, product_id)
+        stmt = select(Product).where(
+            Product.tenant_id == tenant_id, Product.uuid == product_uuid
+        )
+        return db.session.scalars(stmt).first()
 
     @staticmethod
     def delete_product(product: Product) -> None:

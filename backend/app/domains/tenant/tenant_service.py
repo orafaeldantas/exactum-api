@@ -1,4 +1,5 @@
 import re
+from decimal import Decimal
 
 from app.database.session import DatabaseSession
 from app.domains.goal.goal_exceptions import RegistrationFailedGoal
@@ -15,7 +16,7 @@ from app.models.user import User
 
 class TenantService:
     @staticmethod
-    def create_tenant(data):
+    def create_tenant(data: dict) -> Tenant:
 
         company = data.get("company", {})
         admin = data.get("admin", {})
@@ -59,7 +60,7 @@ class TenantService:
         return tenant
 
     @staticmethod
-    def get_tenant(tenant_id):
+    def get_tenant(tenant_id: int) -> Tenant:
 
         tenant = TenantRepository.get_tenant(tenant_id)
 
@@ -69,7 +70,7 @@ class TenantService:
         return tenant
 
     @staticmethod
-    def update_tenant(tenant_id, data):
+    def update_tenant(tenant_id: int, data: dict) -> Tenant:
 
         tenant = TenantRepository.get_tenant(tenant_id)
 
@@ -84,12 +85,15 @@ class TenantService:
 
         DatabaseSession.add(tenant)
 
-        if data.get("monthly_goal"):
+        target_goal = data.get("monthly_goal")
+
+        if target_goal:
             goal = GoalRepository.get_goal(tenant_id)
             if goal:
-                goal.value = data.get("monthly_goal")
+                goal.value = Decimal(target_goal)
 
-            goal = GoalRepository.create_goal(data.get("monthly_goal"), tenant_id)
+            else:
+                goal = GoalRepository.create_goal(Decimal(target_goal), tenant_id)
 
             if not goal:
                 raise RegistrationFailedGoal()

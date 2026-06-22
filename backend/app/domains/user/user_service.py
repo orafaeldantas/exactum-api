@@ -1,3 +1,6 @@
+from collections.abc import Sequence
+from uuid import UUID
+
 from app.database.session import DatabaseSession
 from app.domains.user.user_exceptions import (
     InvalidPasswordException,
@@ -10,12 +13,12 @@ from app.models.user import User
 
 class UserService:
     @staticmethod
-    def list_users(tenant_id):
+    def list_users(tenant_id: int) -> Sequence[User]:
 
         return UserRepository.get_all(tenant_id)
 
     @staticmethod
-    def create_user(data, tenant_id):
+    def create_user(data: dict, tenant_id: int) -> User:
 
         user = User(
             username=data.get("username"),
@@ -26,7 +29,7 @@ class UserService:
             password_reset=True,
         )
 
-        user.set_password(data.get("password"))
+        user.set_password(str(data.get("password")))
 
         DatabaseSession.add(user)
         DatabaseSession.commit()
@@ -34,9 +37,9 @@ class UserService:
         return user
 
     @staticmethod
-    def get_user(user_id):
+    def get_user(tenant_id: int, user_uuid: UUID) -> User:
 
-        user = UserRepository.get_user(user_id)
+        user = UserRepository.get_user(tenant_id, user_uuid)
 
         if not user:
             raise UserNotFound()
@@ -44,9 +47,9 @@ class UserService:
         return user
 
     @staticmethod
-    def update_user(data, user_id):
+    def update_user(data: dict, tenant_id: int, user_uuid: UUID) -> User:
 
-        user = UserRepository.get_user(user_id)
+        user = UserRepository.get_user(tenant_id, user_uuid)
 
         if not user:
             raise UserNotFound()
@@ -70,9 +73,12 @@ class UserService:
         return user
 
     @staticmethod
-    def update_profile(data, user_id):
+    def update_profile(data: dict, tenant_id: int, user_uuid: UUID) -> User:
 
-        user = UserRepository.get_user(user_id)
+        user = UserRepository.get_user(tenant_id, user_uuid)
+
+        if not user:
+            raise UserNotFound()
 
         if data.get("current_password"):
             if not user.check_password(data["current_password"]):

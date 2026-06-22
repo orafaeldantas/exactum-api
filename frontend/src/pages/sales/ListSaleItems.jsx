@@ -7,14 +7,14 @@ import {
 import LoadingOverlay from "../../components/Loader/LoadingOverlay";
 
 export default function SaleDetails() {
-  const { id } = useParams();
+  const { uuid } = useParams();
   const navigate = useNavigate();
 
   const { saleItems, loadSaleItems, loading } = getSaleItems();
 
   useEffect(() => {
-    if (id) loadSaleItems(id);
-  }, [id]);
+    loadSaleItems(uuid);
+  }, [uuid]);
 
   const sale = saleItems?.sale;
   const items = (saleItems?.items || [])

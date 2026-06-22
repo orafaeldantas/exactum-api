@@ -1,3 +1,6 @@
+from uuid import UUID
+
+from flask import Response
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from flask_smorest import Blueprint
@@ -35,7 +38,7 @@ class LoginRoute(MethodView):
     )
     @blp_auth.arguments(LoginSchema)
     @blp_auth.response(200, ResponseLoginSchema)
-    def post(self, data):
+    def post(self, data: dict) -> Response:
 
         return AuthController.login(data)
 
@@ -45,7 +48,7 @@ class BootstrapRoute(MethodView):
     @jwt_required()
     @blp_auth.doc(security=[{"CookieAuth": []}])
     @blp_auth.response(200, ResponseBootstrapSchema)
-    def get(self):
+    def get(self) -> dict:
 
         return AuthController.bootstrap()
 
@@ -55,7 +58,7 @@ class Refresh(MethodView):
     @jwt_required(refresh=True)
     @blp_auth.doc(security=[{"CookieAuth": []}])
     @blp_auth.response(200, RefreshResponseSchema)
-    def post(self):
+    def post(self) -> Response:
 
         return AuthController.refresh_access_token()
 
@@ -65,20 +68,20 @@ class Logout(MethodView):
     @jwt_required(refresh=True)
     @blp_auth.doc(security=[{"CookieAuth": []}])
     @blp_auth.response(200, LogoutResponseSchema)
-    def post(self):
+    def post(self) -> Response:
 
         return AuthController.logout()
 
 
-@blp_auth.route("/run-impersonate/<int:tenant_id>")
+@blp_auth.route("/run-impersonate/<uuid:tenant_uuid>")
 class RunImpersonateRoute(MethodView):
     @jwt_required()
     @role_authorization(["super-admin"])
     @blp_auth.doc(security=[{"CookieAuth": []}])
     @blp_auth.response(201, RunImpersonateResponseSchema)
-    def post(self, tenant_id):
+    def post(self, tenant_uuid: UUID) -> Response:
 
-        return AuthController.run_impersonate(tenant_id)
+        return AuthController.run_impersonate(tenant_uuid)
 
 
 @blp_auth.route("/stop-impersonate")
@@ -87,6 +90,6 @@ class StopImpersonateRoute(MethodView):
     @role_authorization(["super-admin", "admin"])
     @blp_auth.doc(security=[{"CookieAuth": []}])
     @blp_auth.response(201, StopImpersonateResponseSchema)
-    def post(self):
+    def post(self) -> Response:
 
         return AuthController.stop_impersonate()

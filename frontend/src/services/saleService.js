@@ -36,10 +36,11 @@ export function getSaleItems() {
   const [saleItems, setSaleItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  async function loadSaleItems(id) {
+  async function loadSaleItems(uuid) {
     try {
       setLoading(true);
-      const response = await apiFetch(`/sales/${id}`);
+      console.log(`/sales/${uuid}`)
+      const response = await apiFetch(`/sales/${uuid}`);   
       const data = await response.json();
       console.log(data)
       setSaleItems(data);

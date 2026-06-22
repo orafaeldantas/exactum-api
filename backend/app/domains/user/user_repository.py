@@ -1,5 +1,6 @@
 import logging
 from collections.abc import Sequence
+from uuid import UUID
 
 from sqlalchemy import select
 
@@ -16,7 +17,13 @@ class UserRepository:
         return db.session.scalars(stmt).all()
 
     @staticmethod
-    def get_user(user_id: int) -> User | None:
+    def get_user(tenant_id: int, user_uuid: UUID) -> User | None:
+
+        stmt = select(User).where(User.tenant_id == tenant_id, User.uuid == user_uuid)
+        return db.session.scalars(stmt).first()
+
+    @staticmethod
+    def get_user_by_id(user_id: int) -> User | None:
         return db.session.get(User, user_id)
 
     @staticmethod

@@ -1,5 +1,6 @@
 import logging
 from collections.abc import Sequence
+from uuid import UUID
 
 from sqlalchemy import select
 
@@ -27,12 +28,18 @@ class SuperAdminRepository:
         return db.session.scalar(stmt)
 
     @staticmethod
-    def impersonate(tenant_id: int) -> User | None:
+    def impersonate(tenant_uuid: UUID) -> User | None:
         """Search for the administrator user of a specific tenant for impersonation."""
 
-        stmt = (
+        tenant_stmt = select(Tenant).where(Tenant.uuid == tenant_uuid)
+        tenant = db.session.scalar(tenant_stmt)
+
+        if not tenant:
+            raise
+
+        user_stmt = (
             select(User)
-            .where(User.tenant_id == tenant_id, User.role == "admin")
+            .where(User.tenant_id == int(tenant.id), User.role == "admin")
             .execution_options(skip_tenant_filter=True)
         )
-        return db.session.scalars(stmt).first()
+        return db.session.scalar(user_stmt)
