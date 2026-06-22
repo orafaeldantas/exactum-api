@@ -34,4 +34,4 @@ class ProductController:
     @staticmethod
     def delete_product(product_uuid: UUID) -> None:
 
-        ProductService.delete_product(product_uuid)
+        ProductService.delete_product(g.tenant_id, product_uuid)
