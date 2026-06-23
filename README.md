@@ -1,30 +1,28 @@
 # Exactum
 
 > Sistema ERP Web para gestão de estoque, vendas e PDV de pequenos e médios comércios.
-
 > O Exactum centraliza operações de estoque e utiliza dados históricos para apoiar tomadas de decisão no varejo.
-
 > Arquitetura multi-tenant, autenticação JWT, CI/CD automatizado e deploy containerizado em VPS Linux.
 
 🔗 **[Demo ao Vivo](https://exactum.app.br/)** · 🐛 **[Reportar Bug](https://github.com/orafaeldantas/exactum-api/issues)**
 
 ⚠️ **Nota:** O projeto encontra-se atualmente em **fase Alpha**. Os módulos centrais de segurança, multi-tenancy e PDV já estão operacionais, enquanto recursos preditivos e melhorias de infraestrutura continuam em desenvolvimento ativo (veja o Roadmap).
 
-<p align="left">
-  <img src="https://img.shields.io/badge/Status-Alpha-orange?style=for-the-badge" alt="Status Alpha" />
-  <img src="https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54" alt="Python" />
-  <img src="https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white" alt="Flask" />
-  <img src="https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black" alt="Swagger" />
-  <img src="https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
-  <img src="https://img.shields.io/badge/Alembic-E61919?style=for-the-badge&logo=alembic&logoColor=white" alt="Alembic" />
-  <img src="https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB" alt="React" />
-  <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
-  <img src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
-  <img src="https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white" alt="GitHub Actions" />
-  <img src="https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white" alt="Nginx" />
-  <img src="https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black" alt="Linux" />
-  <img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white" alt="Git" />
-</p>
+<br>
+
+![Status](https://img.shields.io/badge/Status-Alpha-orange) 
+![Versão](https://img.shields.io/badge/version-0.1.5--alpha-blue) 
+![License](https://img.shields.io/badge/license-MIT-green)
+[![CI Build Status](https://github.com/orafaeldantas/exactum-api/actions/workflows/ci.yml/badge.svg)](https://github.com/orafaeldantas/exactum-api/actions) 
+[![Codecov Coverage](https://codecov.io/gh/orafaeldantas/exactum-api/graph/badge.svg)](https://codecov.io/gh/orafaeldantas/exactum-api)
+
+![Python](https://img.shields.io/badge/python-3670A0?logo=python&logoColor=ffdd54) 
+![Flask](https://img.shields.io/badge/flask-%23000.svg?logo=flask&logoColor=white) 
+![PostgreSQL](https://img.shields.io/badge/postgres-%23316192.svg?logo=postgresql&logoColor=white) 
+![Redis](https://img.shields.io/badge/redis-%23DC382D.svg?logo=redis&logoColor=white) 
+![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?logo=docker&logoColor=white) 
+![React](https://img.shields.io/badge/react-%2320232a.svg?logo=react&logoColor=%2361DAFB) 
+![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?logo=nginx&logoColor=white)
 
 <!--  
 ---
