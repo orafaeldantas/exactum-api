@@ -1,0 +1,62 @@
+from sqlalchemy import delete, select
+
+from app.extensions import db
+from app.models.rbac import (
+    Permission,
+    Role,
+    RolePermission,
+    UserPermission,
+    UserRole,
+)
+
+
+class RBACRepository:
+    # ========================= ROLE =========================
+    def get_role_by_id(self, role_id: int) -> Role | None:
+        return db.session.get(Role, role_id)
+
+    def get_role_by_uuid(self, role_uuid):
+        stmt = select(Role).where(Role.uuid == role_uuid)
+        return db.session.execute(stmt).scalar_one_or_none()
+
+    # ========================= PERMISSION =========================
+    def get_permission_by_id(self, permission_id: int) -> Permission | None:
+        return db.session.get(Permission, permission_id)
+
+    def get_permission_by_code(self, code: str) -> Permission | None:
+        stmt = select(Permission).where(Permission.code == code)
+        return db.session.execute(stmt).scalar_one_or_none()
+
+    # ========================= USER ROLES =========================
+    def get_user_roles(self, user_id: int) -> list[UserRole]:
+        stmt = select(UserRole).where(UserRole.user_id == user_id)
+        return list(db.session.execute(stmt).scalars().all())
+
+    def add_user_role(self, user_id: int, role_id: int) -> None:
+        db.session.add(UserRole(user_id=user_id, role_id=role_id))
+
+    def remove_user_roles(self, user_id: int) -> None:
+        stmt = delete(UserRole).where(UserRole.user_id == user_id)
+        db.session.execute(stmt)
+
+    # ========================= USER PERMISSIONS =========================
+    def get_user_permissions(self, user_id: int) -> list[UserPermission]:
+        stmt = select(UserPermission).where(UserPermission.user_id == user_id)
+        return list(db.session.execute(stmt).scalars().all())
+
+    def add_user_permission(self, user_id: int, permission_id: int) -> None:
+        db.session.add(
+            UserPermission(user_id=user_id, permission_id=permission_id, granted=True)
+        )
+
+    def remove_user_permission(self, user_id: int, permission_id: int) -> None:
+        stmt = delete(UserPermission).where(
+            UserPermission.user_id == user_id,
+            UserPermission.permission_id == permission_id,
+        )
+        db.session.execute(stmt)
+
+    # ========================= ROLE PERMISSIONS =========================
+    def get_role_permissions(self, role_ids: list[int]) -> list[RolePermission]:
+        stmt = select(RolePermission).where(RolePermission.role_id.in_(role_ids))
+        return list(db.session.execute(stmt).scalars().all())
