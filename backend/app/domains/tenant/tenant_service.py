@@ -4,6 +4,8 @@ from decimal import Decimal
 from app.database.session import DatabaseSession
 from app.domains.goal.goal_exceptions import RegistrationFailedGoal
 from app.domains.goal.goal_repository import GoalRepository
+from app.domains.rbac.container import rbac_service
+from app.domains.rbac.rbac_service import RBACRepository
 from app.domains.tenant.tenant_exceptions import TenantNotFound
 from app.domains.tenant.tenant_repository import TenantRepository
 from app.domains.user.user_exceptions import (
@@ -43,18 +45,26 @@ class TenantService:
         DatabaseSession.add(tenant)
         DatabaseSession.flush()
 
+        rbac_service.create_default_roles(tenant.id)
+        DatabaseSession.flush()
+
         user = User(
             username=f"{admin.get('firstName')} {admin.get('lastName')}",
             email=admin.get("email"),
             tenant_id=tenant.id,
             is_active=True,
-            role="admin",
             password_reset=False,
         )
 
         user.set_password(admin.get("password"))
 
         DatabaseSession.add(user)
+        DatabaseSession.flush()
+
+        role_admin = RBACRepository().get_role_admin_by_tenant(tenant.id)
+
+        RBACRepository().add_user_role(user.id, role_admin.id)
+
         DatabaseSession.commit()
 
         return tenant

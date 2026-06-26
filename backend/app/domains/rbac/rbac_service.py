@@ -1,9 +1,11 @@
+from app.domains.rbac.constants import DEFAULT_ROLES
 from app.domains.rbac.rbac_repository import RBACRepository
-from app.extensions import db
+from app.extensions import db, redis_client
+from app.models.rbac import Role, RolePermission
 
 
 class RBACService:
-    def __init__(self, repo: RBACRepository, cache):
+    def __init__(self, repo: RBACRepository, cache: redis_client):
         self.repo = repo
         self.cache = cache
 
@@ -70,3 +72,40 @@ class RBACService:
         self.cache.set(cache_key, ",".join(permissions), ex=3600)
 
         return permissions
+
+    # ========================= CREATE ROLES =========================
+    def create_default_roles(self, tenant_id: int) -> None:
+
+        permissions = self.repo.get_permissions()
+
+        permissions_map = {permission.code: permission for permission in permissions}
+
+        roles_map: dict[str, Role] = {}
+
+        for role_name in DEFAULT_ROLES:
+            role = Role(
+                tenant_id=tenant_id,
+                name=role_name,
+            )
+
+            db.session.add(role)
+
+            roles_map[role_name] = role
+
+        db.session.flush()
+
+        for role_name, permission_codes in DEFAULT_ROLES.items():
+            role = roles_map[role_name]
+
+            for permission_code in permission_codes:
+                permission = permissions_map.get(permission_code)
+
+                if not permission:
+                    raise ValueError(f"Permission '{permission_code}' not found.")
+
+                db.session.add(
+                    RolePermission(
+                        role_id=role.id,
+                        permission_id=permission.id,
+                    )
+                )

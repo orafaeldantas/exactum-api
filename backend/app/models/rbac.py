@@ -38,7 +38,6 @@ class Permission(Base):
 
     code: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     description: Mapped[str] = mapped_column(String(255), nullable=True)
-    module: Mapped[str] = mapped_column(String(80), nullable=False)
 
     created_at: Mapped[datetime] = mapped_column(default=lambda: datetime.now(UTC))
 
