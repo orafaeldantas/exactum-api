@@ -14,11 +14,17 @@ PERMISSIONS = [
     "user:create",
     "user:update",
     "user:delete",
-    "profile:update",
     "profile:view",
+    "profile:update",
     "tenant:view",
     "tenant:update",
     "analytics:view",
+    "inventory:view",
+    "inventory:update",
+    "goal:view",
+    "goal:create",
+    "goal:update",
+    "goal:delete",
 ]
 
 

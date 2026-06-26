@@ -22,8 +22,14 @@ class RBACRepository:
         return db.session.execute(stmt).scalar_one_or_none()
 
     def get_role_admin_by_tenant(self, tenant_id: int) -> Role | None:
-        stmt = select(Role).where(Role.tenant_id == tenant_id, Role.name == "admin")
+        stmt = select(Role).where(
+            Role.tenant_id == tenant_id, Role.name == "administrator"
+        )
         return db.session.execute(stmt).scalar_one_or_none()
+
+    def get_all_roles_by_tenant_id(self, tenant_id: int) -> Sequence[Role]:
+        stmt = select(Role).where(Role.tenant_id == tenant_id)
+        return db.session.scalars(stmt).all()
 
     # ========================= PERMISSION =========================
     def get_permission_by_id(self, permission_id: int) -> Permission | None:
