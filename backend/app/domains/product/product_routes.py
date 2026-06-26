@@ -6,7 +6,6 @@ from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from flask_smorest import Blueprint
 
-from app.core.security.security import role_authorization
 from app.domains.product.product_controller import ProductController
 from app.domains.product.product_schema import (
     CreateProductResponseSchema,
@@ -16,6 +15,7 @@ from app.domains.product.product_schema import (
     UpdateProductResponseSchema,
     UpdateProductSchema,
 )
+from app.domains.rbac.decorators.permissions import permission_required
 
 if TYPE_CHECKING:
     from app.models.product import Product
@@ -28,7 +28,7 @@ blp_products = Blueprint(
 @blp_products.route("/")
 class ProductListRoute(MethodView):
     @jwt_required()
-    @role_authorization(["admin", "super-admin", "user"])
+    @permission_required("product:create")
     @blp_products.doc(security=[{"CookieAuth": []}])
     @blp_products.arguments(CreateProductSchema)
     @blp_products.response(201, CreateProductResponseSchema)
@@ -37,7 +37,7 @@ class ProductListRoute(MethodView):
         return ProductController.create_product(data)
 
     @jwt_required()
-    @role_authorization(["admin", "super-admin", "user"])
+    @permission_required("product:view")
     @blp_products.doc(security=[{"CookieAuth": []}])
     @blp_products.response(200, ListProductResponseSchema(many=True))
     def get(self) -> Sequence["Product"]:
@@ -48,7 +48,7 @@ class ProductListRoute(MethodView):
 @blp_products.route("/<uuid:product_uuid>")
 class ProductDetailRoute(MethodView):
     @jwt_required()
-    @role_authorization(["admin", "super-admin", "user"])
+    @permission_required("product:update")
     @blp_products.doc(security=[{"CookieAuth": []}])
     @blp_products.arguments(UpdateProductSchema)
     @blp_products.response(200, UpdateProductResponseSchema)
@@ -57,7 +57,7 @@ class ProductDetailRoute(MethodView):
         return ProductController.update_product(data, product_uuid)
 
     @jwt_required()
-    @role_authorization(["admin", "super-admin", "user"])
+    @permission_required("product:view")
     @blp_products.doc(security=[{"CookieAuth": []}])
     @blp_products.response(200, GetProductResponseSchema)
     def get(self, product_uuid: UUID) -> "Product":
@@ -65,7 +65,7 @@ class ProductDetailRoute(MethodView):
         return ProductController.get_product(product_uuid)
 
     @jwt_required()
-    @role_authorization(["admin", "super-admin", "user"])
+    @permission_required("product:delete")
     @blp_products.doc(security=[{"CookieAuth": []}])
     @blp_products.response(204)
     def delete(self, product_uuid: UUID) -> None:

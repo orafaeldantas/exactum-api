@@ -7,14 +7,12 @@ from flask_smorest import Api
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from app.cli import register_cli
-from app.core.cache.redis_client import init_redis
 from app.core.middlewares.context import init_request_context
 from app.database.tenant_filter import init_tenant_filter
 from app.exceptions.handlers import register_error_handlers
 from app.exceptions.jwt_handlers import register_jwt_handlers
+from app.extensions import db, init_redis, jwt, migrate
 from config import Config
-
-from .extensions import db, jwt, migrate
 
 
 def create_app(config=None):

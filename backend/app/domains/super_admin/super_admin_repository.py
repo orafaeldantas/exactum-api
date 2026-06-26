@@ -4,6 +4,7 @@ from uuid import UUID
 
 from sqlalchemy import select
 
+from app.domains.rbac.rbac_repository import RBACRepository
 from app.extensions import db
 from app.models.tenant import Tenant
 from app.models.user import User
@@ -35,11 +36,21 @@ class SuperAdminRepository:
         tenant = db.session.scalar(tenant_stmt)
 
         if not tenant:
-            raise
+            raise KeyError("Not found tenant")
+
+        role = RBACRepository().get_role_admin_by_tenant(tenant.id)
+
+        if not role:
+            raise KeyError("Not found role")
+
+        user_role = RBACRepository().get_user_by_role_id(role.id)
+
+        if not user_role:
+            raise KeyError("Not found role")
 
         user_stmt = (
             select(User)
-            .where(User.tenant_id == int(tenant.id), User.role == "admin")
+            .where(User.tenant_id == int(tenant.id), User.id == user_role.user_id)
             .execution_options(skip_tenant_filter=True)
         )
         return db.session.scalar(user_stmt)

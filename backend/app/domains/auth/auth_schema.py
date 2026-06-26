@@ -38,7 +38,11 @@ class UserBootstrapSchema(Schema):
 
     email = fields.Email()
 
-    role = fields.Str()
+
+class RoleBootstrapSchema(Schema):
+    uuid = fields.UUID(dump_only=True)
+
+    name = fields.Str()
 
 
 class AuthBootstrapSchema(Schema):
@@ -46,9 +50,11 @@ class AuthBootstrapSchema(Schema):
 
     tenant_uuid = fields.UUID(dump_only=True)
 
-    role = fields.Str()
-
     password_reset = fields.Bool()
+
+    permissions = fields.List(fields.Str())
+
+    role = fields.Nested(RoleBootstrapSchema)
 
 
 class ResponseBootstrapSchema(Schema):
@@ -59,6 +65,8 @@ class ResponseBootstrapSchema(Schema):
     auth = fields.Nested(AuthBootstrapSchema)
 
     impersonate_mode = fields.Bool()
+
+    is_super_admin = fields.Bool()
 
 
 class RunImpersonateResponseSchema(Schema):
