@@ -2,7 +2,7 @@ from collections.abc import Sequence
 from uuid import UUID
 
 from app.database.session import DatabaseSession
-from app.domains.rbac.container import rbac_service
+from app.domains.rbac.container import get_rbac_service
 from app.domains.rbac.rbac_repository import RBACRepository
 from app.domains.user.user_exceptions import (
     InvalidPasswordException,
@@ -40,7 +40,7 @@ class UserService:
         if not role:
             raise KeyError("Not found role")
 
-        rbac_service.assign_role_to_user(user.id, role.id)
+        get_rbac_service().assign_role_to_user(user.id, role.id)
 
         DatabaseSession.commit()
 
@@ -87,7 +87,7 @@ class UserService:
                 if not role:
                     raise KeyError("Not found role")
 
-                rbac_service.assign_role_to_user(user.id, role.id)
+                get_rbac_service().assign_role_to_user(user.id, role.id)
 
         DatabaseSession.add(user)
         DatabaseSession.commit()

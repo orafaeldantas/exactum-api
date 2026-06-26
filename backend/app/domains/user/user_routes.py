@@ -6,7 +6,6 @@ from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from flask_smorest import Blueprint
 
-from app.core.security.security import owner_required
 from app.domains.rbac.decorators.permissions import permission_required
 from app.domains.user.user_controller import UserController
 from app.domains.user.user_schema import (
@@ -82,7 +81,6 @@ class UserNewPasswordRoute(MethodView):
 class UserProfileRoute(MethodView):
     @jwt_required()
     @permission_required("profile:view")
-    @owner_required()
     @blp_users.doc(security=[{"CookieAuth": []}])
     @blp_users.response(200, ProfileSchema)
     def get(self, user_uuid: UUID) -> "User":
@@ -91,7 +89,6 @@ class UserProfileRoute(MethodView):
 
     @jwt_required()
     @permission_required("profile:update")
-    @owner_required()
     @blp_users.doc(security=[{"CookieAuth": []}])
     @blp_users.arguments(ProfileSchema)
     @blp_users.response(200, ProfileSchema)

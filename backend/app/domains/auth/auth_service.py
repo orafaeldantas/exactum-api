@@ -16,7 +16,7 @@ from app.domains.auth.auth_exceptions import (
 from app.domains.auth.auth_repository import AuthRepository
 from app.domains.auth.token_service import TokenService
 from app.domains.goal.goal_repository import GoalRepository
-from app.domains.rbac.container import rbac_service
+from app.domains.rbac.container import get_rbac_service
 from app.domains.rbac.rbac_repository import RBACRepository
 from app.domains.super_admin.super_admin_repository import SuperAdminRepository
 from app.domains.tenant.tenant_repository import TenantRepository
@@ -82,7 +82,7 @@ class AuthService:
         if not role:
             raise KeyError("Not found role")
 
-        permissions = rbac_service.get_effective_permissions(user_id)
+        permissions = get_rbac_service().get_effective_permissions(user_id)
 
         if not (user and tenant):
             raise BootstrapNotFound()

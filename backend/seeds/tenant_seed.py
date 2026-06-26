@@ -1,5 +1,7 @@
 import logging
 
+from app.domains.rbac.container import get_rbac_service
+from app.domains.rbac.rbac_service import RBACRepository
 from app.extensions import db
 from app.models.tenant import Tenant
 from app.models.user import User
@@ -33,12 +35,14 @@ def tenant_database_seed(**kwargs):
         db.session.add(tenant)
         db.session.flush()
 
+        get_rbac_service().create_default_roles(tenant.id)
+        db.session.flush()
+
         admin = User(
             username=admin_name,
             email=admin_email,
             tenant_id=tenant.id,
             is_active=True,
-            role="admin",
             password_reset=False,
         )
 
@@ -48,12 +52,15 @@ def tenant_database_seed(**kwargs):
         db.session.add(admin)
         db.session.flush()
 
+        role_admin = RBACRepository().get_role_admin_by_tenant(tenant.id)
+
+        RBACRepository().add_user_role(admin.id, role_admin.id)
+
         user = User(
             username=user_name,
             email=user_email,
             tenant_id=tenant.id,
             is_active=True,
-            role="user",
             password_reset=False,
         )
 
@@ -61,6 +68,9 @@ def tenant_database_seed(**kwargs):
         user.set_password(user_password)
 
         db.session.add(user)
+        db.session.flush()
+
+        RBACRepository().add_user_role(user.id, role_admin.id)
 
         db.session.commit()
 
