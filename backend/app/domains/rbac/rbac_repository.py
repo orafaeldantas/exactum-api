@@ -1,3 +1,5 @@
+from collections.abc import Sequence
+
 from sqlalchemy import delete, select
 
 from app.extensions import db
@@ -15,8 +17,12 @@ class RBACRepository:
     def get_role_by_id(self, role_id: int) -> Role | None:
         return db.session.get(Role, role_id)
 
-    def get_role_by_uuid(self, role_uuid):
+    def get_role_by_uuid(self, role_uuid) -> Role | None:
         stmt = select(Role).where(Role.uuid == role_uuid)
+        return db.session.execute(stmt).scalar_one_or_none()
+
+    def get_role_admin_by_tenant(self, tenant_id: int) -> Role | None:
+        stmt = select(Role).where(Role.tenant_id == tenant_id, Role.name == "admin")
         return db.session.execute(stmt).scalar_one_or_none()
 
     # ========================= PERMISSION =========================
@@ -27,10 +33,18 @@ class RBACRepository:
         stmt = select(Permission).where(Permission.code == code)
         return db.session.execute(stmt).scalar_one_or_none()
 
+    def get_permissions(self) -> Sequence[Permission]:
+        stmt = select(Permission)
+        return db.session.scalars(stmt).all()
+
     # ========================= USER ROLES =========================
-    def get_user_roles(self, user_id: int) -> list[UserRole]:
+    def get_user_roles(self, user_id: int) -> Sequence[UserRole]:
         stmt = select(UserRole).where(UserRole.user_id == user_id)
         return list(db.session.execute(stmt).scalars().all())
+
+    def get_user_by_role_id(self, role_id: int) -> UserRole | None:
+        stmt = select(UserRole).where(UserRole.role_id == role_id)
+        return db.session.execute(stmt).scalar_one_or_none()
 
     def add_user_role(self, user_id: int, role_id: int) -> None:
         db.session.add(UserRole(user_id=user_id, role_id=role_id))
@@ -40,7 +54,7 @@ class RBACRepository:
         db.session.execute(stmt)
 
     # ========================= USER PERMISSIONS =========================
-    def get_user_permissions(self, user_id: int) -> list[UserPermission]:
+    def get_user_permissions(self, user_id: int) -> Sequence[UserPermission]:
         stmt = select(UserPermission).where(UserPermission.user_id == user_id)
         return list(db.session.execute(stmt).scalars().all())
 
@@ -57,6 +71,6 @@ class RBACRepository:
         db.session.execute(stmt)
 
     # ========================= ROLE PERMISSIONS =========================
-    def get_role_permissions(self, role_ids: list[int]) -> list[RolePermission]:
+    def get_role_permissions(self, role_ids: list[int]) -> Sequence[RolePermission]:
         stmt = select(RolePermission).where(RolePermission.role_id.in_(role_ids))
         return list(db.session.execute(stmt).scalars().all())

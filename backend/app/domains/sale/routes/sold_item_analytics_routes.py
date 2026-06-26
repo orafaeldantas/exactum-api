@@ -2,7 +2,7 @@ from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from flask_smorest import Blueprint
 
-from app.core.security.security import role_authorization
+from app.domains.rbac.decorators.permissions import permission_required
 from app.domains.sale.controllers.sold_item_analytics_controller import (
     SoldItemAnalyticsController,
 )
@@ -23,7 +23,7 @@ blp_item_analytics = Blueprint(
 @blp_item_analytics.route("/best-sellers")
 class BestSellersResource(MethodView):
     @jwt_required()
-    @role_authorization(["admin", "super-admin", "user"])
+    @permission_required("analytics:view")
     @blp_item_analytics.doc(security=[{"CookieAuth": []}])
     @blp_item_analytics.arguments(SoldItemQuerySchema, location="query")
     @blp_item_analytics.response(200, BestSellersSchema(many=True))
@@ -35,7 +35,7 @@ class BestSellersResource(MethodView):
 @blp_item_analytics.route("/")
 class SoldItemRoute(MethodView):
     @jwt_required()
-    @role_authorization(["admin", "super-admin", "user"])
+    @permission_required("analytics:view")
     @blp_item_analytics.doc(security=[{"CookieAuth": []}])
     @blp_item_analytics.arguments(SoldItemQuerySchema, location="query")
     @blp_item_analytics.response(200, SoldItemSchema(many=True))

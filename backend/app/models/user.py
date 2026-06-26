@@ -25,6 +25,7 @@ class User(Base):
         default=UUIDGenerator.generate,
     )
     tenant_id: Mapped[int] = mapped_column(ForeignKey("tenants.id"))
+    is_super_admin: Mapped[bool] = mapped_column(default=False)
 
     username: Mapped[str] = mapped_column(String(80), unique=True)
     email: Mapped[str] = mapped_column(String(255), unique=True)
@@ -32,7 +33,6 @@ class User(Base):
 
     is_active: Mapped[bool] = mapped_column(default=True)
     password_reset: Mapped[bool] = mapped_column(default=True)
-    role: Mapped[str] = mapped_column(String(20), default="user")
 
     created_at: Mapped[datetime] = mapped_column(default=lambda: datetime.now(UTC))
 

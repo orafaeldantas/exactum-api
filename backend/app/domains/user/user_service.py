@@ -2,6 +2,8 @@ from collections.abc import Sequence
 from uuid import UUID
 
 from app.database.session import DatabaseSession
+from app.domains.rbac.container import rbac_service
+from app.domains.rbac.rbac_repository import RBACRepository
 from app.domains.user.user_exceptions import (
     InvalidPasswordException,
     PasswordMismatchException,
@@ -23,8 +25,7 @@ class UserService:
         user = User(
             username=data.get("username"),
             tenant_id=tenant_id,
-            is_active=data.get("is_active"),
-            role=data.get("role", "user"),
+            is_active=data.get("is_active", True),
             email=data.get("email"),
             password_reset=True,
         )
@@ -32,6 +33,15 @@ class UserService:
         user.set_password(str(data.get("password")))
 
         DatabaseSession.add(user)
+        DatabaseSession.flush()
+
+        role = RBACRepository().get_role_by_uuid(data.get("role_uuid"))
+
+        if not role:
+            raise KeyError("Not found role")
+
+        rbac_service.assign_role_to_user(user.id, role.id)
+
         DatabaseSession.commit()
 
         return user
@@ -61,11 +71,23 @@ class UserService:
         if data.get("password"):
             user.set_password(data["password"])
 
-        update_fields = ["username", "email", "role", "is_active", "password_reset"]
+        update_fields = ["username", "email", "is_active", "password_reset"]
 
         for field in update_fields:
             if field in data:
                 setattr(user, field, data[field])
+
+        if data.get("role_uuid"):
+            new_role = data.get("role_uuid")
+            current_role = RBACRepository().get_user_roles(user.id)
+
+            if str(new_role) != str(current_role[0]):
+                role = RBACRepository().get_role_by_uuid(data.get("role_uuid"))
+
+                if not role:
+                    raise KeyError("Not found role")
+
+                rbac_service.assign_role_to_user(user.id, role.id)
 
         DatabaseSession.add(user)
         DatabaseSession.commit()

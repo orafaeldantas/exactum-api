@@ -5,7 +5,6 @@ from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from flask_smorest import Blueprint
 
-from app.core.security.security import role_authorization
 from app.domains.auth.auth_controller import AuthController
 from app.domains.auth.auth_schema import (
     LoginSchema,
@@ -16,6 +15,7 @@ from app.domains.auth.auth_schema import (
     RunImpersonateResponseSchema,
     StopImpersonateResponseSchema,
 )
+from app.domains.super_admin.super_admin_decorators import require_super_admin
 
 blp_auth = Blueprint(
     "auth", __name__, url_prefix="/auth", description="Authentication operations"
@@ -76,7 +76,7 @@ class Logout(MethodView):
 @blp_auth.route("/run-impersonate/<uuid:tenant_uuid>")
 class RunImpersonateRoute(MethodView):
     @jwt_required()
-    @role_authorization(["super-admin"])
+    @require_super_admin
     @blp_auth.doc(security=[{"CookieAuth": []}])
     @blp_auth.response(201, RunImpersonateResponseSchema)
     def post(self, tenant_uuid: UUID) -> Response:
@@ -86,8 +86,7 @@ class RunImpersonateRoute(MethodView):
 
 @blp_auth.route("/stop-impersonate")
 class StopImpersonateRoute(MethodView):
-    @jwt_required(refresh=True)
-    @role_authorization(["super-admin", "admin"])
+    @jwt_required()
     @blp_auth.doc(security=[{"CookieAuth": []}])
     @blp_auth.response(201, StopImpersonateResponseSchema)
     def post(self) -> Response:
