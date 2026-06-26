@@ -2,7 +2,7 @@ from functools import wraps
 
 from flask import g
 
-from app.domains.rbac.container import rbac_service
+from app.domains.rbac.container import get_rbac_service
 from app.domains.rbac.rbac_exceptions import ForbiddenException
 
 
@@ -16,7 +16,7 @@ def permission_required(permission: str):
             if getattr(g, "is_super_admin", False):
                 return func(*args, **kwargs)
 
-            permissions = rbac_service.get_effective_permissions(g.user_id)
+            permissions = get_rbac_service().get_effective_permissions(g.user_id)
 
             if permission not in permissions:
                 raise ForbiddenException()

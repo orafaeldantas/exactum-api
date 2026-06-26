@@ -1,11 +1,13 @@
+from collections.abc import Sequence
+
 from app.domains.rbac.constants import DEFAULT_ROLES
 from app.domains.rbac.rbac_repository import RBACRepository
-from app.extensions import db, redis_client
+from app.extensions import db
 from app.models.rbac import Role, RolePermission
 
 
 class RBACService:
-    def __init__(self, repo: RBACRepository, cache: redis_client):
+    def __init__(self, repo: RBACRepository, cache):
         self.repo = repo
         self.cache = cache
 
@@ -29,6 +31,10 @@ class RBACService:
         db.session.commit()
 
         self._invalidate_user_cache(user_id)
+
+    # ========================= GET ROLES =========================
+    def get_all_roles(self, tenant_id: int) -> Sequence[Role]:
+        return self.repo.get_all_roles_by_tenant_id(tenant_id)
 
     # ========================= REVOKE USER PERMISSION =========================
     def revoke_permission(self, user_id: int, permission_id: int):
