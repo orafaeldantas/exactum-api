@@ -27,7 +27,7 @@ class RBACRepository:
         )
         return db.session.execute(stmt).scalar_one_or_none()
 
-    def get_all_roles_by_tenant_id(self, tenant_id: int) -> Sequence[Role]:
+    def get_roles_by_tenant_id(self, tenant_id: int) -> Sequence[Role]:
         stmt = select(Role).where(Role.tenant_id == tenant_id)
         return db.session.scalars(stmt).all()
 
