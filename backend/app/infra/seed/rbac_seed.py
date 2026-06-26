@@ -25,6 +25,7 @@ PERMISSIONS = [
     "goal:create",
     "goal:update",
     "goal:delete",
+    "rbac:view",
 ]
 
 
