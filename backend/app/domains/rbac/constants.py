@@ -22,6 +22,7 @@ DEFAULT_ROLES = {
         "goal:create",
         "goal:update",
         "goal:delete",
+        "rbac:view",
     ],
     "sales_manager": [
         "product:view",

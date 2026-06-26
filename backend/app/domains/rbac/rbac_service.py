@@ -33,8 +33,8 @@ class RBACService:
         self._invalidate_user_cache(user_id)
 
     # ========================= GET ROLES =========================
-    def get_all_roles(self, tenant_id: int) -> Sequence[Role]:
-        return self.repo.get_all_roles_by_tenant_id(tenant_id)
+    def get_roles(self, tenant_id: int) -> Sequence[Role]:
+        return self.repo.get_roles_by_tenant_id(tenant_id)
 
     # ========================= REVOKE USER PERMISSION =========================
     def revoke_permission(self, user_id: int, permission_id: int):
