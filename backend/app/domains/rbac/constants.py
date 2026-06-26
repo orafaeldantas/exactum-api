@@ -1,5 +1,5 @@
 DEFAULT_ROLES = {
-    "admin": [
+    "administrator": [
         "product:view",
         "product:create",
         "product:update",
@@ -11,20 +11,46 @@ DEFAULT_ROLES = {
         "user:create",
         "user:update",
         "user:delete",
+        "profile:view",
+        "profile:update",
+        "tenant:view",
+        "tenant:update",
+        "analytics:view",
+        "inventory:view",
+        "inventory:update",
+        "goal:view",
+        "goal:create",
+        "goal:update",
+        "goal:delete",
     ],
-    "manager": [
+    "sales_manager": [
         "product:view",
-        "product:create",
-        "product:update",
         "sale:view",
         "sale:create",
+        "sale:cancel",
+        "analytics:view",
+        "goal:view",
+        "goal:create",
+        "goal:update",
+        "inventory:view",
+        "profile:view",
+        "profile:update",
     ],
     "seller": [
         "product:view",
+        "sale:view",
         "sale:create",
+        "goal:view",
+        "profile:view",
+        "profile:update",
     ],
-    "stock": [
+    "stock_clerk": [
         "product:view",
+        "product:create",
         "product:update",
+        "inventory:view",
+        "inventory:update",
+        "profile:view",
+        "profile:update",
     ],
 }
