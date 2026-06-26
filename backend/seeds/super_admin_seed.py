@@ -36,7 +36,7 @@ def super_admin_seed():
             email=os.getenv("SUPER_ADMIN_EMAIL"),
             tenant_id=tenant.id,
             is_active=True,
-            role="super-admin",
+            is_super_admin=True,
             password_reset=False,
         )
 

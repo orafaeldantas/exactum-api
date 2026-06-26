@@ -4,7 +4,7 @@ from decimal import Decimal
 from app.database.session import DatabaseSession
 from app.domains.goal.goal_exceptions import RegistrationFailedGoal
 from app.domains.goal.goal_repository import GoalRepository
-from app.domains.rbac.container import rbac_service
+from app.domains.rbac.container import get_rbac_service
 from app.domains.rbac.rbac_service import RBACRepository
 from app.domains.tenant.tenant_exceptions import TenantNotFound
 from app.domains.tenant.tenant_repository import TenantRepository
@@ -45,7 +45,7 @@ class TenantService:
         DatabaseSession.add(tenant)
         DatabaseSession.flush()
 
-        rbac_service.create_default_roles(tenant.id)
+        get_rbac_service().create_default_roles(tenant.id)
         DatabaseSession.flush()
 
         user = User(
@@ -62,6 +62,9 @@ class TenantService:
         DatabaseSession.flush()
 
         role_admin = RBACRepository().get_role_admin_by_tenant(tenant.id)
+
+        if not role_admin:
+            raise KeyError("Not found role")
 
         RBACRepository().add_user_role(user.id, role_admin.id)
 

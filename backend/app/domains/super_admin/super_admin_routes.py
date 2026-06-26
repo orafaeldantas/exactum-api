@@ -5,8 +5,8 @@ from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from flask_smorest import Blueprint
 
-from app.core.security.security import role_authorization
 from app.domains.super_admin.super_admin_controller import SuperAdminController
+from app.domains.super_admin.super_admin_decorators import require_super_admin
 from app.domains.super_admin.super_admin_schema import (
     SuperAdminListTenantsResponseSchema,
 )
@@ -25,7 +25,7 @@ blp_super_admin = Blueprint(
 @blp_super_admin.route("/tenants")
 class ListTenantsRoute(MethodView):
     @jwt_required()
-    @role_authorization(["super-admin"])
+    @require_super_admin
     @blp_super_admin.doc(security=[{"CookieAuth": []}])
     @blp_super_admin.response(200, SuperAdminListTenantsResponseSchema(many=True))
     def get(self) -> Sequence["Tenant"]:
