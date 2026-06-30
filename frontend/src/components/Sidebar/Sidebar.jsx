@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import { SuperAdminContext } from "../../context/SuperAdminContext";
 import { apiFetch } from "../../services/api";
 import { useContext } from "react";
 import toast from "react-hot-toast";
@@ -25,6 +26,7 @@ import {
 function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const { user, impersonateMode } = useContext(AuthContext);
+  const { superAdmin } = useContext(SuperAdminContext);
   const roles = ["admin", 'super-admin'];
 
   function toggleSidebar() {
@@ -39,6 +41,7 @@ function Sidebar() {
   const activeLinkClass = "bg-blue-600 !text-white shadow-lg shadow-blue-900/20";
 
   const isImpersonating = impersonateMode ?? false
+  const isSuperAdmin = superAdmin ?? false
 
   async function handleImpersonate() {
     try {
@@ -88,7 +91,7 @@ function Sidebar() {
           </button>
         )}
 
-        {user?.role.name !== 'super-admin' && (
+        {!isSuperAdmin && (
           <>
             <NavLink 
               to="/dashboard" 
@@ -152,7 +155,7 @@ function Sidebar() {
           </>
         )}
 
-        {user?.role.name === 'super-admin' && (
+        {isSuperAdmin && (
           <>       
             <div className="mt-6 mb-2 px-4">
               {!collapsed && <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">System Management</p>}

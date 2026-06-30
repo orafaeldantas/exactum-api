@@ -54,6 +54,7 @@ const AdminSettings = lazy(() => import("./pages/settings/AdminSettings"));
 const ManageCompanies = lazy(() => import("./pages/system/ManageCompanies"));
 const SystemDashboard = lazy(() => import("./pages/system/SystemDashboard"));
 const InfraHealth = lazy(() => import("./pages/system/InfraHealth"));
+const SystemLogs = lazy(() => import("./pages/system/SystemLogs"));
 
 
 function App() {
@@ -147,6 +148,7 @@ function App() {
             <Route path="/system/manage-companies" element={<RoleRoute requiredRole={"super-admin"}><ManageCompanies /></RoleRoute>} />
             <Route path="/system/dashboard" element={<RoleRoute requiredRole={"super-admin"}><SystemDashboard /></RoleRoute>} />
             <Route path="/system/infra-health" element={<RoleRoute requiredRole={"super-admin"}><InfraHealth /></RoleRoute>} />
+            <Route path="/system/logs" element={<RoleRoute requiredRole={"super-admin"}><SystemLogs /></RoleRoute>} />
 
           </Route>
         </Routes>
