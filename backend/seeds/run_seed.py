@@ -74,11 +74,9 @@ def run_seed(app):
             ]
             tenants_created = []
 
-            # 1. Create super administrator
             if not super_admin_seed():
                 raise RuntimeError("Error creating super administrator.")
 
-            # 2. Create the tenants and products.
             for tenant, product in zip(tenants, products):
                 tenant_id = tenant_database_seed(**tenant)
                 if not tenant_id:
@@ -90,9 +88,7 @@ def run_seed(app):
                         f"Error seeding products for the tenant: {tenant}"
                     )
 
-            # 3. Generate sales history (2020 to May 2026)
             for tenant_id in tenants_created:
-                # Generation from 2020 to 2025 (full year)
                 user_id = TenantQueries.get_users_by_tenant(tenant_id)
                 if not user_id:
                     raise RuntimeError(
@@ -105,7 +101,6 @@ def run_seed(app):
                     end_year=2025,
                 )
 
-                # Generates the year 2026 up to the month of May (5)
                 generate_sales(
                     tenant_id=tenant_id,
                     user_id=user_id,
