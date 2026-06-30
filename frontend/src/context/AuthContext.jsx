@@ -3,10 +3,13 @@ import { apiFetch } from "../services/api";
 import { UserContext } from "../context/UserContext";
 import { TenantContext } from "../context/TenantContext";
 import { SuperAdminContext } from "../context/SuperAdminContext";
+import { useNavigate } from 'react-router-dom';
 
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
+
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
@@ -25,37 +28,50 @@ export function AuthProvider({ children }) {
       }
   
       const data = await response.json();
-
+  
       if (data?.auth?.is_super_admin) {
         setSuperAdmin(data.auth);             
-      }
-      else {
+      } else {
         setTenantData(data.tenant);
         setUser(data.auth);
       }
-
+  
       setProfile(data.user);
       setPermissions(data.auth.permissions);  
-
+  
       const isImpersonating = data?.impersonate_mode ?? false;
       setImpersonateMode(isImpersonating);
-      
-      console.log(data.auth)
-      console.log(data.user)
-      console.log(data.tenant)
-
+  
+      return data; 
   
     } catch {
       setTenantData(null);
       setProfile(null);
       setUser(null);
+      return null; 
     } finally {
       setLoading(false);
     }
   }
 
   async function login() {
-    await bootstrap();
+    const bootstrapData = await bootstrap();
+
+    console.log("=== O que veio no bootstrapData? ===");
+    console.log(bootstrapData); 
+    console.log("=== Qual o valor exato deste teste? ===");
+    console.log(bootstrapData?.auth?.is_super_admin);
+  
+    if (!bootstrapData) {
+      console.error("Authentication failed");
+      return;
+    }
+  
+    if (bootstrapData?.is_super_admin) {
+      navigate("/system/dashboard", { replace: true });
+    } else {
+      navigate("/dashboard", { replace: true });
+    }
   }
 
   async function logout() {
