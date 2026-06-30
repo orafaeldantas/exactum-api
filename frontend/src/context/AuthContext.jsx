@@ -2,6 +2,7 @@ import { createContext, useEffect, useState, useContext } from "react";
 import { apiFetch } from "../services/api";
 import { UserContext } from "../context/UserContext";
 import { TenantContext } from "../context/TenantContext";
+import { SuperAdminContext } from "../context/SuperAdminContext";
 
 export const AuthContext = createContext();
 
@@ -10,8 +11,10 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [impersonateMode, setImpersonateMode] = useState(false);
+  const [permissions, setPermissions] = useState("");
   const { setProfile } = useContext(UserContext);
   const { setTenantData } = useContext(TenantContext);
+  const { setSuperAdmin } = useContext(SuperAdminContext);
   
   async function bootstrap() {
     try {
@@ -22,13 +25,25 @@ export function AuthProvider({ children }) {
       }
   
       const data = await response.json();
-  
-      setTenantData(data.tenant);
+
+      if (data?.auth?.is_super_admin) {
+        setSuperAdmin(data.auth);             
+      }
+      else {
+        setTenantData(data.tenant);
+        setUser(data.auth);
+      }
+
       setProfile(data.user);
-      setUser(data.auth);
+      setPermissions(data.auth.permissions);  
 
       const isImpersonating = data?.impersonate_mode ?? false;
       setImpersonateMode(isImpersonating);
+      
+      console.log(data.auth)
+      console.log(data.user)
+      console.log(data.tenant)
+
   
     } catch {
       setTenantData(null);
@@ -71,7 +86,8 @@ export function AuthProvider({ children }) {
       login, 
       logout,        
       impersonateMode,
-      bootstrap  
+      bootstrap,
+      permissions,  
     }}>
       {children}
     </AuthContext.Provider>

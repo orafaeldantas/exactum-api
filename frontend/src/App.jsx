@@ -79,8 +79,12 @@ function App() {
           <Route path="/login" element={<Login />} />
 
           {/* 2. PROTECTED ROUTES WITHOUT GLOBAL LAYOUT */}
-          <Route path="/checkout" element={<RoleRoute><LocalSales /></RoleRoute>} />
-          <Route path="/reset-password" element={<RoleRoute><ResetPassword /></RoleRoute>} />
+          <Route element={<RoleRoute requiredRole={"sale:create"} />}>
+            <Route path="/checkout" element={<LocalSales />} />
+          </Route>
+          <Route element={<RoleRoute requiredRole={"profile:update"} />}>
+            <Route path="/reset-password" element={<ResetPassword />} />
+          </Route>
           
           {/* 3. INTERNAL SYSTEM (DASHBOARD & BACK OFFICE WITH LAYOUT AND SESSION FILTER) */}
           <Route element={<RoleRoute><Layout /></RoleRoute>}>
@@ -88,31 +92,53 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
 
             {/* Sub-block: Billing (Admin / Super Admin) */}
-            <Route element={<RoleRoute requiredRole={["admin", "super-admin"]} />}>
+            <Route element={<RoleRoute requiredRole={"analytics:view"} />}>
               <Route path="/revenue" element={<RevenuePeriod />} />
+            </Route>
+            <Route element={<RoleRoute requiredRole={"analytics:view"} />}>
               <Route path="/average-ticket" element={<AverageTicketAnalytics />} />
+            </Route>
+            <Route element={<RoleRoute requiredRole={"sale:view"} />}>
               <Route path="/products-sales" element={<ListProductsSales />} />
+            </Route>
+            <Route element={<RoleRoute requiredRole={"sale:view"} />}>
               <Route path="/sales" element={<ListSales />} />
+            </Route>
+            <Route element={<RoleRoute requiredRole={"sale:view"} />}>
               <Route path="/sales/:uuid" element={<ListSaleItems />} />
             </Route>
+            
 
             {/* Sub-block: User Control */}
-            <Route element={<RoleRoute requiredRole={["admin", "super-admin"]} />}>
+            <Route element={<RoleRoute requiredRole={"user:view"} />}>
               <Route path="/users" element={<ListUsers />} />
+            </Route>
+            <Route element={<RoleRoute requiredRole={"user:create"} />}>
               <Route path="/users/create" element={<CreateUser />} />
+            </Route>
+            <Route element={<RoleRoute requiredRole={"user:update"} />}>
               <Route path="/users/edit/:uuid" element={<EditUser />} />
             </Route>
+            
 
             {/* Sub-block: Products (Accessible to all authenticated users, except editors) */}
-            <Route path="/products" element={<ListProducts />} />
-            <Route path="/low-stock" element={<LowStockProducts />} />
-            <Route path="/products/create" element={<CreateProduct />} />
-            <Route path="/product/edit/:uuid" element={<EditProduct />} />
+            <Route element={<RoleRoute requiredRole={"product:view"} />}>
+              <Route path="/products" element={<ListProducts />} />
+            </Route>
+            <Route element={<RoleRoute requiredRole={"product:update"} />}>
+              <Route path="/low-stock" element={<LowStockProducts />} />
+            </Route>
+            <Route element={<RoleRoute requiredRole={"product:create"} />}>
+              <Route path="/products/create" element={<CreateProduct />} />
+            </Route>
+            <Route element={<RoleRoute requiredRole={"product:update"} />}>
+              <Route path="/product/edit/:uuid" element={<EditProduct />} />
+            </Route>
 
             {/* Sub-block: Critical Settings and Levels */}
-            <Route path="/user-settings" element={<RoleRoute requiredRole={["user", "super-admin"]}><UserSettings /></RoleRoute>} />
-            <Route path="/admin-settings" element={<RoleRoute requiredRole={["admin"]}><AdminSettings /></RoleRoute>} />
-            <Route path="/manage-companies" element={<RoleRoute requiredRole={["super-admin"]}><ManageCompanies /></RoleRoute>} />
+            <Route path="/user-settings" element={<RoleRoute requiredRole={"profile:view"}><UserSettings /></RoleRoute>} />
+            <Route path="/admin-settings" element={<RoleRoute requiredRole={"tenant:update"}><AdminSettings /></RoleRoute>} />
+            <Route path="/manage-companies" element={<RoleRoute requiredRole={"super-admin"}><ManageCompanies /></RoleRoute>} />
 
           </Route>
         </Routes>
@@ -122,3 +148,32 @@ function App() {
 }
 
 export default App;
+
+
+/*
+PERMISSIONS = [
+    "product:view",
+    "product:create",
+    "product:update",
+    "product:delete",
+    "sale:view",
+    "sale:create",
+    "sale:cancel",
+    "user:view",
+    "user:create",
+    "user:update",
+    "user:delete",
+    "profile:view",
+    "profile:update",
+    "tenant:view",
+    "tenant:update",
+    "analytics:view",
+    "inventory:view",
+    "inventory:update",
+    "goal:view",
+    "goal:create",
+    "goal:update",
+    "goal:delete",
+    "rbac:view",
+]
+*/
