@@ -10,7 +10,7 @@ def require_super_admin(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):
 
-        if not g.user.is_super_admin:
+        if not g.is_super_admin:
             raise AuthorizationNotPermitted()
 
         return fn(*args, **kwargs)

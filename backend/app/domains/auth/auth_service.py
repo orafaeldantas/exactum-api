@@ -83,12 +83,12 @@ class AuthService:
             "user_uuid": user.uuid,
             "role": {"name": "super-admin"},
             "permissions": permission,
-            "is_super_admin": True,
         }
 
         bootstrap_data = {
             "auth": auth,
             "user": user,
+            "is_super_admin": user.is_super_admin,
         }
 
         return bootstrap_data

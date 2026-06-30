@@ -6,7 +6,7 @@ import { Mail, Lock, LogIn, AlertCircle, Box } from "lucide-react"
 
 export default function LoginForm() {
   const navigate = useNavigate()
-  const { login } = useContext(AuthContext)
+  const { login, user } = useContext(AuthContext)
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -27,11 +27,8 @@ export default function LoginForm() {
         })
       });
 
-      const data = await response.json();
-      await login(data.access_token)
+      await login()
 
-   
-      navigate("/dashboard")   
     } catch (err) {
       setError(err.message || "Credenciais inválidas")
     } finally {
