@@ -70,7 +70,7 @@ def default_user(db_session, default_tenant):
 
 @pytest.fixture(scope="function")
 def default_roles(default_tenant):
-    roles = get_rbac_service().get_all_roles(default_tenant.id)
+    roles = get_rbac_service().get_roles(default_tenant.id)
 
     admin_role = next((role for role in roles if role.name == "administrator"), None)
 
