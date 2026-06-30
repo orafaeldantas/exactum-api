@@ -71,6 +71,29 @@ class AuthService:
         return AuthService._create_session(user)
 
     @staticmethod
+    def bootstrap_super_admin(user_id: int) -> dict:
+
+        user = UserRepository.get_user_by_id(user_id)
+        if not user:
+            raise BootstrapNotFound()
+
+        permission = ["super-admin"]
+
+        auth = {
+            "user_uuid": user.uuid,
+            "role": {"name": "super-admin"},
+            "permissions": permission,
+            "is_super_admin": True,
+        }
+
+        bootstrap_data = {
+            "auth": auth,
+            "user": user,
+        }
+
+        return bootstrap_data
+
+    @staticmethod
     def bootstrap(user_id: int, tenant_id: int, impersonate_mode: bool) -> dict:
 
         user = UserRepository.get_user_by_id(user_id)
@@ -108,7 +131,6 @@ class AuthService:
         bootstrap_data = {
             "user": user,
             "tenant": tenant_formated,
-            "goal": goal,
             "auth": auth,
         }
 
@@ -116,7 +138,6 @@ class AuthService:
             bootstrap_data = {
                 "user": user,
                 "tenant": tenant_formated,
-                "goal": goal,
                 "auth": auth,
                 "impersonate_mode": impersonate_mode,
                 "is_super_admin": user.is_super_admin,
