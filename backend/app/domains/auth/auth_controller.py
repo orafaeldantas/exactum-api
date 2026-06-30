@@ -21,6 +21,9 @@ class AuthController:
     @staticmethod
     def bootstrap() -> dict:
 
+        if g.is_super_admin:
+            return AuthService.bootstrap_super_admin(g.user_id)
+
         return AuthService.bootstrap(g.user_id, g.tenant_id, g.impersonate_mode)
 
     @staticmethod

@@ -4,7 +4,7 @@ from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from flask_smorest import Blueprint
 
-from app.core.security.security import role_authorization
+from app.domains.rbac.decorators.permissions import permission_required
 from app.domains.tenant.tenant_controller import TenantController
 from app.domains.tenant.tenant_schema import (
     CreateTenantSchema,
@@ -25,7 +25,7 @@ if TYPE_CHECKING:
 @blp_tenants.route("/")
 class TenantRoute(MethodView):
     @jwt_required()
-    @role_authorization(["admin", "super-admin"])
+    @permission_required("tenant:view")
     @blp_tenants.doc(security=[{"CookieAuth": []}])
     @blp_tenants.response(200, ResponseTenantSchema)
     def get(self) -> "Tenant":
@@ -39,7 +39,7 @@ class TenantRoute(MethodView):
         return TenantController.create_tenant(data)
 
     @jwt_required()
-    @role_authorization(["admin", "super-admin"])
+    @permission_required("tenant:update")
     @blp_tenants.doc(security=[{"CookieAuth": []}])
     @blp_tenants.arguments(UdateTenantSchema)
     @blp_tenants.response(200, ResponseUdateTenantSchema)

@@ -28,7 +28,6 @@ function Navbar() {
     navigate("/");
   }
 
-  // Close the menu when you click outside.
   useEffect(() => {
     function handleClickOutside(event) {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -47,8 +46,15 @@ function Navbar() {
   const userInitial =
   profile?.username?.charAt(0)?.toUpperCase() || "U";
 
-  const isAdmin = user?.role === "admin";
-  const isSuperAdmin = user?.role === "super-admin";
+  const isAdmin = user?.role.name === "administrator";
+  const isSuperAdmin = user?.role.is_super_admin;
+
+  const roles = {
+    "administrator": "Administrador",
+    "sales_manager": "Gerente de Vendas",
+    "seller": "Vendedor",
+    "stock_clerk": "Estoquista",
+  }
 
   return (
     <nav
@@ -293,7 +299,7 @@ function Navbar() {
                           >
                             {isAdmin && <ShieldCheck className="h-3 w-3 text-purple-500" />}
                             {isSuperAdmin && <ShieldCheck className="h-3 w-3 text-slate-700 dark:text-slate-300" />}
-                            {user?.role || "User"}
+                            {roles[user?.role.name] || "Usuário"}
                           </span>
                         </div>
                       </div>

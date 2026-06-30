@@ -4,7 +4,7 @@ from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from flask_smorest import Blueprint
 
-from app.core.security.security import role_authorization
+from app.domains.rbac.decorators.permissions import permission_required
 from app.domains.sale.controllers.sale_controller import SaleController
 from app.domains.sale.schemas.sale_schema import (
     CreateSaleResponseSchema,
@@ -22,7 +22,7 @@ blp_sales = Blueprint(
 @blp_sales.route("/")
 class SaleListRoute(MethodView):
     @jwt_required()
-    @role_authorization(["admin", "super-admin", "user"])
+    @permission_required("sale:create")
     @blp_sales.doc(security=[{"CookieAuth": []}])
     @blp_sales.arguments(CreateSaleSchema)
     @blp_sales.response(201, CreateSaleResponseSchema)
@@ -31,7 +31,7 @@ class SaleListRoute(MethodView):
         return SaleController.create_sale(data)
 
     @jwt_required()
-    @role_authorization(["admin", "super-admin", "user"])
+    @permission_required("sale:view")
     @blp_sales.doc(security=[{"CookieAuth": []}])
     @blp_sales.arguments(ListSaleQuerySchema, location="query")
     @blp_sales.response(200, ListSaleResponseSchema(many=True))
@@ -43,7 +43,7 @@ class SaleListRoute(MethodView):
 @blp_sales.route("/<uuid:sale_id>")
 class SaleDetailRoute(MethodView):
     @jwt_required()
-    @role_authorization(["admin", "super-admin", "user"])
+    @permission_required("sale:view")
     @blp_sales.doc(security=[{"CookieAuth": []}])
     @blp_sales.response(200, ListSaleWithItemsResponseSchema)
     def get(self, sale_id: UUID):

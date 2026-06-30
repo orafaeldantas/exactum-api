@@ -1,6 +1,9 @@
 import pytest
 from sqlalchemy import select
 
+from app.domains.rbac.container import get_rbac_service
+from app.domains.rbac.rbac_service import RBACRepository
+from app.infra.seed.rbac_seed import seed_rbac
 from app.models.product import Product
 from app.models.sale import ItemSale, Sale
 from app.models.tenant import Tenant
@@ -10,6 +13,8 @@ from app.models.user import User
 @pytest.fixture(scope="function")
 def default_tenant(db_session):
     """Creates a default tenant."""
+
+    seed_rbac()
 
     stmt = select(Tenant).where(Tenant.id == 1)
     tenant = db_session.scalars(stmt).first()
@@ -26,6 +31,8 @@ def default_tenant(db_session):
         slug="PYTEST",
     )
     db_session.add(tenant)
+    db_session.flush()
+    get_rbac_service().create_default_roles(tenant.id)
     db_session.commit()
     return tenant
 
@@ -45,13 +52,29 @@ def default_user(db_session, default_tenant):
         email="user@pytest.com",
         tenant_id=default_tenant.id,
         is_active=True,
-        role="admin",
         password_reset=False,
     )
     user.set_password("pytestuserpsw")
     db_session.add(user)
+    db_session.flush()
+    role_admin = RBACRepository().get_role_admin_by_tenant(default_tenant.id)
+
+    if not role_admin:
+        raise KeyError("Not found role")
+
+    RBACRepository().add_user_role(user.id, role_admin.id)
+
     db_session.commit()
     return user
+
+
+@pytest.fixture(scope="function")
+def default_roles(default_tenant):
+    roles = get_rbac_service().get_roles(default_tenant.id)
+
+    admin_role = next((role for role in roles if role.name == "administrator"), None)
+
+    return admin_role
 
 
 @pytest.fixture(scope="function")

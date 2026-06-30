@@ -6,7 +6,7 @@ from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from flask_smorest import Blueprint
 
-from app.core.security.security import owner_required, role_authorization
+from app.domains.rbac.decorators.permissions import permission_required
 from app.domains.user.user_controller import UserController
 from app.domains.user.user_schema import (
     CreateUserSchema,
@@ -28,7 +28,7 @@ blp_users = Blueprint(
 @blp_users.route("/")
 class UserListRoute(MethodView):
     @jwt_required()
-    @role_authorization(["admin", "super-admin"])
+    @permission_required("user:view")
     @blp_users.doc(security=[{"CookieAuth": []}])
     @blp_users.response(200, UserResponseSchema(many=True))
     def get(self) -> Sequence["User"]:
@@ -36,7 +36,7 @@ class UserListRoute(MethodView):
         return UserController.get_users()
 
     @jwt_required()
-    @role_authorization(["admin", "super-admin"])
+    @permission_required("user:create")
     @blp_users.doc(security=[{"CookieAuth": []}])
     @blp_users.arguments(CreateUserSchema)
     @blp_users.response(201, UserResponseSchema)
@@ -48,7 +48,7 @@ class UserListRoute(MethodView):
 @blp_users.route("/<uuid:user_uuid>")
 class UserDetailRoute(MethodView):
     @jwt_required()
-    @role_authorization(["admin", "super-admin"])
+    @permission_required("user:view")
     @blp_users.doc(security=[{"CookieAuth": []}])
     @blp_users.response(200, UserResponseSchema)
     def get(self, user_uuid: UUID) -> "User":
@@ -56,7 +56,7 @@ class UserDetailRoute(MethodView):
         return UserController.get_user(user_uuid)
 
     @jwt_required()
-    @role_authorization(["admin", "super-admin"])
+    @permission_required("user:update")
     @blp_users.doc(security=[{"CookieAuth": []}])
     @blp_users.arguments(UpdateUserSchema)
     @blp_users.response(200, UserResponseSchema)
@@ -68,7 +68,7 @@ class UserDetailRoute(MethodView):
 @blp_users.route("/new_password/<uuid:user_uuid>")
 class UserNewPasswordRoute(MethodView):
     @jwt_required()
-    @role_authorization(["admin", "super-admin", "user"])
+    @permission_required("profile:update")
     @blp_users.doc(security=[{"CookieAuth": []}])
     @blp_users.arguments(NewPasswordUserSchema)
     @blp_users.response(200, NewPassworUserResponseSchema)
@@ -80,8 +80,7 @@ class UserNewPasswordRoute(MethodView):
 @blp_users.route("/profile/<uuid:user_uuid>")
 class UserProfileRoute(MethodView):
     @jwt_required()
-    @role_authorization(["admin", "super-admin", "user"])
-    @owner_required()
+    @permission_required("profile:view")
     @blp_users.doc(security=[{"CookieAuth": []}])
     @blp_users.response(200, ProfileSchema)
     def get(self, user_uuid: UUID) -> "User":
@@ -89,8 +88,7 @@ class UserProfileRoute(MethodView):
         return UserController.get_user(user_uuid)
 
     @jwt_required()
-    @role_authorization(["admin", "super-admin", "user"])
-    @owner_required()
+    @permission_required("profile:update")
     @blp_users.doc(security=[{"CookieAuth": []}])
     @blp_users.arguments(ProfileSchema)
     @blp_users.response(200, ProfileSchema)

@@ -17,13 +17,12 @@ class TokenService:
         if impersonate:
             return {
                 "tenant_id": user.tenant_id,
-                "role": user.role,
                 "impersonate_mode": True,
             }
 
         return {
             "tenant_id": user.tenant_id,
-            "role": user.role,
+            "is_super_admin": user.is_super_admin,
             "password_reset": user.password_reset,
         }
 

@@ -2,7 +2,7 @@ from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from flask_smorest import Blueprint
 
-from app.core.security.security import role_authorization
+from app.domains.rbac.decorators.permissions import permission_required
 from app.domains.sale.controllers.revenue_analytics_controller import (
     RevenueAnalyticsController,
 )
@@ -24,7 +24,7 @@ blp_revenue_analytics = Blueprint(
 @blp_revenue_analytics.route("/")
 class RevenueAnalyticsListRoute(MethodView):
     @jwt_required()
-    @role_authorization(["admin", "super-admin", "user"])
+    @permission_required("analytics:view")
     @blp_revenue_analytics.doc(security=[{"CookieAuth": []}])
     @blp_revenue_analytics.arguments(RevenueAnalyticsQuerySchema, location="query")
     @blp_revenue_analytics.response(200, ListRevenueAnalyticsResponseSchema)
@@ -36,7 +36,7 @@ class RevenueAnalyticsListRoute(MethodView):
 @blp_revenue_analytics.route("/accumulated-revenue-day")
 class AccumulatedRevenueDayRoute(MethodView):
     @jwt_required()
-    @role_authorization(["admin", "super-admin", "user"])
+    @permission_required("analytics:view")
     @blp_revenue_analytics.doc(security=[{"CookieAuth": []}])
     @blp_revenue_analytics.arguments(RevenueAnalyticsQuerySchema, location="query")
     @blp_revenue_analytics.response(200, ListAccumulatedRevenueDaySchema(many=True))
@@ -48,7 +48,7 @@ class AccumulatedRevenueDayRoute(MethodView):
 @blp_revenue_analytics.route("/ticket-average")
 class AverageTicketRoute(MethodView):
     @jwt_required()
-    @role_authorization(["admin", "super-admin", "user"])
+    @permission_required("analytics:view")
     @blp_revenue_analytics.doc(security=[{"CookieAuth": []}])
     @blp_revenue_analytics.arguments(RevenueAnalyticsQuerySchema, location="query")
     @blp_revenue_analytics.response(200, TicketAverageSchema)

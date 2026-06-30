@@ -16,6 +16,8 @@ from app.domains.auth.auth_exceptions import (
 from app.domains.auth.auth_repository import AuthRepository
 from app.domains.auth.token_service import TokenService
 from app.domains.goal.goal_repository import GoalRepository
+from app.domains.rbac.container import get_rbac_service
+from app.domains.rbac.rbac_repository import RBACRepository
 from app.domains.super_admin.super_admin_repository import SuperAdminRepository
 from app.domains.tenant.tenant_repository import TenantRepository
 from app.domains.user.user_repository import UserRepository
@@ -69,11 +71,41 @@ class AuthService:
         return AuthService._create_session(user)
 
     @staticmethod
+    def bootstrap_super_admin(user_id: int) -> dict:
+
+        user = UserRepository.get_user_by_id(user_id)
+        if not user:
+            raise BootstrapNotFound()
+
+        permission = ["super-admin"]
+
+        auth = {
+            "user_uuid": user.uuid,
+            "role": {"name": "super-admin"},
+            "permissions": permission,
+            "is_super_admin": True,
+        }
+
+        bootstrap_data = {
+            "auth": auth,
+            "user": user,
+        }
+
+        return bootstrap_data
+
+    @staticmethod
     def bootstrap(user_id: int, tenant_id: int, impersonate_mode: bool) -> dict:
 
         user = UserRepository.get_user_by_id(user_id)
         tenant = TenantRepository.get_tenant(tenant_id)
         goal = GoalRepository.get_goal(tenant_id)
+        user_role = RBACRepository().get_user_roles(user_id)
+        role = RBACRepository().get_role_by_id(user_role[0].role_id)
+
+        if not role:
+            raise KeyError("Not found role")
+
+        permissions = get_rbac_service().get_effective_permissions(user_id)
 
         if not (user and tenant):
             raise BootstrapNotFound()
@@ -81,8 +113,12 @@ class AuthService:
         auth = {
             "user_id": user.uuid,
             "tenant_id": tenant.uuid,
-            "role": user.role,
             "password_reset": user.password_reset,
+            "role": {
+                "uuid": role.uuid,
+                "name": role.name,
+            },
+            "permissions": list(permissions),
         }
 
         tenant_formated = {
@@ -95,7 +131,6 @@ class AuthService:
         bootstrap_data = {
             "user": user,
             "tenant": tenant_formated,
-            "goal": goal,
             "auth": auth,
         }
 
@@ -103,9 +138,9 @@ class AuthService:
             bootstrap_data = {
                 "user": user,
                 "tenant": tenant_formated,
-                "goal": goal,
                 "auth": auth,
                 "impersonate_mode": impersonate_mode,
+                "is_super_admin": user.is_super_admin,
             }
 
         return bootstrap_data
