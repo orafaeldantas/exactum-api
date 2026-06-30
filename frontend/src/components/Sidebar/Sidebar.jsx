@@ -176,7 +176,7 @@ function Sidebar() {
             </NavLink>
 
             <NavLink 
-              to="/system/health" 
+              to="/system/infra-health" 
               className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
             >
               <Activity size={20} className={collapsed ? "mx-auto" : ""} />
