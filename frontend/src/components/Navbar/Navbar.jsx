@@ -299,7 +299,7 @@ function Navbar() {
                           >
                             {isAdmin && <ShieldCheck className="h-3 w-3 text-purple-500" />}
                             {isSuperAdmin && <ShieldCheck className="h-3 w-3 text-slate-700 dark:text-slate-300" />}
-                            {roles[user?.role.name] || "User"}
+                            {roles[user?.role.name] || "Usuário"}
                           </span>
                         </div>
                       </div>
