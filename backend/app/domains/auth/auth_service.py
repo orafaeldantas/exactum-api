@@ -81,7 +81,7 @@ class AuthService:
 
         auth = {
             "user_uuid": user.uuid,
-            "role": {"name": "super-admin"},
+            "role": {"name": "super_admin"},
             "permissions": permission,
         }
 
@@ -140,7 +140,6 @@ class AuthService:
                 "tenant": tenant_formated,
                 "auth": auth,
                 "impersonate_mode": impersonate_mode,
-                "is_super_admin": user.is_super_admin,
             }
 
         return bootstrap_data
