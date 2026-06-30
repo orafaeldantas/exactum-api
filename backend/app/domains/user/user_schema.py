@@ -8,7 +8,7 @@ class BaseUserSchema(Schema):
 
     is_active = fields.Bool(required=True)
 
-    role = fields.Str(required=True)
+    role_uuid = fields.UUID(required=True)
 
     email = fields.Email(required=True)
 

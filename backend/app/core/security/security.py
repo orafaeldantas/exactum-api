@@ -33,22 +33,6 @@ def owner_required(param_name="user_id"):
     return decorator
 
 
-# RBAC - Role Based Access Control
-def role_authorization(role):
-    def decorator(fn):
-        @wraps(fn)
-        def wrapper(*args, **kwargs):
-
-            if g.role in role:
-                return fn(*args, **kwargs)
-
-            return jsonify({"error": "Forbidden: You are not authorized"}), 403
-
-        return wrapper
-
-    return decorator
-
-
 def tenant_required():
     def decorator(fn):
         @wraps(fn)

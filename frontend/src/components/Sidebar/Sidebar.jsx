@@ -148,7 +148,7 @@ function Sidebar() {
           </NavLink>
         )}
 
-        {user?.role === 'super-admin' && (
+        {user?.role.name === 'super-admin' && (
           <>
             <div className="mt-6 mb-2 px-4">
               {!collapsed && <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">System Management</p>}
@@ -184,7 +184,7 @@ function Sidebar() {
         <div className="my-4 border-t border-slate-800 mx-2" />
 
         <NavLink 
-          to={user?.role === "admin" ? "/admin-settings" : "user-settings"}
+          to={user?.role.name === "administrator" ? "/admin-settings" : "/user-settings"}
           className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
         >
           <Settings size={20} className={collapsed ? "mx-auto" : ""} />

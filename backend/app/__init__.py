@@ -7,14 +7,13 @@ from flask_smorest import Api
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from app.cli import register_cli
-from app.core.cache.redis_client import init_redis
 from app.core.middlewares.context import init_request_context
 from app.database.tenant_filter import init_tenant_filter
+from app.domains.rbac.container import init_rbac_container
 from app.exceptions.handlers import register_error_handlers
 from app.exceptions.jwt_handlers import register_jwt_handlers
+from app.extensions import db, init_redis, jwt, migrate
 from config import Config
-
-from .extensions import db, jwt, migrate
 
 
 def create_app(config=None):
@@ -46,6 +45,7 @@ def create_app(config=None):
     init_request_context(app)
     init_tenant_filter(db)
     init_redis(app)
+    init_rbac_container(app.extensions["redis"])
 
     register_jwt_handlers(jwt)
 
@@ -55,6 +55,7 @@ def create_app(config=None):
     from app.core.monitoring.health_routes import blp_health
     from app.domains.auth.auth_routes import blp_auth
     from app.domains.product.product_routes import blp_products
+    from app.domains.rbac.rbac_routes import blp_rbac
     from app.domains.sale.routes.revenue_analytics_routes import blp_revenue_analytics
     from app.domains.sale.routes.sale_routes import blp_sales
     from app.domains.sale.routes.sold_item_analytics_routes import blp_item_analytics
@@ -73,5 +74,6 @@ def create_app(config=None):
     api.register_blueprint(blp_revenue_analytics)
     api.register_blueprint(blp_super_admin)
     api.register_blueprint(blp_health)
+    api.register_blueprint(blp_rbac)
 
     return app

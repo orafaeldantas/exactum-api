@@ -82,5 +82,10 @@ jobs:
           REDIS_HOST: localhost
           REDIS_PORT: 6379
           REDIS_DB: 0
-        run: uv run pytest --cov=app --cov-fail-under=80
+        run: uv run pytest --cov=app --cov-report=xml --cov-fail-under=80
         working-directory: backend
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}

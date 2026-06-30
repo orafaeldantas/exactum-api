@@ -2,7 +2,7 @@ import pytest
 
 
 @pytest.mark.functional
-def test_create_user_success(client, auth_headers):
+def test_create_user_success(client, auth_headers, default_roles):
     """
     GIVEN an existing tenant in the database
     WHEN a new user payload is sent to the creation endpoint
@@ -14,7 +14,7 @@ def test_create_user_success(client, auth_headers):
         "email": "new_user@exactum.app.br",
         "password": "pswabcd1234",
         "is_active": True,
-        "role": "user",
+        "role_uuid": default_roles.uuid,
     }
 
     response = client.post("/users/", json=payload, headers=auth_headers)
