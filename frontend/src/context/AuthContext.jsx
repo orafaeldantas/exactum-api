@@ -28,15 +28,15 @@ export function AuthProvider({ children }) {
       }
   
       const data = await response.json();
-  
-      if (data?.auth?.is_super_admin) {
+      console.log(data)  
+      if (data?.is_super_admin) {
         setSuperAdmin(data.auth);             
       } else {
-        setTenantData(data.tenant);
-        setUser(data.auth);
+        setTenantData(data.tenant);       
       }
   
       setProfile(data.user);
+      setUser(data.auth);
       setPermissions(data.auth.permissions);  
   
       const isImpersonating = data?.impersonate_mode ?? false;
@@ -57,11 +57,6 @@ export function AuthProvider({ children }) {
   async function login() {
     const bootstrapData = await bootstrap();
 
-    console.log("=== O que veio no bootstrapData? ===");
-    console.log(bootstrapData); 
-    console.log("=== Qual o valor exato deste teste? ===");
-    console.log(bootstrapData?.auth?.is_super_admin);
-  
     if (!bootstrapData) {
       console.error("Authentication failed");
       return;
