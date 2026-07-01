@@ -16,10 +16,10 @@ class SuperAdminListTenantsResponseSchema(Schema):
 
 
 class DashboardMetricsResponseSchema(Schema):
-    active_tenants = fields.Int()
+    active_tenants = fields.Int(data_key="activeTenants")
 
-    blocked_tenants = fields.Int()
+    blocked_tenants = fields.Int(data_key="blockedTenants")
 
-    tenants_created_current_month = fields.Int()
+    tenants_created_current_month = fields.Int(data_key="tenantsCreatedCurrentMonth")
 
-    active_users = fields.Int()
+    active_users = fields.Int(data_key="activeUsers")
