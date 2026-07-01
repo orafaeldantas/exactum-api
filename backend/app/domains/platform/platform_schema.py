@@ -13,3 +13,13 @@ class SuperAdminListTenantsResponseSchema(Schema):
     slug = fields.Str(required=True)
 
     plan = fields.Str(required=True)
+
+
+class DashboardMetricsResponseSchema(Schema):
+    active_tenants = fields.Int()
+
+    blocked_tenants = fields.Int()
+
+    tenants_created_current_month = fields.Int()
+
+    active_users = fields.Int()
