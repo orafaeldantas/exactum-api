@@ -94,7 +94,9 @@ function App() {
           {/* 3. INTERNAL SYSTEM (DASHBOARD & BACK OFFICE WITH LAYOUT AND SESSION FILTER) */}
           <Route element={<RoleRoute><Layout /></RoleRoute>}>
             
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route element={<RoleRoute requiredRole={"analytics:view"} />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+            </Route>
 
             {/* Sub-block: Billing (Admin / Super Admin) */}
             <Route element={<RoleRoute requiredRole={"analytics:view"} />}>
