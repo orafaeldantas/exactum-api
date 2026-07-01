@@ -27,6 +27,7 @@ class Tenant(Base):
     name: Mapped[str] = mapped_column(String(120))
     slug: Mapped[str] = mapped_column(String(100), unique=True)
     plan: Mapped[str] = mapped_column(String(100))
+    is_active: Mapped[bool] = mapped_column(default=True, nullable=True)
 
     fantasy_name: Mapped[str | None] = mapped_column(String(120), default=None)
     cnpj: Mapped[str | None] = mapped_column(String(18), unique=True, default=None)
