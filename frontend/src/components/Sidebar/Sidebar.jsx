@@ -42,7 +42,7 @@ function Sidebar() {
 
   const isImpersonating = impersonateMode ?? false
   const isSuperAdmin = superAdmin ?? false
-
+ 
   async function handleImpersonate() {
     try {
       const response = await apiFetch('/auth/stop-impersonate', { method: "POST" });

@@ -21,18 +21,20 @@ export default function RoleRoute({ children, requiredRole }) {
     return <Navigate to="/" replace />
   }
 
-  if (user?.is_super_admin === false) {
   
-    if (user?.password_reset === true && location.pathname !== "/reset-password" 
-        && superAdmin?.role?.name !== "super-admin" && impersonateMode !== true) {
-      return <Navigate to="/reset-password" replace />;
-    }
-
-    if (requiredRole && !permissions.includes(requiredRole)) { 
-      return <Navigate to="/dashboard" replace />
-    }
-
+  if (user?.password_reset === true && location.pathname !== "/reset-password" 
+      && !superAdmin && impersonateMode !== true) {
+    return <Navigate to="/reset-password" replace />;
   }
+
+  if (requiredRole && !permissions.includes(requiredRole)) { 
+
+    if (superAdmin) return <Navigate to="/system/dashboard" replace />
+
+    return <Navigate to="/dashboard" replace />
+  }
+
+
 
 
 
