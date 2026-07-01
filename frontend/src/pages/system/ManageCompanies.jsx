@@ -23,7 +23,7 @@ export default function ManageCompanies() {
 
   async function loadTenants() {
     try {
-      const response = await apiFetch("/super-admin/tenants");
+      const response = await apiFetch("/platform/tenants");
       if (!response.ok) throw new Error("Erro ao carregar instâncias");
       const data = await response.json();
       setTenants(data);
