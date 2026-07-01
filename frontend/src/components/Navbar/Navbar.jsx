@@ -19,7 +19,7 @@ const ROLES = {
 function Navbar() {
   const { user, logout } = useContext(AuthContext);
   const { profile } = useContext(UserContext);
-  const { superAdmin} = useContext(SuperAdminContext);
+  const { superAdmin } = useContext(SuperAdminContext);
 
   const navigate = useNavigate();
 
