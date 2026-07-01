@@ -5,9 +5,9 @@ from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from flask_smorest import Blueprint
 
-from app.domains.super_admin.super_admin_controller import SuperAdminController
-from app.domains.super_admin.super_admin_decorators import require_super_admin
-from app.domains.super_admin.super_admin_schema import (
+from app.domains.platform.super_admin_controller import SuperAdminController
+from app.domains.platform.super_admin_decorators import require_super_admin
+from app.domains.platform.super_admin_schema import (
     SuperAdminListTenantsResponseSchema,
 )
 
@@ -31,3 +31,6 @@ class ListTenantsRoute(MethodView):
     def get(self) -> Sequence["Tenant"]:
 
         return SuperAdminController.list_all_tenants()
+
+
+# @blp_super_admin.route("/tenants")
