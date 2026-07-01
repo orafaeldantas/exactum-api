@@ -2,7 +2,7 @@ from functools import wraps
 
 from flask import g
 
-from app.domains.super_admin.super_admin_exceptions import AuthorizationNotPermitted
+from app.domains.platform.super_admin_exceptions import AuthorizationNotPermitted
 
 
 def require_super_admin(fn):

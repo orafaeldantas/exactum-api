@@ -15,7 +15,7 @@ from app.domains.auth.auth_schema import (
     RunImpersonateResponseSchema,
     StopImpersonateResponseSchema,
 )
-from app.domains.super_admin.super_admin_decorators import require_super_admin
+from app.domains.platform.super_admin_decorators import require_super_admin
 
 blp_auth = Blueprint(
     "auth", __name__, url_prefix="/auth", description="Authentication operations"

@@ -16,9 +16,9 @@ from app.domains.auth.auth_exceptions import (
 from app.domains.auth.auth_repository import AuthRepository
 from app.domains.auth.token_service import TokenService
 from app.domains.goal.goal_repository import GoalRepository
+from app.domains.platform.super_admin_repository import SuperAdminRepository
 from app.domains.rbac.container import get_rbac_service
 from app.domains.rbac.rbac_repository import RBACRepository
-from app.domains.super_admin.super_admin_repository import SuperAdminRepository
 from app.domains.tenant.tenant_repository import TenantRepository
 from app.domains.user.user_repository import UserRepository
 
