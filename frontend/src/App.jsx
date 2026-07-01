@@ -50,11 +50,11 @@ const EditUser = lazy(() => import("./pages/users/EditUser"));
 const UserSettings = lazy(() => import("./pages/settings/UserSettings"));
 const AdminSettings = lazy(() => import("./pages/settings/AdminSettings"));
 
-// Super Admin
-const ManageCompanies = lazy(() => import("./pages/system/ManageCompanies"));
-const SystemDashboard = lazy(() => import("./pages/system/SystemDashboard"));
-const InfraHealth = lazy(() => import("./pages/system/InfraHealth"));
-const SystemLogs = lazy(() => import("./pages/system/SystemLogs"));
+// Platform (system)
+const ManageCompanies = lazy(() => import("./pages/platform/ManageCompanies"));
+const SystemDashboard = lazy(() => import("./pages/platform/SystemDashboard"));
+const InfraHealth = lazy(() => import("./pages/platform/InfraHealth"));
+const SystemLogs = lazy(() => import("./pages/platform/SystemLogs"));
 
 
 function App() {
