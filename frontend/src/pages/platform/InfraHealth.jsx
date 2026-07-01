@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import toast from "react-hot-toast";
-import { apiFetch } from "../../services/api";
+import { getInfraHealth } from "../../services/platformService"
 
 import {
   Activity, Database, Zap, Server, RefreshCw,
@@ -38,29 +38,13 @@ function StatusPill({ state }) {
 }
 
 export default function InfraHealth() {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [lastChecked, setLastChecked] = useState(null);
 
-  const loadHealth = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await apiFetch("/health/");
-      if (!response.ok) throw new Error("Erro ao carregar status da infraestrutura");
-      const json = await response.json();
-      setData(json);
-      setLastChecked(new Date());
-    } catch (err) {
-      toast.error(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const { loadHealth, infraHealth, lastChecked, loading } = getInfraHealth();
 
-  useEffect(() => { loadHealth(); }, [loadHealth]);
+  useEffect(() => { loadHealth(); }, []);
 
-  const services = data?.services ? Object.entries(data.services) : [];
-  const overallStatus = data?.status ?? "unknown";
+  const services = infraHealth?.services ? Object.entries(infraHealth.services) : [];
+  const overallStatus = infraHealth?.status ?? "unknown";
   const isHealthy = overallStatus === "healthy";
 
   return (
