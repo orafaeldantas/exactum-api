@@ -1,14 +1,14 @@
 from collections.abc import Sequence
 from typing import TYPE_CHECKING
 
-from app.domains.super_admin.super_admin_repository import SuperAdminRepository
+from app.domains.platform.super_admin_service import SuperAdminService
 
 if TYPE_CHECKING:
     from app.models.tenant import Tenant
 
 
-class SuperAdminService:
+class SuperAdminController:
     @staticmethod
     def list_all_tenants() -> Sequence["Tenant"]:
 
-        return SuperAdminRepository.list_all_tenants()
+        return SuperAdminService.list_all_tenants()
