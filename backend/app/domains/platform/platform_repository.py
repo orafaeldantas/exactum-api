@@ -2,8 +2,9 @@ import logging
 from collections.abc import Sequence
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 
+from app.core.helpers.period_service import PeriodService
 from app.domains.rbac.rbac_repository import RBACRepository
 from app.extensions import db
 from app.models.tenant import Tenant
@@ -12,7 +13,7 @@ from app.models.user import User
 logger = logging.getLogger(__name__)
 
 
-class SuperAdminRepository:
+class PlatformRepository:
     @staticmethod
     def list_all_tenants() -> Sequence[Tenant]:
         """Search all tenants in the system, ignoring filters."""
@@ -54,3 +55,53 @@ class SuperAdminRepository:
             .execution_options(skip_tenant_filter=True)
         )
         return db.session.scalar(user_stmt)
+
+    @staticmethod
+    def count_active_tenants() -> int:
+
+        stmt = (
+            select(func.count())
+            .select_from(Tenant)
+            .where(Tenant.is_active)
+            .execution_options(skip_tenant_filter=True)
+        )
+
+        return db.session.scalar(stmt)
+
+    @staticmethod
+    def count_blocked_tenants() -> int:
+
+        stmt = (
+            select(func.count())
+            .select_from(Tenant)
+            .where(not Tenant.is_active)
+            .execution_options(skip_tenant_filter=True)
+        )
+
+        return db.session.scalar(stmt)
+
+    @staticmethod
+    def count_tenants_created_current_month() -> int:
+
+        start_date, end_date = PeriodService.get_period_range("month")
+
+        stmt = (
+            select(func.count())
+            .select_from(Tenant)
+            .where(Tenant.created_at.between(start_date, end_date))
+            .execution_options(skip_tenant_filter=True)
+        )
+
+        return db.session.scalar(stmt)
+
+    @staticmethod
+    def count_active_users() -> int:
+
+        stmt = (
+            select(func.count())
+            .select_from(User)
+            .where(User.is_active)
+            .execution_options(skip_tenant_filter=True)
+        )
+
+        return db.session.scalar(stmt)

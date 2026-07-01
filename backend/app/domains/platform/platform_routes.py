@@ -5,16 +5,18 @@ from flask.views import MethodView
 from flask_jwt_extended import jwt_required
 from flask_smorest import Blueprint
 
-from app.domains.platform.platform_controller import SuperAdminController
+from app.domains.platform.platform_controller import PlatformController
 from app.domains.platform.platform_decorators import require_super_admin
 from app.domains.platform.platform_schema import (
+    DashboardMetricsResponseSchema,
     SuperAdminListTenantsResponseSchema,
 )
 
 if TYPE_CHECKING:
+    from app.domains.platform.platform_dto import DashboardMetricsDTO
     from app.models.tenant import Tenant
 
-blp_plaform = Blueprint(
+blp_platform = Blueprint(
     "platform",
     __name__,
     url_prefix="/platform",
@@ -22,22 +24,22 @@ blp_plaform = Blueprint(
 )
 
 
-@blp_plaform.route("/tenants")
+@blp_platform.route("/tenants")
 class ListTenantsRoute(MethodView):
     @jwt_required()
     @require_super_admin
-    @blp_plaform.doc(security=[{"CookieAuth": []}])
-    @blp_plaform.response(200, SuperAdminListTenantsResponseSchema(many=True))
+    @blp_platform.doc(security=[{"CookieAuth": []}])
+    @blp_platform.response(200, SuperAdminListTenantsResponseSchema(many=True))
     def get(self) -> Sequence["Tenant"]:
 
-        return SuperAdminController.list_all_tenants()
+        return PlatformController.list_all_tenants()
 
 
-@blp_plaform.route("/dashboard")
-class GetSystemDashboardRoute(MethodView):
+@blp_platform.route("/dashboard")
+class GetPlatformDashboardRoute(MethodView):
     @jwt_required()
     @require_super_admin
-    @blp_plaform.doc(security=[{"CookieAuth": []}])
-    def get(self) -> dict:
-
-        return SuperAdminController.get_system_dashboard()
+    @blp_platform.doc(security=[{"CookieAuth": []}])
+    @blp_platform.response(200, DashboardMetricsResponseSchema)
+    def get(self) -> "DashboardMetricsDTO":
+        return PlatformController.get_dashboard_metrics()
