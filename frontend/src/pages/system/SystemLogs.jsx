@@ -118,7 +118,7 @@ export default function SystemLogs() {
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
-            <Terminal className="text-blue-600" /> System Logs
+            <Terminal className="text-blue-600" /> Logs do Sistema
           </h1>
           <p className="mt-1 text-sm text-gray-500">Auditoria de eventos e atividades do ecossistema</p>
         </div>
