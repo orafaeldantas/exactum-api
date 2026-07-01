@@ -1,8 +1,8 @@
 import { useState } from "react";
-// import { useContext, useEffect } from "react";
-// import { useNavigate } from "react-router-dom";
+import { useContext, useEffect } from "react";
+import { getDashboardMetrics } from "../../services/systemService";
+import { useNavigate } from "react-router-dom";
 // import { UserContext } from "../../context/UserContext";
-// import { getCompanies } from "../../services/companyService";
 // import { getUsers } from "../../services/userService";
 // import { getActivities } from "../../services/activityService";
 // import DashboardSkeleton from "../../components/Loader/DashboardSkeleton";
@@ -17,28 +17,18 @@ import {
 
 /**
  * @component SystemDashboard
- * @description Painel central do sistema: visão geral de empresas (tenants),
- * usuários da plataforma e atividades recentes do sistema.
- *
- * NOTA: versão com dados mockados para validação de layout.
- * Contexts e services estão comentados — descomentar ao integrar de verdade.
+ * @description Central system dashboard: overview of companies (tenants),
+ * platform users, and recent system activities.
  */
 function SystemDashboard() {
-  // const { profile } = useContext(UserContext);
-  // const navigate = useNavigate();
-  const navigate = (path) => console.log("navegar para:", path);
+  const navigate = useNavigate();
+  const { kpi = [], getKPIs, loading } = getDashboardMetrics();
   const profile = { username: "Rafael" };
 
-  // const {
-  //   companies = [],
-  //   activeCount = 0,
-  //   blockedCount = 0,
-  //   newSignupsCount = 0,
-  //   loadCompanies,
-  // } = getCompanies();
-  const activeCount = 24;
-  const blockedCount = 3;
-  const newSignupsCount = 7;
+
+  const activeCount = kpi.activeTenants;
+  const blockedCount = kpi.blockedTenants;
+  const tenantsCreatedCurrentMonth = kpi.tenantsCreatedCurrentMonth;
   const companies = [
     { id: 1, name: "Mercado Bom Preço", status: "active", createdAt: "2026-06-28" },
     { id: 2, name: "Construtora Vale Verde", status: "active", createdAt: "2026-06-25" },
@@ -47,8 +37,7 @@ function SystemDashboard() {
     { id: 5, name: "Padaria Pão Dourado", status: "active", createdAt: "2026-06-18" },
   ];
 
-  // const { totalUsers = 0, loadUsers } = getUsers();
-  const totalUsers = 142;
+  const activeUsers = kpi.activeUsers;
 
   // const { activities = [], loadActivities } = getActivities();
   const activities = [
@@ -60,25 +49,18 @@ function SystemDashboard() {
     { id: 6, description: "Empresa 'Padaria Pão Dourado' cadastrada", createdAt: "2026-06-26T08:50:00" },
   ];
 
-  const [isInitializing] = useState(false);
-  // const [isInitializing, setIsInitializing] = useState(true);
+  useEffect(() => {
+     const initData = async () => {
+       try {
+         await Promise.all([getKPIs()]);
+       } catch (error) {
+         console.error("Error initializing super-admin panel: ", error);
+       } finally {
+       }
+     };
+     initData();
+   }, []);
 
-  // useEffect(() => {
-  //   const initData = async () => {
-  //     try {
-  //       await Promise.all([loadCompanies(), loadUsers(), loadActivities()]);
-  //     } catch (error) {
-  //       console.error("Erro ao inicializar painel super-admin:", error);
-  //     } finally {
-  //       setIsInitializing(false);
-  //     }
-  //   };
-  //   initData();
-  // }, []);
-
-  // if (isInitializing) {
-  //   return <DashboardSkeleton />;
-  // }
 
   const stats = [
     {
@@ -96,15 +78,15 @@ function SystemDashboard() {
       bg: "bg-red-50",
     },
     {
-      label: "Usuários Totais",
-      value: totalUsers,
+      label: "Usuários Totais Ativos",
+      value: activeUsers,
       icon: Users,
       accent: "text-blue-600",
       bg: "bg-blue-50",
     },
     {
-      label: "Novos Cadastros",
-      value: newSignupsCount,
+      label: "Novas Empresas no Mês",
+      value: tenantsCreatedCurrentMonth,
       icon: UserPlus,
       accent: "text-violet-600",
       bg: "bg-violet-50",
@@ -130,12 +112,12 @@ function SystemDashboard() {
         <div className="flex items-center gap-3">
           <button 
             className="rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-md transition-all hover:bg-blue-700 active:scale-95"
-            onClick={() => navigate("/superadmin/companies/create")}
+            onClick={() => navigate("/create-tenant")}
           >
             + Nova Empresa
           </button>
           <button
-            onClick={() => navigate("/super-admin/empresas")}
+            onClick={() => navigate("/system/manage-companies")}
             className="inline-flex items-center gap-2 rounded-xl bg-white border border-gray-200 px-6 py-3 text-sm font-semibold text-gray-800 shadow-md transition-all hover:bg-gray-50 hover:border-gray-300 active:scale-95"
           >
             Acessar Empresas

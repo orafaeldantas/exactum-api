@@ -158,7 +158,7 @@ function Sidebar() {
         {isSuperAdmin && (
           <>       
             <div className="mt-6 mb-2 px-4">
-              {!collapsed && <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">System Management</p>}
+              {!collapsed && <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Gerenciamento do Sistema</p>}
               {collapsed && <div className="border-t border-slate-800 mx-2" />}
             </div>
 
@@ -175,7 +175,7 @@ function Sidebar() {
               className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
             >
               <Building2 size={20} className={collapsed ? "mx-auto" : ""} />
-              {!collapsed && <span className="font-medium">Tenants</span>}
+              {!collapsed && <span className="font-medium">Empresas</span>}
             </NavLink>
 
             <NavLink 
@@ -183,7 +183,7 @@ function Sidebar() {
               className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
             >
               <Activity size={20} className={collapsed ? "mx-auto" : ""} />
-              {!collapsed && <span className="font-medium">Infra Health</span>}
+              {!collapsed && <span className="font-medium">Status do Sistema</span>}
             </NavLink>
 
             <NavLink 
@@ -191,7 +191,7 @@ function Sidebar() {
               className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
             >
               <Terminal size={20} className={collapsed ? "mx-auto" : ""} />
-              {!collapsed && <span className="font-medium">System Logs</span>}
+              {!collapsed && <span className="font-medium">Logs do Sistema</span>}
             </NavLink>
           </>
         )}

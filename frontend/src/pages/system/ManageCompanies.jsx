@@ -1,8 +1,7 @@
-import { useEffect, useState, useContext } from "react"; // Added useContext
+import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { apiFetch } from "../../services/api";
-import { AuthContext } from "../../context/AuthContext"; // Import AuthContext
 
 import { 
   Building2, Eye, Power, Trash2, AlertTriangle, 
@@ -43,7 +42,6 @@ export default function ManageCompanies() {
   const paginated = filteredTenants.slice((page - 1) * companiesPerPage, page * companiesPerPage);
   const totalPages = Math.ceil(filteredTenants.length / companiesPerPage);
 
-  // Improved Impersonate function using AuthContext
   async function handleImpersonate(tenantId) {
     try {
       const response = await apiFetch(`/auth/run-impersonate/${tenantId}`, { method: "POST" });
@@ -64,15 +62,15 @@ export default function ManageCompanies() {
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
-            <Building2 className="text-blue-600" /> Tenants
+            <Building2 className="text-blue-600" /> Empresas
           </h1>
           <p className="mt-1 text-sm text-gray-500">Administração de instâncias e empresas do ecossistema</p>
         </div>
         <button 
           className="rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-md transition-all hover:bg-blue-700 active:scale-95"
-          onClick={() => navigate("/superadmin/companies/create")}
+          onClick={() => navigate("/create-tenant")}
         >
-          + Novo Tenant
+          + Nova Empresa
         </button>
       </div>
 
