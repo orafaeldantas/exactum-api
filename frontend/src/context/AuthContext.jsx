@@ -28,16 +28,16 @@ export function AuthProvider({ children }) {
       }
   
       const data = await response.json();
-      console.log(data)  
+
       if (data?.is_super_admin) {
-        setSuperAdmin(data.auth);             
+        setSuperAdmin(data?.is_super_admin);             
       } else {
-        setTenantData(data.tenant);       
+        setTenantData(data?.tenant);       
       }
   
-      setProfile(data.user);
-      setUser(data.auth);
-      setPermissions(data.auth.permissions);  
+      setProfile(data?.user);
+      setUser(data?.auth);
+      setPermissions(data?.auth?.permissions);  
   
       const isImpersonating = data?.impersonate_mode ?? false;
       setImpersonateMode(isImpersonating);
@@ -45,6 +45,7 @@ export function AuthProvider({ children }) {
       return data; 
   
     } catch {
+      setSuperAdmin(false);
       setTenantData(null);
       setProfile(null);
       setUser(null);
@@ -80,6 +81,7 @@ export function AuthProvider({ children }) {
     } catch (err) {
       console.log(err)  
     } finally {
+      setSuperAdmin(false);
       setProfile(null);
       setTenantData(null);
       setUser(null);

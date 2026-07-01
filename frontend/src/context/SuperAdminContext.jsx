@@ -4,7 +4,7 @@ export const SuperAdminContext = createContext();
 
 export function SuperAdminProvider({ children }) {
 
-    const [superAdmin, setSuperAdmin] = useState(null);
+    const [superAdmin, setSuperAdmin] = useState(false);
 
 
     return (
