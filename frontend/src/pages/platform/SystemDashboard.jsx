@@ -22,37 +22,24 @@ import {
  */
 function SystemDashboard() {
   const navigate = useNavigate();
-  const { kpi = [], getKPIs, loading } = getDashboardMetrics();
+  const { metrics = [], getMetrics, loading } = getDashboardMetrics();
   const profile = { username: "Rafael" };
 
 
-  const activeCount = kpi.activeTenants;
-  const blockedCount = kpi.blockedTenants;
-  const tenantsCreatedCurrentMonth = kpi.tenantsCreatedCurrentMonth;
-  const companies = [
-    { id: 1, name: "Mercado Bom Preço", status: "active", createdAt: "2026-06-28" },
-    { id: 2, name: "Construtora Vale Verde", status: "active", createdAt: "2026-06-25" },
-    { id: 3, name: "Auto Peças Silva", status: "blocked", createdAt: "2026-06-22" },
-    { id: 4, name: "Farmácia Saúde+", status: "active", createdAt: "2026-06-20" },
-    { id: 5, name: "Padaria Pão Dourado", status: "active", createdAt: "2026-06-18" },
-  ];
+  const activeCount = metrics.activeTenants;
+  const blockedCount = metrics.blockedTenants;
+  const tenantsCreatedCurrentMonth = metrics.tenantsCreatedCurrentMonth;
 
-  const activeUsers = kpi.activeUsers;
+  const activeUsers = metrics.activeUsers;
 
-  // const { activities = [], loadActivities } = getActivities();
   const activities = [
-    { id: 1, description: "Empresa 'Mercado Bom Preço' cadastrada", createdAt: "2026-06-30T09:12:00" },
-    { id: 2, description: "Usuário admin@valeverde.com criado", createdAt: "2026-06-29T17:40:00" },
-    { id: 3, description: "Empresa 'Auto Peças Silva' bloqueada por inadimplência", createdAt: "2026-06-29T11:05:00" },
-    { id: 4, description: "Plano da empresa 'Farmácia Saúde+' atualizado para Pro", createdAt: "2026-06-28T15:22:00" },
-    { id: 5, description: "Usuário joao.dev@padariapao.com criado", createdAt: "2026-06-27T10:08:00" },
-    { id: 6, description: "Empresa 'Padaria Pão Dourado' cadastrada", createdAt: "2026-06-26T08:50:00" },
+    { id: 1, description: "Sem dados", createdAt: "2026-06-30T09:12:00" },,
   ];
 
   useEffect(() => {
      const initData = async () => {
        try {
-         await Promise.all([getKPIs()]);
+         await Promise.all([getMetrics()]);
        } catch (error) {
          console.error("Error initializing super-admin panel: ", error);
        } finally {
@@ -93,7 +80,8 @@ function SystemDashboard() {
     },
   ];
 
-  const recentCompanies = companies.slice(0, 5);
+  const recentCompanies = metrics.lastTenantsRegistered ?? [];
+  console.log(recentCompanies)
   const recentActivities = activities.slice(0, 6);
 
   return (
@@ -153,7 +141,7 @@ function SystemDashboard() {
               Últimas Empresas
             </h2>
             <button
-              onClick={() => navigate("/super-admin/empresas")}
+              onClick={() => navigate("/system/manage-companies")}
               className="text-xs font-medium text-gray-500 hover:text-gray-900 transition-colors"
             >
               Ver todas
@@ -167,12 +155,12 @@ function SystemDashboard() {
             ) : (
               recentCompanies.map((company) => (
                 <div
-                  key={company.id}
+                  key={company.uuid}
                   className="flex items-center justify-between px-5 py-3"
                 >
                   <div>
                     <p className="text-sm font-medium text-gray-900">
-                      {company.name}
+                      {company.fantasyName}
                     </p>
                     <p className="text-xs text-gray-400">
                       Cadastrada em{" "}
@@ -186,7 +174,7 @@ function SystemDashboard() {
                         : "bg-emerald-50 text-emerald-600"
                     }`}
                   >
-                    {company.status === "blocked" ? "Bloqueada" : "Ativa"}
+                    {company.isActive === "blocked" ? "Bloqueada" : "Ativa"}
                   </span>
                 </div>
               ))
