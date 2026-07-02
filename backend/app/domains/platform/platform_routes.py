@@ -9,7 +9,7 @@ from app.domains.platform.platform_controller import PlatformController
 from app.domains.platform.platform_decorators import require_super_admin
 from app.domains.platform.platform_schema import (
     DashboardMetricsResponseSchema,
-    SuperAdminListTenantsResponseSchema,
+    ListTenantsResponseSchema,
 )
 
 if TYPE_CHECKING:
@@ -29,7 +29,7 @@ class ListTenantsRoute(MethodView):
     @jwt_required()
     @require_super_admin
     @blp_platform.doc(security=[{"CookieAuth": []}])
-    @blp_platform.response(200, SuperAdminListTenantsResponseSchema(many=True))
+    @blp_platform.response(200, ListTenantsResponseSchema(many=True))
     def get(self) -> Sequence["Tenant"]:
 
         return PlatformController.list_all_tenants()
