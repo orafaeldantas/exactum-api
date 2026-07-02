@@ -25,7 +25,7 @@ class RBACRepository:
         stmt = select(Role).where(
             Role.tenant_id == tenant_id, Role.name == "administrator"
         )
-        return db.session.execute(stmt).scalar_one_or_none()
+        return db.session.scalar(stmt)
 
     def get_roles_by_tenant_id(self, tenant_id: int) -> Sequence[Role]:
         stmt = select(Role).where(Role.tenant_id == tenant_id)
@@ -50,7 +50,7 @@ class RBACRepository:
 
     def get_user_by_role_id(self, role_id: int) -> UserRole | None:
         stmt = select(UserRole).where(UserRole.role_id == role_id)
-        return db.session.execute(stmt).scalar_one_or_none()
+        return db.session.scalar(stmt)
 
     def add_user_role(self, user_id: int, role_id: int) -> None:
         db.session.add(UserRole(user_id=user_id, role_id=role_id))

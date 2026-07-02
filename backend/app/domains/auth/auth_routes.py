@@ -86,7 +86,7 @@ class RunImpersonateRoute(MethodView):
 
 @blp_auth.route("/stop-impersonate")
 class StopImpersonateRoute(MethodView):
-    @jwt_required()
+    @jwt_required(refresh=True)
     @blp_auth.doc(security=[{"CookieAuth": []}])
     @blp_auth.response(201, StopImpersonateResponseSchema)
     def post(self) -> Response:

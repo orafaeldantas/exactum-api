@@ -10,31 +10,8 @@ import {
   User, MapPin, Hash, Info, AlertTriangle, XCircle, AlertOctagon, X, Copy, Building2
 } from 'lucide-react';
 
-// ---------------------------------------------------------------------------
-// MOCK DE DADOS — substituir pela chamada real ao backend
-// Endpoint sugerido: GET /super-admin/logs
-// Formato esperado de cada item (ajustar conforme contrato real da API):
-// {
-//   id: number,
-//   timestamp: string (ISO 8601),
-//   level: "info" | "warning" | "error" | "critical",
-//   service: string,        // ex: "auth-service", "billing-service"
-//   action: string,         // código do evento, ex: "LOGIN_FAILED"
-//   actor: string,          // usuário/sistema que disparou o evento
-//   tenant: string | null,  // nome do tenant relacionado (se houver)
-//   ip: string,
-//   message: string,
-// }
-// ---------------------------------------------------------------------------
 const MOCK_LOGS = [
-  { id: 1, timestamp: "2026-06-30T11:42:10Z", level: "error", service: "auth-service", action: "LOGIN_FAILED", actor: "rafael@exactum.app.br", tenant: "Acme Distribuidora", ip: "187.45.12.90", message: "Falha ao autenticar usuário: credenciais inválidas após 3 tentativas" },
-  { id: 2, timestamp: "2026-06-30T11:30:02Z", level: "info", service: "billing-service", action: "SUBSCRIPTION_RENEWED", actor: "system", tenant: "Acme Distribuidora", ip: "10.0.0.4", message: "Renovação automática de assinatura processada com sucesso" },
-  { id: 3, timestamp: "2026-06-30T10:58:47Z", level: "warning", service: "inventory-service", action: "STOCK_THRESHOLD", actor: "system", tenant: "Beta Comércio", ip: "10.0.0.4", message: "Estoque do produto SKU-2291 abaixo do limite mínimo configurado" },
-  { id: 4, timestamp: "2026-06-30T10:12:33Z", level: "critical", service: "database", action: "CONNECTION_POOL_EXHAUSTED", actor: "system", tenant: null, ip: "10.0.0.1", message: "Pool de conexões PostgreSQL esgotado no schema tenant_beta" },
-  { id: 5, timestamp: "2026-06-30T09:50:15Z", level: "info", service: "auth-service", action: "IMPERSONATE_START", actor: "admin@exactum.app.br", tenant: "Acme Distribuidora", ip: "187.45.12.90", message: "Sessão de impersonação iniciada por super admin" },
-  { id: 6, timestamp: "2026-06-30T09:20:01Z", level: "warning", service: "pos-service", action: "PAYMENT_RETRY", actor: "system", tenant: "Gamma Varejo", ip: "10.0.0.4", message: "Falha temporária no gateway de pagamento, nova tentativa agendada" },
-  { id: 7, timestamp: "2026-06-30T08:55:40Z", level: "error", service: "inventory-service", action: "SYNC_FAILED", actor: "system", tenant: "Beta Comércio", ip: "10.0.0.4", message: "Falha ao sincronizar estoque com o módulo de vendas" },
-  { id: 8, timestamp: "2026-06-30T08:02:19Z", level: "info", service: "auth-service", action: "PASSWORD_RESET", actor: "joana@gammavarejo.com", tenant: "Gamma Varejo", ip: "201.10.88.4", message: "Solicitação de redefinição de senha enviada por e-mail" },
+  { id: 1, timestamp: "2026-06-30T11:42:10Z", level: "info", service: "exactum", action: "EXACTUM", actor: "exactum@exactum.app.br", tenant: "System", ip: "255.255.255.255", message: "Exactum" },  
 ];
 
 const LEVEL_CONFIG = {

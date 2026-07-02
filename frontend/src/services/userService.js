@@ -14,7 +14,6 @@ export function getUser() {
       const response = await apiFetch(`/users/${user.id}`);
       const data = await response.json();
       setUserData(data);
-      console.log(data)
     } catch (err) {
       console.error("Erro ao carregar:", err);
     } finally {

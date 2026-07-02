@@ -1,6 +1,8 @@
 from collections.abc import Sequence
 from dataclasses import dataclass
 
+from app.models.tenant import Tenant
+
 
 @dataclass(frozen=True)
 class DashboardMetricsDTO:
@@ -12,7 +14,9 @@ class DashboardMetricsDTO:
 
 
 @dataclass(frozen=True)
-class TenantSummaryDTO: ...
+class TenantSummaryDTO:
+    tenant: Tenant
+    users_count: int
 
 
 @dataclass(frozen=True)

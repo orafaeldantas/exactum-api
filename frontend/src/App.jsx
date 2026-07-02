@@ -147,10 +147,10 @@ function App() {
             <Route path="/admin-settings" element={<RoleRoute requiredRole={"tenant:update"}><AdminSettings /></RoleRoute>} />
 
             {/* Sub-block: Super Admin Control */}
-            <Route path="/system/manage-companies" element={<RoleRoute requiredRole={"super-admin"}><ManageCompanies /></RoleRoute>} />
-            <Route path="/system/dashboard" element={<RoleRoute requiredRole={"super-admin"}><SystemDashboard /></RoleRoute>} />
-            <Route path="/system/infra-health" element={<RoleRoute requiredRole={"super-admin"}><InfraHealth /></RoleRoute>} />
-            <Route path="/system/logs" element={<RoleRoute requiredRole={"super-admin"}><SystemLogs /></RoleRoute>} />
+            <Route path="/platform/manage-companies" element={<RoleRoute requiredRole={"super-admin"}><ManageCompanies /></RoleRoute>} />
+            <Route path="/platform/dashboard" element={<RoleRoute requiredRole={"super-admin"}><SystemDashboard /></RoleRoute>} />
+            <Route path="/platform/infra-health" element={<RoleRoute requiredRole={"super-admin"}><InfraHealth /></RoleRoute>} />
+            <Route path="/platform/logs" element={<RoleRoute requiredRole={"super-admin"}><SystemLogs /></RoleRoute>} />
 
           </Route>
         </Routes>

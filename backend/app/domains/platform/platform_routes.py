@@ -1,5 +1,6 @@
 from collections.abc import Sequence
 from typing import TYPE_CHECKING
+from uuid import UUID
 
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required
@@ -10,11 +11,11 @@ from app.domains.platform.platform_decorators import require_super_admin
 from app.domains.platform.platform_schema import (
     DashboardMetricsResponseSchema,
     ListTenantsResponseSchema,
+    UdateStatusTenantSchema,
 )
 
 if TYPE_CHECKING:
-    from app.domains.platform.platform_dto import DashboardMetricsDTO
-    from app.models.tenant import Tenant
+    from app.domains.platform.platform_dto import DashboardMetricsDTO, TenantSummaryDTO
 
 blp_platform = Blueprint(
     "platform",
@@ -30,7 +31,7 @@ class ListTenantsRoute(MethodView):
     @require_super_admin
     @blp_platform.doc(security=[{"CookieAuth": []}])
     @blp_platform.response(200, ListTenantsResponseSchema(many=True))
-    def get(self) -> Sequence["Tenant"]:
+    def get(self) -> Sequence["TenantSummaryDTO"]:
 
         return PlatformController.list_all_tenants()
 
@@ -43,3 +44,15 @@ class GetPlatformDashboardRoute(MethodView):
     @blp_platform.response(200, DashboardMetricsResponseSchema)
     def get(self) -> "DashboardMetricsDTO":
         return PlatformController.get_dashboard_metrics()
+
+
+@blp_platform.route("/status/tenant/<uuid:tenant_uuid>")
+class StatusTenantRoute(MethodView):
+    @jwt_required()
+    @require_super_admin
+    @blp_platform.doc(security=[{"CookieAuth": []}])
+    @blp_platform.arguments(UdateStatusTenantSchema)
+    @blp_platform.response(200)
+    def patch(self, data: dict, tenant_uuid: UUID) -> None:
+
+        return PlatformController.update_status_tenant(data, tenant_uuid)

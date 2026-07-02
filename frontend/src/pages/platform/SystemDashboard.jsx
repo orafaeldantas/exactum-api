@@ -2,10 +2,6 @@ import { useState } from "react";
 import { useContext, useEffect } from "react";
 import { getDashboardMetrics } from "../../services/platformService";
 import { useNavigate } from "react-router-dom";
-// import { UserContext } from "../../context/UserContext";
-// import { getUsers } from "../../services/userService";
-// import { getActivities } from "../../services/activityService";
-// import DashboardSkeleton from "../../components/Loader/DashboardSkeleton";
 import {
   Building2,
   ShieldOff,
@@ -31,6 +27,7 @@ function SystemDashboard() {
   const tenantsCreatedCurrentMonth = metrics.tenantsCreatedCurrentMonth;
 
   const activeUsers = metrics.activeUsers;
+  
 
   const activities = [
     { id: 1, description: "Sem dados", createdAt: "2026-06-30T09:12:00" },,
@@ -81,7 +78,7 @@ function SystemDashboard() {
   ];
 
   const recentCompanies = metrics.lastTenantsRegistered ?? [];
-  console.log(recentCompanies)
+
   const recentActivities = activities.slice(0, 6);
 
   return (
@@ -105,7 +102,7 @@ function SystemDashboard() {
             + Nova Empresa
           </button>
           <button
-            onClick={() => navigate("/system/manage-companies")}
+            onClick={() => navigate("/platform/manage-companies")}
             className="inline-flex items-center gap-2 rounded-xl bg-white border border-gray-200 px-6 py-3 text-sm font-semibold text-gray-800 shadow-md transition-all hover:bg-gray-50 hover:border-gray-300 active:scale-95"
           >
             Acessar Empresas
@@ -141,7 +138,7 @@ function SystemDashboard() {
               Últimas Empresas
             </h2>
             <button
-              onClick={() => navigate("/system/manage-companies")}
+              onClick={() => navigate("/platform/manage-companies")}
               className="text-xs font-medium text-gray-500 hover:text-gray-900 transition-colors"
             >
               Ver todas
@@ -169,12 +166,12 @@ function SystemDashboard() {
                   </div>
                   <span
                     className={`text-xs font-medium px-2.5 py-1 rounded-full ${
-                      company.status === "blocked"
+                      company.isActive === false
                         ? "bg-red-50 text-red-600"
                         : "bg-emerald-50 text-emerald-600"
                     }`}
                   >
-                    {company.isActive === "blocked" ? "Bloqueada" : "Ativa"}
+                    {company.isActive == false ? "Bloqueada" : "Ativa"}
                   </span>
                 </div>
               ))
