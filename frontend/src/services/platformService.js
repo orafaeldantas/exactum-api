@@ -2,15 +2,15 @@ import { useState } from "react";
 import { apiFetch } from "./api";
 
 export function getDashboardMetrics() { 
-  const [kpi, setKpi] = useState([]);
+  const [metrics, setMetrics] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  async function getKPIs() {
+  async function getMetrics() {
     try {
       setLoading(true);
       const response = await apiFetch("/platform/dashboard");
       const data = await response.json();
-      setKpi(data);
+      setMetrics(data);
     } catch (err) {
       console.error("Error loading: ", err);
     } finally {
@@ -19,7 +19,7 @@ export function getDashboardMetrics() {
   }
 
 
-  return { kpi, getKPIs, loading };
+  return { metrics, getMetrics, loading };
 }
 
 

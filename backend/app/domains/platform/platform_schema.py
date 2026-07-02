@@ -4,17 +4,19 @@ from marshmallow import Schema, fields
 class ListTenantsResponseSchema(Schema):
     uuid = fields.UUID(dump_only=True)
 
-    name = fields.Str(required=True)
+    name = fields.Str(required=True, dump_only=True)
 
-    fantasyName = fields.Str(required=True, attribute="fantasy_name")
+    fantasyName = fields.Str(required=True, attribute="fantasy_name", dump_only=True)
 
-    cnpj = fields.Str(required=True)
+    cnpj = fields.Str(required=True, dump_only=True)
 
-    slug = fields.Str(required=True)
+    slug = fields.Str(required=True, dump_only=True)
 
-    plan = fields.Str(required=True)
+    plan = fields.Str(required=True, dump_only=True)
 
-    is_active = fields.Str(required=True, data_key="isActive")
+    isActive = fields.Str(required=True, attribute="is_active", dump_only=True)
+
+    createdAt = fields.DateTime(attribute="created_at", dump_only=True)
 
 
 class DashboardMetricsResponseSchema(Schema):
