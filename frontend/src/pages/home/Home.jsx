@@ -146,7 +146,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* NAVBAR — shrinks and gains a shadow once the page scrolls */}
+      {/* NAVBAR */}
       <header
         className={`sticky top-0 z-50 w-full border-b bg-white/80 backdrop-blur-md transition-all duration-300 ${
           scrolled ? "border-gray-200 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-16px_rgba(15,23,42,0.15)]" : "border-gray-100 shadow-none"
@@ -216,7 +216,7 @@ export default function Home() {
             }}
           />
 
-          {/* Film grain — keeps the gradient from looking flat/synthetic */}
+          {/* Film grain */}
           <div
             className="absolute inset-0 opacity-[0.035] mix-blend-overlay"
             style={{ backgroundImage: GRAIN_BG }}
@@ -224,7 +224,7 @@ export default function Home() {
         </div>
 
         <div className="relative mx-auto grid max-w-7xl items-center gap-16 lg:grid-cols-2">
-          {/* Left: copy */}
+          {/* Left*/}
           <div className="text-center lg:text-left">
             <div
               className="fade-up mb-6 inline-flex items-center gap-2 rounded-full border border-blue-100 bg-white px-3 py-1 text-xs font-semibold text-blue-600 shadow-sm"
@@ -286,7 +286,7 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Right: dashboard mockup — signature element */}
+          {/* Right: dashboard mockup */}
           <DashboardMockup />
         </div>
       </section>
@@ -355,7 +355,6 @@ export default function Home() {
   );
 }
 
-/** Hero dashboard preview: reveals on scroll, shows a brief skeleton/shimmer, then counts its KPIs up. */
 function DashboardMockup() {
   const [ref, inView] = useRevealOnView(0.3);
   const [loaded, setLoaded] = useState(false);
@@ -459,7 +458,6 @@ function DashboardMockup() {
   );
 }
 
-/** Canvas-based particle network — proximity connections + mouse "grab" interaction. */
 function NeuralNetworkHeader({ className = "", children }) {
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
@@ -548,7 +546,6 @@ function NeuralNetworkHeader({ className = "", children }) {
         }
       }
 
-      // "grab" lines from cursor to nearby nodes
       if (mouse.active) {
         const grabDist = 130;
         particles.forEach((p) => {
@@ -606,7 +603,7 @@ function NeuralNetworkHeader({ className = "", children }) {
     <div ref={containerRef} className={`relative overflow-hidden ${className}`}>
       <canvas ref={canvasRef} className="absolute inset-0 block h-full w-full" aria-hidden="true" />
 
-      {/* Edge fade — trims the rim so the network dissolves into the page */}
+      {/* Edge fade */}
       <div
         className="pointer-events-none absolute inset-0"
         style={{
@@ -619,7 +616,7 @@ function NeuralNetworkHeader({ className = "", children }) {
   );
 }
 
-/** Feature card — fades/rises into view individually as the grid scrolls into the viewport. */
+/** Feature card */
 function FeatureCard({ icon, title, description, comingSoon = false, index = 0 }) {
   const [ref, inView] = useRevealOnView(0.15);
 

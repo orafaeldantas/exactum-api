@@ -2,7 +2,7 @@ import logging
 from collections.abc import Sequence
 from uuid import UUID
 
-from sqlalchemy import func, select
+from sqlalchemy import desc, func, select
 
 from app.core.helpers.period_service import PeriodService
 from app.domains.rbac.rbac_repository import RBACRepository
@@ -105,3 +105,15 @@ class PlatformRepository:
         )
 
         return db.session.scalar(stmt)
+
+    @staticmethod
+    def get_last_tenants_registered() -> Sequence[Tenant]:
+
+        stmt = (
+            select(Tenant)
+            .order_by(desc(Tenant.created_at))
+            .limit(5)
+            .execution_options(skip_tenant_filter=True)
+        )
+
+        return db.session.scalars(stmt)
