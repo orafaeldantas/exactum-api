@@ -24,4 +24,5 @@ class PlatformService:
             blocked_tenants=repository.count_blocked_tenants(),
             tenants_created_current_month=repository.count_tenants_created_current_month(),
             active_users=repository.count_active_users(),
+            last_tenants_registered=repository.get_last_tenants_registered(),
         )

@@ -4,7 +4,7 @@ from marshmallow import Schema, fields, validate
 class TenantSchema(Schema):
     name = fields.Str(required=True)
 
-    fantasyName = fields.Str(required=True)
+    fantasyName = fields.Str(required=True, attribute="fantasy_name")
 
     cnpj = fields.Str(required=True)
 

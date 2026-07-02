@@ -1,18 +1,20 @@
 from marshmallow import Schema, fields
 
 
-class SuperAdminListTenantsResponseSchema(Schema):
+class ListTenantsResponseSchema(Schema):
     uuid = fields.UUID(dump_only=True)
 
     name = fields.Str(required=True)
 
-    fantasyName = fields.Str(required=True)
+    fantasyName = fields.Str(required=True, attribute="fantasy_name")
 
     cnpj = fields.Str(required=True)
 
     slug = fields.Str(required=True)
 
     plan = fields.Str(required=True)
+
+    is_active = fields.Str(required=True, data_key="isActive")
 
 
 class DashboardMetricsResponseSchema(Schema):
@@ -23,3 +25,7 @@ class DashboardMetricsResponseSchema(Schema):
     tenants_created_current_month = fields.Int(data_key="tenantsCreatedCurrentMonth")
 
     active_users = fields.Int(data_key="activeUsers")
+
+    last_tenants_registered = fields.List(
+        fields.Nested(ListTenantsResponseSchema), data_key="lastTenantsRegistered"
+    )

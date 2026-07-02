@@ -1,3 +1,4 @@
+from collections.abc import Sequence
 from dataclasses import dataclass
 
 
@@ -7,6 +8,7 @@ class DashboardMetricsDTO:
     blocked_tenants: int
     tenants_created_current_month: int
     active_users: int
+    last_tenants_registered: Sequence
 
 
 @dataclass(frozen=True)
