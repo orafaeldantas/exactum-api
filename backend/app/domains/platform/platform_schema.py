@@ -2,21 +2,25 @@ from marshmallow import Schema, fields
 
 
 class ListTenantsResponseSchema(Schema):
-    uuid = fields.UUID(dump_only=True)
+    uuid = fields.UUID(attribute="tenant.uuid", dump_only=True)
 
-    name = fields.Str(required=True, dump_only=True)
+    name = fields.Str(attribute="tenant.name", required=True, dump_only=True)
 
-    fantasyName = fields.Str(required=True, attribute="fantasy_name", dump_only=True)
+    fantasyName = fields.Str(
+        attribute="tenant.fantasy_name", required=True, dump_only=True
+    )
 
-    cnpj = fields.Str(required=True, dump_only=True)
+    cnpj = fields.Str(attribute="tenant.cnpj", required=True, dump_only=True)
 
-    slug = fields.Str(required=True, dump_only=True)
+    slug = fields.Str(attribute="tenant.slug", required=True, dump_only=True)
 
-    plan = fields.Str(required=True, dump_only=True)
+    plan = fields.Str(attribute="tenant.plan", required=True, dump_only=True)
 
-    isActive = fields.Str(required=True, attribute="is_active", dump_only=True)
+    isActive = fields.Bool(attribute="tenant.is_active", required=True, dump_only=True)
 
-    createdAt = fields.DateTime(attribute="created_at", dump_only=True)
+    createdAt = fields.DateTime(attribute="tenant.created_at", dump_only=True)
+
+    usersCount = fields.Int(attribute="users_count", dump_only=True)
 
 
 class DashboardMetricsResponseSchema(Schema):
@@ -31,3 +35,7 @@ class DashboardMetricsResponseSchema(Schema):
     last_tenants_registered = fields.List(
         fields.Nested(ListTenantsResponseSchema), data_key="lastTenantsRegistered"
     )
+
+
+class UdateStatusTenantSchema(Schema):
+    status = fields.Bool(attribute="is_active")

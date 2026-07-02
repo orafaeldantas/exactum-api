@@ -44,3 +44,24 @@ export function getInfraHealth() {
 
     return { loadHealth, infraHealth, lastChecked, loading };
 }
+
+export function getTenants() {
+  const [tenants, setTenants] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  async function loadTenants() {
+    try {
+      setLoading(true);
+      const response = await apiFetch("/platform/tenants");
+      const data = await response.json();
+      setTenants(data);
+    } catch (err) {
+      console.error("Error loading: ", err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return { loadTenants, tenants, loading };
+
+}
