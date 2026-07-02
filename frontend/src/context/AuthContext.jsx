@@ -64,7 +64,7 @@ export function AuthProvider({ children }) {
     }
   
     if (bootstrapData?.is_super_admin) {
-      navigate("/system/dashboard", { replace: true });
+      navigate("/platform/dashboard", { replace: true });
     } else {
       navigate("/dashboard", { replace: true });
     }

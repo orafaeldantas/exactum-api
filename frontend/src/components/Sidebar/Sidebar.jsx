@@ -49,7 +49,7 @@ function Sidebar() {
       
       if (!response.ok) throw new Error("Erro ao finalizar acesso");
       
-      window.location.href = "/manage-companies";
+      window.location.href = "/platform/manage-companies";
 
     } catch (err) {
       toast.error(err.message);
@@ -163,7 +163,7 @@ function Sidebar() {
             </div>
 
             <NavLink 
-              to="/system/dashboard" 
+              to="/platform/dashboard" 
               className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
             >
               <LayoutDashboard size={20} className={collapsed ? "mx-auto" : ""} />
@@ -171,7 +171,7 @@ function Sidebar() {
             </NavLink>
 
             <NavLink 
-              to="/system/manage-companies" 
+              to="/platform/manage-companies" 
               className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
             >
               <Building2 size={20} className={collapsed ? "mx-auto" : ""} />
@@ -179,7 +179,7 @@ function Sidebar() {
             </NavLink>
 
             <NavLink 
-              to="/system/infra-health" 
+              to="/platform/infra-health" 
               className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
             >
               <Activity size={20} className={collapsed ? "mx-auto" : ""} />
@@ -187,7 +187,7 @@ function Sidebar() {
             </NavLink>
 
             <NavLink 
-              to="/system/logs" 
+              to="/platform/logs" 
               className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
             >
               <Terminal size={20} className={collapsed ? "mx-auto" : ""} />
