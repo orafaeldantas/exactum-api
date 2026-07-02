@@ -1,18 +1,29 @@
 from collections.abc import Sequence
 from typing import TYPE_CHECKING
 
-from app.domains.platform.platform_dto import DashboardMetricsDTO
+from app.database.session import DatabaseSession
+from app.domains.platform.platform_dto import DashboardMetricsDTO, TenantSummaryDTO
 from app.domains.platform.platform_repository import PlatformRepository
+from app.domains.tenant.tenant_repository import TenantRepository
 
 if TYPE_CHECKING:
-    from app.models.tenant import Tenant
+    pass
 
 
 class PlatformService:
     @staticmethod
-    def list_all_tenants() -> Sequence["Tenant"]:
+    def list_all_tenants() -> Sequence[TenantSummaryDTO]:
 
-        return PlatformRepository.list_all_tenants()
+        repository = PlatformRepository()
+
+        raw_data = repository.list_all_tenants()
+
+        tenants_dto = [
+            TenantSummaryDTO(tenant=tenant, users_count=count)
+            for tenant, count in raw_data
+        ]
+
+        return tenants_dto
 
     @staticmethod
     def get_dashboard_metrics() -> DashboardMetricsDTO:
@@ -26,3 +37,14 @@ class PlatformService:
             active_users=repository.count_active_users(),
             last_tenants_registered=repository.get_last_tenants_registered(),
         )
+
+    @staticmethod
+    def update_status_tenant(data, tenant_uuid) -> None:
+
+        tenant = TenantRepository.get_tenant_by_uuid(tenant_uuid)
+
+        new_status = data.get("is_active")
+
+        tenant.is_active = new_status
+
+        DatabaseSession.commit()

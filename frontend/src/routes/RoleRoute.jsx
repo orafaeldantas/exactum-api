@@ -29,7 +29,7 @@ export default function RoleRoute({ children, requiredRole }) {
 
   if (requiredRole && !permissions.includes(requiredRole)) { 
 
-    if (superAdmin) return <Navigate to="/system/dashboard" replace />
+    if (superAdmin) return <Navigate to="/platform/dashboard" replace />
 
     return <Navigate to="/dashboard" replace />
   }

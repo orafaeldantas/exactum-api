@@ -15,10 +15,17 @@ logger = logging.getLogger(__name__)
 
 class PlatformRepository:
     @staticmethod
-    def list_all_tenants() -> Sequence[Tenant]:
+    def list_all_tenants() -> Sequence[tuple[Tenant, int]]:
         """Search all tenants in the system, ignoring filters."""
-        stmt = select(Tenant).execution_options(skip_tenant_filter=True)
-        return db.session.scalars(stmt).all()
+        stmt = (
+            select(Tenant, func.count(User.id).label("users_count"))
+            .outerjoin(User, Tenant.id == User.tenant_id)
+            .group_by(Tenant.id)
+            .order_by(Tenant.name)
+            .execution_options(skip_tenant_filter=True)
+        )
+
+        return db.session.execute(stmt).all()
 
     @staticmethod
     def get_super_admin_user(original_user_id: int) -> User | None:

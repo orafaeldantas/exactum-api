@@ -39,10 +39,8 @@ export function getSaleItems() {
   async function loadSaleItems(uuid) {
     try {
       setLoading(true);
-      console.log(`/sales/${uuid}`)
       const response = await apiFetch(`/sales/${uuid}`);   
       const data = await response.json();
-      console.log(data)
       setSaleItems(data);
     } catch (err) {
       console.error("Erro ao carregar:", err);
