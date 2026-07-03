@@ -400,7 +400,7 @@ export default function LoginForm() {
           {/* Middle: headline + rotating value props */}
           <div className="max-w-lg">
             <h2 className="fade-up text-4xl font-extrabold leading-[1.15] tracking-tight text-white xl:text-5xl" style={{ animationDelay: "80ms" }}>
-              Sua operação, sob controle total.
+              Sua operação sob controle total.
             </h2>
 
             <div className="mt-8 h-[72px]">
