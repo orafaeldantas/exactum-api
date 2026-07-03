@@ -6,7 +6,7 @@ import { useNavigate, Link } from "react-router-dom";
 
 import { AnimatePresence, motion } from "framer-motion";
 
-import { LogOut, ShieldCheck, Box, ChevronDown, Sparkles } from "lucide-react";
+import { LogOut, ShieldCheck, Box, ChevronDown, Sparkles, Settings } from "lucide-react";
 
 const ROLES = {
   administrator: "Administrador",
@@ -171,7 +171,7 @@ function Navbar() {
                           }
                           className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-600 transition-all duration-200 hover:bg-gray-50"
                         >
-                          <ShieldCheck className="h-4 w-4 text-gray-400" />
+                          <Settings className="h-4 w-4 text-gray-400" />
                           <span>Configurações</span>
                         </button>
                       </div>
