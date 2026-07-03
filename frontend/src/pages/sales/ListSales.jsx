@@ -2,17 +2,41 @@ import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { getSales } from "../../services/saleService";
 import LoadingOverlay from "../../components/Loader/LoadingOverlay";
-import { 
-  Search, 
-  Eye, 
+import {
+  Search,
+  Eye,
   Calendar,
   DollarSign,
-  Hash,
   ShoppingBag,
-  Loader2,
   TrendingUp,
-  ArrowLeft
+  ArrowLeft,
+  ReceiptText,
 } from "lucide-react";
+
+function formatCurrency(value) {
+  const number = Number(value) || 0;
+  return number.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
+
+function StatCard({ icon: Icon, label, value, tone = "blue" }) {
+  const toneClasses = {
+    blue: "bg-blue-50 text-blue-600",
+    emerald: "bg-emerald-50 text-emerald-600",
+  };
+  return (
+    <div className="flex items-center gap-3 rounded-2xl border border-gray-100 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.02),0_8px_20px_-14px_rgba(15,23,42,0.1)]">
+      <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${toneClasses[tone]}`}>
+        <Icon className="h-5 w-5" />
+      </div>
+      <div>
+        <p className="text-2xl font-black tracking-tight text-slate-900" style={{ fontVariantNumeric: "tabular-nums" }}>
+          {value}
+        </p>
+        <p className="text-xs font-medium text-slate-500">{label}</p>
+      </div>
+    </div>
+  );
+}
 
 export default function ListSales() {
   const navigate = useNavigate();
@@ -78,53 +102,39 @@ export default function ListSales() {
                 className="group flex h-10 w-10 items-center justify-center rounded-full 
                           bg-white border border-gray-200 shadow-sm transition-all hover:bg-gray-100"
               >
-                <ArrowLeft className="h-5 w-5 text-gray-600 group-hover:text-blue-600" />
+                <ArrowLeft className="h-5 w-5 text-slate-600 group-hover:text-blue-600" />
               </button>
-              <h1 className="text-3xl font-bold text-gray-800">
+              <h1 className="text-3xl font-bold tracking-tight text-slate-900">
                 Vendas
               </h1>
             </div>
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-slate-500">
               Exibindo registros de {monthOptions.find(m => m.value === month)?.label} de {year}
             </p>
           </div>
-          <div className="w-70">
-            <button 
-              className="w-full rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:scale-[1.02] hover:bg-blue-700 active:scale-[0.98] flex items-center justify-center gap-2" 
-              onClick={() => navigate("/checkout")}
-            >
-              <ShoppingBag className="w-4 h-4" /> Registrar Venda
-            </button>
-          </div>
+          <button
+            className="flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-[0_8px_16px_-4px_rgba(37,99,235,0.3)] transition-all duration-200 hover:bg-blue-700 hover:shadow-[0_8px_20px_-2px_rgba(37,99,235,0.35)] active:scale-[0.98]"
+            onClick={() => navigate("/checkout")}
+          >
+            <ShoppingBag className="w-4 h-4" /> Registrar Venda
+          </button>
         </div>
 
         {/* KPI Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm border-l-4 border-l-blue-500">
-            <div className="flex items-center gap-3 mb-2">
-              <DollarSign className="w-4 h-4 text-blue-500" />
-              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Faturamento Mensal</p>
-            </div>
-            <h3 className="text-2xl font-black text-gray-800">
-              R$ {(invoicing || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-            </h3>
-          </div>
-
-          <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm border-l-4 border-l-emerald-500">
-            <div className="flex items-center gap-3 mb-2">
-              <TrendingUp className="w-4 h-4 text-emerald-500" />
-              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Total de Pedidos</p>
-            </div>
-            <h3 className="text-2xl font-black text-gray-800">
-              {filteredSales.length} {filteredSales.length === 1 ? 'venda' : 'vendas'}
-            </h3>
-          </div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mb-6">
+          <StatCard icon={DollarSign} label="Faturamento Mensal" value={formatCurrency(invoicing)} tone="blue" />
+          <StatCard
+            icon={TrendingUp}
+            label="Total de Pedidos"
+            value={`${filteredSales.length} ${filteredSales.length === 1 ? "venda" : "vendas"}`}
+            tone="emerald"
+          />
         </div>
 
         {/* Filters Section */}
-        <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between bg-white p-4 rounded-2xl border border-gray-200 shadow-sm">
+        <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between rounded-2xl border border-gray-100 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.02),0_8px_20px_-14px_rgba(15,23,42,0.1)]">
           <div className="relative w-full max-w-sm">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input 
               type="text" 
               placeholder="Buscar por ID ou pagamento..." 
@@ -133,17 +143,17 @@ export default function ListSales() {
                 setSearch(e.target.value)
                 setPage(1); 
               }}           
-              className="w-full rounded-xl border border-gray-200 bg-gray-50 pl-11 pr-4 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100" 
+              className="w-full rounded-xl border border-gray-200 bg-gray-50 pl-11 pr-4 py-2.5 text-sm outline-none transition-all duration-200 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100" 
             />
           </div>
 
           <div className="flex flex-wrap gap-3 items-center">
             <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-gray-400" />
+              <Calendar className="w-4 h-4 text-slate-400" />
               <select 
                 value={month} 
                 onChange={(e) => setMonth(e.target.value)}
-                className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm outline-none focus:border-blue-500"
+                className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm outline-none transition-colors duration-200 focus:border-blue-500"
               >
                 {monthOptions.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
               </select>
@@ -152,7 +162,7 @@ export default function ListSales() {
             <select 
               value={year} 
               onChange={(e) => setYear(e.target.value)}
-              className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm outline-none focus:border-blue-500"
+              className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm outline-none transition-colors duration-200 focus:border-blue-500"
             >
               {yearOptions.map(y => <option key={y} value={y}>{y}</option>)}
             </select>
@@ -160,49 +170,52 @@ export default function ListSales() {
         </div>
 
         {/* Sales Table */}
-        <div className="relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+        <div className="relative overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.02),0_8px_20px_-14px_rgba(15,23,42,0.1)]">
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
-              <thead className="bg-gray-100">
+              <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-600">
-                    <div className="flex items-center gap-2">ID</div>
+                  <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-500">
+                    ID
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-600">
-                    <div className="flex items-center gap-2">Data</div>
+                  <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-500">
+                    Data
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-600">
+                  <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-500">
                     Pagamento
                   </th>
-                  <th className="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider text-gray-600">
+                  <th className="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider text-slate-500">
                     Total
                   </th>
-                  <th className="px-6 py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-600">
+                  <th className="px-6 py-4 text-center text-xs font-bold uppercase tracking-wider text-slate-500">
                     Ações
                   </th>
                 </tr>
               </thead>
               <tbody>
                 {paginatedSales.map((sale) => (
-                  <tr key={sale.uuid} className="border-t border-gray-100 transition-colors hover:bg-gray-50 group">
-                    <td className="px-6 py-4 text-sm font-medium text-gray-700">{sale.uuid}</td>
-                    <td className="px-6 py-4 text-sm text-gray-500">
+                  <tr key={sale.uuid} className="group border-t border-gray-100 transition-colors hover:bg-gray-50/80">
+                    <td className="px-6 py-4 text-sm font-medium text-slate-700">{sale.uuid}</td>
+                    <td className="px-6 py-4 text-sm text-slate-500">
                       {new Date(sale.created_at).toLocaleDateString('pt-BR', { 
                         day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' 
                       })}
                     </td>
                     <td className="px-6 py-4">
-                      <span className="inline-flex items-center rounded-lg bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
+                      <span className="inline-flex items-center rounded-lg bg-gray-100 px-3 py-1 text-xs font-medium text-slate-600">
                         {sale.payment_method}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm font-black text-gray-800 text-right">
-                      R$ {Number(sale.total_price).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    <td
+                      className="px-6 py-4 text-right text-sm font-black text-slate-800"
+                      style={{ fontVariantNumeric: "tabular-nums" }}
+                    >
+                      {formatCurrency(sale.total_price)}
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex justify-center">
                         <button 
-                          className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-medium text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:border-slate-300" 
+                          className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-medium text-slate-700 shadow-sm transition-all duration-200 hover:border-slate-300 hover:bg-slate-50" 
                           onClick={() => navigate(`/sales/${sale.uuid}`)}
                         >
                           <Eye className="w-4 h-4 text-slate-400 group-hover:text-blue-500" /> Detalhes
@@ -214,8 +227,17 @@ export default function ListSales() {
                 
                 {!loading && filteredSales.length === 0 && (
                   <tr>
-                    <td colSpan="5" className="px-6 py-12 text-center text-sm text-gray-500">
-                      Nenhuma venda encontrada para o período selecionado.
+                    <td colSpan="5" className="px-6 py-16">
+                      <div className="flex flex-col items-center gap-3 text-center">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 text-slate-400">
+                          <ReceiptText className="h-6 w-6" />
+                        </div>
+                        <p className="text-sm font-medium text-slate-500">
+                          {search
+                            ? `Nenhuma venda encontrada para "${search}".`
+                            : "Nenhuma venda encontrada para o período selecionado."}
+                        </p>
+                      </div>
                     </td>
                   </tr>
                 )}
@@ -223,32 +245,37 @@ export default function ListSales() {
             </table>
           </div>
         </div>
+
         {/* Pagination Controls */}
-        <div className="mt-6 flex items-center justify-center gap-1">
-          <div className="flex w-30 justify-end">    
-            <button
-              disabled={page === 1}
-              onClick={() => setPage(page - 1)}
-              className="flex items-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-600 shadow-sm transition-all hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              ← Anterior
-            </button>
-          </div>  
-          <div className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm">
-            <span className="text-blue-600">{page}</span>
-            <span className="mx-1 text-gray-400">/</span>
-            <span>{totalPages || 1}</span>
+        {!loading && filteredSales.length > 0 && (
+          <div className="mt-6 flex flex-col items-center justify-between gap-3 sm:flex-row">
+            <p className="text-xs text-slate-500">
+              Mostrando <span className="font-semibold text-slate-700">{startIndex + 1}–{Math.min(endIndex, filteredSales.length)}</span> de{" "}
+              <span className="font-semibold text-slate-700">{filteredSales.length}</span> vendas
+            </p>
+            <div className="flex items-center gap-2">
+              <button
+                disabled={page === 1}
+                onClick={() => setPage(page - 1)}
+                className="flex items-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-slate-600 shadow-sm transition-all hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                ← Anterior
+              </button>
+              <div className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm">
+                <span className="text-blue-600">{page}</span>
+                <span className="mx-1 text-slate-400">/</span>
+                <span>{totalPages || 1}</span>
+              </div>
+              <button
+                disabled={page === totalPages || totalPages === 0}
+                onClick={() => setPage(page + 1)}
+                className="flex items-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-slate-600 shadow-sm transition-all hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Próxima →
+              </button>
+            </div>
           </div>
-          <div className="w-30">        
-            <button
-              disabled={page === totalPages || totalPages === 0}
-              onClick={() => setPage(page + 1)}
-              className="flex items-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-600 shadow-sm transition-all hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              Próxima →
-            </button>
-          </div>
-        </div>       
+        )}
       </div>
     </LoadingOverlay> 
     
