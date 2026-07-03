@@ -45,11 +45,16 @@ const LowStockProducts = lazy(() => import("./pages/products/LowStock"));
 const ListUsers = lazy(() => import("./pages/users/ListUsers"));
 const CreateUser = lazy(() => import("./pages/users/CreateUser"));
 const EditUser = lazy(() => import("./pages/users/EditUser"));
-const ManageCompanies = lazy(() => import("./pages/manage/ManageCompanies"));
 
 // Settings
 const UserSettings = lazy(() => import("./pages/settings/UserSettings"));
 const AdminSettings = lazy(() => import("./pages/settings/AdminSettings"));
+
+// Platform (system)
+const ManageCompanies = lazy(() => import("./pages/platform/ManageCompanies"));
+const SystemDashboard = lazy(() => import("./pages/platform/SystemDashboard"));
+const InfraHealth = lazy(() => import("./pages/platform/InfraHealth"));
+const SystemLogs = lazy(() => import("./pages/platform/SystemLogs"));
 
 
 function App() {
@@ -89,7 +94,9 @@ function App() {
           {/* 3. INTERNAL SYSTEM (DASHBOARD & BACK OFFICE WITH LAYOUT AND SESSION FILTER) */}
           <Route element={<RoleRoute><Layout /></RoleRoute>}>
             
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route element={<RoleRoute requiredRole={"analytics:view"} />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+            </Route>
 
             {/* Sub-block: Billing (Admin / Super Admin) */}
             <Route element={<RoleRoute requiredRole={"analytics:view"} />}>
@@ -138,7 +145,12 @@ function App() {
             {/* Sub-block: Critical Settings and Levels */}
             <Route path="/user-settings" element={<RoleRoute requiredRole={"profile:view"}><UserSettings /></RoleRoute>} />
             <Route path="/admin-settings" element={<RoleRoute requiredRole={"tenant:update"}><AdminSettings /></RoleRoute>} />
-            <Route path="/manage-companies" element={<RoleRoute requiredRole={"super-admin"}><ManageCompanies /></RoleRoute>} />
+
+            {/* Sub-block: Super Admin Control */}
+            <Route path="/platform/manage-companies" element={<RoleRoute requiredRole={"super-admin"}><ManageCompanies /></RoleRoute>} />
+            <Route path="/platform/dashboard" element={<RoleRoute requiredRole={"super-admin"}><SystemDashboard /></RoleRoute>} />
+            <Route path="/platform/infra-health" element={<RoleRoute requiredRole={"super-admin"}><InfraHealth /></RoleRoute>} />
+            <Route path="/platform/logs" element={<RoleRoute requiredRole={"super-admin"}><SystemLogs /></RoleRoute>} />
 
           </Route>
         </Routes>

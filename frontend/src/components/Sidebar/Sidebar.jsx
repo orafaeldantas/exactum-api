@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import { SuperAdminContext } from "../../context/SuperAdminContext";
 import { apiFetch } from "../../services/api";
 import { useContext } from "react";
 import toast from "react-hot-toast";
@@ -25,6 +26,7 @@ import {
 function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const { user, impersonateMode } = useContext(AuthContext);
+  const { superAdmin } = useContext(SuperAdminContext);
   const roles = ["admin", 'super-admin'];
 
   function toggleSidebar() {
@@ -39,14 +41,15 @@ function Sidebar() {
   const activeLinkClass = "bg-blue-600 !text-white shadow-lg shadow-blue-900/20";
 
   const isImpersonating = impersonateMode ?? false
-
+  const isSuperAdmin = superAdmin ?? false
+ 
   async function handleImpersonate() {
     try {
       const response = await apiFetch('/auth/stop-impersonate', { method: "POST" });
       
       if (!response.ok) throw new Error("Erro ao finalizar acesso");
       
-      window.location.href = "/manage-companies";
+      window.location.href = "/platform/manage-companies";
 
     } catch (err) {
       toast.error(err.message);
@@ -88,95 +91,107 @@ function Sidebar() {
           </button>
         )}
 
-        <NavLink 
-          to="/dashboard" 
-          className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
-        >
-          <LayoutDashboard size={20} className={collapsed ? "mx-auto" : ""} />
-          {!collapsed && <span className="font-medium">Dashboard</span>}
-        </NavLink>
-
-        <NavLink 
-          to="/products" 
-          className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
-        >
-          <Box size={20} className={collapsed ? "mx-auto" : ""} />
-          {!collapsed && <span className="font-medium">Produtos</span>}
-        </NavLink>
-
-        <NavLink
-          to="/low-stock"
-          className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
-        >
-          <CircleDot size={20} className={collapsed ? "mx-auto" : ""} />
-          {!collapsed && <span className="font-medium">Estoque Baixo</span>}
-        </NavLink>
-                
-        {roles.includes(user?.role) && (
-          <NavLink 
-            to="/users" 
-            className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
-          >
-            <Users size={20} className={collapsed ? "mx-auto" : ""} />
-            {!collapsed && <span className="font-medium">Usuários</span>}
-          </NavLink>
-        )}
-
-        <NavLink 
-          to="/checkout" 
-          className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
-        >
-          <ShoppingCart size={20} className={collapsed ? "mx-auto" : ""} />
-          {!collapsed && <span className="font-medium">PDV</span>}
-        </NavLink>
-
-        <NavLink
-          to="/sales"
-          className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
-        >
-          <Receipt size={20} className={collapsed ? "mx-auto" : ""} />
-          {!collapsed && <span className="font-medium">Histórico de Vendas</span>}
-        </NavLink>
-
-        {roles.includes(user?.role) && (
-          <NavLink 
-            to="/logs" 
-            className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
-          >
-            <ScrollText size={20} className={collapsed ? "mx-auto" : ""} />
-            {!collapsed && <span className="font-medium">Logs</span>}
-          </NavLink>
-        )}
-
-        {user?.role.name === 'super-admin' && (
+        {!isSuperAdmin && (
           <>
+            <NavLink 
+              to="/dashboard" 
+              className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
+            >
+              <LayoutDashboard size={20} className={collapsed ? "mx-auto" : ""} />
+              {!collapsed && <span className="font-medium">Dashboard</span>}
+            </NavLink>
+
+            <NavLink 
+              to="/products" 
+              className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
+            >
+              <Box size={20} className={collapsed ? "mx-auto" : ""} />
+              {!collapsed && <span className="font-medium">Produtos</span>}
+            </NavLink>
+
+            <NavLink
+              to="/low-stock"
+              className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
+            >
+              <CircleDot size={20} className={collapsed ? "mx-auto" : ""} />
+              {!collapsed && <span className="font-medium">Estoque Baixo</span>}
+            </NavLink>
+                    
+            {roles.includes(user?.role) && (
+              <NavLink 
+                to="/users" 
+                className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
+              >
+                <Users size={20} className={collapsed ? "mx-auto" : ""} />
+                {!collapsed && <span className="font-medium">Usuários</span>}
+              </NavLink>
+            )}
+
+            <NavLink 
+              to="/checkout" 
+              className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
+            >
+              <ShoppingCart size={20} className={collapsed ? "mx-auto" : ""} />
+              {!collapsed && <span className="font-medium">PDV</span>}
+            </NavLink>
+
+            <NavLink
+              to="/sales"
+              className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
+            >
+              <Receipt size={20} className={collapsed ? "mx-auto" : ""} />
+              {!collapsed && <span className="font-medium">Histórico de Vendas</span>}
+            </NavLink>
+
+            {roles.includes(user?.role) && (
+              <NavLink 
+                to="/logs" 
+                className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
+              >
+                <ScrollText size={20} className={collapsed ? "mx-auto" : ""} />
+                {!collapsed && <span className="font-medium">Logs</span>}
+              </NavLink>
+            )}
+          </>
+        )}
+
+        {isSuperAdmin && (
+          <>       
             <div className="mt-6 mb-2 px-4">
-              {!collapsed && <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">System Management</p>}
+              {!collapsed && <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Gerenciamento do Sistema</p>}
               {collapsed && <div className="border-t border-slate-800 mx-2" />}
             </div>
 
             <NavLink 
-              to="/manage-companies" 
+              to="/platform/dashboard" 
+              className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
+            >
+              <LayoutDashboard size={20} className={collapsed ? "mx-auto" : ""} />
+              {!collapsed && <span className="font-medium">Dashboard</span>}
+            </NavLink>
+
+            <NavLink 
+              to="/platform/manage-companies" 
               className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
             >
               <Building2 size={20} className={collapsed ? "mx-auto" : ""} />
-              {!collapsed && <span className="font-medium">Tenants</span>}
+              {!collapsed && <span className="font-medium">Empresas</span>}
             </NavLink>
 
             <NavLink 
-              to="/superadmin/health" 
+              to="/platform/infra-health" 
               className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
             >
               <Activity size={20} className={collapsed ? "mx-auto" : ""} />
-              {!collapsed && <span className="font-medium">Infra Health</span>}
+              {!collapsed && <span className="font-medium">Status do Sistema</span>}
             </NavLink>
 
             <NavLink 
-              to="/superadmin/system-logs" 
+              to="/platform/logs" 
               className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
             >
               <Terminal size={20} className={collapsed ? "mx-auto" : ""} />
-              {!collapsed && <span className="font-medium">System Logs</span>}
+              {!collapsed && <span className="font-medium">Logs do Sistema</span>}
             </NavLink>
           </>
         )}

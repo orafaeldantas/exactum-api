@@ -36,7 +36,7 @@ class TenantService:
 
         tenant = Tenant(
             name=company.get("name"),
-            fantasy_name=company.get("fantasyName"),
+            fantasy_name=company.get("fantasy_name"),
             cnpj=clean_cnpj,
             plan=plan.get("type"),
             slug=company.get("slug"),

@@ -16,9 +16,9 @@ from app.domains.auth.auth_exceptions import (
 from app.domains.auth.auth_repository import AuthRepository
 from app.domains.auth.token_service import TokenService
 from app.domains.goal.goal_repository import GoalRepository
+from app.domains.platform.platform_repository import PlatformRepository
 from app.domains.rbac.container import get_rbac_service
 from app.domains.rbac.rbac_repository import RBACRepository
-from app.domains.super_admin.super_admin_repository import SuperAdminRepository
 from app.domains.tenant.tenant_repository import TenantRepository
 from app.domains.user.user_repository import UserRepository
 
@@ -81,14 +81,14 @@ class AuthService:
 
         auth = {
             "user_uuid": user.uuid,
-            "role": {"name": "super-admin"},
+            "role": {"name": "super_admin"},
             "permissions": permission,
-            "is_super_admin": True,
         }
 
         bootstrap_data = {
             "auth": auth,
             "user": user,
+            "is_super_admin": user.is_super_admin,
         }
 
         return bootstrap_data
@@ -140,7 +140,6 @@ class AuthService:
                 "tenant": tenant_formated,
                 "auth": auth,
                 "impersonate_mode": impersonate_mode,
-                "is_super_admin": user.is_super_admin,
             }
 
         return bootstrap_data
@@ -230,7 +229,7 @@ class AuthService:
 
         AuthService.revoke_refresh_token(jti, original_user_id)
 
-        target_admin = SuperAdminRepository.impersonate(tenant_uuid)
+        target_admin = PlatformRepository.impersonate(tenant_uuid)
 
         if not target_admin:
             raise AdminNotFound()
@@ -256,7 +255,7 @@ class AuthService:
         if not original_user_id:
             raise AdminNotFound()
 
-        super_admin_user = SuperAdminRepository.get_super_admin_user(original_user_id)
+        super_admin_user = PlatformRepository.get_super_admin_user(original_user_id)
 
         if not super_admin_user:
             raise AdminNotFound()

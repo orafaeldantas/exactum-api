@@ -20,15 +20,21 @@ export default function RoleRoute({ children, requiredRole }) {
   if (!user) {
     return <Navigate to="/" replace />
   }
+
   
   if (user?.password_reset === true && location.pathname !== "/reset-password" 
-      && superAdmin?.role?.name !== "super-admin" && impersonateMode !== true) {
+      && !superAdmin && impersonateMode !== true) {
     return <Navigate to="/reset-password" replace />;
   }
 
   if (requiredRole && !permissions.includes(requiredRole)) { 
+
+    if (superAdmin) return <Navigate to="/platform/dashboard" replace />
+
     return <Navigate to="/dashboard" replace />
   }
+
+
 
 
 

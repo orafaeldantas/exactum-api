@@ -54,12 +54,12 @@ def create_app(config=None):
 
     from app.core.monitoring.health_routes import blp_health
     from app.domains.auth.auth_routes import blp_auth
+    from app.domains.platform.platform_routes import blp_platform
     from app.domains.product.product_routes import blp_products
     from app.domains.rbac.rbac_routes import blp_rbac
     from app.domains.sale.routes.revenue_analytics_routes import blp_revenue_analytics
     from app.domains.sale.routes.sale_routes import blp_sales
     from app.domains.sale.routes.sold_item_analytics_routes import blp_item_analytics
-    from app.domains.super_admin.super_admin_routes import blp_super_admin
     from app.domains.tenant.tenant_routes import blp_tenants
     from app.domains.user.user_routes import blp_users
 
@@ -72,7 +72,7 @@ def create_app(config=None):
     api.register_blueprint(blp_sales)
     api.register_blueprint(blp_item_analytics)
     api.register_blueprint(blp_revenue_analytics)
-    api.register_blueprint(blp_super_admin)
+    api.register_blueprint(blp_platform)
     api.register_blueprint(blp_health)
     api.register_blueprint(blp_rbac)
 
