@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 
 from app.database.session import DatabaseSession
 from app.domains.platform.platform_dto import DashboardMetricsDTO, TenantSummaryDTO
+from app.domains.platform.platform_exceptions import ResourceNotFound
 from app.domains.platform.platform_repository import PlatformRepository
 from app.domains.tenant.tenant_repository import TenantRepository
 
@@ -42,6 +43,9 @@ class PlatformService:
     def update_status_tenant(data, tenant_uuid) -> None:
 
         tenant = TenantRepository.get_tenant_by_uuid(tenant_uuid)
+
+        if not tenant:
+            raise ResourceNotFound("Not found tenant")
 
         new_status = data.get("is_active")
 

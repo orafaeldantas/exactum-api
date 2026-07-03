@@ -6,10 +6,10 @@ from app.models.tenant import Tenant
 
 @dataclass(frozen=True)
 class DashboardMetricsDTO:
-    active_tenants: int
-    blocked_tenants: int
-    tenants_created_current_month: int
-    active_users: int
+    active_tenants: int | None
+    blocked_tenants: int | None
+    tenants_created_current_month: int | None
+    active_users: int | None
     last_tenants_registered: Sequence
 
 

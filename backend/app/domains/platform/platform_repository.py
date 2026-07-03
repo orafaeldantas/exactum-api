@@ -5,6 +5,7 @@ from uuid import UUID
 from sqlalchemy import desc, func, select
 
 from app.core.helpers.period_service import PeriodService
+from app.domains.platform.platform_exceptions import ResourceNotFound
 from app.domains.rbac.rbac_repository import RBACRepository
 from app.extensions import db
 from app.models.tenant import Tenant
@@ -25,7 +26,7 @@ class PlatformRepository:
             .execution_options(skip_tenant_filter=True)
         )
 
-        return db.session.execute(stmt).all()
+        return db.session.execute(stmt).tuples().all()
 
     @staticmethod
     def get_super_admin_user(original_user_id: int) -> User | None:
@@ -44,17 +45,17 @@ class PlatformRepository:
         tenant = db.session.scalar(tenant_stmt)
 
         if not tenant:
-            raise KeyError("Not found tenant")
+            raise ResourceNotFound("Not found tenant")
 
         role = RBACRepository().get_role_admin_by_tenant(tenant.id)
 
         if not role:
-            raise KeyError("Not found role")
+            raise ResourceNotFound("Not found role")
 
         user_role = RBACRepository().get_user_by_role_id(role.id)
 
         if not user_role:
-            raise KeyError("Not found role")
+            raise ResourceNotFound("Not found user role")
 
         user_stmt = (
             select(User)
@@ -64,7 +65,7 @@ class PlatformRepository:
         return db.session.scalar(user_stmt)
 
     @staticmethod
-    def count_active_tenants() -> int:
+    def count_active_tenants() -> int | None:
 
         stmt = (
             select(func.count())
@@ -76,19 +77,19 @@ class PlatformRepository:
         return db.session.scalar(stmt)
 
     @staticmethod
-    def count_blocked_tenants() -> int:
+    def count_blocked_tenants() -> int | None:
 
         stmt = (
             select(func.count())
             .select_from(Tenant)
-            .where(not Tenant.is_active)
+            .where(~Tenant.is_active)
             .execution_options(skip_tenant_filter=True)
         )
 
         return db.session.scalar(stmt)
 
     @staticmethod
-    def count_tenants_created_current_month() -> int:
+    def count_tenants_created_current_month() -> int | None:
 
         start_date, end_date = PeriodService.get_period_range("month")
 
@@ -102,7 +103,7 @@ class PlatformRepository:
         return db.session.scalar(stmt)
 
     @staticmethod
-    def count_active_users() -> int:
+    def count_active_users() -> int | None:
 
         stmt = (
             select(func.count())
@@ -123,4 +124,4 @@ class PlatformRepository:
             .execution_options(skip_tenant_filter=True)
         )
 
-        return db.session.scalars(stmt)
+        return db.session.scalars(stmt).all()
