@@ -21,7 +21,6 @@ import DashboardSkeleton from "../../components/Loader/DashboardSkeleton";
  * @description Central command interface with KPIs, Target Charts, and AI Insights
  */
 function Dashboard() {
-  const { loading } = useContext(AuthContext);
   const { profile } = useContext(UserContext);
   const { tenantData } = useContext(TenantContext);
   const { lowStock = [], loadProducts } = getProducts();

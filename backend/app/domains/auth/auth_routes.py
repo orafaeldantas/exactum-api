@@ -15,7 +15,7 @@ from app.domains.auth.auth_schema import (
     RunImpersonateResponseSchema,
     StopImpersonateResponseSchema,
 )
-from app.domains.super_admin.super_admin_decorators import require_super_admin
+from app.domains.platform.platform_decorators import require_super_admin
 
 blp_auth = Blueprint(
     "auth", __name__, url_prefix="/auth", description="Authentication operations"
@@ -86,7 +86,7 @@ class RunImpersonateRoute(MethodView):
 
 @blp_auth.route("/stop-impersonate")
 class StopImpersonateRoute(MethodView):
-    @jwt_required()
+    @jwt_required(refresh=True)
     @blp_auth.doc(security=[{"CookieAuth": []}])
     @blp_auth.response(201, StopImpersonateResponseSchema)
     def post(self) -> Response:

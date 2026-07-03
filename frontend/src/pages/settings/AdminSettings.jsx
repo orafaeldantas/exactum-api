@@ -106,7 +106,7 @@ export default function SettingsPage() {
       minimumStock: form.minimumStock,
       monthlyGoal: form.monthlyGoal,
     };
-    console.log(dataTenant)
+
     try {
       const [responseUser, responseTenant] = await Promise.all([
         apiFetch(`/users/profile/${profile.uuid}`, {
@@ -130,7 +130,6 @@ export default function SettingsPage() {
       toast.error("Erro de conexão");
       console.error(error);
     }
-    console.log(dataTenant)
   }
   
   return (

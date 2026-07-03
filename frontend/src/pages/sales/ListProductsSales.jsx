@@ -56,7 +56,6 @@ export default function ListSoldItems() {
 
   const totalItemsSold = soldItems.reduce((acc, item) => acc + parseFloat(item.total_quantity), 0);
 
-  console.log(totalPages)
 
   useEffect(() => {  
     loadSoldItems({ month: month, year: year });
