@@ -342,11 +342,17 @@ export default function Home() {
             © 2026 Exactum Tecnologia. Inteligência em cada unidade.
           </p>
           <div className="flex gap-6 text-sm text-slate-400">
+            <Link to="/about" className="hover:text-blue-600 transition-colors duration-200">
+              Quem Somos
+            </Link>
             <Link to="/privacy" className="hover:text-blue-600 transition-colors duration-200">
               Privacidade
             </Link>
             <Link to="/terms" className="hover:text-blue-600 transition-colors duration-200">
               Termos
+            </Link>
+            <Link to="/support" className="hover:text-blue-600 transition-colors duration-200">
+              Suporte
             </Link>
           </div>
         </div>
