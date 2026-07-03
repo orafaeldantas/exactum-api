@@ -13,8 +13,9 @@ import RoleRoute from "./routes/RoleRoute";
 // Public & Institutional
 const Home = lazy(() => import("./pages/home/Home"));
 const AboutPage = lazy(() => import("./pages/informations/AboutPage"));
-const PrivacyPage = lazy(() => import("./pages/informations/Privacy"));
-const TermsPage = lazy(() => import("./pages/informations/Terms"));
+const PrivacyPage = lazy(() => import("./pages/informations/PrivacyPage"));
+const TermsPage = lazy(() => import("./pages/informations/TermsPage"));
+const SupportPage = lazy(() => import("./pages/informations/SupportPage"));
 
 // Authentication
 const Login = lazy(() => import("./pages/auth/Login"));
@@ -76,6 +77,7 @@ function App() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/terms" element={<TermsPage />} />
+            <Route path="/support" element={<SupportPage />} />
           </Route>
 
           <Route path="/" element={<Home />} />
