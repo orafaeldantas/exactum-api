@@ -69,7 +69,7 @@ export default function ReviewStep({ data, back }) {
               <div className="flex items-center gap-1.5 mt-1">
                 <Globe className="w-3.5 h-3.5 text-blue-500" />
                 <p className="text-sm font-bold text-blue-600 italic">
-                  app.exactum.com/{data.company.slug}
+                  exactum.app.br/{data.company.slug}
                 </p>
               </div>
             </div>
