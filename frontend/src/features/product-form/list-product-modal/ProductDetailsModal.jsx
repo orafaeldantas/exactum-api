@@ -39,7 +39,7 @@ export default function ProductDetailsModal({ product, isOpen, onClose, onEdit }
 
   const { tenantData } = useContext(TenantContext);
 
-  const LOW_STOCK_THRESHOLD = tenantData.global_min_stock;
+  const lowStockThreshold = tenantData?.global_min_stock ?? 5; 
 
 
   useEffect(() => {
@@ -60,7 +60,7 @@ export default function ProductDetailsModal({ product, isOpen, onClose, onEdit }
 
   if (typeof document === "undefined") return null;
 
-  const isLowStock = product && Number(product.stock_quantity) <= LOW_STOCK_THRESHOLD;
+  const isLowStock = product && Number(product.stock_quantity) <= lowStockThreshold;
   const isActive = product?.is_active ?? product?.isActive ?? true;
 
   return createPortal(
