@@ -6,10 +6,37 @@ import {
   Search, 
   Eye, 
   Calendar,
-  DollarSign,
-  Loader2,
-  TrendingUp
+  TrendingUp,
+  Package,
+  DollarSign
 } from "lucide-react";
+
+function formatCurrency(value) {
+  const number = Number(value) || 0;
+  return number.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
+
+// Componente StatCard no MESMO layout horizontal do referência
+function StatCard({ icon: Icon, label, value, tone = "blue" }) {
+  const toneClasses = {
+    blue: "bg-blue-50 text-blue-600",
+    emerald: "bg-emerald-50 text-emerald-600",
+    purple: "bg-purple-50 text-purple-600",   // adicionado para o card de faturamento
+  };
+  return (
+    <div className="flex items-center gap-3 rounded-2xl border border-gray-100 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.02),0_8px_20px_-14px_rgba(15,23,42,0.1)]">
+      <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${toneClasses[tone]}`}>
+        <Icon className="h-5 w-5" />
+      </div>
+      <div>
+        <p className="text-2xl font-black tracking-tight text-slate-900" style={{ fontVariantNumeric: "tabular-nums" }}>
+          {value}
+        </p>
+        <p className="text-xs font-medium text-slate-500">{label}</p>
+      </div>
+    </div>
+  );
+}
 
 export default function ListSoldItems() {
   const navigate = useNavigate();
@@ -25,7 +52,6 @@ export default function ListSoldItems() {
 
   const { soldItems = [], loadSoldItems, loading } = getSoldItems();
 
-  // Dynamic Year Options
   const yearOptions = useMemo(() => {
     const years = [];
     for (let i = today.getFullYear(); i >= 2020; i--) years.push(i.toString());
@@ -53,60 +79,54 @@ export default function ListSoldItems() {
 
   const totalPages = Math.ceil(filteredSoldItems.length / itemsPerPage);
 
-
   const totalItemsSold = soldItems.reduce((acc, item) => acc + parseFloat(item.total_quantity), 0);
-
+  const totalRevenue = soldItems.reduce((acc, item) => acc + Number(item.revenue), 0);
 
   useEffect(() => {  
     loadSoldItems({ month: month, year: year });
   }, [month, year]);
-  
 
   return (
-
     <LoadingOverlay loading={loading} minDuration={250} message="Buscando dados...">
-      <div className="min-h-screen bg-gray-50 p-6 relative">
+      <div className="min-h-screen bg-gray-50 p-6">
         
-        {/* Header */}
         <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-800">Produtos Vendidos</h1>
-            <p className="mt-1 text-sm text-gray-500">
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900">Produtos Vendidos</h1>
+            <p className="text-sm font-medium text-slate-500">
               Exibindo registros de {monthOptions.find(m => m.value === month)?.label} de {year}
             </p>
           </div>
         </div>
 
-        {/* KPI Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm border-l-4 border-l-blue-500">
-            <div className="flex items-center gap-3 mb-2">
-              <TrendingUp className="w-4 h-4 text-emerald-500" />
-              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Produtos Vendidos</p>
-            </div>
-            <h3 className="text-2xl font-black text-gray-800">
-                {filteredSoldItems.length} {filteredSoldItems.length === 1 ? 'produto' : 'produtos'}
-            </h3>
-          </div>
-
-          <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm border-l-4 border-l-emerald-500">
-            <div className="flex items-center gap-3 mb-2">
-              <TrendingUp className="w-4 h-4 text-emerald-500" />
-              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Unidades Vendidas</p>
-            </div>
-            <h3 className="text-2xl font-black text-gray-800">
-                {totalItemsSold} {totalItemsSold === 1 ? 'unidade' : 'unidades'}
-            </h3>
-          </div>
+        {/* KPI Cards no mesmo layout horizontal do referência */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-6">
+          <StatCard
+            icon={Package}
+            label="Produtos Vendidos"
+            value={`${filteredSoldItems.length} ${filteredSoldItems.length === 1 ? "produto" : "produtos"}`}
+            tone="blue"
+          />
+          <StatCard
+            icon={TrendingUp}
+            label="Unidades Vendidas"
+            value={`${totalItemsSold} ${totalItemsSold === 1 ? "unidade" : "unidades"}`}
+            tone="emerald"
+          />
+          <StatCard
+            icon={DollarSign}
+            label="Faturamento Total"
+            value={formatCurrency(totalRevenue)}
+            tone="purple"
+          />
         </div>
 
-        {/* Filters Section */}
-        <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between bg-white p-4 rounded-2xl border border-gray-200 shadow-sm">
+        <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between bg-white p-4 rounded-2xl border border-gray-100 shadow-[0_1px_2px_rgba(15,23,42,0.02),0_8px_20px_-14px_rgba(15,23,42,0.1)]">
           <div className="relative w-full max-w-sm">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input 
               type="text" 
-              placeholder="Buscar por ID ou pagamento..." 
+              placeholder="Buscar por SKU ou nome..." 
               value={search} 
               onChange={(e) => {
                 setSearch(e.target.value)
@@ -122,7 +142,7 @@ export default function ListSoldItems() {
               <select 
                 value={month} 
                 onChange={(e) => setMonth(e.target.value)}
-                className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm outline-none focus:border-blue-500"
+                className="rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm outline-none focus:border-blue-500"
               >
                 {monthOptions.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
               </select>
@@ -131,53 +151,46 @@ export default function ListSoldItems() {
             <select 
               value={year} 
               onChange={(e) => setYear(e.target.value)}
-              className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm outline-none focus:border-blue-500"
+              className="rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm outline-none focus:border-blue-500"
             >
               {yearOptions.map(y => <option key={y} value={y}>{y}</option>)}
             </select>
           </div>
         </div>
 
-        {/* Items Table */}
-        <div className="relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-          <div className="overflow-x-auto">
+        <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.02),0_8px_20px_-14px_rgba(15,23,42,0.1)]">
+          <div className="max-h-[400px] overflow-x-auto overflow-y-auto">
             <table className="w-full border-collapse">
-              <thead className="bg-gray-100">
+              <thead className="sticky top-0 z-10 bg-gray-50 shadow-sm">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-600">
-                    <div className="flex items-center gap-2">ID</div>
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-600">
-                    Nome
-                  </th>
-                  <th className="px-6 py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-600">
-                    SKU
-                  </th>
-                  <th className="px-6 py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-600">
-                    Total Vendidos
-                  </th>
-                  <th className="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider text-gray-600">
-                    Faturado
-                  </th>              
+                  <th className="px-6 py-4 text-left text-xs font-bold uppercase text-slate-500">ID</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold uppercase text-slate-500">Nome</th>
+                  <th className="px-6 py-4 text-center text-xs font-bold uppercase text-slate-500">SKU</th>
+                  <th className="px-6 py-4 text-center text-xs font-bold uppercase text-slate-500">Total Vendidos</th>
+                  <th className="px-6 py-4 text-right text-xs font-bold uppercase text-slate-500">Faturado</th>              
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-gray-100">
                 {paginatedItems.map((item) => (
-                  <tr key={item.name} className="border-t border-gray-100 transition-colors hover:bg-gray-50 group">
-                    <td className="px-6 py-4 text-sm font-medium text-gray-700">{item.product_id ?? null}</td>
-                    <td className="px-6 py-4 text-sm font-medium text-gray-700">{item.name}</td>
+                  <tr key={item.name} className="transition-colors duration-200 hover:bg-gray-50/80">
+                    <td className="px-6 py-4">
+                      <span className="font-mono text-sm font-medium text-slate-600">
+                        {item.product_id ?? <span className="text-slate-300">N/A</span>}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-sm font-semibold text-slate-800">{item.name}</td>
                     <td className="px-6 py-4 text-center">
-                      <span className="inline-flex items-center rounded-lg bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
+                      <span className="font-mono text-sm font-medium text-slate-600">
                         {item.sku}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-center">
-                      <span className="inline-flex items-center rounded-lg bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
+                      <span className="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-bold text-blue-700">
                         {item.total_quantity}
                       </span>  
                     </td>
-                    <td className="px-6 py-4 text-sm font-black text-gray-800 text-right">
-                      R$ {Number(item.revenue).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    <td className="px-6 py-4 text-right text-sm font-black text-slate-800" style={{ fontVariantNumeric: "tabular-nums" }}>
+                      {formatCurrency(item.revenue)}
                     </td>
                   </tr>
                 ))}
@@ -193,32 +206,37 @@ export default function ListSoldItems() {
             </table>
           </div>
         </div>
-        {/* Pagination Controls */}
-        <div className="mt-6 flex items-center justify-center gap-1">
-          <div className="flex w-30 justify-end">    
-            <button
-              disabled={page === 1}
-              onClick={() => setPage(page - 1)}
-              className="flex items-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-600 shadow-sm transition-all hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              ← Anterior
-            </button>
-          </div>  
-          <div className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm">
-            <span className="text-blue-600">{page}</span>
-            <span className="mx-1 text-gray-400">/</span>
-            <span>{totalPages || 1}</span>
+
+        {/* Paginação – modelo do referência aplicado */}
+        {!loading && filteredSoldItems.length > 0 && (
+          <div className="mt-6 flex flex-col items-center justify-between gap-3 sm:flex-row">
+            <p className="text-xs text-slate-500">
+              Mostrando <span className="font-semibold text-slate-700">{startIndex + 1}–{Math.min(endIndex, filteredSoldItems.length)}</span> de{" "}
+              <span className="font-semibold text-slate-700">{filteredSoldItems.length}</span> itens
+            </p>
+            <div className="flex items-center gap-2">
+              <button
+                disabled={page === 1}
+                onClick={() => setPage(page - 1)}
+                className="flex items-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-slate-600 shadow-sm transition-all hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                ← Anterior
+              </button>
+              <div className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm">
+                <span className="text-blue-600">{page}</span>
+                <span className="mx-1 text-slate-400">/</span>
+                <span>{totalPages || 1}</span>
+              </div>
+              <button
+                disabled={page === totalPages || totalPages === 0}
+                onClick={() => setPage(page + 1)}
+                className="flex items-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-slate-600 shadow-sm transition-all hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Próxima →
+              </button>
+            </div>
           </div>
-          <div className="w-30">        
-            <button
-              disabled={page === totalPages || totalPages === 0}
-              onClick={() => setPage(page + 1)}
-              className="flex items-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-600 shadow-sm transition-all hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              Próxima →
-            </button>
-          </div>
-        </div>
+        )}
       </div>
     </LoadingOverlay>
   );
