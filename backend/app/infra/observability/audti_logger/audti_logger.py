@@ -1,0 +1,2 @@
+class AuditLogger:
+    pass

@@ -13,6 +13,12 @@ from app.domains.rbac.container import init_rbac_container
 from app.exceptions.handlers import register_error_handlers
 from app.exceptions.jwt_handlers import register_jwt_handlers
 from app.extensions import db, init_redis, jwt, migrate
+from app.infra.observability.request_logger.config import (
+    setup_request_logger,
+)
+from app.infra.observability.request_logger.logger import (
+    init_request_logger,
+)
 from config import Config
 
 
@@ -43,9 +49,12 @@ def create_app(config=None):
     migrate.init_app(app, db)
     jwt.init_app(app)
     init_request_context(app)
+    init_request_logger(app)
     init_tenant_filter(db)
     init_redis(app)
     init_rbac_container(app.extensions["redis"])
+
+    setup_request_logger()
 
     register_jwt_handlers(jwt)
 
