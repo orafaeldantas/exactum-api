@@ -1,7 +1,10 @@
 import logging
+import time
 
 from flask import g
 from flask_jwt_extended import get_jwt, get_jwt_identity, verify_jwt_in_request
+
+from app.core.identifiers.uuid_generator import UUIDGenerator
 
 logger = logging.getLogger(__name__)
 
@@ -9,6 +12,8 @@ logger = logging.getLogger(__name__)
 def init_request_context(app):
     @app.before_request
     def load_request_context():
+        g.request_id = str(UUIDGenerator.generate())
+        g.request_started_at = time.perf_counter()
         try:
             verify_jwt_in_request(optional=True)
             claims = get_jwt()

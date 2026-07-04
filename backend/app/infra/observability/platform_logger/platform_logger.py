@@ -1,0 +1,2 @@
+class PlatformLogger:
+    pass
