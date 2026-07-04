@@ -160,7 +160,7 @@ export default function ListProducts() {
 
   const { tenantData } = useContext(TenantContext);
   
-  const LOW_STOCK_THRESHOLD = tenantData.global_min_stock;
+  const lowStockThreshold = tenantData?.global_min_stock ?? 5; 
 
   const [products, setProducts] = useState([]);
   const [error, setError] = useState("");
@@ -225,7 +225,7 @@ export default function ListProducts() {
 
   // Summary counts
   const activeCount = products.filter((p) => p.is_active).length;
-  const lowStockCount = products.filter((p) => Number(p.stock_quantity) <= LOW_STOCK_THRESHOLD).length;
+  const lowStockCount = products.filter((p) => Number(p.stock_quantity) <= lowStockThreshold).length;
 
   function openConfirmModal(product) {
     setProductToToggle(product);
@@ -407,7 +407,7 @@ export default function ListProducts() {
       <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
         <StatCard icon={Boxes} label="Produtos cadastrados" value={products.length} tone="blue" />
         <StatCard icon={CheckCircle2} label="Produtos ativos" value={activeCount} tone="emerald" />
-        <StatCard icon={AlertTriangle} label="Estoque baixo (≤ 10 un.)" value={lowStockCount} tone="amber" />
+        <StatCard icon={AlertTriangle} label={`Estoque baixo (≤ ${lowStockThreshold} un.)`} value={lowStockCount} tone="amber" />
       </div>
 
       {/* Error Display */}
@@ -447,7 +447,7 @@ export default function ListProducts() {
             ) : (
               <tbody>
                 {paginatedProducts.map((product) => {
-                  const isLowStock = Number(product.stock_quantity) <= LOW_STOCK_THRESHOLD;
+                  const isLowStock = Number(product.stock_quantity) <= lowStockThreshold;
                   return (
                     <tr key={product.uuid} className="border-t border-gray-100 transition-colors hover:bg-gray-50/80">
                       <td className="px-6 py-4 text-sm text-slate-400">{product.uuid}</td>
