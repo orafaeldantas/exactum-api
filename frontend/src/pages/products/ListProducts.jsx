@@ -1,10 +1,12 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { AnimatePresence, motion } from "framer-motion";
+import { TenantContext } from "../../context/TenantContext";
 
 import { apiFetch } from "../../services/api";
 import ProductDetailsModal from "../../features/product-form/list-product-modal/ProductDetailsModal";
+
 
 import {
   Eye,
@@ -20,15 +22,12 @@ import {
   PackageSearch,
 } from "lucide-react";
 
-const LOW_STOCK_THRESHOLD = 10;
-
 function formatPrice(value) {
   const number = Number(value);
   if (Number.isNaN(number)) return "—";
   return number.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
-/** Compact kebab menu replacing the row of 4 buttons — standard pattern for dense enterprise tables. */
 function RowActions({ product, isLoading, onDetails, onEdit, onToggleStatus, onDelete }) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef(null);
@@ -158,6 +157,11 @@ function TableSkeleton() {
 }
 
 export default function ListProducts() {
+
+  const { tenantData } = useContext(TenantContext);
+  
+  const LOW_STOCK_THRESHOLD = tenantData.global_min_stock;
+
   const [products, setProducts] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
