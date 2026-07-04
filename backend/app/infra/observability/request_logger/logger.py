@@ -14,6 +14,11 @@ def init_request_logger(app):
     @app.after_request
     def log_request(response):
 
+        # additional security to hide the server version
+        # and remove the list of technologies
+        response.headers["Server"] = "API"
+        response.headers.pop("X-Powered-By", None)
+
         try:
             duration_ms = None
 
@@ -22,13 +27,6 @@ def init_request_logger(app):
                     (time.perf_counter() - g.request_started_at) * 1000,
                     2,
                 )
-
-            forwarded_for = request.headers.get("X-Forwarded-For")
-
-            if forwarded_for:
-                ip_address = forwarded_for.split(",")[0].strip()
-            else:
-                ip_address = request.remote_addr
 
             logger.info(
                 build_request_log(
@@ -42,7 +40,7 @@ def init_request_logger(app):
                             "request_id",
                             None,
                         ),
-                        "ip": ip_address,
+                        "ip": request.remote_addr,
                         "method": request.method,
                         "path": request.path,
                         "status": response.status_code,

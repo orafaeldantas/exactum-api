@@ -14,11 +14,8 @@ blp_health = Blueprint(
 @blp_health.get("/")
 @blp_health.response(200, HealthResponseSchema)
 @blp_health.response(503, HealthResponseSchema)
-def health():
+def health() -> dict:
 
-    result = HealthService.check_services()
+    health_data = HealthService.check_services()
 
-    return {
-        "status": result["status"],
-        "services": result["services"],
-    }, result["http_status"]
+    return health_data, health_data["http_status"]
