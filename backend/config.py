@@ -10,6 +10,7 @@ class Config:
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    # JWT
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(
@@ -21,17 +22,12 @@ class Config:
     )
 
     JWT_TOKEN_LOCATION = ["cookies"]
-
     JWT_ACCESS_COOKIE_NAME = "access_token"
     JWT_REFRESH_COOKIE_NAME = "refresh_token"
-
     JWT_COOKIE_HTTPONLY = True
-
     JWT_COOKIE_SECURE = False
     JWT_COOKIE_SAMESITE = "Lax"
-
     JWT_COOKIE_CSRF_PROTECT = False
-
     JWT_ACCESS_COOKIE_PATH = "/"
     JWT_REFRESH_COOKIE_PATH = "/api/auth"
 
@@ -41,13 +37,19 @@ class Config:
     REDIS_DB = int(os.getenv("REDIS_DB", 0))
 
     # Swagger
-    API_TITLE = "Exactum API"
-    API_VERSION = "v0.1.0"
-    OPENAPI_VERSION = "3.0.3"
-    OPENAPI_URL_PREFIX = "/doc"
-    OPENAPI_SWAGGER_UI_PATH = "/swagger"
-    OPENAPI_SWAGGER_UI_URL = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
+    is_production = os.getenv("FLASK_ENV") == "production"
 
+    if is_production:
+        OPENAPI_URL_PREFIX = None
+        OPENAPI_SWAGGER_UI_PATH = None
+    else:
+        OPENAPI_URL_PREFIX = "/doc"
+        OPENAPI_SWAGGER_UI_PATH = "/swagger"
+        OPENAPI_SWAGGER_UI_URL = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
+
+    API_TITLE = "Exactum API"
+    API_VERSION = str(os.getenv("APP_VERSION"))
+    OPENAPI_VERSION = "3.0.3"
     API_SPEC_OPTIONS = {
         "components": {
             "securitySchemes": {
