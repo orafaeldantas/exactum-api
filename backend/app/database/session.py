@@ -1,11 +1,18 @@
 import logging
 
+from sqlalchemy.orm import Session
+
 from app.extensions import db
 
 logger = logging.getLogger(__name__)
 
 
 class DatabaseSession:
+    @staticmethod
+    def get_session() -> Session:
+
+        return db.session
+
     @staticmethod
     def add(instance):
 
