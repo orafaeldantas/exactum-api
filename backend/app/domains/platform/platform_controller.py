@@ -27,5 +27,11 @@ class PlatformController:
         user_agent = request.headers.get("User-Agent")
 
         return PlatformService.update_status_tenant(
-            data, tenant_uuid, g.user_id, ip_address, user_agent, g.request_id
+            data,
+            tenant_uuid,
+            g.user_id,
+            g.user_uuid,
+            ip_address,
+            user_agent,
+            g.request_id,
         )
