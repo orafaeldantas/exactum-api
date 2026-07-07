@@ -1,6 +1,6 @@
-from database.session import DatabaseSession
 from sqlalchemy import desc, select
 
+from app.database.session import DatabaseSession
 from app.models.observability import AuditLog, PlatformEvent
 
 
