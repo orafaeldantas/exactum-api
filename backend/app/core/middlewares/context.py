@@ -18,6 +18,8 @@ def init_request_context(app):
             verify_jwt_in_request(optional=True)
             claims = get_jwt()
             g.user_id = get_jwt_identity()
+            g.user_uuid = claims.get("user_uuid")
+            g.tenant_uuid = claims.get("tenant_uuid")
             g.tenant_id = claims.get("tenant_id")
             g.password_reset = claims.get("password_reset")
             g.impersonate_mode = claims.get("impersonate_mode", False)
@@ -26,5 +28,8 @@ def init_request_context(app):
         except Exception:
             g.user_id = None
             g.tenant_id = None
+            g.user_uuid = None
+            g.tenant_uuid = None
             g.password_reset = None
+            g.impersonate_mode = False
             g.is_super_admin = False
