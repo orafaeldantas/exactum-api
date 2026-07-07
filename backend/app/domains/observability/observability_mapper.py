@@ -10,7 +10,9 @@ class PlatformMapper:
         return PlatformEventDTO(
             event=entity.event,
             tenant_id=entity.tenant_id,
+            tenant_uuid=entity.tenant_uuid,
             user_id=entity.user_id,
+            user_uuid=entity.user_uuid,
             payload=entity.payload,
         )
 
@@ -20,7 +22,9 @@ class PlatformMapper:
         return PlatformEvent(
             event=dto.event,
             tenant_id=dto.tenant_id,
+            tenant_uuid=dto.tenant_uuid,
             user_id=dto.user_id,
+            user_uuid=dto.user_uuid,
             payload=dto.payload,
         )
 
@@ -31,7 +35,9 @@ class AuditMapper:
         """Converts an AuditLog entity into a DTO (output).."""
         return AuditLogDTO(
             tenant_id=entity.tenant_id,
+            tenant_uuid=entity.tenant_uuid,
             user_id=entity.user_id,
+            user_uuid=entity.user_uuid,
             event=entity.event,
             entity=entity.entity,
             entity_id=entity.entity_id,
@@ -43,7 +49,9 @@ class AuditMapper:
         """Converts an AuditLogDTO into an entity (input)."""
         return AuditLog(
             tenant_id=dto.tenant_id,
+            tenant_uuid=dto.tenant_uuid,
             user_id=dto.user_id,
+            user_uuid=dto.user_uuid,
             event=dto.event,
             entity=dto.entity,
             entity_id=dto.entity_id,
