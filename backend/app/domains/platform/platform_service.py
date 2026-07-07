@@ -44,6 +44,7 @@ class PlatformService:
         data: dict,
         tenant_uuid: UUID,
         user_id: int,
+        user_uuid: UUID,
         ip_address: str,
         user_agent: str,
         request_id: str,
@@ -69,7 +70,9 @@ class PlatformService:
                     else PlatformEvents.TENANT_REACTIVATED
                 ),
                 tenant_id=tenant.id,
+                tenant_uuid=tenant.uuid,
                 user_id=user_id,
+                user_uuid=user_uuid,
                 payload={
                     "request_id": request_id,
                     "ip_address": ip_address,
