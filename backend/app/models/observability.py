@@ -25,6 +25,18 @@ class AuditLog(Base):
         default=UUIDGenerator.generate,
     )
 
+    tenant_uuid: Mapped[UUID | None] = mapped_column(
+        SQLUUID(as_uuid=True),
+        nullable=True,
+        index=True,
+    )
+
+    user_uuid: Mapped[UUID | None] = mapped_column(
+        SQLUUID(as_uuid=True),
+        nullable=True,
+        index=True,
+    )
+
     tenant_id: Mapped[int] = mapped_column(
         ForeignKey("tenants.id"),
         nullable=False,
@@ -83,6 +95,18 @@ class PlatformEvent(Base):
         unique=True,
         nullable=False,
         default=UUIDGenerator.generate,
+    )
+
+    tenant_uuid: Mapped[UUID | None] = mapped_column(
+        SQLUUID(as_uuid=True),
+        nullable=True,
+        index=True,
+    )
+
+    user_uuid: Mapped[UUID | None] = mapped_column(
+        SQLUUID(as_uuid=True),
+        nullable=True,
+        index=True,
     )
 
     tenant_id: Mapped[int | None] = mapped_column(
