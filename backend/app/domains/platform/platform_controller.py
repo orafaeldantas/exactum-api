@@ -1,6 +1,8 @@
 from collections.abc import Sequence
 from typing import TYPE_CHECKING
 
+from flask import g, request
+
 from app.domains.platform.platform_service import PlatformService
 
 if TYPE_CHECKING:
@@ -21,4 +23,9 @@ class PlatformController:
     @staticmethod
     def update_status_tenant(data, tenant_uuid) -> None:
 
-        return PlatformService.update_status_tenant(data, tenant_uuid)
+        ip_address = request.remote_addr
+        user_agent = request.headers.get("User-Agent")
+
+        return PlatformService.update_status_tenant(
+            data, tenant_uuid, g.user_id, ip_address, user_agent, g.request_id
+        )
