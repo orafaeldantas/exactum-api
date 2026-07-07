@@ -54,8 +54,10 @@ class AuthController:
 
         AuthService.logout(
             user_id=int(get_jwt_identity()),
+            user_uuid=g.user_uuid,
             jti=claims["jti"],
             tenant_id=g.tenant_id,
+            tenant_uuid=g.tenant_uuid,
             ip_address=ip_address,
             user_agent=user_agent,
             request_id=g.request_id,
@@ -95,6 +97,8 @@ class AuthController:
 
         tokens = AuthService.stop_impersonate(
             user_id=int(get_jwt_identity()),
+            user_uuid=g.user_uuid,
+            tenant_uuid=g.tenant_uuid,
             jti=claims["jti"],
             ip_address=ip_address,
             user_agent=user_agent,

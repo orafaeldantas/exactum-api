@@ -78,6 +78,8 @@ class AuthService:
                 event=PlatformEvents.USER_LOGIN,
                 tenant_id=user.tenant_id,
                 user_id=user.id,
+                user_uuid=user.uuid,
+                tenant_uuid=user.tenant.uuid,
                 payload={
                     "email": user.email,
                     "ip_address": ip_address,
@@ -239,8 +241,10 @@ class AuthService:
     @staticmethod
     def logout(
         user_id: int,
+        user_uuid: UUID,
         jti: str,
         tenant_id: int,
+        tenant_uuid: UUID,
         ip_address: str,
         user_agent: str,
         request_id: str,
@@ -252,7 +256,9 @@ class AuthService:
             PlatformEventDTO(
                 event=PlatformEvents.USER_LOGOUT,
                 tenant_id=tenant_id,
+                tenant_uuid=tenant_uuid,
                 user_id=user_id,
+                user_uuid=user_uuid,
                 payload={
                     "ip_address": ip_address,
                     "user_agent": user_agent,
@@ -288,14 +294,16 @@ class AuthService:
             PlatformEventDTO(
                 event=PlatformEvents.IMPERSONATION_STARTED,
                 tenant_id=target_admin.tenant_id,
+                tenant_uuid=target_admin.tenant.uuid,
                 user_id=original_user_id,
+                user_uuid=target_admin.uuid,
                 payload={
                     "request_id": request_id,
                     "ip_address": ip_address,
                     "user_agent": user_agent,
-                    "target_user_id": target_admin.id,
+                    "target_user_uuid": str(target_admin.uuid),
                     "target_user_email": target_admin.email,
-                    "target_tenant_id": target_admin.tenant_id,
+                    "target_tenant_uuid": str(target_admin.tenant.uuid),
                 },
             )
         )
@@ -305,6 +313,8 @@ class AuthService:
     @staticmethod
     def stop_impersonate(
         user_id: int,
+        user_uuid: UUID,
+        tenant_uuid: UUID,
         jti: str,
         ip_address: str,
         user_agent: str,
@@ -335,14 +345,18 @@ class AuthService:
         platform_service.create_log(
             PlatformEventDTO(
                 event=PlatformEvents.IMPERSONATION_FINISHED,
-                tenant_id=session.tenant_id,
-                user_id=original_user_id,
+                tenant_id=session.tenant_id,  # Tenant ID of the impersonated user
+                tenant_uuid=tenant_uuid,  # Tenant UUID of the impersonated user
+                user_id=super_admin_user.id,
+                user_uuid=super_admin_user.uuid,
                 payload={
                     "request_id": request_id,
                     "ip_address": ip_address,
                     "user_agent": user_agent,
-                    "target_user_id": user_id,
-                    "target_tenant_id": session.tenant_id,
+                    "target_user_uuid": str(user_uuid),  # Impersonated user ID
+                    "target_tenant_uuid": str(
+                        tenant_uuid  # Tenant UUID of the impersonated user
+                    ),
                 },
             )
         )
