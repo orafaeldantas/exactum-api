@@ -14,6 +14,7 @@ class PlatformMapper:
             user_id=entity.user_id,
             user_uuid=entity.user_uuid,
             payload=entity.payload,
+            created_at=entity.created_at,
         )
 
     @staticmethod
@@ -42,6 +43,7 @@ class AuditMapper:
             entity=entity.entity,
             entity_id=entity.entity_id,
             payload=entity.payload,
+            created_at=entity.created_at,
         )
 
     @staticmethod

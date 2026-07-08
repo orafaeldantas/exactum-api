@@ -13,8 +13,8 @@ class PlatformService:
 
         self.repo.create_log_platform(entity)
 
-    def get_logs(self) -> PlatformEventDTO:
+    def get_logs(self) -> list[PlatformEventDTO]:
 
         logs = self.repo.get_logs_platform()
 
-        return self.mapper.platform_event_to_dto(logs)
+        return [self.mapper.platform_event_to_dto(log) for log in logs]
