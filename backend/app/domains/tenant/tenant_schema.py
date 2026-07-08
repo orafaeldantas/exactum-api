@@ -12,9 +12,9 @@ class TenantSchema(Schema):
 
 
 class PlanSchema(Schema):
-    type = fields.Str(
-        required=True, validate=validate.OneOf(["starter", "growth", "enterprise"])
-    )
+    type = fields.Str(required=True, validate=validate.OneOf(["starter"]))
+
+    features = fields.Dict()
 
 
 class AdminSchema(Schema):

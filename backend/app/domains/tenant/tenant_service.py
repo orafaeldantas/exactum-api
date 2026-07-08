@@ -1,9 +1,13 @@
 import re
 from decimal import Decimal
+from uuid import UUID
 
 from app.database.session import DatabaseSession
 from app.domains.goal.goal_exceptions import RegistrationFailedGoal
 from app.domains.goal.goal_repository import GoalRepository
+from app.domains.observability.observability_constants import PlatformEvents
+from app.domains.observability.observability_containers import platform_service
+from app.domains.observability.observability_dto import PlatformEventDTO
 from app.domains.rbac.container import get_rbac_service
 from app.domains.rbac.rbac_service import RBACRepository
 from app.domains.tenant.tenant_exceptions import TenantNotFound
@@ -18,7 +22,11 @@ from app.models.user import User
 
 class TenantService:
     @staticmethod
-    def create_tenant(data: dict) -> Tenant:
+    def create_tenant(
+        data: dict,
+        ip_address: str,
+        user_agent: str,
+    ) -> Tenant:
 
         company = data.get("company", {})
         admin = data.get("admin", {})
@@ -70,6 +78,23 @@ class TenantService:
 
         DatabaseSession.commit()
 
+        platform_service.create_log(
+            PlatformEventDTO(
+                event=PlatformEvents.TENANT_CREATED,
+                tenant_id=tenant.id,
+                user_id=user.id,
+                user_uuid=user.uuid,
+                tenant_uuid=tenant.uuid,
+                payload={
+                    "tenant_name": tenant.name,
+                    "tenant_plan": tenant.plan,
+                    "created_by_email": user.email,
+                    "ip_address": ip_address,
+                    "user_agent": user_agent,
+                },
+            )
+        )
+
         return tenant
 
     @staticmethod
@@ -83,18 +108,43 @@ class TenantService:
         return tenant
 
     @staticmethod
-    def update_tenant(tenant_id: int, data: dict) -> Tenant:
+    def update_tenant(
+        data: dict,
+        user_id: int,
+        user_uuid: UUID,
+        tenant_id: int,
+        tenant_uuid: UUID,
+        ip_address: str,
+        user_agent: str,
+        request_id: str,
+    ) -> Tenant:
 
         tenant = TenantRepository.get_tenant(tenant_id)
 
         if not tenant:
             raise TenantNotFound()
 
-        update_fields = ["name", "corporate_email", "global_min_stock"]
+        changes = {}
 
-        for field in update_fields:
-            if field in data:
-                setattr(tenant, field, data[field])
+        allowed_fields = {
+            "name",
+            "corporate_email",
+            "global_min_stock",
+        }
+
+        for field, new_value in data.items():
+            if field not in allowed_fields:
+                continue
+
+            old_value = getattr(tenant, field)
+
+            if old_value != new_value:
+                changes[field] = {
+                    "old": old_value,
+                    "new": new_value,
+                }
+
+                setattr(tenant, field, new_value)
 
         DatabaseSession.add(tenant)
 
@@ -114,5 +164,21 @@ class TenantService:
             DatabaseSession.add(goal)
 
         DatabaseSession.commit()
+
+        platform_service.create_log(
+            PlatformEventDTO(
+                event=PlatformEvents.TENANT_UPDATED,
+                tenant_id=tenant_id,
+                tenant_uuid=tenant_uuid,
+                user_id=user_id,
+                user_uuid=user_uuid,
+                payload={
+                    "ip_address": ip_address,
+                    "user_agent": user_agent,
+                    "request_id": request_id,
+                    "changes": changes,
+                },
+            )
+        )
 
         return tenant
