@@ -6,6 +6,7 @@ from flask import g, request
 from app.domains.platform.platform_service import PlatformService
 
 if TYPE_CHECKING:
+    from app.domains.observability.observability_dto import PlatformEventDTO
     from app.domains.platform.platform_dto import DashboardMetricsDTO, TenantSummaryDTO
 
 
@@ -14,6 +15,11 @@ class PlatformController:
     def list_all_tenants() -> Sequence["TenantSummaryDTO"]:
 
         return PlatformService.list_all_tenants()
+
+    @staticmethod
+    def get_platform_events() -> list["PlatformEventDTO"]:
+
+        return PlatformService.get_platform_events()
 
     @staticmethod
     def get_dashboard_metrics() -> "DashboardMetricsDTO":
