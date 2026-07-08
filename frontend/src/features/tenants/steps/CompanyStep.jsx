@@ -121,7 +121,7 @@ export default function CompanyStep({ data, updateData, next }) {
             </label>
             <div className="group flex">
               <span className="flex items-center rounded-l-xl border border-r-0 border-gray-200 bg-gray-100 px-4 text-sm font-medium text-gray-500 transition group-focus-within:border-blue-500 group-focus-within:ring-4 group-focus-within:ring-blue-100">
-                app.exactum.com/
+               exactum.app.br/
               </span>
               <input
                 name="slug"
