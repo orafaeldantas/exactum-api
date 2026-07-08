@@ -89,7 +89,7 @@ class AuthService:
                     "account_type": (
                         "super_admin"
                         if user.is_super_admin
-                        else f"Usuário | {user.tenant.name}"
+                        else f"usuário em {user.tenant.name}"
                     ),
                 },
             )
@@ -275,7 +275,7 @@ class AuthService:
                     "account_type": (
                         "super_admin"
                         if user.is_super_admin
-                        else f"usuário - {user.tenant.name}"
+                        else f"usuário em {user.tenant.name}"
                     ),
                 },
             )
