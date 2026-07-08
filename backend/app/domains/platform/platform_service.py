@@ -27,6 +27,11 @@ class PlatformService:
         return tenants_dto
 
     @staticmethod
+    def get_platform_events() -> list[PlatformEventDTO]:
+
+        return platform_service.get_logs()
+
+    @staticmethod
     def get_dashboard_metrics() -> DashboardMetricsDTO:
 
         repository = PlatformRepository()
