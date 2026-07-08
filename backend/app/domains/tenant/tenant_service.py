@@ -173,6 +173,7 @@ class TenantService:
                 user_id=user_id,
                 user_uuid=user_uuid,
                 payload={
+                    "tenant_name": tenant.name,
                     "ip_address": ip_address,
                     "user_agent": user_agent,
                     "request_id": request_id,
