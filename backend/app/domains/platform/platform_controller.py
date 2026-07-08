@@ -22,6 +22,11 @@ class PlatformController:
         return PlatformService.get_platform_events()
 
     @staticmethod
+    def get_infra_logs() -> dict:
+
+        return PlatformService.get_infra_logs()
+
+    @staticmethod
     def get_dashboard_metrics() -> "DashboardMetricsDTO":
 
         return PlatformService.get_dashboard_metrics()
