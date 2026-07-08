@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 
-from flask import g
+from flask import g, request
+from flask_jwt_extended import get_jwt_identity
 
 from app.domains.tenant.tenant_service import TenantService
 
@@ -12,7 +13,14 @@ class TenantController:
     @staticmethod
     def create_tenant(data: dict) -> "Tenant":
 
-        return TenantService.create_tenant(data)
+        ip_address = request.remote_addr
+        user_agent = request.headers.get("User-Agent")
+
+        return TenantService.create_tenant(
+            data,
+            ip_address=ip_address,
+            user_agent=user_agent,
+        )
 
     @staticmethod
     def get_tenant() -> "Tenant":
@@ -22,4 +30,16 @@ class TenantController:
     @staticmethod
     def update_tenant(data: dict) -> "Tenant":
 
-        return TenantService.update_tenant(g.tenant_id, data)
+        ip_address = request.remote_addr
+        user_agent = request.headers.get("User-Agent")
+
+        return TenantService.update_tenant(
+            data,
+            user_id=int(get_jwt_identity()),
+            user_uuid=g.user_uuid,
+            tenant_id=g.tenant_id,
+            tenant_uuid=g.tenant_uuid,
+            ip_address=ip_address,
+            user_agent=user_agent,
+            request_id=g.request_id,
+        )
