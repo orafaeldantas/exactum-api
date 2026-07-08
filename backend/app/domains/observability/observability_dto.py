@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import datetime
 from uuid import UUID
 
 
@@ -13,6 +14,7 @@ class AuditLogDTO:
     entity_id: int | None = None
     payload: dict | None = None
     ip_adress: str | None = None
+    created_at: datetime | None = None
 
 
 @dataclass(slots=True, frozen=True)
@@ -23,3 +25,4 @@ class PlatformEventDTO:
     user_uuid: UUID | None = None
     tenant_uuid: UUID | None = None
     payload: dict | None = None
+    created_at: datetime | None = None
