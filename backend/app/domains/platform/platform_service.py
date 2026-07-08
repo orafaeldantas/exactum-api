@@ -6,9 +6,10 @@ from app.domains.observability.observability_constants import PlatformEvents
 from app.domains.observability.observability_containers import platform_service
 from app.domains.observability.observability_dto import PlatformEventDTO
 from app.domains.platform.platform_dto import DashboardMetricsDTO, TenantSummaryDTO
-from app.domains.platform.platform_exceptions import ResourceNotFound
+from app.domains.platform.platform_exceptions import InfraLogsError, ResourceNotFound
 from app.domains.platform.platform_repository import PlatformRepository
 from app.domains.tenant.tenant_repository import TenantRepository
+from app.infra.observability.request_logger.get_logs import latest_request_logs
 
 
 class PlatformService:
@@ -30,6 +31,18 @@ class PlatformService:
     def get_platform_events() -> list[PlatformEventDTO]:
 
         return platform_service.get_logs()
+
+    @staticmethod
+    def get_infra_logs() -> dict:
+
+        logs = latest_request_logs()
+
+        if "error" in logs:
+            message = logs["error"]
+            status_code = logs["status"]
+            raise InfraLogsError(message, status_code)
+
+        return logs
 
     @staticmethod
     def get_dashboard_metrics() -> DashboardMetricsDTO:

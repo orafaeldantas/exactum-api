@@ -10,6 +10,7 @@ from app.domains.platform.platform_controller import PlatformController
 from app.domains.platform.platform_decorators import require_super_admin
 from app.domains.platform.platform_schema import (
     DashboardMetricsResponseSchema,
+    GetInfraLogsSchema,
     GetPlatformEventsSchema,
     ListTenantsResponseSchema,
     UdateStatusTenantSchema,
@@ -47,6 +48,17 @@ class GetPlatformEvents(MethodView):
     def get(self) -> list["PlatformEventDTO"]:
 
         return PlatformController.get_platform_events()
+
+
+@blp_platform.route("/logs")
+class GetInfraLogs(MethodView):
+    @jwt_required()
+    @require_super_admin
+    @blp_platform.doc(security=[{"CookieAuth": []}])
+    @blp_platform.response(200, GetInfraLogsSchema)
+    def get(self) -> dict:
+
+        return PlatformController.get_infra_logs()
 
 
 @blp_platform.route("/dashboard")
