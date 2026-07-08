@@ -35,6 +35,14 @@ class GetPlatformEventsSchema(Schema):
     createdAt = fields.DateTime(attribute="created_at", dump_only=True)
 
 
+class GetInfraLogsSchema(Schema):
+    file = fields.Str(dump_only=True)
+
+    count = fields.Int(dump_only=True)
+
+    logs = fields.List(fields.Dict(), dump_only=True)
+
+
 class ListTenantDashboardMetricsSchema(Schema):
     uuid = fields.UUID(dump_only=True)
 
