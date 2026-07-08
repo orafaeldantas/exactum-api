@@ -12,6 +12,7 @@ from app.domains.auth.auth_exceptions import (
     InvalidInputEmail,
     RefreshTokenRevoked,
     UnauthorizedUser,
+    UserNotFound,
 )
 from app.domains.auth.auth_repository import AuthRepository
 from app.domains.auth.token_service import TokenService
@@ -86,7 +87,9 @@ class AuthService:
                     "user_agent": user_agent,
                     "request_id": request_id,
                     "account_type": (
-                        "super_admin" if user.is_super_admin else "tenant_user"
+                        "super_admin"
+                        if user.is_super_admin
+                        else f"Usuário | {user.tenant.name}"
                     ),
                 },
             )
@@ -252,6 +255,11 @@ class AuthService:
 
         AuthService.revoke_refresh_token(jti, user_id)
 
+        user = AuthRepository.get_user_by_id(user_id)
+
+        if not user:
+            raise UserNotFound()
+
         platform_service.create_log(
             PlatformEventDTO(
                 event=PlatformEvents.USER_LOGOUT,
@@ -263,6 +271,12 @@ class AuthService:
                     "ip_address": ip_address,
                     "user_agent": user_agent,
                     "request_id": request_id,
+                    "email": user.email,
+                    "account_type": (
+                        "super_admin"
+                        if user.is_super_admin
+                        else f"usuário - {user.tenant.name}"
+                    ),
                 },
             )
         )
@@ -304,6 +318,7 @@ class AuthService:
                     "target_user_uuid": str(target_admin.uuid),
                     "target_user_email": target_admin.email,
                     "target_tenant_uuid": str(target_admin.tenant.uuid),
+                    "target_tenant_name": target_admin.tenant.name,
                 },
             )
         )
@@ -326,6 +341,9 @@ class AuthService:
         session_data = CacheService.get(cache_key)
 
         session = RefreshSession(**session_data)
+
+        user = AuthRepository.get_user_by_id(user_id)
+
         original_user_id = session.impersonator_id
 
         AuthService.revoke_refresh_token(jti, user_id)
@@ -357,6 +375,8 @@ class AuthService:
                     "target_tenant_uuid": str(
                         tenant_uuid  # Tenant UUID of the impersonated user
                     ),
+                    "email": user.email,
+                    "tenant_name": user.tenant.name,
                 },
             )
         )
