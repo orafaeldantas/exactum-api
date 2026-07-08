@@ -65,3 +65,23 @@ export function getTenants() {
   return { loadTenants, tenants, loading };
 
 }
+
+export function getPlatformEvents() {
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  async function loadEvents() {      
+      try {
+        setLoading(true);
+        const response = await apiFetch("/platform/events");
+        const data = await response.json();
+        setEvents(data);
+      } catch (err) {
+        console.error("Error loading: ", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    return { loadEvents, events, loading };
+}
