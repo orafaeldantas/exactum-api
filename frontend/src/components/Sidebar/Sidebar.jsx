@@ -20,6 +20,7 @@ import {
   Terminal,
   LogOut,
   Receipt,
+  DatabaseZap,
 } from "lucide-react";
 
 const COLLAPSE_STORAGE_KEY = "exactum:sidebar-collapsed";
@@ -175,6 +176,7 @@ function Sidebar() {
             <NavItem to="/platform/manage-companies" icon={Building2} label="Empresas" collapsed={collapsed} />
             <NavItem to="/platform/infra-health" icon={Activity} label="Status do Sistema" collapsed={collapsed} />
             <NavItem to="/platform/logs" icon={Terminal} label="Logs do Sistema" collapsed={collapsed} />
+            <NavItem to="/platform/events" icon={DatabaseZap} label="Eventos do Sistema" collapsed={collapsed} />
           </>
         )}
 
