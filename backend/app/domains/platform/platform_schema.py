@@ -23,6 +23,18 @@ class ListTenantsResponseSchema(Schema):
     usersCount = fields.Int(attribute="users_count", dump_only=True)
 
 
+class GetPlatformEventsSchema(Schema):
+    userUuid = fields.UUID(dump_only=True, attribute="user_uuid")
+
+    tenantUuid = fields.UUID(dump_only=True, attribute="tenant_uuid")
+
+    event = fields.Str(dump_only=True)
+
+    payload = fields.Dict(dump_only=True)
+
+    createdAt = fields.DateTime(attribute="created_at", dump_only=True)
+
+
 class ListTenantDashboardMetricsSchema(Schema):
     uuid = fields.UUID(dump_only=True)
 

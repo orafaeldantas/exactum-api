@@ -10,11 +10,13 @@ from app.domains.platform.platform_controller import PlatformController
 from app.domains.platform.platform_decorators import require_super_admin
 from app.domains.platform.platform_schema import (
     DashboardMetricsResponseSchema,
+    GetPlatformEventsSchema,
     ListTenantsResponseSchema,
     UdateStatusTenantSchema,
 )
 
 if TYPE_CHECKING:
+    from app.domains.observability.observability_dto import PlatformEventDTO
     from app.domains.platform.platform_dto import DashboardMetricsDTO, TenantSummaryDTO
 
 blp_platform = Blueprint(
@@ -34,6 +36,17 @@ class ListTenantsRoute(MethodView):
     def get(self) -> Sequence["TenantSummaryDTO"]:
 
         return PlatformController.list_all_tenants()
+
+
+@blp_platform.route("/events")
+class GetPlatformEvents(MethodView):
+    @jwt_required()
+    @require_super_admin
+    @blp_platform.doc(security=[{"CookieAuth": []}])
+    @blp_platform.response(200, GetPlatformEventsSchema(many=True))
+    def get(self) -> list["PlatformEventDTO"]:
+
+        return PlatformController.get_platform_events()
 
 
 @blp_platform.route("/dashboard")
