@@ -19,7 +19,13 @@ class UserController:
     @staticmethod
     def create_user(data: dict) -> "User":
 
-        return UserService.create_user(data, g.tenant_id)
+        return UserService.create_user(
+            data,
+            user_id=g.user_id,
+            user_uuid=g.user_uuid,
+            tenant_id=g.tenant_id,
+            tenant_uuid=g.tenant_uuid,
+        )
 
     @staticmethod
     def get_user(user_uuid: UUID) -> "User":
@@ -27,9 +33,16 @@ class UserController:
         return UserService.get_user(g.tenant_id, user_uuid)
 
     @staticmethod
-    def update_user(data: dict, user_uuid: UUID) -> "User":
+    def update_user(data: dict, target_user_uuid: UUID) -> "User":
 
-        return UserService.update_user(data, g.tenant_id, user_uuid)
+        return UserService.update_user(
+            data,
+            target_user_uuid=target_user_uuid,
+            admin_user_id=g.user_id,
+            admin_user_uuid=g.user_uuid,
+            tenant_id=g.tenant_id,
+            tenant_uuid=g.tenant_uuid,
+        )
 
     @staticmethod
     def update_profile(data: dict, user_uuid: UUID) -> "User":
