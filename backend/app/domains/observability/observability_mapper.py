@@ -56,6 +56,5 @@ class AuditMapper:
             user_uuid=dto.user_uuid,
             event=dto.event,
             entity=dto.entity,
-            entity_id=dto.entity_id,
             payload=dto.payload,
         )
