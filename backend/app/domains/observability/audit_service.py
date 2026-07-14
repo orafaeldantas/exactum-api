@@ -8,10 +8,10 @@ class AuditService:
         self.repo = repo
         self.mapper = mapper
 
-    def create_log(self, dto: AuditLogDTO, tenant_id: int) -> None:
+    def create_log(self, dto: AuditLogDTO) -> None:
         entity = self.mapper.audit_log_from_dto(dto)
 
-        self.repo.create_log_platform(entity, tenant_id)
+        self.repo.create_audit_logs(entity)
 
     def get_logs(self, tenant_id: int) -> AuditLogDTO:
 
