@@ -19,6 +19,11 @@ class ObservabilityRepository:
         return response.scalars(stmt).all()
 
     @staticmethod
+    def create_audit_logs(entity: AuditLog):
+        DatabaseSession.add(entity)
+        DatabaseSession.commit()
+
+    @staticmethod
     def get_logs_by_tenant(tenant_id: int) -> list[AuditLog]:
         stmt = (
             select(AuditLog)
