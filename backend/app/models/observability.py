@@ -60,11 +60,6 @@ class AuditLog(Base):
         nullable=False,
     )
 
-    entity_id: Mapped[int | None] = mapped_column(
-        BigInteger,
-        nullable=True,
-    )
-
     payload: Mapped[dict | None] = mapped_column(
         JSON,
         nullable=True,
@@ -73,11 +68,6 @@ class AuditLog(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(UTC),
-    )
-
-    ip_address: Mapped[str] = mapped_column(
-        String(100),
-        nullable=True,
     )
 
 
