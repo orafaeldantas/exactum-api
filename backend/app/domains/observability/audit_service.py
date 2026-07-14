@@ -17,4 +17,4 @@ class AuditService:
 
         logs = self.repo.get_logs_by_tenant(tenant_id)
 
-        return self.mapper.audit_log_to_dto(logs)
+        return [self.mapper.audit_log_to_dto(log) for log in logs]
