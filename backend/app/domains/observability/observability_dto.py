@@ -11,9 +11,7 @@ class AuditLogDTO:
     tenant_uuid: UUID
     event: str
     entity: str
-    entity_id: int | None = None
     payload: dict | None = None
-    ip_adress: str | None = None
     created_at: datetime | None = None
 
 
