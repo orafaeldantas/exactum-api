@@ -16,5 +16,13 @@ class AuditEvents:
     PRODUCT_UPDATED = "product_updated"
     PRODUCT_DELETED = "product_deleted"
 
+    USER_CREATED = "user_created"
+    USER_UPDATED = "user_updated"
+    USER_DELETED = "user_deleted"
+    USER_SUSPENDED = "user_suspended"
+    USER_REACTIVATED = "user_reactivated"
+
+    PROFILE_UPDATED = "profile_updated"
+
     SALE_CREATED = "sale_created"
     SALE_CANCELLED = "sale_cancelled"
