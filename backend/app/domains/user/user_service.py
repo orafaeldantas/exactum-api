@@ -59,7 +59,7 @@ class UserService:
                 entity="user",
                 payload={
                     "entity_uuid": str(user.uuid),
-                    "user": {
+                    "data": {
                         "name": user.username,
                         "email": user.email,
                         "role": role.name,
