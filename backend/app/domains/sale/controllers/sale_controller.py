@@ -14,7 +14,13 @@ class SaleController:
     @staticmethod
     def create_sale(data: dict) -> "Sale":
 
-        return SaleService.create_sale(data, g.tenant_id, g.user_id)
+        return SaleService.create_sale(
+            data,
+            user_id=g.user_id,
+            user_uuid=g.user_uuid,
+            tenant_id=g.tenant_id,
+            tenant_uuid=g.tenant_uuid,
+        )
 
     @staticmethod
     def list_sales_by_period(query_params: dict) -> Sequence["Sale"]:

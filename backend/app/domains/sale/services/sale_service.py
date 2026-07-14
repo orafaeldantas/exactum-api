@@ -2,6 +2,9 @@ from collections.abc import Sequence
 from uuid import UUID
 
 from app.database.session import DatabaseSession
+from app.domains.observability.observability_constants import AuditEvents
+from app.domains.observability.observability_containers import audit_service
+from app.domains.observability.observability_dto import AuditLogDTO
 from app.domains.product.product_repository import ProductRepository
 from app.domains.sale.repositories.item_sale_repository import ItemSaleRepository
 from app.domains.sale.repositories.sale_repository import SaleRepository
@@ -11,7 +14,9 @@ from app.models.sale import ItemSale, Sale
 
 class SaleService:
     @staticmethod
-    def create_sale(data: dict, tenant_id: int, user_id: int) -> Sale:
+    def create_sale(
+        data: dict, user_id: int, user_uuid: UUID, tenant_id: int, tenant_uuid: UUID
+    ) -> Sale:
 
         sale = data.get("sale", {})
         items = data.get("items", {})
@@ -55,6 +60,26 @@ class SaleService:
             product.stock_quantity = new_stock
 
         DatabaseSession.commit()
+
+        audit_service.create_log(
+            AuditLogDTO(
+                event=AuditEvents.SALE_CREATED,
+                tenant_id=tenant_id,
+                user_id=user_id,
+                user_uuid=user_uuid,
+                tenant_uuid=tenant_uuid,
+                entity="sale",
+                payload={
+                    "entity_uuid": str(new_sale.uuid),
+                    "data": {
+                        "total_price": float(new_sale.total_price),
+                        "payment_method": new_sale.payment_method,
+                        "quantity_items": new_sale.quantity_items,
+                        "channel": new_sale.channel,
+                    },
+                },
+            )
+        )
 
         return new_sale
 
