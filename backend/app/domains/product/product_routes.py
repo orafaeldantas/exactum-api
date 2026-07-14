@@ -1,4 +1,3 @@
-from collections.abc import Sequence
 from typing import TYPE_CHECKING
 from uuid import UUID
 
@@ -40,7 +39,7 @@ class ProductListRoute(MethodView):
     @permission_required("product:view")
     @blp_products.doc(security=[{"CookieAuth": []}])
     @blp_products.response(200, ListProductResponseSchema(many=True))
-    def get(self) -> Sequence["Product"]:
+    def get(self) -> list["Product"]:
 
         return ProductController.list_all_products()
 

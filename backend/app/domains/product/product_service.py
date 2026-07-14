@@ -1,7 +1,9 @@
-from collections.abc import Sequence
 from uuid import UUID
 
 from app.database.session import DatabaseSession
+from app.domains.observability.observability_constants import AuditEvents
+from app.domains.observability.observability_containers import audit_service
+from app.domains.observability.observability_dto import AuditLogDTO
 from app.domains.product.product_exceptions import ProductNotFound
 from app.domains.product.product_repository import ProductRepository
 from app.models.product import Product
@@ -9,12 +11,14 @@ from app.models.product import Product
 
 class ProductService:
     @staticmethod
-    def list_all_products(tenant_id: int) -> Sequence[Product]:
+    def list_all_products(tenant_id: int) -> list[Product]:
 
         return ProductRepository.list_all_products(tenant_id)
 
     @staticmethod
-    def create_product(data: dict, tenant_id: int) -> Product:
+    def create_product(
+        data: dict, user_id: int, user_uuid: UUID, tenant_id: int, tenant_uuid: UUID
+    ) -> Product:
 
         product = Product(
             tenant_id=tenant_id,
@@ -30,6 +34,26 @@ class ProductService:
         DatabaseSession.add(product)
         DatabaseSession.commit()
 
+        audit_service.create_log(
+            AuditLogDTO(
+                event=AuditEvents.PRODUCT_CREATED,
+                tenant_id=tenant_id,
+                user_id=user_id,
+                user_uuid=user_uuid,
+                tenant_uuid=tenant_uuid,
+                entity="product",
+                payload={
+                    "entity_uuid": str(product.uuid),
+                    "data": {
+                        "name": product.name,
+                        "price": float(product.price),
+                        "stock_quantity": product.stock_quantity,
+                        "is_active": product.is_active,
+                    },
+                },
+            )
+        )
+
         return product
 
     @staticmethod
@@ -43,26 +67,78 @@ class ProductService:
         return product
 
     @staticmethod
-    def update_product(data: dict, tenant_id: int, product_uuid: UUID) -> Product:
+    def update_product(
+        data: dict,
+        product_uuid: UUID,
+        user_id: int,
+        user_uuid: UUID,
+        tenant_id: int,
+        tenant_uuid: UUID,
+    ) -> Product:
 
         product = ProductRepository.get_product(tenant_id, product_uuid)
 
         if not product:
             raise ProductNotFound()
 
-        update_fields = ["name", "description", "price", "sku", "category", "is_active"]
+        changes = {}
 
-        for field in update_fields:
-            if field in data:
-                setattr(product, field, data[field])
+        allowed_fields = {
+            "name",
+            "description",
+            "price",
+            "sku",
+            "category",
+            "is_active",
+        }
 
-        DatabaseSession.add(product)
+        for field, new_value in data.items():
+            if field not in allowed_fields:
+                continue
+
+            old_value = getattr(product, field)
+
+            if field == "price":
+                if old_value != new_value:
+                    changes[field] = {
+                        "old": float(old_value),
+                        "new": float(new_value),
+                    }
+
+                    setattr(product, field, new_value)
+
+            if (old_value != new_value) and field != "price":
+                changes[field] = {
+                    "old": old_value,
+                    "new": new_value,
+                }
+
+                setattr(product, field, new_value)
+
         DatabaseSession.commit()
+
+        audit_service.create_log(
+            AuditLogDTO(
+                event=AuditEvents.PRODUCT_UPDATED,
+                tenant_id=tenant_id,
+                tenant_uuid=tenant_uuid,
+                user_id=user_id,
+                user_uuid=user_uuid,
+                entity="product",
+                payload={"entity_uuid": str(product.uuid), "changes": changes},
+            )
+        )
 
         return product
 
     @staticmethod
-    def delete_product(tenant_id: int, product_uuid: UUID) -> None:
+    def delete_product(
+        product_uuid: UUID,
+        user_id: int,
+        user_uuid: UUID,
+        tenant_id: int,
+        tenant_uuid: UUID,
+    ) -> None:
 
         product = ProductRepository.get_product(tenant_id, product_uuid)
 
@@ -70,3 +146,23 @@ class ProductService:
             raise ProductNotFound()
 
         ProductRepository.delete_product(product)
+
+        audit_service.create_log(
+            AuditLogDTO(
+                event=AuditEvents.PRODUCT_DELETED,
+                tenant_id=tenant_id,
+                tenant_uuid=tenant_uuid,
+                user_id=user_id,
+                user_uuid=user_uuid,
+                entity="product",
+                payload={
+                    "entity_uuid": str(product.uuid),
+                    "deleted_data": {
+                        "name": product.name,
+                        "sku": product.sku,
+                        "price": float(product.price),
+                        "stock_quantity": product.stock_quantity,
+                    },
+                },
+            )
+        )
