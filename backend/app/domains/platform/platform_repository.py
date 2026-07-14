@@ -120,7 +120,7 @@ class PlatformRepository:
         stmt = (
             select(Tenant)
             .order_by(desc(Tenant.created_at))
-            .limit(5)
+            .limit(6)
             .execution_options(skip_tenant_filter=True)
         )
 
