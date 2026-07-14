@@ -1,5 +1,4 @@
 import logging
-from collections.abc import Sequence
 from uuid import UUID
 
 from sqlalchemy import select
@@ -13,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 class ProductRepository:
     @staticmethod
-    def list_all_products(tenant_id: int) -> Sequence[Product]:
+    def list_all_products(tenant_id: int) -> list[Product]:
         stmt = select(Product).where(Product.tenant_id == tenant_id)
         return db.session.scalars(stmt).all()
 
