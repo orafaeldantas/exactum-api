@@ -6,6 +6,7 @@ from flask_jwt_extended import get_jwt_identity
 from app.domains.tenant.tenant_service import TenantService
 
 if TYPE_CHECKING:
+    from app.domains.observability.observability_dto import AuditLogDTO
     from app.models.tenant import Tenant
 
 
@@ -43,3 +44,8 @@ class TenantController:
             user_agent=user_agent,
             request_id=g.request_id,
         )
+
+    @staticmethod
+    def get_logs() -> list["AuditLogDTO"]:
+
+        return TenantService.get_logs(tenant_id=g.tenant_id)

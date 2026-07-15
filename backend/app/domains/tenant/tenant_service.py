@@ -6,8 +6,11 @@ from app.database.session import DatabaseSession
 from app.domains.goal.goal_exceptions import RegistrationFailedGoal
 from app.domains.goal.goal_repository import GoalRepository
 from app.domains.observability.observability_constants import PlatformEvents
-from app.domains.observability.observability_containers import platform_service
-from app.domains.observability.observability_dto import PlatformEventDTO
+from app.domains.observability.observability_containers import (
+    audit_service,
+    platform_service,
+)
+from app.domains.observability.observability_dto import AuditLogDTO, PlatformEventDTO
 from app.domains.rbac.container import get_rbac_service
 from app.domains.rbac.rbac_service import RBACRepository
 from app.domains.tenant.tenant_exceptions import TenantNotFound
@@ -183,3 +186,8 @@ class TenantService:
         )
 
         return tenant
+
+    @staticmethod
+    def get_logs(tenant_id: int) -> list[AuditLogDTO]:
+
+        return audit_service.get_logs(tenant_id)
