@@ -71,12 +71,14 @@ jobs:
       - name: Check Database Migrations
         env:
           DATABASE_URL: postgresql://postgres:password@localhost:5432/exactum_test
+          ALLOWED_ORIGINS: "*"
         run: uv run flask db upgrade && uv run flask db check
         working-directory: backend
 
       - name: Run Tests with Pytest & Coverage
         env:
           DATABASE_TESTS_URL: postgresql://postgres:password@localhost:5432/exactum_test
+          ALLOWED_ORIGINS: "*"
           FLASK_ENV: testing
           JWT_SECRET_KEY: test-secret-key
           REDIS_HOST: localhost
