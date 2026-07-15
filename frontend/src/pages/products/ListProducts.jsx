@@ -73,8 +73,9 @@ function RowActions({ product, isLoading, onDetails, onEdit, onToggleStatus, onD
             exit={{ opacity: 0, y: -6, scale: 0.97 }}
             transition={{ duration: 0.15, ease: "easeOut" }}
             role="menu"
-            className="absolute right-0 top-11 z-20 w-48 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04),0_16px_32px_-12px_rgba(15,23,42,0.2)]"
+            className="fixed right-auto left-auto mt-11 z-50 w-48 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04),0_16px_32px_-12px_rgba(15,23,42,0.2)]"
           >
+         
             <button
               type="button"
               role="menuitem"
