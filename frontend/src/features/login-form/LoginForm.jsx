@@ -206,7 +206,10 @@ export default function LoginForm() {
       await login()
 
     } catch (err) {
-      setError(err.message || "Credenciais inválidas")
+
+      if (err.status == 401) {
+        setError("Credenciais inválidas") 
+      } 
     } finally {
       setLoading(false)
     }
