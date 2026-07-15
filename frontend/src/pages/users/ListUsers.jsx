@@ -63,7 +63,8 @@ export default function ListUsers() {
   }
 
   const filteredUsers = users.filter((user) =>
-    user.username.toLowerCase().includes(search.toLowerCase())
+    user.username.toLowerCase().includes(search.toLowerCase()) ||
+    user.uuid.toLowerCase().includes(search.toLowerCase())
   );
 
   
@@ -217,10 +218,8 @@ export default function ListUsers() {
                   </td>
                   <td className="px-6 py-4">
                     <span className={`
-                      rounded-full px-3 py-1 text-xs font-semibold
-                      ${(user.role === "admin" || user.role === "super-admin" )  ? "bg-purple-100 text-purple-700" : "bg-blue-100 text-blue-700"}
-                    `}>
-                      {user.role}
+                      rounded-full px-3 py-1 text-xs font-semibold bg-blue-100 text-blue-700`}>
+                      User
                     </span>
                   </td>
                   <td className="px-6 py-4">
