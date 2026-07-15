@@ -34,7 +34,7 @@ class UpdateProductSchema(Schema):
 
     is_active = fields.Bool()
 
-    stock_quantity = fields.Int(required=True)
+    stock_quantity = fields.Int()
 
 
 class ListProductResponseSchema(UpdateProductSchema):
