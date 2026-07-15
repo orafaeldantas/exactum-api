@@ -153,7 +153,11 @@ class UserService:
                 user_id=admin_user_id,
                 user_uuid=admin_user_uuid,
                 entity="user",
-                payload={"entity_uuid": str(user.uuid), "changes": changes},
+                payload={
+                    "entity_uuid": str(user.uuid),
+                    "name": user.username,
+                    "changes": changes,
+                },
             )
         )
 
@@ -209,7 +213,11 @@ class UserService:
                 user_id=user.id,
                 user_uuid=user.uuid,
                 entity="user",
-                payload={"entity_uuid": str(user.uuid), "changes": changes},
+                payload={
+                    "entity_uuid": str(user.uuid),
+                    "name": user.username,
+                    "changes": changes,
+                },
             )
         )
 
