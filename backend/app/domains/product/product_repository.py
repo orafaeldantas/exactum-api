@@ -14,18 +14,24 @@ logger = logging.getLogger(__name__)
 class ProductRepository:
     @staticmethod
     def list_all_products(tenant_id: int) -> Sequence[Product]:
-        stmt = select(Product).where(Product.tenant_id == tenant_id)
+        stmt = select(Product).where(
+            Product.tenant_id == tenant_id, Product.deleted_at.is_(None)
+        )
         return db.session.scalars(stmt).all()
 
     @staticmethod
     def get_product(tenant_id: int, product_uuid: UUID) -> Product | None:
 
         stmt = select(Product).where(
-            Product.tenant_id == tenant_id, Product.uuid == product_uuid
+            Product.tenant_id == tenant_id,
+            Product.uuid == product_uuid,
+            Product.deleted_at.is_(None),
         )
         return db.session.scalars(stmt).first()
 
     @staticmethod
     def delete_product(product: Product) -> None:
-        DatabaseSession.delete(product)
+
+        product.soft_delete()
+
         DatabaseSession.commit()
