@@ -11,3 +11,9 @@ class ResourceNotFound(AppException):
     status_code = 404
 
     message = "Resource not found"
+
+
+class InfraLogsError(AppException):
+    status_code = 404
+
+    message = "Resource not found"

@@ -6,7 +6,7 @@ class CreateProductSchema(Schema):
 
     description = fields.Str()
 
-    price = fields.Float(required=True)
+    price = fields.Decimal(required=True, places=2, as_string=True)
 
     sku = fields.Str(required=True)
 
@@ -26,13 +26,15 @@ class UpdateProductSchema(Schema):
 
     description = fields.Str()
 
-    price = fields.Float()
+    price = fields.Decimal(places=2, as_string=True)
 
     sku = fields.Str()
 
     category = fields.Str()
 
     is_active = fields.Bool()
+
+    stock_quantity = fields.Int()
 
 
 class ListProductResponseSchema(UpdateProductSchema):

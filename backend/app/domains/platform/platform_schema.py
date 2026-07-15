@@ -23,6 +23,44 @@ class ListTenantsResponseSchema(Schema):
     usersCount = fields.Int(attribute="users_count", dump_only=True)
 
 
+class GetPlatformEventsSchema(Schema):
+    userUuid = fields.UUID(dump_only=True, attribute="user_uuid")
+
+    tenantUuid = fields.UUID(dump_only=True, attribute="tenant_uuid")
+
+    event = fields.Str(dump_only=True)
+
+    payload = fields.Dict(dump_only=True)
+
+    createdAt = fields.DateTime(attribute="created_at", dump_only=True)
+
+
+class GetInfraLogsSchema(Schema):
+    file = fields.Str(dump_only=True)
+
+    count = fields.Int(dump_only=True)
+
+    logs = fields.List(fields.Dict(), dump_only=True)
+
+
+class ListTenantDashboardMetricsSchema(Schema):
+    uuid = fields.UUID(dump_only=True)
+
+    name = fields.Str(required=True, dump_only=True)
+
+    fantasyName = fields.Str(attribute="fantasy_name", required=True, dump_only=True)
+
+    cnpj = fields.Str(required=True, dump_only=True)
+
+    slug = fields.Str(required=True, dump_only=True)
+
+    plan = fields.Str(required=True, dump_only=True)
+
+    isActive = fields.Bool(attribute="is_active", required=True, dump_only=True)
+
+    createdAt = fields.DateTime(attribute="created_at", dump_only=True)
+
+
 class DashboardMetricsResponseSchema(Schema):
     active_tenants = fields.Int(data_key="activeTenants")
 
@@ -33,7 +71,8 @@ class DashboardMetricsResponseSchema(Schema):
     active_users = fields.Int(data_key="activeUsers")
 
     last_tenants_registered = fields.List(
-        fields.Nested(ListTenantsResponseSchema), data_key="lastTenantsRegistered"
+        fields.Nested(ListTenantDashboardMetricsSchema),
+        data_key="lastTenantsRegistered",
     )
 
 

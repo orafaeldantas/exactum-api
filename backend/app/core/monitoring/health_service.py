@@ -1,3 +1,7 @@
+import os
+import time
+from datetime import UTC, datetime
+
 from flask import current_app
 from sqlalchemy import text
 
@@ -5,36 +9,71 @@ from app.extensions import db
 
 
 class HealthService:
-    @staticmethod
-    def check_redis() -> bool:
-        try:
-            redis = current_app.extensions["redis"]
-            redis.ping()
-            return True
-        except Exception:
-            return False
+    start_time = time.time()
 
     @staticmethod
-    def check_postgres() -> bool:
+    def _measure(check_func):
+        start = time.perf_counter()
+
         try:
-            db.session.execute(text("SELECT 1"))
-            return True
-        except Exception:
-            return False
+            check_func()
+
+            latency = round((time.perf_counter() - start) * 1000, 2)
+
+            return {
+                "status": "up",
+                "latency": f"{latency}ms",
+            }
+
+        except Exception as exc:
+            return {
+                "status": "down",
+                "error": str(exc),
+            }
+
+    @staticmethod
+    def check_postgres():
+        db.session.execute(text("SELECT 1"))
+
+    @staticmethod
+    def check_redis():
+        redis = current_app.extensions["redis"]
+        redis.ping()
+
+    @classmethod
+    def get_checks(cls) -> dict:
+        return {
+            "postgres": {
+                "required": True,
+                "check": cls.check_postgres,
+            },
+            "redis": {
+                "required": True,
+                "check": cls.check_redis,
+            },
+        }
 
     @classmethod
     def check_services(cls) -> dict:
+        checks = cls.get_checks()
 
-        postgres_ok = cls.check_postgres()
-        redis_ok = cls.check_redis()
+        services = {}
 
-        healthy = postgres_ok and redis_ok
+        for service_name, config in checks.items():
+            services[service_name] = cls._measure(config["check"])
+
+        healthy = all(
+            services[service_name]["status"] == "up"
+            for service_name, config in checks.items()
+            if config["required"]
+        )
 
         return {
-            "status": "healthy" if healthy else "unhealthy",
-            "services": {
-                "postgres": "up" if postgres_ok else "down",
-                "redis": "up" if redis_ok else "down",
-            },
-            "http_status": 200 if healthy else 503,
+            "status": ("healthy" if healthy else "unhealthy"),
+            "environment": os.getenv("FLASK_ENV", "production"),
+            "version": os.getenv("APP_VERSION", "dev"),
+            "timestamp": datetime.now(UTC),
+            "uptime_seconds": int(time.time() - cls.start_time),
+            "services": services,
+            "http_status": (200 if healthy else 503),
         }
