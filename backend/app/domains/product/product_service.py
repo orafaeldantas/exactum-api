@@ -1,11 +1,13 @@
 from collections.abc import Sequence
 from uuid import UUID
 
+from sqlalchemy.exc import IntegrityError
+
 from app.database.session import DatabaseSession
 from app.domains.observability.observability_constants import AuditEvents
 from app.domains.observability.observability_containers import audit_service
 from app.domains.observability.observability_dto import AuditLogDTO
-from app.domains.product.product_exceptions import ProductNotFound
+from app.domains.product.product_exceptions import ExistingProductField, ProductNotFound
 from app.domains.product.product_repository import ProductRepository
 from app.models.product import Product
 
@@ -32,30 +34,35 @@ class ProductService:
             is_active=data.get("is_active"),
         )
 
-        DatabaseSession.add(product)
-        DatabaseSession.commit()
+        try:
+            DatabaseSession.add(product)
+            DatabaseSession.commit()
 
-        audit_service.create_log(
-            AuditLogDTO(
-                event=AuditEvents.PRODUCT_CREATED,
-                tenant_id=tenant_id,
-                user_id=user_id,
-                user_uuid=user_uuid,
-                tenant_uuid=tenant_uuid,
-                entity="product",
-                payload={
-                    "entity_uuid": str(product.uuid),
-                    "data": {
-                        "name": product.name,
-                        "price": float(product.price),
-                        "stock_quantity": product.stock_quantity,
-                        "is_active": product.is_active,
+            audit_service.create_log(
+                AuditLogDTO(
+                    event=AuditEvents.PRODUCT_CREATED,
+                    tenant_id=tenant_id,
+                    user_id=user_id,
+                    user_uuid=user_uuid,
+                    tenant_uuid=tenant_uuid,
+                    entity="product",
+                    payload={
+                        "entity_uuid": str(product.uuid),
+                        "data": {
+                            "name": product.name,
+                            "price": float(product.price),
+                            "stock_quantity": product.stock_quantity,
+                            "is_active": product.is_active,
+                        },
                     },
-                },
+                )
             )
-        )
 
-        return product
+            return product
+
+        except IntegrityError:
+            DatabaseSession.rollback()
+            raise ExistingProductField()
 
     @staticmethod
     def get_product(tenant_id: int, product_uuid: UUID) -> Product:
@@ -117,25 +124,29 @@ class ProductService:
 
                 setattr(product, field, new_value)
 
-        DatabaseSession.commit()
-
-        audit_service.create_log(
-            AuditLogDTO(
-                event=AuditEvents.PRODUCT_UPDATED,
-                tenant_id=tenant_id,
-                tenant_uuid=tenant_uuid,
-                user_id=user_id,
-                user_uuid=user_uuid,
-                entity="product",
-                payload={
-                    "entity_uuid": str(product.uuid),
-                    "name": product.name,
-                    "changes": changes,
-                },
+        try:
+            DatabaseSession.commit()
+            audit_service.create_log(
+                AuditLogDTO(
+                    event=AuditEvents.PRODUCT_UPDATED,
+                    tenant_id=tenant_id,
+                    tenant_uuid=tenant_uuid,
+                    user_id=user_id,
+                    user_uuid=user_uuid,
+                    entity="product",
+                    payload={
+                        "entity_uuid": str(product.uuid),
+                        "name": product.name,
+                        "changes": changes,
+                    },
+                )
             )
-        )
 
-        return product
+            return product
+
+        except IntegrityError:
+            DatabaseSession.rollback()
+            raise ExistingProductField()
 
     @staticmethod
     def delete_product(
