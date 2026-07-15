@@ -1,3 +1,5 @@
+from collections.abc import Sequence
+
 from .observability_dto import AuditLogDTO
 from .observability_mapper import AuditMapper
 from .observability_repository import ObservabilityRepository
@@ -13,7 +15,7 @@ class AuditService:
 
         self.repo.create_audit_logs(entity)
 
-    def get_logs(self, tenant_id: int) -> AuditLogDTO:
+    def get_logs(self, tenant_id: int) -> Sequence[AuditLogDTO]:
 
         logs = self.repo.get_logs_by_tenant(tenant_id)
 

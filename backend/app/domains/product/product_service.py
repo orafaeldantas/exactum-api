@@ -1,3 +1,4 @@
+from collections.abc import Sequence
 from uuid import UUID
 
 from app.database.session import DatabaseSession
@@ -11,7 +12,7 @@ from app.models.product import Product
 
 class ProductService:
     @staticmethod
-    def list_all_products(tenant_id: int) -> list[Product]:
+    def list_all_products(tenant_id: int) -> Sequence[Product]:
 
         return ProductRepository.list_all_products(tenant_id)
 

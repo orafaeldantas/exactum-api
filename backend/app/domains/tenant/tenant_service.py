@@ -1,4 +1,5 @@
 import re
+from collections.abc import Sequence
 from decimal import Decimal
 from uuid import UUID
 
@@ -188,6 +189,6 @@ class TenantService:
         return tenant
 
     @staticmethod
-    def get_logs(tenant_id: int) -> list[AuditLogDTO]:
+    def get_logs(tenant_id: int) -> Sequence[AuditLogDTO]:
 
         return audit_service.get_logs(tenant_id)

@@ -1,3 +1,4 @@
+from collections.abc import Sequence
 from typing import TYPE_CHECKING
 from uuid import UUID
 
@@ -22,7 +23,7 @@ class ProductController:
         )
 
     @staticmethod
-    def list_all_products() -> list["Product"]:
+    def list_all_products() -> Sequence["Product"]:
 
         return ProductService.list_all_products(g.tenant_id)
 

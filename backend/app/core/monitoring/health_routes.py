@@ -14,7 +14,7 @@ blp_health = Blueprint(
 @blp_health.get("/")
 @blp_health.response(200, HealthResponseSchema)
 @blp_health.response(503, HealthResponseSchema)
-def health() -> dict:
+def health() -> tuple[dict, int]:
 
     health_data = HealthService.check_services()
 

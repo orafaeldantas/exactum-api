@@ -14,7 +14,6 @@ from app.domains.auth.auth_exceptions import (
     UnauthorizedUser,
     UserNotFound,
 )
-from app.domains.auth.auth_repository import AuthRepository
 from app.domains.auth.token_service import TokenService
 from app.domains.goal.goal_repository import GoalRepository
 from app.domains.observability.observability_constants import PlatformEvents
@@ -219,7 +218,7 @@ class AuthService:
         if not session_data:
             raise RefreshTokenRevoked()
 
-        user = AuthRepository.get_user_by_id(user_id)
+        user = UserRepository.get_user_by_id(user_id)
 
         if not user:
             AuthService.revoke_refresh_token(
@@ -255,7 +254,7 @@ class AuthService:
 
         AuthService.revoke_refresh_token(jti, user_id)
 
-        user = AuthRepository.get_user_by_id(user_id)
+        user = UserRepository.get_user_by_id(user_id)
 
         if not user:
             raise UserNotFound()
@@ -342,7 +341,10 @@ class AuthService:
 
         session = RefreshSession(**session_data)
 
-        user = AuthRepository.get_user_by_id(user_id)
+        user = UserRepository.get_user_by_id(user_id)
+
+        if not user:
+            raise UserNotFound()
 
         original_user_id = session.impersonator_id
 

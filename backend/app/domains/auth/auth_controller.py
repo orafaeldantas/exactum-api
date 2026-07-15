@@ -11,8 +11,8 @@ class AuthController:
     @staticmethod
     def login(data: dict) -> Response:
 
-        ip_address = request.remote_addr
-        user_agent = request.headers.get("User-Agent")
+        ip_address = str(request.remote_addr)
+        user_agent = str(request.headers.get("User-Agent"))
 
         tokens = AuthService.login(data, ip_address, user_agent, g.request_id)
 
@@ -47,8 +47,8 @@ class AuthController:
     @staticmethod
     def logout() -> Response:
 
-        ip_address = request.remote_addr
-        user_agent = request.headers.get("User-Agent")
+        ip_address = str(request.remote_addr)
+        user_agent = str(request.headers.get("User-Agent"))
 
         claims = get_jwt()
 
@@ -68,8 +68,8 @@ class AuthController:
     @staticmethod
     def run_impersonate(tenant_uuid: UUID) -> Response:
 
-        ip_address = request.remote_addr
-        user_agent = request.headers.get("User-Agent")
+        ip_address = str(request.remote_addr)
+        user_agent = str(request.headers.get("User-Agent"))
 
         claims = get_jwt()
 
@@ -90,8 +90,8 @@ class AuthController:
     @staticmethod
     def stop_impersonate() -> Response:
 
-        ip_address = request.remote_addr
-        user_agent = request.headers.get("User-Agent")
+        ip_address = str(request.remote_addr)
+        user_agent = str(request.headers.get("User-Agent"))
 
         claims = get_jwt()
 

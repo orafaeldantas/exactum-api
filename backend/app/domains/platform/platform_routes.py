@@ -45,7 +45,7 @@ class GetPlatformEvents(MethodView):
     @require_super_admin
     @blp_platform.doc(security=[{"CookieAuth": []}])
     @blp_platform.response(200, GetPlatformEventsSchema(many=True))
-    def get(self) -> list["PlatformEventDTO"]:
+    def get(self) -> Sequence["PlatformEventDTO"]:
 
         return PlatformController.get_platform_events()
 
