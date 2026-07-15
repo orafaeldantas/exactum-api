@@ -106,18 +106,22 @@ class UserService:
 
         if data.get("role_uuid"):
             new_role = data.get("role_uuid")
-            current_role = RBACRepository().get_user_roles(user.id)
+            user_role = RBACRepository().get_user_roles(user.id)
+            current_role = RBACRepository().get_role_by_id(user_role[0].role_id)
 
-            if str(new_role) != str(current_role[0]):
+            if not current_role:
+                raise KeyError("Not found role")
+
+            if str(new_role) != str(current_role.uuid):
                 role = RBACRepository().get_role_by_uuid(new_role)
-                old_role = RBACRepository().get_role_by_id(current_role[0].role_id)
-                changes["role"] = {
-                    "old": old_role.name,
-                    "new": role.name,
-                }
 
                 if not role:
                     raise KeyError("Not found role")
+
+                changes["role"] = {
+                    "old": current_role.name,
+                    "new": role.name,
+                }
 
                 get_rbac_service().assign_role_to_user(user.id, role.id)
 
@@ -171,7 +175,7 @@ class UserService:
         if not user:
             raise UserNotFound()
 
-        changes = {}
+        changes: dict[str, object] = {}
 
         if data.get("current_password"):
             if not user.check_password(data["current_password"]):

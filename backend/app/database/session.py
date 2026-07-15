@@ -11,7 +11,7 @@ class DatabaseSession:
     @staticmethod
     def get_session() -> Session:
 
-        return db.session
+        return db.session()
 
     @staticmethod
     def add(instance):
