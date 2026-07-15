@@ -34,6 +34,8 @@ class UpdateProductSchema(Schema):
 
     is_active = fields.Bool()
 
+    stock_quantity = fields.Int(required=True)
+
 
 class ListProductResponseSchema(UpdateProductSchema):
     uuid = fields.UUID(dump_only=True)

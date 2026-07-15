@@ -90,6 +90,7 @@ class ProductService:
             "sku",
             "category",
             "is_active",
+            "stock_quantity",
         }
 
         for field, new_value in data.items():
@@ -125,7 +126,11 @@ class ProductService:
                 user_id=user_id,
                 user_uuid=user_uuid,
                 entity="product",
-                payload={"entity_uuid": str(product.uuid), "changes": changes},
+                payload={
+                    "entity_uuid": str(product.uuid),
+                    "name": product.name,
+                    "changes": changes,
+                },
             )
         )
 
