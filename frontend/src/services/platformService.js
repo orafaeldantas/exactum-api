@@ -68,7 +68,7 @@ export function getTenants() {
 
 export function getPlatformEvents() {
   const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   async function loadEvents() {      
       try {
@@ -84,4 +84,24 @@ export function getPlatformEvents() {
     }
 
     return { loadEvents, events, loading };
+}
+
+export function getInfraLogs() {
+  const [dataLogs, setLogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  async function loadInfraLogs() {      
+      try {
+        setLoading(true);
+        const response = await apiFetch("/platform/logs");
+        const data = await response.json();
+        setLogs(data);
+      } catch (err) {
+        console.error("Error loading: ", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    return { loadInfraLogs, dataLogs, loading };
 }
