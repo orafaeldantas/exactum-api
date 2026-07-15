@@ -64,6 +64,14 @@ class UserDetailRoute(MethodView):
 
         return UserController.update_user(data, user_uuid)
 
+    @jwt_required()
+    @permission_required("user:delete")
+    @blp_users.doc(security=[{"CookieAuth": []}])
+    @blp_users.response(204)
+    def delete(self, user_uuid: UUID) -> None:
+
+        return UserController.delete_user(user_uuid)
+
 
 @blp_users.route("/new_password/<uuid:user_uuid>")
 class UserNewPasswordRoute(MethodView):
