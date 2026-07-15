@@ -47,12 +47,12 @@ def init_request_logger(app):
                         "duration_ms": duration_ms,
                         "user_id": getattr(
                             g,
-                            "user_id",
+                            "user_uuid",
                             None,
                         ),
                         "tenant_id": getattr(
                             g,
-                            "tenant_id",
+                            "tenant_uuid",
                             None,
                         ),
                         "is_super_admin": getattr(
