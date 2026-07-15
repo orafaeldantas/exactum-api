@@ -9,6 +9,7 @@ from app.domains.tenant.tenant_controller import TenantController
 from app.domains.tenant.tenant_schema import (
     CreateTenantSchema,
     ResponseCreateTenantSchema,
+    ResponseGetLogsSchema,
     ResponseTenantSchema,
     ResponseUdateTenantSchema,
     UdateTenantSchema,
@@ -19,6 +20,7 @@ blp_tenants = Blueprint(
 )
 
 if TYPE_CHECKING:
+    from app.domains.observability.observability_dto import AuditLogDTO
     from app.models.tenant import Tenant
 
 
@@ -46,3 +48,14 @@ class TenantRoute(MethodView):
     def patch(self, data: dict) -> "Tenant":
 
         return TenantController.update_tenant(data)
+
+
+@blp_tenants.route("/logs")
+class GetLogsRoute(MethodView):
+    @jwt_required()
+    @permission_required("logs:view")
+    @blp_tenants.doc(security=[{"CookieAuth": []}])
+    @blp_tenants.response(200, ResponseGetLogsSchema(many=True))
+    def get(self) -> list["AuditLogDTO"]:
+
+        return TenantController.get_logs()
