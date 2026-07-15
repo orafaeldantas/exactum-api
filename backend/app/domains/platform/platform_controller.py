@@ -17,7 +17,7 @@ class PlatformController:
         return PlatformService.list_all_tenants()
 
     @staticmethod
-    def get_platform_events() -> list["PlatformEventDTO"]:
+    def get_platform_events() -> Sequence["PlatformEventDTO"]:
 
         return PlatformService.get_platform_events()
 
@@ -34,8 +34,8 @@ class PlatformController:
     @staticmethod
     def update_status_tenant(data, tenant_uuid) -> None:
 
-        ip_address = request.remote_addr
-        user_agent = request.headers.get("User-Agent")
+        ip_address = str(request.remote_addr)
+        user_agent = str(request.headers.get("User-Agent"))
 
         return PlatformService.update_status_tenant(
             data,

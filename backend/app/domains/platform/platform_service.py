@@ -28,7 +28,7 @@ class PlatformService:
         return tenants_dto
 
     @staticmethod
-    def get_platform_events() -> list[PlatformEventDTO]:
+    def get_platform_events() -> Sequence[PlatformEventDTO]:
 
         return platform_service.get_logs()
 
@@ -76,7 +76,7 @@ class PlatformService:
         new_status = data.get("is_active")
         old_status = tenant.is_active
 
-        tenant.is_active = new_status
+        tenant.is_active = bool(new_status)
 
         DatabaseSession.commit()
 

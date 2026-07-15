@@ -1,3 +1,5 @@
+from collections.abc import Sequence
+
 from .observability_dto import PlatformEventDTO
 from .observability_mapper import PlatformMapper
 from .observability_repository import ObservabilityRepository
@@ -13,7 +15,7 @@ class PlatformService:
 
         self.repo.create_log_platform(entity)
 
-    def get_logs(self) -> list[PlatformEventDTO]:
+    def get_logs(self) -> Sequence[PlatformEventDTO]:
 
         logs = self.repo.get_logs_platform()
 
