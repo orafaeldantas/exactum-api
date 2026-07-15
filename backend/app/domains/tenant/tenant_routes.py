@@ -1,3 +1,4 @@
+from collections.abc import Sequence
 from typing import TYPE_CHECKING
 
 from flask.views import MethodView
@@ -56,6 +57,6 @@ class GetLogsRoute(MethodView):
     @permission_required("logs:view")
     @blp_tenants.doc(security=[{"CookieAuth": []}])
     @blp_tenants.response(200, ResponseGetLogsSchema(many=True))
-    def get(self) -> list["AuditLogDTO"]:
+    def get(self) -> Sequence["AuditLogDTO"]:
 
         return TenantController.get_logs()

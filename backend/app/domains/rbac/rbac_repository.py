@@ -46,7 +46,7 @@ class RBACRepository:
     # ========================= USER ROLES =========================
     def get_user_roles(self, user_id: int) -> Sequence[UserRole]:
         stmt = select(UserRole).where(UserRole.user_id == user_id)
-        return list(db.session.execute(stmt).scalars().all())
+        return db.session.execute(stmt).scalars().all()
 
     def get_user_by_role_id(self, role_id: int) -> UserRole | None:
         stmt = select(UserRole).where(UserRole.role_id == role_id)

@@ -1,3 +1,4 @@
+from collections.abc import Sequence
 from typing import TYPE_CHECKING
 
 from flask import g, request
@@ -14,8 +15,8 @@ class TenantController:
     @staticmethod
     def create_tenant(data: dict) -> "Tenant":
 
-        ip_address = request.remote_addr
-        user_agent = request.headers.get("User-Agent")
+        ip_address = str(request.remote_addr)
+        user_agent = str(request.headers.get("User-Agent"))
 
         return TenantService.create_tenant(
             data,
@@ -31,8 +32,8 @@ class TenantController:
     @staticmethod
     def update_tenant(data: dict) -> "Tenant":
 
-        ip_address = request.remote_addr
-        user_agent = request.headers.get("User-Agent")
+        ip_address = str(request.remote_addr)
+        user_agent = str(request.headers.get("User-Agent"))
 
         return TenantService.update_tenant(
             data,
@@ -46,6 +47,6 @@ class TenantController:
         )
 
     @staticmethod
-    def get_logs() -> list["AuditLogDTO"]:
+    def get_logs() -> Sequence["AuditLogDTO"]:
 
         return TenantService.get_logs(tenant_id=g.tenant_id)

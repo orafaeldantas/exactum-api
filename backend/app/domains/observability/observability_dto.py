@@ -5,22 +5,22 @@ from uuid import UUID
 
 @dataclass(slots=True, frozen=True)
 class AuditLogDTO:
-    tenant_id: int
+    tenant_id: int | None
     user_id: int | None
-    user_uuid: UUID
-    tenant_uuid: UUID
+    user_uuid: UUID | None
+    tenant_uuid: UUID | None
     event: str
     entity: str
-    payload: dict | None = None
+    payload: dict | None
     created_at: datetime | None = None
 
 
 @dataclass(slots=True, frozen=True)
 class PlatformEventDTO:
     event: str
-    tenant_id: int | None = None
-    user_id: int | None = None
-    user_uuid: UUID | None = None
-    tenant_uuid: UUID | None = None
-    payload: dict | None = None
+    tenant_id: int | None
+    user_id: int | None
+    user_uuid: UUID | None
+    tenant_uuid: UUID | None
+    payload: dict | None
     created_at: datetime | None = None

@@ -1,3 +1,5 @@
+from collections.abc import Sequence
+
 from sqlalchemy import desc, select
 
 from app.database.session import DatabaseSession
@@ -11,7 +13,7 @@ class ObservabilityRepository:
         DatabaseSession.commit()
 
     @staticmethod
-    def get_logs_platform() -> list[PlatformEvent]:
+    def get_logs_platform() -> Sequence[PlatformEvent]:
         stmt = select(PlatformEvent).order_by(desc(PlatformEvent.created_at))
 
         response = DatabaseSession.get_session()
@@ -24,7 +26,7 @@ class ObservabilityRepository:
         DatabaseSession.commit()
 
     @staticmethod
-    def get_logs_by_tenant(tenant_id: int) -> list[AuditLog]:
+    def get_logs_by_tenant(tenant_id: int) -> Sequence[AuditLog]:
         stmt = (
             select(AuditLog)
             .where(AuditLog.tenant_id == tenant_id)
