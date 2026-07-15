@@ -1,277 +1,419 @@
-import { useState } from "react";
-// import { useEffect, useContext } from "react";
-// import { useNavigate } from "react-router-dom";
-// import toast from "react-hot-toast";
-// import { apiFetch } from "../../services/api";
-// import { AuthContext } from "../../context/AuthContext";
-
+import { useEffect, useMemo, useState } from "react";
+import { getInfraLogs } from "../../services/platformService";
+import LoadingOverlay from "../../components/Loader/LoadingOverlay";
 import {
-  Terminal, Eye, Trash2, Search, Clock, Server,
-  User, MapPin, Hash, Info, AlertTriangle, XCircle, AlertOctagon, X, Copy, Building2
-} from 'lucide-react';
+  Terminal,
+  Search,
+  ShieldCheck,
+  ChevronDown,
+  X,
+  Gauge,
+  AlertOctagon,
+  FileText,
+} from "lucide-react";
 
-const MOCK_LOGS = [
-  { id: 1, timestamp: "2026-06-30T11:42:10Z", level: "info", service: "exactum", action: "EXACTUM", actor: "exactum@exactum.app.br", tenant: "System", ip: "255.255.255.255", message: "Exactum" },  
-];
+const PAGE_SIZE = 13;
 
-const LEVEL_CONFIG = {
-  info:     { label: "Info",     icon: Info,          badge: "bg-blue-50 text-blue-700",     dot: "bg-blue-500" },
-  warning:  { label: "Atenção",  icon: AlertTriangle,  badge: "bg-amber-50 text-amber-700",   dot: "bg-amber-500" },
-  error:    { label: "Erro",     icon: XCircle,        badge: "bg-red-50 text-red-700",       dot: "bg-red-500" },
-  critical: { label: "Crítico",  icon: AlertOctagon,   badge: "bg-purple-50 text-purple-700", dot: "bg-purple-500" },
+const METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE"];
+
+const METHOD_TONE = {
+  GET: "bg-blue-50 text-blue-600",
+  POST: "bg-emerald-50 text-emerald-700",
+  PUT: "bg-purple-50 text-purple-600",
+  PATCH: "bg-amber-50 text-amber-700",
+  DELETE: "bg-red-50 text-red-600",
 };
 
-function formatTimestamp(iso) {
-  const d = new Date(iso);
-  return d.toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "medium" });
+const STATUS_CLASSES = [
+  { key: "2xx", label: "2xx", test: (s) => s >= 200 && s < 300, tone: "bg-emerald-50 text-emerald-700" },
+  { key: "3xx", label: "3xx", test: (s) => s >= 300 && s < 400, tone: "bg-blue-50 text-blue-600" },
+  { key: "4xx", label: "4xx", test: (s) => s >= 400 && s < 500, tone: "bg-amber-50 text-amber-700" },
+  { key: "5xx", label: "5xx", test: (s) => s >= 500, tone: "bg-red-50 text-red-600" },
+];
+
+const DURATION_OPTIONS = [
+  { value: "", label: "Qualquer duração" },
+  { value: "100", label: "Acima de 100ms" },
+  { value: "500", label: "Acima de 500ms" },
+  { value: "1000", label: "Acima de 1s" },
+];
+
+function getStatusTone(status) {
+  return STATUS_CLASSES.find((c) => c.test(status))?.tone ?? "bg-gray-100 text-slate-600";
 }
 
-export default function SystemLogs() {
-  const [logs, setLogs] = useState(MOCK_LOGS);
-  const [search, setSearch] = useState("");
-  const [levelFilter, setLevelFilter] = useState("all");
-  const [page, setPage] = useState(1);
-  const logsPerPage = 8; 
+function getDurationTone(ms) {
+  if (ms >= 1000) return "text-red-600";
+  if (ms >= 300) return "text-amber-600";
+  return "text-slate-700";
+}
 
-  // const navigate = useNavigate();
-  // const { user } = useContext(AuthContext);
+function StatCard({ icon: Icon, label, value, tone = "blue" }) {
+  const toneClasses = {
+    blue: "bg-blue-50 text-blue-600",
+    amber: "bg-amber-50 text-amber-600",
+    red: "bg-red-50 text-red-600",
+  };
+  return (
+    <div className="flex items-center gap-3 rounded-2xl border border-gray-100 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.02),0_8px_20px_-14px_rgba(15,23,42,0.1)]">
+      <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${toneClasses[tone]}`}>
+        <Icon className="h-5 w-5" />
+      </div>
+      <div>
+        <p className="text-2xl font-black tracking-tight text-slate-900" style={{ fontVariantNumeric: "tabular-nums" }}>
+          {value}
+        </p>
+        <p className="text-xs font-medium text-slate-500">{label}</p>
+      </div>
+    </div>
+  );
+}
 
-  // Modal de detalhes do log
-  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-  const [logToView, setLogToView] = useState(null);
-
-  // ---------------------------------------------------------------------
-  // async function loadLogs() {
-  //   try {
-  //     const response = await apiFetch("/super-admin/logs");
-  //     if (!response.ok) throw new Error("Erro ao carregar logs");
-  //     const data = await response.json();
-  //     setLogs(data);
-  //   } catch (err) {
-  //     toast.error(err.message);
-  //   }
-  // }
-  // useEffect(() => { loadLogs(); }, []);
-  // ---------------------------------------------------------------------
-
-  const filteredLogs = logs.filter((l) => {
-    const matchesSearch =
-      l.message.toLowerCase().includes(search.toLowerCase()) ||
-      l.service.toLowerCase().includes(search.toLowerCase()) ||
-      l.action.toLowerCase().includes(search.toLowerCase()) ||
-      l.actor.toLowerCase().includes(search.toLowerCase());
-    const matchesLevel = levelFilter === "all" || l.level === levelFilter;
-    return matchesSearch && matchesLevel; 
-  });
-
-  const paginated = filteredLogs.slice((page - 1) * logsPerPage, page * logsPerPage);
-  const totalPages = Math.ceil(filteredLogs.length / logsPerPage);
-
-  function openDetail(log) {
-    setLogToView(log);
-    setIsDetailModalOpen(true);
-  }
-
-  // function handleCopyLog(log) {
-  //   navigator.clipboard.writeText(JSON.stringify(log, null, 2));
-  //   toast.success("Log copiado para a área de transferência");
-  // }
-
-  // async function handleDeleteLog(logId) {
-  //   try {
-  //     const response = await apiFetch(`/super-admin/logs/${logId}`, { method: "DELETE" });
-  //     if (!response.ok) throw new Error("Erro ao excluir log");
-  //     setLogs((prev) => prev.filter((l) => l.id !== logId));
-  //     toast.success("Log excluído");
-  //   } catch (err) {
-  //     toast.error(err.message);
-  //   }
-  // }
+function LogRow({ log }) {
+  const [open, setOpen] = useState(false);
+  const isError = log.status >= 400;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <>
+      <tr
+        className={`cursor-pointer border-t border-gray-100 transition-colors duration-150 hover:bg-gray-50/80 ${isError ? "bg-red-50/30" : ""}`}
+        onClick={() => setOpen((v) => !v)}
+      >
+        <td className="px-4 py-3">
+          <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold ${getStatusTone(log.status)}`}>
+            {log.status}
+          </span>
+        </td>
+        <td className="px-4 py-3">
+          <span className={`inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide ${METHOD_TONE[log.method] ?? "bg-gray-100 text-slate-600"}`}>
+            {log.method}
+          </span>
+        </td>
+        <td className="max-w-[280px] px-4 py-3">
+          <span className="truncate font-mono text-xs text-slate-700" title={log.path}>
+            {log.path}
+          </span>
+        </td>
+        <td className={`px-4 py-3 text-right text-sm font-semibold ${getDurationTone(log.duration_ms)}`} style={{ fontVariantNumeric: "tabular-nums" }}>
+          {Number(log.duration_ms).toFixed(2)}ms
+        </td>
+        <td className="px-4 py-3">
+          <div className="flex items-center justify-center gap-1.5">
+            <span className="text-xs text-slate-600">{log.user_id ?? "—"}</span>
+            {log.is_super_admin && (
+              <span title="Super Admin" className="flex h-4 w-4 items-center justify-center rounded-full bg-slate-100 text-slate-500">
+                <ShieldCheck className="h-3 w-3" />
+              </span>
+            )}
+          </div>
+        </td>
+        <td className="px-4 py-3 text-xs text-slate-500">
+          {log.timestamp ? new Date(log.timestamp).toLocaleString("pt-BR") : "—"}
+        </td>
+        <td className="px-2 py-3">
+          <ChevronDown className={`h-4 w-4 text-slate-400 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+        </td>
+      </tr>
 
-      {/* Header */}
-      <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
-            <Terminal className="text-blue-600" /> Logs do Sistema
-          </h1>
-          <p className="mt-1 text-sm text-gray-500">Auditoria de eventos e atividades do ecossistema</p>
+      {open && (
+        <tr className="border-t border-gray-100 bg-gray-50/60">
+          <td colSpan={7} className="px-6 py-4">
+            <div className="grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2 lg:grid-cols-4">
+              <div>
+                <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-slate-400">Request ID</p>
+                <p className="font-mono text-xs text-slate-600">{log.request_id ?? "—"}</p>
+              </div>
+              <div>
+                <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-slate-400">IP</p>
+                <p className="font-mono text-xs text-slate-600">{log.ip ?? "—"}</p>
+              </div>
+              <div>
+                <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-slate-400">Tenant ID</p>
+                <p className="font-mono text-xs text-slate-600">{log.tenant_id ?? "—"}</p>
+              </div>
+              <div>
+                <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-slate-400">Caminho completo</p>
+                <p className="break-all font-mono text-xs text-slate-600">{log.path}</p>
+              </div>
+              <div className="sm:col-span-2 lg:col-span-4">
+                <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-slate-400">User agent</p>
+                <p className="break-all text-xs text-slate-500">{log.user_agent ?? "—"}</p>
+              </div>
+            </div>
+          </td>
+        </tr>
+      )}
+    </>
+  );
+}
+
+export default function InfraLogs() {
+  const { dataLogs, loadInfraLogs, loading } = getInfraLogs();
+  const count = dataLogs?.count ?? 0;
+  const file = dataLogs?.file ?? "";
+  const logs = dataLogs?.logs ?? [];
+
+  useEffect(() => {
+    loadInfraLogs();
+  }, []);
+
+  const [page, setPage] = useState(1);
+  const [methodFilters, setMethodFilters] = useState([]);
+  const [statusFilters, setStatusFilters] = useState([]);
+  const [minDuration, setMinDuration] = useState("");
+  const [onlySuperAdmin, setOnlySuperAdmin] = useState(false);
+  const [search, setSearch] = useState("");
+
+  // Everything below is client-side now: the API hands us the whole batch
+  // in one shot (up to whatever limit is configured server-side), so we
+  // filter/paginate over what's already in memory instead of refetching.
+  const filteredLogs = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    const minMs = minDuration ? Number(minDuration) : null;
+
+    return logs.filter((log) => {
+      if (methodFilters.length && !methodFilters.includes(log.method)) return false;
+      if (statusFilters.length) {
+        const matchesClass = statusFilters.some((key) => STATUS_CLASSES.find((c) => c.key === key)?.test(log.status));
+        if (!matchesClass) return false;
+      }
+      if (minMs !== null && Number(log.duration_ms) < minMs) return false;
+      if (onlySuperAdmin && !log.is_super_admin) return false;
+      if (query) {
+        const haystack = `${log.path ?? ""} ${log.request_id ?? ""} ${log.ip ?? ""} ${log.user_id ?? ""}`.toLowerCase();
+        if (!haystack.includes(query)) return false;
+      }
+      return true;
+    });
+  }, [logs, methodFilters, statusFilters, minDuration, onlySuperAdmin, search]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [methodFilters, statusFilters, minDuration, onlySuperAdmin, search]);
+
+  function toggleMethod(method) {
+    setMethodFilters((prev) => (prev.includes(method) ? prev.filter((m) => m !== method) : [...prev, method]));
+  }
+
+  function toggleStatusClass(key) {
+    setStatusFilters((prev) => (prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]));
+  }
+
+  function clearFilters() {
+    setMethodFilters([]);
+    setStatusFilters([]);
+    setMinDuration("");
+    setOnlySuperAdmin(false);
+    setSearch("");
+  }
+
+  const hasActiveFilters = methodFilters.length > 0 || statusFilters.length > 0 || minDuration || onlySuperAdmin || search;
+
+  const startIndex = (page - 1) * PAGE_SIZE;
+  const paginatedLogs = filteredLogs.slice(startIndex, startIndex + PAGE_SIZE);
+  const totalPages = Math.ceil(filteredLogs.length / PAGE_SIZE);
+
+  // Genuinely global now (computed over the whole in-memory batch, not a
+  // single page), since the API no longer paginates server-side.
+  const errorCount = logs.filter((l) => l.status >= 400).length;
+  const avgDuration = logs.length
+    ? (logs.reduce((acc, l) => acc + Number(l.duration_ms || 0), 0) / logs.length).toFixed(1)
+    : "0";
+
+  return (
+    <LoadingOverlay loading={loading} minDuration={250} message="Buscando logs...">
+      <div className="min-h-screen bg-gray-50 p-6">
+        {/* Header */}
+        <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h1 className="flex items-center gap-3 text-3xl font-bold tracking-tight text-slate-900">
+              <Terminal className="text-blue-600" /> Logs de Requisições
+            </h1>
+            <p className="mt-1 flex items-center gap-1.5 text-sm text-slate-500">
+              Histórico de requisições HTTP processadas pela infraestrutura
+              {file && (
+                <span className="flex items-center gap-1 text-xs text-slate-400">
+                  <FileText className="h-3 w-3" /> {file}
+                </span>
+              )}
+            </p>
+          </div>
         </div>
-      </div>
 
-      {/* Search */}
-      <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-center">
-        <div className="relative max-w-sm w-full">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-          <input
-            type="text"
-            placeholder="Mensagem, serviço, ação ou autor..."
-            value={search}
-            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-            className="w-full rounded-xl border border-gray-200 bg-white pl-10 pr-4 py-3 text-sm shadow-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition"
-          />
+        {/* Cap notice — only shown if the delivered batch is smaller than the reported total */}
+        {logs.length > 0 && logs.length < count && (
+          <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2.5 text-xs text-amber-700">
+            Exibindo os {logs.length.toLocaleString("pt-BR")} registros mais recentes de{" "}
+            {count.toLocaleString("pt-BR")} no total — o backend limita a quantidade retornada por requisição.
+          </div>
+        )}
+
+        {/* Summary cards */}
+        <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <StatCard icon={Terminal} label="Requisições carregadas" value={count.toLocaleString("pt-BR")} tone="blue" />
+          <StatCard icon={Gauge} label="Duração média" value={`${avgDuration}ms`} tone="amber" />
+          <StatCard icon={AlertOctagon} label="Erros (4xx/5xx)" value={errorCount} tone="red" />
         </div>
 
-        <div className="flex gap-2">
-          {["all", "info", "warning", "error", "critical"].map((lvl) => (
-            <button
-              key={lvl}
-              onClick={() => { setLevelFilter(lvl); setPage(1); }}
-              className={`rounded-lg px-3 py-2 text-xs font-bold uppercase tracking-wide transition-colors ${
-                levelFilter === lvl
-                  ? "bg-slate-800 text-white"
-                  : "bg-white border border-gray-200 text-slate-500 hover:bg-slate-50"
-              }`}
-            >
-              {lvl === "all" ? "Todos" : LEVEL_CONFIG[lvl].label}
-            </button>
-          ))}
-        </div>
-      </div>
+        {/* Filters */}
+        <div className="mb-6 space-y-4 rounded-2xl border border-gray-100 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.02),0_8px_20px_-14px_rgba(15,23,42,0.1)]">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="relative w-full max-w-sm">
+              <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Buscar por rota, request ID, IP..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full rounded-xl border border-gray-200 bg-gray-50 py-2.5 pl-11 pr-4 text-sm outline-none transition-all duration-200 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
+              />
+            </div>
 
-      {/* Logs Table */}
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-100">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-wider text-slate-500">Nível</th>
-                <th className="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-wider text-slate-500">Timestamp</th>
-                <th className="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-wider text-slate-500 hidden md:table-cell">Serviço</th>
-                <th className="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-wider text-slate-500 hidden lg:table-cell">Ação</th>
-                <th className="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-wider text-slate-500">Mensagem</th>
-                <th className="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-wider text-slate-500 hidden lg:table-cell">Autor</th>
-                <th className="px-4 py-3 text-right text-[10px] font-bold uppercase tracking-wider text-slate-500">Ações</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {paginated.map((log) => {
-                const cfg = LEVEL_CONFIG[log.level];
-                const LevelIcon = cfg.icon;
-                return (
-                  <tr
-                    key={log.id}
-                    onClick={() => openDetail(log)}
-                    className="cursor-pointer hover:bg-slate-50 transition-colors"
-                  >
-                    <td className="px-4 py-3 whitespace-nowrap">
-                      <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${cfg.badge}`}>
-                        <LevelIcon className="w-3 h-3" /> {cfg.label}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-xs font-mono text-slate-500">
-                      {formatTimestamp(log.timestamp)}
-                    </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-slate-700 hidden md:table-cell">
-                      {log.service}
-                    </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-xs font-mono font-medium text-blue-600 hidden lg:table-cell">
-                      {log.action}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-slate-700 max-w-xs truncate">
-                      {log.message}
-                    </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-xs text-slate-500 hidden lg:table-cell">
-                      {log.actor}
-                    </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-right">
-                      <div className="flex items-center justify-end gap-1" onClick={(e) => e.stopPropagation()}>
-                        <button
-                          onClick={() => openDetail(log)}
-                          className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                          title="Detalhes"
-                        >
-                          <Eye className="w-4 h-4" />
-                        </button>
-                        <button
-                          // onClick={() => handleDeleteLog(log.id)}
-                          className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                          title="Excluir"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+            <div className="flex flex-wrap items-center gap-3">
+              <select
+                value={minDuration}
+                onChange={(e) => setMinDuration(e.target.value)}
+                className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm outline-none transition-colors duration-200 focus:border-blue-500"
+              >
+                {DURATION_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+
+              <label className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-slate-600 shadow-sm">
+                <input
+                  type="checkbox"
+                  checked={onlySuperAdmin}
+                  onChange={(e) => setOnlySuperAdmin(e.target.checked)}
+                  className="h-3.5 w-3.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                Apenas Super Admin
+              </label>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="mr-1 text-[11px] font-bold uppercase tracking-widest text-slate-400">Método</span>
+            {METHODS.map((method) => {
+              const isActive = methodFilters.includes(method);
+              return (
+                <button
+                  key={method}
+                  type="button"
+                  onClick={() => toggleMethod(method)}
+                  className={`rounded-full border px-3 py-1 text-xs font-bold transition-all duration-150 ${
+                    isActive
+                      ? "border-blue-600 bg-blue-600 text-white shadow-sm"
+                      : "border-gray-200 bg-white text-slate-600 hover:border-gray-300 hover:bg-gray-50"
+                  }`}
+                >
+                  {method}
+                </button>
+              );
+            })}
+
+            <span className="ml-3 mr-1 text-[11px] font-bold uppercase tracking-widest text-slate-400">Status</span>
+            {STATUS_CLASSES.map((cls) => {
+              const isActive = statusFilters.includes(cls.key);
+              return (
+                <button
+                  key={cls.key}
+                  type="button"
+                  onClick={() => toggleStatusClass(cls.key)}
+                  className={`rounded-full border px-3 py-1 text-xs font-bold transition-all duration-150 ${
+                    isActive
+                      ? "border-blue-600 bg-blue-600 text-white shadow-sm"
+                      : "border-gray-200 bg-white text-slate-600 hover:border-gray-300 hover:bg-gray-50"
+                  }`}
+                >
+                  {cls.label}
+                </button>
+              );
+            })}
+
+            {hasActiveFilters && (
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="ml-2 flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold text-slate-400 transition-colors duration-150 hover:text-slate-600"
+              >
+                <X className="h-3.5 w-3.5" />
+                Limpar filtros
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Table */}
+        <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.02),0_8px_20px_-14px_rgba(15,23,42,0.1)]">
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-500">Status</th>
+                  <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-500">Método</th>
+                  <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-500">Rota</th>
+                  <th className="px-4 py-3 text-right text-xs font-bold uppercase tracking-wider text-slate-500">Duração</th>
+                  <th className="px-4 py-3 text-center text-xs font-bold uppercase tracking-wider text-slate-500">Usuário</th>
+                  <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-500">Horário</th>
+                  <th className="px-2 py-3" />
+                </tr>
+              </thead>
+              <tbody>
+                {paginatedLogs.map((log) => (
+                  <LogRow key={log.request_id ?? `${log.path}-${log.timestamp}`} log={log} />
+                ))}
+
+                {!loading && paginatedLogs.length === 0 && (
+                  <tr>
+                    <td colSpan={7} className="px-6 py-16">
+                      <div className="flex flex-col items-center gap-3 text-center">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 text-slate-400">
+                          <Terminal className="h-6 w-6" />
+                        </div>
+                        <p className="text-sm font-medium text-slate-500">
+                          {hasActiveFilters ? "Nenhuma requisição encontrada para esse filtro." : "Nenhuma requisição registrada."}
+                        </p>
                       </div>
                     </td>
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        {filteredLogs.length === 0 && (
-          <div className="py-12 text-center text-sm text-slate-400">Nenhum log encontrado para os filtros aplicados.</div>
-        )}
-      </div>
-
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="mt-8 flex items-center justify-center gap-1">
-          <button disabled={page === 1} onClick={() => setPage(page - 1)} className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium disabled:opacity-40">Anterior</button>
-          <div className="rounded-lg border border-gray-200 bg-white px-6 py-2 text-sm font-bold text-gray-700">{page} / {totalPages}</div>
-          <button disabled={page === totalPages} onClick={() => setPage(page + 1)} className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium disabled:opacity-40">Próxima</button>
-        </div>
-      )}
-
-      {/* Detail Modal */}
-      {isDetailModalOpen && logToView && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setIsDetailModalOpen(false)} />
-          <div className="relative w-full max-w-lg rounded-2xl bg-white shadow-2xl p-6">
-            <div className="flex items-start justify-between mb-2">
-              <h3 className="text-lg font-bold text-slate-800">Detalhes do Log #{logToView.id}</h3>
-              <button onClick={() => setIsDetailModalOpen(false)} className="text-slate-400 hover:text-slate-600">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <p className="text-sm text-slate-500 mb-6">{logToView.message}</p>
-
-            <div className="space-y-3 text-sm">
-              <div className="flex items-center justify-between">
-                <span className="text-slate-500 flex items-center gap-2"><Clock className="w-3.5 h-3.5"/> Timestamp:</span>
-                <span className="font-mono text-xs font-medium text-slate-700">{formatTimestamp(logToView.timestamp)}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-slate-500 flex items-center gap-2"><Server className="w-3.5 h-3.5"/> Serviço:</span>
-                <span className="font-medium text-slate-700">{logToView.service}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-slate-500 flex items-center gap-2"><Hash className="w-3.5 h-3.5"/> Ação:</span>
-                <span className="font-mono text-xs font-medium text-blue-600">{logToView.action}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-slate-500 flex items-center gap-2"><User className="w-3.5 h-3.5"/> Autor:</span>
-                <span className="font-medium text-slate-700">{logToView.actor}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-slate-500 flex items-center gap-2"><Building2 className="w-3.5 h-3.5"/> Tenant:</span>
-                <span className="font-medium text-slate-700">{logToView.tenant || "—"}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-slate-500 flex items-center gap-2"><MapPin className="w-3.5 h-3.5"/> IP:</span>
-                <span className="font-mono text-xs font-medium text-slate-700">{logToView.ip}</span>
-              </div>
-            </div>
-
-            <div className="mt-6 flex gap-2">
+        {/* Pagination */}
+        {!loading && filteredLogs.length > 0 && (
+          <div className="mt-6 flex flex-col items-center justify-between gap-3 sm:flex-row">
+            <p className="text-xs text-slate-500">
+              Mostrando <span className="font-semibold text-slate-700">{startIndex + 1}–{Math.min(startIndex + PAGE_SIZE, filteredLogs.length)}</span> de{" "}
+              <span className="font-semibold text-slate-700">{filteredLogs.length.toLocaleString("pt-BR")}</span> requisições
+            </p>
+            <div className="flex items-center gap-2">
               <button
-                // onClick={() => handleCopyLog(logToView)}
-                className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-slate-100 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-200 transition-colors"
+                disabled={page === 1}
+                onClick={() => setPage((p) => p - 1)}
+                className="flex items-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-slate-600 shadow-sm transition-all hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                <Copy className="w-4 h-4" /> Copiar JSON
+                ← Anterior
               </button>
+              <div className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm">
+                <span className="text-blue-600">{page}</span>
+                <span className="mx-1 text-slate-400">/</span>
+                <span>{totalPages || 1}</span>
+              </div>
               <button
-                onClick={() => setIsDetailModalOpen(false)}
-                className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-slate-800 py-2.5 text-xs font-bold text-white hover:bg-slate-900 transition-colors"
+                disabled={page === totalPages || totalPages === 0}
+                onClick={() => setPage((p) => p + 1)}
+                className="flex items-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-slate-600 shadow-sm transition-all hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                Fechar
+                Próxima →
               </button>
             </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </LoadingOverlay>
   );
 }
