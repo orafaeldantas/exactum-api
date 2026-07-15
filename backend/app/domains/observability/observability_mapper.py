@@ -41,7 +41,6 @@ class AuditMapper:
             user_uuid=entity.user_uuid,
             event=entity.event,
             entity=entity.entity,
-            entity_id=entity.entity_id,
             payload=entity.payload,
             created_at=entity.created_at,
         )
