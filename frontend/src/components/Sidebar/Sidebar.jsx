@@ -61,9 +61,9 @@ function Sidebar() {
     if (typeof window === "undefined") return false;
     return localStorage.getItem(COLLAPSE_STORAGE_KEY) === "true";
   });
-  const { user, impersonateMode } = useContext(AuthContext);
+  const { user, impersonateMode, permissions } = useContext(AuthContext);
   const { superAdmin } = useContext(SuperAdminContext);
-  const roles = ["admin", "super-admin"];
+  const roles = permissions;
 
   useEffect(() => {
     localStorage.setItem(COLLAPSE_STORAGE_KEY, String(collapsed));
@@ -152,14 +152,14 @@ function Sidebar() {
             <NavItem to="/products" icon={Box} label="Produtos" collapsed={collapsed} />
             <NavItem to="/low-stock" icon={CircleDot} label="Estoque Baixo" collapsed={collapsed} />
 
-            {roles.includes(user?.role) && (
+            {roles.includes("user:view") && (
               <NavItem to="/users" icon={Users} label="Usuários" collapsed={collapsed} />
             )}
 
             <NavItem to="/checkout" icon={ShoppingCart} label="PDV" collapsed={collapsed} />
             <NavItem to="/sales" icon={Receipt} label="Histórico de Vendas" collapsed={collapsed} />
 
-            {roles.includes(user?.role) && (
+            {roles.includes("analytics:view") && (
               <NavItem to="/logs" icon={ScrollText} label="Logs" collapsed={collapsed} />
             )}
           </>
@@ -175,8 +175,8 @@ function Sidebar() {
             <NavItem to="/platform/dashboard" icon={LayoutDashboard} label="Dashboard" collapsed={collapsed} />
             <NavItem to="/platform/manage-companies" icon={Building2} label="Empresas" collapsed={collapsed} />
             <NavItem to="/platform/infra-health" icon={Activity} label="Status do Sistema" collapsed={collapsed} />
-            <NavItem to="/platform/logs" icon={Terminal} label="Logs do Sistema" collapsed={collapsed} />
-            <NavItem to="/platform/events" icon={DatabaseZap} label="Eventos do Sistema" collapsed={collapsed} />
+            <NavItem to="/platform/logs" icon={Terminal} label="Logs de Requisições" collapsed={collapsed} />
+            <NavItem to="/platform/events" icon={DatabaseZap} label="Eventos da Plataforma" collapsed={collapsed} />
           </>
         )}
 
