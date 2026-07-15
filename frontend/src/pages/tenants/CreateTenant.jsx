@@ -24,7 +24,7 @@ export default function CreateTenant() {
       confirmPassword: ""
     },
     plan: {
-      type: "growth",
+      type: "starter",
       /*features: {
         predictive: true,
         alerts: true,

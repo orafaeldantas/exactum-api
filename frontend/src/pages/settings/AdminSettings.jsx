@@ -20,9 +20,10 @@ import {
 } from "lucide-react";
 
 export default function SettingsPage() {
-  const { loading } = useContext(AuthContext);;
+  const { loading, bootstrap } = useContext(AuthContext);;
   const { profile } = useContext(UserContext);
   const { tenantData } = useContext(TenantContext);
+  const [reloadPage, setReloadPage] = useState(false)
 
   const [form, setForm] = useState({
     companyName: "",
@@ -41,6 +42,11 @@ export default function SettingsPage() {
 
     if (!tenantData || !profile) 
       return;
+
+    if (reloadPage) {
+      setReloadPage(false)
+      bootstrap()
+    }
   
     setForm((prevForm) => ({
       ...prevForm,
@@ -52,7 +58,7 @@ export default function SettingsPage() {
       loginEmail: profile.email ?? ""
     }));
   
-  }, [tenantData, profile]);
+  }, [tenantData, profile, reloadPage]);
    
   if (loading) {
     return (
@@ -122,6 +128,7 @@ export default function SettingsPage() {
   
       if (responseUser.ok && responseTenant.ok) {
         toast.success("Dados atualizados com sucesso");
+        setReloadPage(true)
       } else {
         toast.error("Erro ao atualizar os dados");
       }

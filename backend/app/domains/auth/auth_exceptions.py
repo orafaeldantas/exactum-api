@@ -39,3 +39,9 @@ class AdminNotFound(AppException):
     status_code = 404
 
     message = "Admin not found"
+
+
+class UserNotFound(AppException):
+    status_code = 404
+
+    message = "User not found"

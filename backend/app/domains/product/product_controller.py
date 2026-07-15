@@ -14,7 +14,13 @@ class ProductController:
     @staticmethod
     def create_product(data: dict) -> "Product":
 
-        return ProductService.create_product(data, g.tenant_id)
+        return ProductService.create_product(
+            data,
+            user_id=g.user_id,
+            user_uuid=g.user_uuid,
+            tenant_id=g.tenant_id,
+            tenant_uuid=g.tenant_uuid,
+        )
 
     @staticmethod
     def list_all_products() -> Sequence["Product"]:
@@ -29,9 +35,22 @@ class ProductController:
     @staticmethod
     def update_product(data: dict, product_uuid: UUID) -> "Product":
 
-        return ProductService.update_product(data, g.tenant_id, product_uuid)
+        return ProductService.update_product(
+            data,
+            product_uuid,
+            user_id=g.user_id,
+            user_uuid=g.user_uuid,
+            tenant_id=g.tenant_id,
+            tenant_uuid=g.tenant_uuid,
+        )
 
     @staticmethod
     def delete_product(product_uuid: UUID) -> None:
 
-        ProductService.delete_product(g.tenant_id, product_uuid)
+        ProductService.delete_product(
+            product_uuid,
+            user_id=g.user_id,
+            user_uuid=g.user_uuid,
+            tenant_id=g.tenant_id,
+            tenant_uuid=g.tenant_uuid,
+        )

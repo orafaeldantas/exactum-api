@@ -2,6 +2,9 @@ from collections.abc import Sequence
 from uuid import UUID
 
 from app.database.session import DatabaseSession
+from app.domains.observability.observability_constants import AuditEvents
+from app.domains.observability.observability_containers import audit_service
+from app.domains.observability.observability_dto import AuditLogDTO
 from app.domains.rbac.container import get_rbac_service
 from app.domains.rbac.rbac_repository import RBACRepository
 from app.domains.user.user_exceptions import (
@@ -20,7 +23,9 @@ class UserService:
         return UserRepository.get_all(tenant_id)
 
     @staticmethod
-    def create_user(data: dict, tenant_id: int) -> User:
+    def create_user(
+        data: dict, user_id: int, user_uuid: UUID, tenant_id: int, tenant_uuid: UUID
+    ) -> User:
 
         user = User(
             username=data.get("username"),
@@ -44,6 +49,25 @@ class UserService:
 
         DatabaseSession.commit()
 
+        audit_service.create_log(
+            AuditLogDTO(
+                event=AuditEvents.USER_CREATED,
+                tenant_id=tenant_id,
+                user_id=user_id,
+                user_uuid=user_uuid,
+                tenant_uuid=tenant_uuid,
+                entity="user",
+                payload={
+                    "entity_uuid": str(user.uuid),
+                    "data": {
+                        "name": user.username,
+                        "email": user.email,
+                        "role": role.name,
+                    },
+                },
+            )
+        )
+
         return user
 
     @staticmethod
@@ -57,12 +81,21 @@ class UserService:
         return user
 
     @staticmethod
-    def update_user(data: dict, tenant_id: int, user_uuid: UUID) -> User:
+    def update_user(
+        data: dict,
+        target_user_uuid: UUID,
+        admin_user_id: int,
+        admin_user_uuid: UUID,
+        tenant_id: int,
+        tenant_uuid: UUID,
+    ) -> User:
 
-        user = UserRepository.get_user(tenant_id, user_uuid)
+        user = UserRepository.get_user(tenant_id, target_user_uuid)
 
         if not user:
             raise UserNotFound()
+
+        changes = {}
 
         if data.get("confirme_password"):
             if (data.get("password")) != data.get("confirme_password"):
@@ -71,26 +104,66 @@ class UserService:
         if data.get("password"):
             user.set_password(data["password"])
 
-        update_fields = ["username", "email", "is_active", "password_reset"]
-
-        for field in update_fields:
-            if field in data:
-                setattr(user, field, data[field])
-
         if data.get("role_uuid"):
             new_role = data.get("role_uuid")
-            current_role = RBACRepository().get_user_roles(user.id)
+            user_role = RBACRepository().get_user_roles(user.id)
+            current_role = RBACRepository().get_role_by_id(user_role[0].role_id)
 
-            if str(new_role) != str(current_role[0]):
-                role = RBACRepository().get_role_by_uuid(data.get("role_uuid"))
+            if not current_role:
+                raise KeyError("Not found role")
+
+            if str(new_role) != str(current_role.uuid):
+                role = RBACRepository().get_role_by_uuid(new_role)
 
                 if not role:
                     raise KeyError("Not found role")
 
+                changes["role"] = {
+                    "old": current_role.name,
+                    "new": role.name,
+                }
+
                 get_rbac_service().assign_role_to_user(user.id, role.id)
+
+        allowed_fields = {
+            "username",
+            "email",
+            "is_active",
+            "password_reset",
+        }
+
+        for field, new_value in data.items():
+            if field not in allowed_fields:
+                continue
+
+            old_value = getattr(user, field)
+
+            if old_value != new_value:
+                changes[field] = {
+                    "old": old_value,
+                    "new": new_value,
+                }
+
+                setattr(user, field, new_value)
 
         DatabaseSession.add(user)
         DatabaseSession.commit()
+
+        audit_service.create_log(
+            AuditLogDTO(
+                event=AuditEvents.USER_UPDATED,
+                tenant_id=tenant_id,
+                tenant_uuid=tenant_uuid,
+                user_id=admin_user_id,
+                user_uuid=admin_user_uuid,
+                entity="user",
+                payload={
+                    "entity_uuid": str(user.uuid),
+                    "name": user.username,
+                    "changes": changes,
+                },
+            )
+        )
 
         return user
 
@@ -102,6 +175,8 @@ class UserService:
         if not user:
             raise UserNotFound()
 
+        changes: dict[str, object] = {}
+
         if data.get("current_password"):
             if not user.check_password(data["current_password"]):
                 raise InvalidPasswordException()
@@ -110,17 +185,44 @@ class UserService:
                 raise PasswordMismatchException()
 
             user.set_password(data["password"])
+            changes["new_password"] = True
 
-        update_fields = [
+        allowed_fields = {
             "username",
             "email",
-        ]
+        }
 
-        for field in update_fields:
-            if field in data:
-                setattr(user, field, data[field])
+        for field, new_value in data.items():
+            if field not in allowed_fields:
+                continue
+
+            old_value = getattr(user, field)
+
+            if old_value != new_value:
+                changes[field] = {
+                    "old": old_value,
+                    "new": new_value,
+                }
+
+                setattr(user, field, new_value)
 
         DatabaseSession.add(user)
         DatabaseSession.commit()
+
+        audit_service.create_log(
+            AuditLogDTO(
+                event=AuditEvents.PROFILE_UPDATED,
+                tenant_id=tenant_id,
+                tenant_uuid=user.tenant.uuid,
+                user_id=user.id,
+                user_uuid=user.uuid,
+                entity="user",
+                payload={
+                    "entity_uuid": str(user.uuid),
+                    "name": user.username,
+                    "changes": changes,
+                },
+            )
+        )
 
         return user

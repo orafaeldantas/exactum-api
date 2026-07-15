@@ -22,7 +22,7 @@ export default function ProductForm({
       setStockQuantity(initialData.stock_quantity || stockQuantity);
       setSku(initialData.sku || sku);
       setCategory(initialData.category || category);
-      setIsActive(initialData.is_active ?? isActive);
+      setIsActive(initialData.isActive ?? isActive);
     }
   }, [initialData]);
 

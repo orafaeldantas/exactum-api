@@ -12,10 +12,13 @@ from app.domains.auth.auth_exceptions import (
     InvalidInputEmail,
     RefreshTokenRevoked,
     UnauthorizedUser,
+    UserNotFound,
 )
-from app.domains.auth.auth_repository import AuthRepository
 from app.domains.auth.token_service import TokenService
 from app.domains.goal.goal_repository import GoalRepository
+from app.domains.observability.observability_constants import PlatformEvents
+from app.domains.observability.observability_containers import platform_service
+from app.domains.observability.observability_dto import PlatformEventDTO
 from app.domains.platform.platform_repository import PlatformRepository
 from app.domains.rbac.container import get_rbac_service
 from app.domains.rbac.rbac_repository import RBACRepository
@@ -54,7 +57,9 @@ class AuthService:
         )
 
     @staticmethod
-    def login(data: dict) -> SessionTokens:
+    def login(
+        data: dict, ip_address: str, user_agent: str, request_id: str
+    ) -> SessionTokens:
 
         if not data.get("email"):
             raise InvalidInputEmail()
@@ -67,6 +72,27 @@ class AuthService:
 
         if not user.check_password(str(data.get("password"))):
             raise InvalidCredentials()
+
+        platform_service.create_log(
+            PlatformEventDTO(
+                event=PlatformEvents.USER_LOGIN,
+                tenant_id=user.tenant_id,
+                user_id=user.id,
+                user_uuid=user.uuid,
+                tenant_uuid=user.tenant.uuid,
+                payload={
+                    "email": user.email,
+                    "ip_address": ip_address,
+                    "user_agent": user_agent,
+                    "request_id": request_id,
+                    "account_type": (
+                        "super_admin"
+                        if user.is_super_admin
+                        else f"usuário em {user.tenant.name}"
+                    ),
+                },
+            )
+        )
 
         return AuthService._create_session(user)
 
@@ -192,7 +218,7 @@ class AuthService:
         if not session_data:
             raise RefreshTokenRevoked()
 
-        user = AuthRepository.get_user_by_id(user_id)
+        user = UserRepository.get_user_by_id(user_id)
 
         if not user:
             AuthService.revoke_refresh_token(
@@ -217,14 +243,51 @@ class AuthService:
     @staticmethod
     def logout(
         user_id: int,
+        user_uuid: UUID,
         jti: str,
+        tenant_id: int,
+        tenant_uuid: UUID,
+        ip_address: str,
+        user_agent: str,
+        request_id: str,
     ) -> None:
 
         AuthService.revoke_refresh_token(jti, user_id)
 
+        user = UserRepository.get_user_by_id(user_id)
+
+        if not user:
+            raise UserNotFound()
+
+        platform_service.create_log(
+            PlatformEventDTO(
+                event=PlatformEvents.USER_LOGOUT,
+                tenant_id=tenant_id,
+                tenant_uuid=tenant_uuid,
+                user_id=user_id,
+                user_uuid=user_uuid,
+                payload={
+                    "ip_address": ip_address,
+                    "user_agent": user_agent,
+                    "request_id": request_id,
+                    "email": user.email,
+                    "account_type": (
+                        "super_admin"
+                        if user.is_super_admin
+                        else f"usuário em {user.tenant.name}"
+                    ),
+                },
+            )
+        )
+
     @staticmethod
     def run_impersonate(
-        tenant_uuid: UUID, original_user_id: int, jti: str
+        tenant_uuid: UUID,
+        original_user_id: int,
+        jti: str,
+        ip_address: str,
+        user_agent: str,
+        request_id: str,
     ) -> SessionTokens:
 
         AuthService.revoke_refresh_token(jti, original_user_id)
@@ -234,20 +297,55 @@ class AuthService:
         if not target_admin:
             raise AdminNotFound()
 
-        return AuthService._create_session(
+        create_session = AuthService._create_session(
             user=target_admin,
             impersonator_id=original_user_id,
             impersonate=True,
         )
 
+        platform_service.create_log(
+            PlatformEventDTO(
+                event=PlatformEvents.IMPERSONATION_STARTED,
+                tenant_id=target_admin.tenant_id,
+                tenant_uuid=target_admin.tenant.uuid,
+                user_id=original_user_id,
+                user_uuid=target_admin.uuid,
+                payload={
+                    "request_id": request_id,
+                    "ip_address": ip_address,
+                    "user_agent": user_agent,
+                    "target_user_uuid": str(target_admin.uuid),
+                    "target_user_email": target_admin.email,
+                    "target_tenant_uuid": str(target_admin.tenant.uuid),
+                    "target_tenant_name": target_admin.tenant.name,
+                },
+            )
+        )
+
+        return create_session
+
     @staticmethod
-    def stop_impersonate(user_id: int, jti: str) -> SessionTokens:
+    def stop_impersonate(
+        user_id: int,
+        user_uuid: UUID,
+        tenant_uuid: UUID,
+        jti: str,
+        ip_address: str,
+        user_agent: str,
+        request_id: str,
+    ) -> SessionTokens:
 
         cache_key = CacheKeys.refresh_token(jti, user_id)
 
         session_data = CacheService.get(cache_key)
 
         session = RefreshSession(**session_data)
+
+        user = UserRepository.get_user_by_id(user_id)
+
+        if not user:
+            raise UserNotFound()
+
         original_user_id = session.impersonator_id
 
         AuthService.revoke_refresh_token(jti, user_id)
@@ -260,6 +358,29 @@ class AuthService:
         if not super_admin_user:
             raise AdminNotFound()
 
-        return AuthService._create_session(
+        create_session = AuthService._create_session(
             user=super_admin_user,
         )
+
+        platform_service.create_log(
+            PlatformEventDTO(
+                event=PlatformEvents.IMPERSONATION_FINISHED,
+                tenant_id=session.tenant_id,  # Tenant ID of the impersonated user
+                tenant_uuid=tenant_uuid,  # Tenant UUID of the impersonated user
+                user_id=super_admin_user.id,
+                user_uuid=super_admin_user.uuid,
+                payload={
+                    "request_id": request_id,
+                    "ip_address": ip_address,
+                    "user_agent": user_agent,
+                    "target_user_uuid": str(user_uuid),  # Impersonated user ID
+                    "target_tenant_uuid": str(
+                        tenant_uuid  # Tenant UUID of the impersonated user
+                    ),
+                    "email": user.email,
+                    "tenant_name": user.tenant.name,
+                },
+            )
+        )
+
+        return create_session

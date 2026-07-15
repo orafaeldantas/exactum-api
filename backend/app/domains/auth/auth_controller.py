@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from flask import Response, g
+from flask import Response, g, request
 from flask_jwt_extended import get_jwt, get_jwt_identity
 
 from app.core.responses.auth_response import AuthResponse
@@ -11,7 +11,10 @@ class AuthController:
     @staticmethod
     def login(data: dict) -> Response:
 
-        tokens = AuthService.login(data)
+        ip_address = str(request.remote_addr)
+        user_agent = str(request.headers.get("User-Agent"))
+
+        tokens = AuthService.login(data, ip_address, user_agent, g.request_id)
 
         return AuthResponse.success(
             message="Login successful",
@@ -44,11 +47,20 @@ class AuthController:
     @staticmethod
     def logout() -> Response:
 
+        ip_address = str(request.remote_addr)
+        user_agent = str(request.headers.get("User-Agent"))
+
         claims = get_jwt()
 
         AuthService.logout(
             user_id=int(get_jwt_identity()),
+            user_uuid=g.user_uuid,
             jti=claims["jti"],
+            tenant_id=g.tenant_id,
+            tenant_uuid=g.tenant_uuid,
+            ip_address=ip_address,
+            user_agent=user_agent,
+            request_id=g.request_id,
         )
 
         return AuthResponse.logout("Logout successful")
@@ -56,12 +68,18 @@ class AuthController:
     @staticmethod
     def run_impersonate(tenant_uuid: UUID) -> Response:
 
+        ip_address = str(request.remote_addr)
+        user_agent = str(request.headers.get("User-Agent"))
+
         claims = get_jwt()
 
         tokens = AuthService.run_impersonate(
             tenant_uuid=tenant_uuid,
             original_user_id=int(get_jwt_identity()),
             jti=claims["jti"],
+            ip_address=ip_address,
+            user_agent=user_agent,
+            request_id=g.request_id,
         )
 
         return AuthResponse.success(
@@ -72,11 +90,19 @@ class AuthController:
     @staticmethod
     def stop_impersonate() -> Response:
 
+        ip_address = str(request.remote_addr)
+        user_agent = str(request.headers.get("User-Agent"))
+
         claims = get_jwt()
 
         tokens = AuthService.stop_impersonate(
             user_id=int(get_jwt_identity()),
+            user_uuid=g.user_uuid,
+            tenant_uuid=g.tenant_uuid,
             jti=claims["jti"],
+            ip_address=ip_address,
+            user_agent=user_agent,
+            request_id=g.request_id,
         )
 
         return AuthResponse.success(

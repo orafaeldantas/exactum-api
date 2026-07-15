@@ -12,9 +12,9 @@ class TenantSchema(Schema):
 
 
 class PlanSchema(Schema):
-    type = fields.Str(
-        required=True, validate=validate.OneOf(["starter", "growth", "enterprise"])
-    )
+    type = fields.Str(required=True, validate=validate.OneOf(["starter"]))
+
+    features = fields.Dict()
 
 
 class AdminSchema(Schema):
@@ -67,3 +67,17 @@ class ResponseUdateTenantSchema(Schema):
 
 class ResponseCreateTenantSchema(ResponseUdateTenantSchema):
     pass
+
+
+class ResponseGetLogsSchema(Schema):
+    userUuid = fields.UUID(dump_only=True, attribute="user_uuid")
+
+    tenantUuid = fields.UUID(dump_only=True, attribute="tenant_uuid")
+
+    event = fields.Str(dump_only=True)
+
+    entity = fields.Str(dump_only=True)
+
+    payload = fields.Dict(dump_only=True)
+
+    createdAt = fields.DateTime(attribute="created_at", dump_only=True)
