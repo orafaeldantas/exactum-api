@@ -33,7 +33,7 @@ class UserListRoute(MethodView):
     @permission_required("user:view")
     @blp_users.doc(security=[{"CookieAuth": []}])
     @blp_users.response(200, UserResponseSchema(many=True))
-    def get(self) -> Sequence["User"]:
+    def get(self) -> Sequence["GetUserDTO"]:
 
         return UserController.get_users()
 
