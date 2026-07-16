@@ -132,6 +132,7 @@ class AuthService:
             raise KeyError("Not found role")
 
         permissions = get_rbac_service().get_effective_permissions(user_id)
+        roles = get_rbac_service().get_roles(tenant_id)
 
         if not (user and tenant):
             raise BootstrapNotFound()
@@ -152,6 +153,7 @@ class AuthService:
             "corporate_email": tenant.corporate_email,
             "global_min_stock": tenant.global_min_stock,
             "goal": goal.value if goal else 0,
+            "roles": list(roles),
         }
 
         bootstrap_data = {
