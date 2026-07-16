@@ -18,6 +18,9 @@ from app.domains.user.user_exceptions import (
 from app.domains.user.user_repository import UserRepository
 from app.models.user import User
 
+from .user_dto import GetUserDTO
+from .user_mapper import UserMapper
+
 
 class UserService:
     @staticmethod
@@ -79,14 +82,17 @@ class UserService:
             raise ExistingUserField()
 
     @staticmethod
-    def get_user(tenant_id: int, user_uuid: UUID) -> User:
+    def get_user(tenant_id: int, user_uuid: UUID) -> GetUserDTO:
 
         user = UserRepository.get_user(tenant_id, user_uuid)
+
+        user_role = get_rbac_service().get_user_roles(user.id)
+        role = get_rbac_service().get_role_by_id(user_role[0].role_id)
 
         if not user:
             raise UserNotFound()
 
-        return user
+        return UserMapper.get_user_to_dto(user, role)
 
     @staticmethod
     def update_user(

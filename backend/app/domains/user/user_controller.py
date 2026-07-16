@@ -9,6 +9,8 @@ from app.domains.user.user_service import UserService
 if TYPE_CHECKING:
     from app.models.user import User
 
+    from .user_dto import GetUserDTO
+
 
 class UserController:
     @staticmethod
@@ -28,7 +30,7 @@ class UserController:
         )
 
     @staticmethod
-    def get_user(user_uuid: UUID) -> "User":
+    def get_user(user_uuid: UUID) -> "GetUserDTO":
 
         return UserService.get_user(g.tenant_id, user_uuid)
 
