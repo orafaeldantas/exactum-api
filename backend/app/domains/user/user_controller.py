@@ -38,8 +38,8 @@ class UserController:
         return UserService.update_user(
             data,
             target_user_uuid=target_user_uuid,
-            admin_user_id=g.user_id,
-            admin_user_uuid=g.user_uuid,
+            user_id=g.user_id,
+            user_uuid=g.user_uuid,
             tenant_id=g.tenant_id,
             tenant_uuid=g.tenant_uuid,
         )
@@ -48,3 +48,14 @@ class UserController:
     def update_profile(data: dict, user_uuid: UUID) -> "User":
 
         return UserService.update_profile(data, g.tenant_id, user_uuid)
+
+    @staticmethod
+    def delete_user(target_user_uuid: UUID) -> None:
+
+        return UserService.delete_user(
+            user_id=g.user_id,
+            user_uuid=g.user_uuid,
+            tenant_id=g.tenant_id,
+            tenant_uuid=g.tenant_uuid,
+            target_user_uuid=target_user_uuid,
+        )
