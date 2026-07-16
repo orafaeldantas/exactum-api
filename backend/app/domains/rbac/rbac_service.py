@@ -3,7 +3,7 @@ from collections.abc import Sequence
 from app.domains.rbac.constants import DEFAULT_ROLES
 from app.domains.rbac.rbac_repository import RBACRepository
 from app.extensions import db
-from app.models.rbac import Role, RolePermission
+from app.models.rbac import Role, RolePermission, UserRole
 
 
 class RBACService:
@@ -35,6 +35,12 @@ class RBACService:
     # ========================= GET ROLES =========================
     def get_roles(self, tenant_id: int) -> Sequence[Role]:
         return self.repo.get_roles_by_tenant_id(tenant_id)
+
+    def get_user_roles(self, user_id: int) -> Sequence[UserRole]:
+        return self.repo.get_user_roles(user_id)
+
+    def get_role_by_id(self, role_id: int) -> Role:
+        return self.repo.get_role_by_id(role_id)
 
     # ========================= REVOKE USER PERMISSION =========================
     def revoke_permission(self, user_id: int, permission_id: int):
