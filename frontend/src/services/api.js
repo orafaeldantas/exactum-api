@@ -1,8 +1,6 @@
 const API_URL = import.meta.env.VITE_API_URL || "/api";
 
-
 function buildHeaders(customHeaders = {}) {
-
   return {
     ...customHeaders,
     credentials: "include",
@@ -10,15 +8,12 @@ function buildHeaders(customHeaders = {}) {
 }
 
 async function refreshAccessToken() {
-  const response = await fetch(
-    "/auth/refresh",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      }
-    }
-  );
+  const response = await fetch("/auth/refresh", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
   if (!response.ok) {
     return false;
@@ -30,7 +25,9 @@ async function refreshAccessToken() {
 }
 
 export async function apiFetch(endpoint, options = {}) {
-  const defaultHeaders = options.body ? { 'Content-Type': 'application/json' } : {};
+  const defaultHeaders = options.body
+    ? { "Content-Type": "application/json" }
+    : {};
 
   const fetchOptions = {
     ...options,
@@ -43,12 +40,13 @@ export async function apiFetch(endpoint, options = {}) {
   let response = await fetch(`${API_URL}${endpoint}`, fetchOptions);
 
   const isRefreshCall = endpoint.includes("/auth/refresh");
+  const isLoginCall = endpoint.includes("/auth/login");
 
-  if (response.status === 401 && !isRefreshCall) {
+  if (response.status === 401 && !isRefreshCall && !isLoginCall) {
     const refreshed = await refreshAccessToken();
 
     if (!refreshed) {
-      throw new Error("Session expired");    
+      throw new Error("Session expired");
     }
 
     const retryOptions = {
@@ -58,7 +56,7 @@ export async function apiFetch(endpoint, options = {}) {
         ...options.headers,
       }),
     };
-    
+
     response = await fetch(`${API_URL}${endpoint}`, retryOptions);
 
     if (response.status === 401) {
@@ -68,14 +66,24 @@ export async function apiFetch(endpoint, options = {}) {
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+
+    const backendMessage =
+      errorData.error ||
+      errorData.message ||
+      `HTTP error! status: ${response.status}`;
+
+    const error = new Error(backendMessage);
+
+    error.status = response.status;
+    error.response = response;
+    error.data = errorData;
+
+    throw error;
   }
 
   if (response.status === 204) {
-    return null;
+    return 204;
   }
 
-  return response; 
+  return response;
 }
-
-

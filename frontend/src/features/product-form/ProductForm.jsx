@@ -1,5 +1,13 @@
-import { useState, useEffect } from "react";
-import { Package, AlignLeft, DollarSign, Boxes, Tag, LayoutGrid, Activity } from "lucide-react";
+import {
+  Activity,
+  AlignLeft,
+  Boxes,
+  DollarSign,
+  LayoutGrid,
+  Package,
+  Tag,
+} from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function ProductForm({
   initialData = {},
@@ -36,24 +44,28 @@ export default function ProductForm({
       stock_quantity: parseInt(stockQuantity),
       sku,
       category,
-      is_active: isActive
+      is_active: isActive,
     });
   }
 
-  const inputClass = "w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100";
-  const labelClass = "mb-1.5 flex items-center gap-2 text-sm font-semibold text-gray-700";
+  const inputClass =
+    "w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100";
+  const labelClass =
+    "mb-1.5 flex items-center gap-2 text-sm font-semibold text-gray-700";
 
   return (
     <div className="flex items-center justify-center p-5 bg-gray-50/50">
-      <form 
-        className="w-full max-w-2xl rounded-2xl border border-gray-200 bg-white p-8 shadow-sm " 
+      <form
+        className="w-full max-w-2xl rounded-2xl border border-gray-200 bg-white p-8 shadow-sm "
         onSubmit={handleSubmit}
       >
         <div className="mb-8 text-center">
           <h2 className="text-2xl font-bold text-gray-800">
             {submitText.includes("Criar") ? "Novo Produto" : "Editar Produto"}
           </h2>
-          <p className="text-sm text-gray-500">Informe os detalhes técnicos do produto</p>
+          <p className="text-sm text-gray-500">
+            Informe os detalhes técnicos do produto
+          </p>
         </div>
 
         <div className="space-y-5">
@@ -162,22 +174,7 @@ export default function ProductForm({
           <div className="pt-4">
             <button
               type="submit"
-              className="
-                w-full
-                rounded-xl
-                bg-blue-600
-                px-5
-                py-3.5
-                text-sm
-                font-bold
-                text-white
-                shadow-md
-                transition-all
-                duration-200
-                hover:bg-blue-700
-                hover:shadow-lg
-                active:scale-[0.98]
-              "
+              className="w-full rounded-xl bg-blue-600 px-5 py-3.5 text-sm font-bold text-white shadow-md transition-all duration-200 hover:bg-blue-700 hover:shadow-lg active:scale-[0.98]"
             >
               {submitText}
             </button>

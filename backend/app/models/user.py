@@ -8,13 +8,14 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from app.core.identifiers.uuid_generator import UUIDGenerator
+from app.core.mixins.soft_delete import SoftDeleteMixin
 from app.extensions import Base
 
 if TYPE_CHECKING:
     from app.models.tenant import Tenant
 
 
-class User(Base):
+class User(Base, SoftDeleteMixin):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)

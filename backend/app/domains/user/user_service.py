@@ -1,6 +1,8 @@
 from collections.abc import Sequence
 from uuid import UUID
 
+from sqlalchemy.exc import IntegrityError
+
 from app.database.session import DatabaseSession
 from app.domains.observability.observability_constants import AuditEvents
 from app.domains.observability.observability_containers import audit_service
@@ -8,6 +10,7 @@ from app.domains.observability.observability_dto import AuditLogDTO
 from app.domains.rbac.container import get_rbac_service
 from app.domains.rbac.rbac_repository import RBACRepository
 from app.domains.user.user_exceptions import (
+    ExistingUserField,
     InvalidPasswordException,
     PasswordMismatchException,
     UserNotFound,
@@ -47,28 +50,33 @@ class UserService:
 
         get_rbac_service().assign_role_to_user(user.id, role.id)
 
-        DatabaseSession.commit()
+        try:
+            DatabaseSession.commit()
 
-        audit_service.create_log(
-            AuditLogDTO(
-                event=AuditEvents.USER_CREATED,
-                tenant_id=tenant_id,
-                user_id=user_id,
-                user_uuid=user_uuid,
-                tenant_uuid=tenant_uuid,
-                entity="user",
-                payload={
-                    "entity_uuid": str(user.uuid),
-                    "data": {
-                        "name": user.username,
-                        "email": user.email,
-                        "role": role.name,
+            audit_service.create_log(
+                AuditLogDTO(
+                    event=AuditEvents.USER_CREATED,
+                    tenant_id=tenant_id,
+                    user_id=user_id,
+                    user_uuid=user_uuid,
+                    tenant_uuid=tenant_uuid,
+                    entity="user",
+                    payload={
+                        "entity_uuid": str(user.uuid),
+                        "data": {
+                            "name": user.username,
+                            "email": user.email,
+                            "role": role.name,
+                        },
                     },
-                },
+                )
             )
-        )
 
-        return user
+            return user
+
+        except IntegrityError:
+            DatabaseSession.rollback()
+            raise ExistingUserField()
 
     @staticmethod
     def get_user(tenant_id: int, user_uuid: UUID) -> User:
@@ -84,8 +92,8 @@ class UserService:
     def update_user(
         data: dict,
         target_user_uuid: UUID,
-        admin_user_id: int,
-        admin_user_uuid: UUID,
+        user_id: int,
+        user_uuid: UUID,
         tenant_id: int,
         tenant_uuid: UUID,
     ) -> User:
@@ -146,26 +154,30 @@ class UserService:
 
                 setattr(user, field, new_value)
 
-        DatabaseSession.add(user)
-        DatabaseSession.commit()
+        try:
+            DatabaseSession.commit()
 
-        audit_service.create_log(
-            AuditLogDTO(
-                event=AuditEvents.USER_UPDATED,
-                tenant_id=tenant_id,
-                tenant_uuid=tenant_uuid,
-                user_id=admin_user_id,
-                user_uuid=admin_user_uuid,
-                entity="user",
-                payload={
-                    "entity_uuid": str(user.uuid),
-                    "name": user.username,
-                    "changes": changes,
-                },
+            audit_service.create_log(
+                AuditLogDTO(
+                    event=AuditEvents.USER_UPDATED,
+                    tenant_id=tenant_id,
+                    tenant_uuid=tenant_uuid,
+                    user_id=user_id,
+                    user_uuid=user_uuid,
+                    entity="user",
+                    payload={
+                        "entity_uuid": str(user.uuid),
+                        "name": user.username,
+                        "changes": changes,
+                    },
+                )
             )
-        )
 
-        return user
+            return user
+
+        except IntegrityError:
+            DatabaseSession.rollback()
+            raise ExistingUserField()
 
     @staticmethod
     def update_profile(data: dict, tenant_id: int, user_uuid: UUID) -> User:
@@ -206,23 +218,61 @@ class UserService:
 
                 setattr(user, field, new_value)
 
-        DatabaseSession.add(user)
-        DatabaseSession.commit()
+        try:
+            DatabaseSession.commit()
+
+            audit_service.create_log(
+                AuditLogDTO(
+                    event=AuditEvents.PROFILE_UPDATED,
+                    tenant_id=tenant_id,
+                    tenant_uuid=user.tenant.uuid,
+                    user_id=user.id,
+                    user_uuid=user.uuid,
+                    entity="user",
+                    payload={
+                        "entity_uuid": str(user.uuid),
+                        "name": user.username,
+                        "changes": changes,
+                    },
+                )
+            )
+
+            return user
+
+        except IntegrityError:
+            DatabaseSession.rollback()
+            raise ExistingUserField()
+
+    @staticmethod
+    def delete_user(
+        user_id: int,
+        user_uuid: UUID,
+        tenant_id: int,
+        tenant_uuid: UUID,
+        target_user_uuid: UUID,
+    ) -> None:
+
+        target_user = UserRepository.get_user(tenant_id, target_user_uuid)
+
+        if not target_user:
+            raise UserNotFound()
+
+        UserRepository.delete_user(target_user)
 
         audit_service.create_log(
             AuditLogDTO(
-                event=AuditEvents.PROFILE_UPDATED,
+                event=AuditEvents.USER_DELETED,
                 tenant_id=tenant_id,
-                tenant_uuid=user.tenant.uuid,
-                user_id=user.id,
-                user_uuid=user.uuid,
+                tenant_uuid=tenant_uuid,
+                user_id=user_id,
+                user_uuid=user_uuid,
                 entity="user",
                 payload={
-                    "entity_uuid": str(user.uuid),
-                    "name": user.username,
-                    "changes": changes,
+                    "entity_uuid": str(target_user.uuid),
+                    "deleted_data": {
+                        "name": target_user.username,
+                        "email": target_user.email,
+                    },
                 },
             )
         )
-
-        return user

@@ -7,10 +7,11 @@ from sqlalchemy import BigInteger, ForeignKey, Numeric, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.identifiers.uuid_generator import UUIDGenerator
+from app.core.mixins.soft_delete import SoftDeleteMixin
 from app.extensions import Base
 
 
-class Product(Base):
+class Product(Base, SoftDeleteMixin):
     __tablename__ = "products"
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)

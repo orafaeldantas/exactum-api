@@ -17,3 +17,9 @@ class InvalidPasswordException(AppException):
     status_code = 401
 
     message = "Invalid password"
+
+
+class ExistingUserField(AppException):
+    status_code = 409
+
+    message = "Some fields are already registered in another user"
