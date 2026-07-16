@@ -96,11 +96,11 @@ class UserService:
 
         user = UserRepository.get_user(tenant_id, user_uuid)
 
-        user_role = get_rbac_service().get_user_roles(user.id)
-        role = get_rbac_service().get_role_by_id(user_role[0].role_id)
-
         if not user:
             raise UserNotFound()
+
+        user_role = get_rbac_service().get_user_roles(user.id)
+        role = get_rbac_service().get_role_by_id(user_role[0].role_id)
 
         return UserMapper.get_user_to_dto(user, role)
 

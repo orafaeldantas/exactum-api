@@ -1,6 +1,7 @@
 from collections.abc import Sequence
 
 from app.domains.rbac.constants import DEFAULT_ROLES
+from app.domains.rbac.rbac_exceptions import RoleNotFound
 from app.domains.rbac.rbac_repository import RBACRepository
 from app.extensions import db
 from app.models.rbac import Role, RolePermission, UserRole
@@ -40,7 +41,13 @@ class RBACService:
         return self.repo.get_user_roles(user_id)
 
     def get_role_by_id(self, role_id: int) -> Role:
-        return self.repo.get_role_by_id(role_id)
+
+        role = self.repo.get_role_by_id(role_id)
+
+        if not role:
+            raise RoleNotFound()
+
+        return role
 
     # ========================= REVOKE USER PERMISSION =========================
     def revoke_permission(self, user_id: int, permission_id: int):
