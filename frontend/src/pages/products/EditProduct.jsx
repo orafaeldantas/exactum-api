@@ -40,7 +40,7 @@ export default function EditProduct() {
 
       if (status === 409) {
         toast.error("Erro ao salvar: Este SKU já está cadastrado.");
-      } else if (status === 400) {
+      } else if (status === 422) {
         toast.error("Dados inválidos. Verifique o formulário.");
       } else {
         toast.error("Erro interno no servidor (500). Tente mais tarde.");
