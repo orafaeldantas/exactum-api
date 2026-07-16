@@ -1,4 +1,5 @@
 from collections.abc import Sequence
+from typing import cast
 from uuid import UUID
 
 from sqlalchemy.exc import IntegrityError
@@ -24,9 +25,18 @@ from .user_mapper import UserMapper
 
 class UserService:
     @staticmethod
-    def list_users(tenant_id: int) -> Sequence[User]:
+    def list_users(tenant_id: int) -> Sequence[GetUserDTO]:
 
-        return UserRepository.get_all(tenant_id)
+        users = UserRepository.get_all(tenant_id)
+
+        users_with_role = []
+
+        for user in users:
+            user_role = get_rbac_service().get_user_roles(user.id)
+            role = get_rbac_service().get_role_by_id(user_role[0].role_id)
+            users_with_role.append(UserMapper.get_user_to_dto(user, role))
+
+        return cast(Sequence[GetUserDTO], users_with_role)
 
     @staticmethod
     def create_user(

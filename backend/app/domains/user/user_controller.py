@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 class UserController:
     @staticmethod
-    def get_users() -> Sequence["User"]:
+    def get_users() -> Sequence["GetUserDTO"]:
 
         return UserService.list_users(g.tenant_id)
 
