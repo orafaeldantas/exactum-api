@@ -93,7 +93,7 @@ class UserProfileRoute(MethodView):
     @permission_required("profile:view")
     @blp_users.doc(security=[{"CookieAuth": []}])
     @blp_users.response(200, ProfileSchema)
-    def get(self, user_uuid: UUID) -> "User":
+    def get(self, user_uuid: UUID) -> "GetUserDTO":
 
         return UserController.get_user(user_uuid)
 
