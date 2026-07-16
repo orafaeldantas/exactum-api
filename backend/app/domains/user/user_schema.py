@@ -2,13 +2,9 @@ from marshmallow import Schema, fields
 
 
 class BaseUserSchema(Schema):
-    uuid = fields.UUID(dump_only=True)
-
     username = fields.Str(required=True)
 
     is_active = fields.Bool(required=True)
-
-    role_uuid = fields.UUID(required=True)
 
     email = fields.Email(required=True)
 
@@ -16,15 +12,21 @@ class BaseUserSchema(Schema):
 class CreateUserSchema(BaseUserSchema):
     password = fields.Str(required=True, load_only=True)
 
+    password_reset = fields.Bool()
+
+    role_uuid = fields.UUID(required=True, data_key="role")
+
 
 class UserResponseSchema(BaseUserSchema):
-    pass
+    uuid = fields.UUID(dump_only=True)
+
+    role = fields.Str()
 
 
 class UpdateUserSchema(Schema):
     username = fields.Str()
 
-    role = fields.Str()
+    role_uuid = fields.UUID(data_key="role")
 
     is_active = fields.Bool()
 

@@ -20,6 +20,8 @@ from app.domains.user.user_schema import (
 if TYPE_CHECKING:
     from app.models.user import User
 
+    from .user_dto import GetUserDTO
+
 blp_users = Blueprint(
     "users", __name__, url_prefix="/users", description="User operations"
 )
@@ -51,7 +53,7 @@ class UserDetailRoute(MethodView):
     @permission_required("user:view")
     @blp_users.doc(security=[{"CookieAuth": []}])
     @blp_users.response(200, UserResponseSchema)
-    def get(self, user_uuid: UUID) -> "User":
+    def get(self, user_uuid: UUID) -> "GetUserDTO":
 
         return UserController.get_user(user_uuid)
 
