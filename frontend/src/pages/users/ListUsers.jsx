@@ -187,7 +187,7 @@ export default function ListUsers() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
 
-  const usersPerPage = 5;
+  const usersPerPage = 11;
   const navigate = useNavigate();
 
   useEffect(() => {

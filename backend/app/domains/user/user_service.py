@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 from collections.abc import Sequence
+from typing import cast
 from uuid import UUID
 
 from sqlalchemy.exc import IntegrityError
@@ -18,12 +21,24 @@ from app.domains.user.user_exceptions import (
 from app.domains.user.user_repository import UserRepository
 from app.models.user import User
 
+from .user_dto import GetUserDTO
+from .user_mapper import UserMapper
+
 
 class UserService:
     @staticmethod
-    def list_users(tenant_id: int) -> Sequence[User]:
+    def list_users(tenant_id: int) -> Sequence[GetUserDTO]:
 
-        return UserRepository.get_all(tenant_id)
+        users = UserRepository.get_all(tenant_id)
+
+        users_with_role = []
+
+        for user in users:
+            user_role = get_rbac_service().get_user_roles(user.id)
+            role = get_rbac_service().get_role_by_id(user_role[0].role_id)
+            users_with_role.append(UserMapper.get_user_to_dto(user, role))
+
+        return cast(Sequence[GetUserDTO], users_with_role)
 
     @staticmethod
     def create_user(
@@ -79,14 +94,17 @@ class UserService:
             raise ExistingUserField()
 
     @staticmethod
-    def get_user(tenant_id: int, user_uuid: UUID) -> User:
+    def get_user(tenant_id: int, user_uuid: UUID) -> GetUserDTO:
 
         user = UserRepository.get_user(tenant_id, user_uuid)
 
         if not user:
             raise UserNotFound()
 
-        return user
+        user_role = get_rbac_service().get_user_roles(user.id)
+        role = get_rbac_service().get_role_by_id(user_role[0].role_id)
+
+        return UserMapper.get_user_to_dto(user, role)
 
     @staticmethod
     def update_user(
@@ -96,7 +114,7 @@ class UserService:
         user_uuid: UUID,
         tenant_id: int,
         tenant_uuid: UUID,
-    ) -> User:
+    ) -> User | None:
 
         user = UserRepository.get_user(tenant_id, target_user_uuid)
 
@@ -155,6 +173,9 @@ class UserService:
                 setattr(user, field, new_value)
 
         try:
+            if not changes:
+                return None
+
             DatabaseSession.commit()
 
             audit_service.create_log(
@@ -180,7 +201,7 @@ class UserService:
             raise ExistingUserField()
 
     @staticmethod
-    def update_profile(data: dict, tenant_id: int, user_uuid: UUID) -> User:
+    def update_profile(data: dict, tenant_id: int, user_uuid: UUID) -> User | None:
 
         user = UserRepository.get_user(tenant_id, user_uuid)
 
@@ -219,6 +240,9 @@ class UserService:
                 setattr(user, field, new_value)
 
         try:
+            if not changes:
+                return None
+
             DatabaseSession.commit()
 
             audit_service.create_log(

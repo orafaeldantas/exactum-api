@@ -21,16 +21,6 @@ class LogoutResponseSchema(Schema):
     message = fields.String(required=True)
 
 
-class TenantBootstrapSchema(Schema):
-    name = fields.Str()
-
-    corporate_email = fields.Email()
-
-    global_min_stock = fields.Int()
-
-    goal = fields.Decimal()
-
-
 class UserBootstrapSchema(Schema):
     uuid = fields.UUID(dump_only=True)
 
@@ -43,6 +33,18 @@ class RoleBootstrapSchema(Schema):
     uuid = fields.UUID(dump_only=True)
 
     name = fields.Str()
+
+
+class TenantBootstrapSchema(Schema):
+    name = fields.Str()
+
+    corporate_email = fields.Email()
+
+    global_min_stock = fields.Int()
+
+    goal = fields.Decimal()
+
+    roles = fields.Nested(RoleBootstrapSchema, many=True)
 
 
 class AuthBootstrapSchema(Schema):
