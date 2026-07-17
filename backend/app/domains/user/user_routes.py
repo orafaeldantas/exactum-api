@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Sequence
 from typing import TYPE_CHECKING
 from uuid import UUID
@@ -33,7 +35,7 @@ class UserListRoute(MethodView):
     @permission_required("user:view")
     @blp_users.doc(security=[{"CookieAuth": []}])
     @blp_users.response(200, UserResponseSchema(many=True))
-    def get(self) -> Sequence["GetUserDTO"]:
+    def get(self) -> Sequence[GetUserDTO]:
 
         return UserController.get_users()
 
@@ -42,7 +44,7 @@ class UserListRoute(MethodView):
     @blp_users.doc(security=[{"CookieAuth": []}])
     @blp_users.arguments(CreateUserSchema)
     @blp_users.response(201, UserResponseSchema)
-    def post(self, data: dict) -> "User":
+    def post(self, data: dict) -> User:
 
         return UserController.create_user(data)
 
@@ -53,7 +55,7 @@ class UserDetailRoute(MethodView):
     @permission_required("user:view")
     @blp_users.doc(security=[{"CookieAuth": []}])
     @blp_users.response(200, UserResponseSchema)
-    def get(self, user_uuid: UUID) -> "GetUserDTO":
+    def get(self, user_uuid: UUID) -> GetUserDTO:
 
         return UserController.get_user(user_uuid)
 
@@ -62,7 +64,7 @@ class UserDetailRoute(MethodView):
     @blp_users.doc(security=[{"CookieAuth": []}])
     @blp_users.arguments(UpdateUserSchema)
     @blp_users.response(200, UserResponseSchema)
-    def patch(self, data: dict, user_uuid: UUID) -> "User":
+    def patch(self, data: dict, user_uuid: UUID) -> User | None:
 
         return UserController.update_user(data, user_uuid)
 
@@ -82,7 +84,7 @@ class UserNewPasswordRoute(MethodView):
     @blp_users.doc(security=[{"CookieAuth": []}])
     @blp_users.arguments(NewPasswordUserSchema)
     @blp_users.response(200, NewPassworUserResponseSchema)
-    def patch(self, data: dict, user_uuid: UUID) -> "User":
+    def patch(self, data: dict, user_uuid: UUID) -> User | None:
 
         return UserController.update_user(data, user_uuid)
 
@@ -93,7 +95,7 @@ class UserProfileRoute(MethodView):
     @permission_required("profile:view")
     @blp_users.doc(security=[{"CookieAuth": []}])
     @blp_users.response(200, ProfileSchema)
-    def get(self, user_uuid: UUID) -> "GetUserDTO":
+    def get(self, user_uuid: UUID) -> GetUserDTO:
 
         return UserController.get_user(user_uuid)
 
@@ -102,6 +104,6 @@ class UserProfileRoute(MethodView):
     @blp_users.doc(security=[{"CookieAuth": []}])
     @blp_users.arguments(ProfileSchema)
     @blp_users.response(200, ProfileSchema)
-    def patch(self, data: dict, user_uuid: UUID) -> "User":
+    def patch(self, data: dict, user_uuid: UUID) -> User | None:
 
         return UserController.update_profile(data, user_uuid)
