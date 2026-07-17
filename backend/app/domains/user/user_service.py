@@ -171,6 +171,9 @@ class UserService:
                 setattr(user, field, new_value)
 
         try:
+            if not changes:
+                return
+
             DatabaseSession.commit()
 
             audit_service.create_log(
@@ -235,6 +238,9 @@ class UserService:
                 setattr(user, field, new_value)
 
         try:
+            if not changes:
+                return
+
             DatabaseSession.commit()
 
             audit_service.create_log(

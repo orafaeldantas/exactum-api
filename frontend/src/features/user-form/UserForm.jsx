@@ -13,16 +13,18 @@ export default function UserForm({ initialData = {}, onSubmit, submitText }) {
 
   const roles = () => {
     if (tenantData?.roles) {
-      const firstRole = tenantData.roles.find((item) => item.name === role);
+      const firstRole = tenantData.roles.find((item) => item.uuid === role);
 
       const remainingRoles = tenantData.roles.filter(
-        (item) => item.name !== role
+        (item) => item.uuid !== role
       );
 
       return firstRole ? [firstRole, ...remainingRoles] : remainingRoles;
     }
     return [];
   };
+  console.log(tenantData?.roles);
+  console.log(roles());
 
   const formatLabel = (name) => {
     return name
@@ -36,7 +38,7 @@ export default function UserForm({ initialData = {}, onSubmit, submitText }) {
       setUsername(initialData.username || username);
       setIsActive(initialData.is_active ?? isActive);
       setEmail(initialData.email || email);
-      setRole(initialData.role || "");
+      setRole(initialData.role_uuid);
     }
   }, [initialData]);
 
@@ -125,7 +127,7 @@ export default function UserForm({ initialData = {}, onSubmit, submitText }) {
             Tipo de usuário
           </label>
           <select
-            value={role}
+            value={roles?.()[0]?.uuid}
             onChange={(e) => setRole(e.target.value)}
             className="w-full appearance-none rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
           >
