@@ -105,7 +105,7 @@ class ProductService:
             if field not in allowed_fields:
                 continue
 
-            old_value = getattr(product, field)
+            old_value = getattr(product, field) or ""
 
             if field == "price":
                 if old_value != new_value:
@@ -116,7 +116,7 @@ class ProductService:
 
                     setattr(product, field, new_value)
 
-            if (old_value != new_value) and field != "price":
+            if (old_value != new_value) and (field != "price"):
                 changes[field] = {
                     "old": old_value,
                     "new": new_value,
@@ -125,6 +125,9 @@ class ProductService:
                 setattr(product, field, new_value)
 
         try:
+            if not changes:
+                return
+
             DatabaseSession.commit()
             audit_service.create_log(
                 AuditLogDTO(
