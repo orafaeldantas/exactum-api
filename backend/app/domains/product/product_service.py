@@ -82,7 +82,7 @@ class ProductService:
         user_uuid: UUID,
         tenant_id: int,
         tenant_uuid: UUID,
-    ) -> Product:
+    ) -> Product | None:
 
         product = ProductRepository.get_product(tenant_id, product_uuid)
 
@@ -105,7 +105,9 @@ class ProductService:
             if field not in allowed_fields:
                 continue
 
-            old_value = getattr(product, field) or ""
+            old_value = getattr(product, field)
+            if (old_value is None) and (new_value == ""):
+                old_value = new_value
 
             if field == "price":
                 if old_value != new_value:
@@ -126,7 +128,7 @@ class ProductService:
 
         try:
             if not changes:
-                return
+                return None
 
             DatabaseSession.commit()
             audit_service.create_log(

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Sequence
 from typing import TYPE_CHECKING
 from uuid import UUID
@@ -12,7 +14,7 @@ if TYPE_CHECKING:
 
 class ProductController:
     @staticmethod
-    def create_product(data: dict) -> "Product":
+    def create_product(data: dict) -> Product:
 
         return ProductService.create_product(
             data,
@@ -23,17 +25,17 @@ class ProductController:
         )
 
     @staticmethod
-    def list_all_products() -> Sequence["Product"]:
+    def list_all_products() -> Sequence[Product]:
 
         return ProductService.list_all_products(g.tenant_id)
 
     @staticmethod
-    def get_product(product_uuid: UUID) -> "Product":
+    def get_product(product_uuid: UUID) -> Product:
 
         return ProductService.get_product(g.tenant_id, product_uuid)
 
     @staticmethod
-    def update_product(data: dict, product_uuid: UUID) -> "Product":
+    def update_product(data: dict, product_uuid: UUID) -> Product | None:
 
         return ProductService.update_product(
             data,
