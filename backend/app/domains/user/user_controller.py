@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Sequence
 from typing import TYPE_CHECKING
 from uuid import UUID
@@ -9,15 +11,17 @@ from app.domains.user.user_service import UserService
 if TYPE_CHECKING:
     from app.models.user import User
 
+    from .user_dto import GetUserDTO
+
 
 class UserController:
     @staticmethod
-    def get_users() -> Sequence["User"]:
+    def get_users() -> Sequence[GetUserDTO]:
 
         return UserService.list_users(g.tenant_id)
 
     @staticmethod
-    def create_user(data: dict) -> "User":
+    def create_user(data: dict) -> User:
 
         return UserService.create_user(
             data,
@@ -28,12 +32,12 @@ class UserController:
         )
 
     @staticmethod
-    def get_user(user_uuid: UUID) -> "User":
+    def get_user(user_uuid: UUID) -> GetUserDTO:
 
         return UserService.get_user(g.tenant_id, user_uuid)
 
     @staticmethod
-    def update_user(data: dict, target_user_uuid: UUID) -> "User":
+    def update_user(data: dict, target_user_uuid: UUID) -> User | None:
 
         return UserService.update_user(
             data,
@@ -45,7 +49,7 @@ class UserController:
         )
 
     @staticmethod
-    def update_profile(data: dict, user_uuid: UUID) -> "User":
+    def update_profile(data: dict, user_uuid: UUID) -> User | None:
 
         return UserService.update_profile(data, g.tenant_id, user_uuid)
 

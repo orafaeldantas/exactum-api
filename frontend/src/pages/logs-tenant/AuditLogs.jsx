@@ -149,25 +149,25 @@ function summarize(log) {
     }
     case "product_created": {
       const d = p.data || {};
-      return `"${d.name ?? "Produto"}" criado —> ${formatMoney(d.price)} · ${
-        d.stock_quantity ?? 0
-      } un.`;
+      return `"${d.name ?? "Produto"}" criado · Valor: ${formatMoney(
+        d.price
+      )} · Estoque: ${d.stock_quantity ?? 0} un.`;
     }
     case "product_deleted": {
       const d = p.deleted_data || {};
       return `"${d.name ?? "Produto"}" excluído${
-        d.sku ? ` · SKU ${d.sku}` : ""
+        d.sku ? ` · SKU: ${d.sku}` : ""
       }`;
     }
     case "user_created": {
-      const u = p.user || {};
-      return `${u.name ?? u.email ?? "Usuário"} criado${
-        u.role ? ` · ${u.role}` : ""
-      }`;
+      const u = p.data || {};
+      return `Usuário ${
+        `"${u.name ?? u.email}"` ?? ""
+      } foi criado com cargo de ${u.role ? `"${u.role}"` : ""}`;
     }
     case "user_deleted": {
       const d = p.deleted_data || {};
-      return `"${d.name ?? "Usuário"}" foi excluído`;
+      return `Usuário ${`"${d.name} (${d.email})"` ?? ""} foi excluído`;
     }
     case "product_updated":
     case "user_updated": {

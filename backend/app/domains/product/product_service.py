@@ -82,7 +82,7 @@ class ProductService:
         user_uuid: UUID,
         tenant_id: int,
         tenant_uuid: UUID,
-    ) -> Product:
+    ) -> Product | None:
 
         product = ProductRepository.get_product(tenant_id, product_uuid)
 
@@ -106,6 +106,8 @@ class ProductService:
                 continue
 
             old_value = getattr(product, field)
+            if (old_value is None) and (new_value == ""):
+                old_value = new_value
 
             if field == "price":
                 if old_value != new_value:
@@ -116,7 +118,7 @@ class ProductService:
 
                     setattr(product, field, new_value)
 
-            if (old_value != new_value) and field != "price":
+            if (old_value != new_value) and (field != "price"):
                 changes[field] = {
                     "old": old_value,
                     "new": new_value,
@@ -125,6 +127,9 @@ class ProductService:
                 setattr(product, field, new_value)
 
         try:
+            if not changes:
+                return None
+
             DatabaseSession.commit()
             audit_service.create_log(
                 AuditLogDTO(
