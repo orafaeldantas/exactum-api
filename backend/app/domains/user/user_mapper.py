@@ -14,4 +14,5 @@ class UserMapper:
             is_active=user_entity.is_active,
             email=user_entity.email,
             role=role_entity.name,
+            role_uuid=role_entity.uuid,
         )

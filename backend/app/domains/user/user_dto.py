@@ -9,3 +9,4 @@ class GetUserDTO:
     is_active: bool | None
     email: str | None
     role: str | None
+    role_uuid: UUID | None
