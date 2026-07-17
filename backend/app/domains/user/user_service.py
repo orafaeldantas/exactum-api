@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Sequence
 from typing import cast
 from uuid import UUID
@@ -112,7 +114,7 @@ class UserService:
         user_uuid: UUID,
         tenant_id: int,
         tenant_uuid: UUID,
-    ) -> User:
+    ) -> User | None:
 
         user = UserRepository.get_user(tenant_id, target_user_uuid)
 
@@ -172,7 +174,7 @@ class UserService:
 
         try:
             if not changes:
-                return
+                return None
 
             DatabaseSession.commit()
 
@@ -199,7 +201,7 @@ class UserService:
             raise ExistingUserField()
 
     @staticmethod
-    def update_profile(data: dict, tenant_id: int, user_uuid: UUID) -> User:
+    def update_profile(data: dict, tenant_id: int, user_uuid: UUID) -> User | None:
 
         user = UserRepository.get_user(tenant_id, user_uuid)
 
@@ -239,7 +241,7 @@ class UserService:
 
         try:
             if not changes:
-                return
+                return None
 
             DatabaseSession.commit()
 

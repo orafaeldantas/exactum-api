@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Sequence
 from typing import TYPE_CHECKING
 from uuid import UUID
@@ -32,7 +34,7 @@ class ProductListRoute(MethodView):
     @blp_products.doc(security=[{"CookieAuth": []}])
     @blp_products.arguments(CreateProductSchema)
     @blp_products.response(201, CreateProductResponseSchema)
-    def post(self, data: dict) -> "Product":
+    def post(self, data: dict) -> Product:
 
         return ProductController.create_product(data)
 
@@ -40,7 +42,7 @@ class ProductListRoute(MethodView):
     @permission_required("product:view")
     @blp_products.doc(security=[{"CookieAuth": []}])
     @blp_products.response(200, ListProductResponseSchema(many=True))
-    def get(self) -> Sequence["Product"]:
+    def get(self) -> Sequence[Product]:
 
         return ProductController.list_all_products()
 
@@ -52,7 +54,7 @@ class ProductDetailRoute(MethodView):
     @blp_products.doc(security=[{"CookieAuth": []}])
     @blp_products.arguments(UpdateProductSchema)
     @blp_products.response(200, UpdateProductResponseSchema)
-    def patch(self, data: dict, product_uuid: UUID) -> "Product":
+    def patch(self, data: dict, product_uuid: UUID) -> Product | None:
 
         return ProductController.update_product(data, product_uuid)
 
@@ -60,7 +62,7 @@ class ProductDetailRoute(MethodView):
     @permission_required("product:view")
     @blp_products.doc(security=[{"CookieAuth": []}])
     @blp_products.response(200, GetProductResponseSchema)
-    def get(self, product_uuid: UUID) -> "Product":
+    def get(self, product_uuid: UUID) -> Product:
 
         return ProductController.get_product(product_uuid)
 
