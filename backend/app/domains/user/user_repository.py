@@ -35,9 +35,7 @@ class UserRepository:
     @staticmethod
     def get_user_by_email(email: str) -> User | None:
 
-        stmt = select(User).where(
-            User.email == email, User.is_active, User.deleted_at.is_(None)
-        )
+        stmt = select(User).where(User.email == email, User.deleted_at.is_(None))
         return db.session.scalars(stmt).first()
 
     @staticmethod
