@@ -45,3 +45,15 @@ class UserNotFound(AppException):
     status_code = 404
 
     message = "User not found"
+
+
+class TenantBlocked(AppException):
+    status_code = 403
+
+    message = "company_blocked"
+
+
+class UserBlocked(AppException):
+    status_code = 403
+
+    message = "user_blocked"
