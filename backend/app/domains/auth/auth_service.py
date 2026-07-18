@@ -11,7 +11,9 @@ from app.domains.auth.auth_exceptions import (
     InvalidCredentials,
     InvalidInputEmail,
     RefreshTokenRevoked,
+    TenantBlocked,
     UnauthorizedUser,
+    UserBlocked,
     UserNotFound,
 )
 from app.domains.auth.token_service import TokenService
@@ -69,6 +71,12 @@ class AuthService:
 
         if not user:
             raise InvalidCredentials()
+
+        if not user.is_active:
+            raise UserBlocked()
+
+        if not user.tenant.is_active:
+            raise TenantBlocked()
 
         if not user.check_password(str(data.get("password"))):
             raise InvalidCredentials()
