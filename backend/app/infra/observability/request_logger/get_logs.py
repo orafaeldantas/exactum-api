@@ -8,7 +8,7 @@ LOG_PATTERN = "infra.log*"
 
 def latest_request_logs() -> dict:
 
-    message_error = {"error": "dsds", "status": 404}
+    message_error = {"error": "error", "status": 404}
 
     log_files = glob.glob(os.path.join(LOG_DIR, LOG_PATTERN))
 
