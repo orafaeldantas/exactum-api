@@ -1,12 +1,12 @@
 import { lazy, Suspense } from "react";
-import { Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
+import { Route, Routes } from "react-router-dom";
 
 import GlobalLoader from "./components/Loader/GlobalLoader";
 
 // Layouts and Security Routes
+import InfoLayout from "./layouts/InfoLayout";
 import Layout from "./layouts/MainLayout";
-import InfoLayout from "./layouts/InfoLayout"; 
 import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
 
@@ -29,7 +29,9 @@ const SuccessPage = lazy(() => import("./pages/tenants/SuccessPage"));
 // Dashboard & Metrics
 const Dashboard = lazy(() => import("./pages/dashboard/Dashboard"));
 const RevenuePeriod = lazy(() => import("./pages/revenue/RevenuePeriod"));
-const AverageTicketAnalytics = lazy(() => import("./pages/revenue/AverageTicket"));
+const AverageTicketAnalytics = lazy(() =>
+  import("./pages/revenue/AverageTicket")
+);
 
 // Logs
 const AuditLogs = lazy(() => import("./pages/logs-tenant/AuditLogs"));
@@ -62,21 +64,19 @@ const InfraHealth = lazy(() => import("./pages/platform/InfraHealth"));
 const SystemLogs = lazy(() => import("./pages/platform/SystemLogs"));
 const PlatformEvents = lazy(() => import("./pages/platform/PlatformEvents"));
 
-
 function App() {
   return (
     <>
-      <Toaster 
-        position="top-right" 
+      <Toaster
+        position="top-right"
         toastOptions={{
           duration: 3000,
-          style: { background: "#1e293b", color: "#fff" }
+          style: { background: "#1e293b", color: "#fff" },
         }}
       />
 
-      <Suspense fallback={<GlobalLoader message="Carregando Exactum..." />}>
+      <Suspense fallback={<GlobalLoader message="Carregando..." />}>
         <Routes>
-          
           {/* 1. PUBLIC / INSTITUTIONAL ROUTES */}
           <Route element={<InfoLayout />}>
             <Route path="/about" element={<AboutPage />} />
@@ -99,10 +99,15 @@ function App() {
           <Route element={<PrivateRoute requiredRole={"profile:update"} />}>
             <Route path="/reset-password" element={<ResetPassword />} />
           </Route>
-          
+
           {/* 3. INTERNAL SYSTEM (DASHBOARD & BACK OFFICE WITH LAYOUT AND SESSION FILTER) */}
-          <Route element={<PrivateRoute><Layout /></PrivateRoute>}>
-            
+          <Route
+            element={
+              <PrivateRoute>
+                <Layout />
+              </PrivateRoute>
+            }
+          >
             <Route element={<PrivateRoute requiredRole={"analytics:view"} />}>
               <Route path="/dashboard" element={<Dashboard />} />
             </Route>
@@ -115,7 +120,10 @@ function App() {
               <Route path="/revenue" element={<RevenuePeriod />} />
             </Route>
             <Route element={<PrivateRoute requiredRole={"analytics:view"} />}>
-              <Route path="/average-ticket" element={<AverageTicketAnalytics />} />
+              <Route
+                path="/average-ticket"
+                element={<AverageTicketAnalytics />}
+              />
             </Route>
             <Route element={<PrivateRoute requiredRole={"sale:view"} />}>
               <Route path="/products-sales" element={<ListProductsSales />} />
@@ -126,7 +134,6 @@ function App() {
             <Route element={<PrivateRoute requiredRole={"sale:view"} />}>
               <Route path="/sales/:uuid" element={<ListSaleItems />} />
             </Route>
-            
 
             {/* Sub-block: User Control */}
             <Route element={<PrivateRoute requiredRole={"user:view"} />}>
@@ -138,7 +145,6 @@ function App() {
             <Route element={<PrivateRoute requiredRole={"user:update"} />}>
               <Route path="/users/edit/:uuid" element={<EditUser />} />
             </Route>
-            
 
             {/* Sub-block: Products (Accessible to all authenticated users, except editors) */}
             <Route element={<PrivateRoute requiredRole={"product:view"} />}>
@@ -155,16 +161,64 @@ function App() {
             </Route>
 
             {/* Sub-block: Critical Settings and Levels */}
-            <Route path="/user-settings" element={<PrivateRoute requiredRole={"profile:view"}><UserSettings /></PrivateRoute>} />
-            <Route path="/admin-settings" element={<PrivateRoute requiredRole={"tenant:update"}><AdminSettings /></PrivateRoute>} />
+            <Route
+              path="/user-settings"
+              element={
+                <PrivateRoute requiredRole={"profile:view"}>
+                  <UserSettings />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin-settings"
+              element={
+                <PrivateRoute requiredRole={"tenant:update"}>
+                  <AdminSettings />
+                </PrivateRoute>
+              }
+            />
 
             {/* Sub-block: Super Admin Control */}
-            <Route path="/platform/manage-companies" element={<PrivateRoute requiredRole={"super-admin"}><ManageCompanies /></PrivateRoute>} />
-            <Route path="/platform/dashboard" element={<PrivateRoute requiredRole={"super-admin"}><SystemDashboard /></PrivateRoute>} />
-            <Route path="/platform/infra-health" element={<PrivateRoute requiredRole={"super-admin"}><InfraHealth /></PrivateRoute>} />
-            <Route path="/platform/logs" element={<PrivateRoute requiredRole={"super-admin"}><SystemLogs /></PrivateRoute>} />
-            <Route path="/platform/events" element={<PrivateRoute requiredRole={"super-admin"}><PlatformEvents /></PrivateRoute>} />
-
+            <Route
+              path="/platform/manage-companies"
+              element={
+                <PrivateRoute requiredRole={"super-admin"}>
+                  <ManageCompanies />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/platform/dashboard"
+              element={
+                <PrivateRoute requiredRole={"super-admin"}>
+                  <SystemDashboard />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/platform/infra-health"
+              element={
+                <PrivateRoute requiredRole={"super-admin"}>
+                  <InfraHealth />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/platform/logs"
+              element={
+                <PrivateRoute requiredRole={"super-admin"}>
+                  <SystemLogs />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/platform/events"
+              element={
+                <PrivateRoute requiredRole={"super-admin"}>
+                  <PlatformEvents />
+                </PrivateRoute>
+              }
+            />
           </Route>
         </Routes>
       </Suspense>
@@ -173,32 +227,3 @@ function App() {
 }
 
 export default App;
-
-
-/*
-PERMISSIONS = [
-    "product:view",
-    "product:create",
-    "product:update",
-    "product:delete",
-    "sale:view",
-    "sale:create",
-    "sale:cancel",
-    "user:view",
-    "user:create",
-    "user:update",
-    "user:delete",
-    "profile:view",
-    "profile:update",
-    "tenant:view",
-    "tenant:update",
-    "analytics:view",
-    "inventory:view",
-    "inventory:update",
-    "goal:view",
-    "goal:create",
-    "goal:update",
-    "goal:delete",
-    "rbac:view",
-]
-*/
