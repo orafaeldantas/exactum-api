@@ -22,7 +22,7 @@ class BootstrapNotFound(AppException):
 class RefreshTokenRevoked(AppException):
     status_code = 401
 
-    message = "Refresh token revoked"
+    message = "refresh_token_revoked"
 
     clear_auth_cookies = True
 
