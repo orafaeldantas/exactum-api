@@ -16,7 +16,9 @@ def permission_required(permission: str):
             if getattr(g, "is_super_admin", False):
                 return func(*args, **kwargs)
 
-            permissions = get_rbac_service().get_effective_permissions(g.user_id)
+            permissions = get_rbac_service().get_effective_permissions(
+                g.tenant_id, g.user_id
+            )
 
             if permission not in permissions:
                 raise ForbiddenException()
