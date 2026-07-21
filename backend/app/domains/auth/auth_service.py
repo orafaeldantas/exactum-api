@@ -139,7 +139,7 @@ class AuthService:
         if not role:
             raise KeyError("Not found role")
 
-        permissions = get_rbac_service().get_effective_permissions(user_id)
+        permissions = get_rbac_service().get_effective_permissions(tenant_id, user_id)
         roles = get_rbac_service().get_roles(tenant_id)
 
         if not (user and tenant):
@@ -189,7 +189,7 @@ class AuthService:
     ) -> None:
 
         jti = TokenService.extract_jti(refresh_token)
-        cache_key = CacheKeys.refresh_token(jti, user_id)
+        cache_key = CacheKeys.refresh_token(jti, tenant_id, user_id)
 
         ttl = Settings.refresh_token_ttl()
 
@@ -199,31 +199,29 @@ class AuthService:
             impersonator_id=impersonator_id,
         )
 
-        CacheService.set_cache(
+        CacheService().set_cache(
             key=cache_key,
             value=session.__dict__,
             ttl=ttl,
         )
 
     @staticmethod
-    def revoke_refresh_token(jti: str, user_id: int) -> None:
+    def revoke_refresh_token(jti: str, tenant_id: int, user_id: int) -> None:
 
-        cache_key = CacheKeys.refresh_token(jti, user_id)
+        cache_key = CacheKeys.refresh_token(jti, tenant_id, user_id)
 
-        CacheService.delete(cache_key)
+        CacheService().delete(cache_key)
 
     @staticmethod
-    def refresh_access_token(
-        user_id: int,
-        jti: str,
-    ) -> SessionTokens:
+    def refresh_access_token(user_id: int, jti: str, tenant_id: int) -> SessionTokens:
 
         cache_key = CacheKeys.refresh_token(
             jti,
+            tenant_id,
             user_id,
         )
 
-        session_data = CacheService.get(cache_key)
+        session_data = CacheService().get(cache_key)
 
         if not session_data:
             raise RefreshTokenRevoked()
@@ -233,6 +231,7 @@ class AuthService:
         if not user:
             AuthService.revoke_refresh_token(
                 jti,
+                tenant_id,
                 user_id,
             )
             raise UnauthorizedUser()
@@ -241,6 +240,7 @@ class AuthService:
 
         AuthService.revoke_refresh_token(
             jti,
+            tenant_id,
             user_id,
         )
 
@@ -262,7 +262,7 @@ class AuthService:
         request_id: str,
     ) -> None:
 
-        AuthService.revoke_refresh_token(jti, user_id)
+        AuthService.revoke_refresh_token(jti, tenant_id, user_id)
 
         user = UserRepository.get_user_by_id(user_id)
 
@@ -294,13 +294,15 @@ class AuthService:
     def run_impersonate(
         tenant_uuid: UUID,
         original_user_id: int,
+        original_user_uuid: UUID,
+        original_tenant_id: int,
         jti: str,
         ip_address: str,
         user_agent: str,
         request_id: str,
     ) -> SessionTokens:
 
-        AuthService.revoke_refresh_token(jti, original_user_id)
+        AuthService.revoke_refresh_token(jti, original_tenant_id, original_user_id)
 
         target_admin = PlatformRepository.impersonate(tenant_uuid)
 
@@ -319,7 +321,7 @@ class AuthService:
                 tenant_id=target_admin.tenant_id,
                 tenant_uuid=target_admin.tenant.uuid,
                 user_id=original_user_id,
-                user_uuid=target_admin.uuid,
+                user_uuid=original_user_uuid,
                 payload={
                     "request_id": request_id,
                     "ip_address": ip_address,
@@ -337,17 +339,16 @@ class AuthService:
     @staticmethod
     def stop_impersonate(
         user_id: int,
-        user_uuid: UUID,
-        tenant_uuid: UUID,
+        tenant_id: int,
         jti: str,
         ip_address: str,
         user_agent: str,
         request_id: str,
     ) -> SessionTokens:
 
-        cache_key = CacheKeys.refresh_token(jti, user_id)
+        cache_key = CacheKeys.refresh_token(jti, tenant_id, user_id)
 
-        session_data = CacheService.get(cache_key)
+        session_data = CacheService().get(cache_key)
 
         session = RefreshSession(**session_data)
 
@@ -358,7 +359,7 @@ class AuthService:
 
         original_user_id = session.impersonator_id
 
-        AuthService.revoke_refresh_token(jti, user_id)
+        AuthService.revoke_refresh_token(jti, tenant_id, user_id)
 
         if not original_user_id:
             raise AdminNotFound()
@@ -376,16 +377,16 @@ class AuthService:
             PlatformEventDTO(
                 event=PlatformEvents.IMPERSONATION_FINISHED,
                 tenant_id=session.tenant_id,  # Tenant ID of the impersonated user
-                tenant_uuid=tenant_uuid,  # Tenant UUID of the impersonated user
+                tenant_uuid=user.tenant.uuid,  # Tenant UUID of the impersonated user
                 user_id=super_admin_user.id,
                 user_uuid=super_admin_user.uuid,
                 payload={
                     "request_id": request_id,
                     "ip_address": ip_address,
                     "user_agent": user_agent,
-                    "target_user_uuid": str(user_uuid),  # Impersonated user ID
+                    "target_user_uuid": str(user.uuid),  # Impersonated user ID
                     "target_tenant_uuid": str(
-                        tenant_uuid  # Tenant UUID of the impersonated user
+                        user.tenant.uuid  # Tenant UUID of the impersonated user
                     ),
                     "email": user.email,
                     "tenant_name": user.tenant.name,
