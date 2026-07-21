@@ -7,9 +7,9 @@ from flask_smorest import Api
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from app.cli import register_cli
+from app.core.cache.cache_service import InitCache
 from app.core.middlewares.context import init_request_context
 from app.database.tenant_filter import init_tenant_filter
-from app.domains.rbac.container import init_rbac_container
 from app.exceptions.handlers import register_error_handlers
 from app.exceptions.jwt_handlers import register_jwt_handlers
 from app.extensions import db, init_redis, jwt, migrate
@@ -64,8 +64,9 @@ def create_app(config=None):
     init_request_context(app)
     init_request_logger(app)
     init_tenant_filter(db)
+
     init_redis(app)
-    init_rbac_container(app.extensions["redis"])
+    InitCache.init_app(app.extensions["redis"])
 
     setup_request_logger()
 

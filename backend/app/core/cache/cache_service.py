@@ -1,30 +1,34 @@
 import json
 
-from flask import current_app
+from app.core.config.settings import Settings
 
 
-class CacheService:
-    @staticmethod
-    def get(key):
+class InitCache:
+    redis_client = None
 
-        redis = current_app.extensions["redis"]
+    @classmethod
+    def init_app(cls, redis):
+        cls.redis_client = redis
 
-        value = redis.get(key)
+
+class CacheService(InitCache):
+    def get(self, key):
+
+        value = self.redis_client.get(key)
 
         if value:
             return json.loads(value)
 
         return None
 
-    @staticmethod
-    def set_cache(key, value, ttl=300):
-        redis = current_app.extensions["redis"]
+    def set_cache(self, key, value, ttl=None):
+        # Default cache expiration aligned with JWT refresh token TTL
+        if ttl is None:
+            ttl = Settings.refresh_token_ttl()
+        self.redis_client.set(key, json.dumps(value), ex=ttl)
 
-        redis.set(key, json.dumps(value), ex=ttl)
-
-    @staticmethod
-    def delete(key_or_pattern):
-        redis_client = current_app.extensions["redis"]
+    def delete(self, key_or_pattern):
+        redis_client = self.redis_client
 
         if "*" in key_or_pattern:
             batch_size = 5000
