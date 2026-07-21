@@ -37,6 +37,7 @@ class AuthController:
         tokens = AuthService.refresh_access_token(
             user_id=int(get_jwt_identity()),
             jti=claims["jti"],
+            tenant_id=claims["tenant_id"],
         )
 
         return AuthResponse.success(
@@ -76,6 +77,8 @@ class AuthController:
         tokens = AuthService.run_impersonate(
             tenant_uuid=tenant_uuid,
             original_user_id=int(get_jwt_identity()),
+            original_user_uuid=g.user_uuid,
+            original_tenant_id=g.tenant_id,
             jti=claims["jti"],
             ip_address=ip_address,
             user_agent=user_agent,
@@ -97,8 +100,7 @@ class AuthController:
 
         tokens = AuthService.stop_impersonate(
             user_id=int(get_jwt_identity()),
-            user_uuid=g.user_uuid,
-            tenant_uuid=g.tenant_uuid,
+            tenant_id=claims["tenant_id"],
             jti=claims["jti"],
             ip_address=ip_address,
             user_agent=user_agent,
