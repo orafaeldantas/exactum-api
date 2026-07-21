@@ -1,5 +1,6 @@
 from collections.abc import Sequence
 
+from app.core.cache.cache_keys import CacheKeys
 from app.domains.rbac.constants import DEFAULT_ROLES
 from app.domains.rbac.rbac_exceptions import RoleNotFound
 from app.domains.rbac.rbac_repository import RBACRepository
@@ -12,26 +13,26 @@ class RBACService:
         self.repo = repo
         self.cache = cache
 
-    def _invalidate_user_cache(self, user_id: int):
-        key = f"permissions:user:{user_id}"
+    def _invalidate_user_cache(self, tenant_id: int, user_id: int):
+        key = f"tenant:{tenant_id}:user:{user_id}:permissions"
         self.cache.delete(key)
 
     # ========================= ASSIGN ROLE =========================
-    def assign_role_to_user(self, user_id: int, role_id: int) -> None:
+    def assign_role_to_user(self, tenant_id: int, user_id: int, role_id: int) -> None:
         self.repo.remove_user_roles(user_id)
         self.repo.add_user_role(user_id, role_id)
 
         db.session.commit()
 
-        self._invalidate_user_cache(user_id)
+        self._invalidate_user_cache(tenant_id, user_id)
 
     # ========================= GRANT USER PERMISSION =========================
-    def grant_permission(self, user_id: int, permission_id: int):
+    def grant_permission(self, tenant_id: int, user_id: int, permission_id: int):
         self.repo.add_user_permission(user_id, permission_id)
 
         db.session.commit()
 
-        self._invalidate_user_cache(user_id)
+        self._invalidate_user_cache(tenant_id, user_id)
 
     # ========================= GET ROLES =========================
     def get_roles(self, tenant_id: int) -> Sequence[Role]:
@@ -50,16 +51,16 @@ class RBACService:
         return role
 
     # ========================= REVOKE USER PERMISSION =========================
-    def revoke_permission(self, user_id: int, permission_id: int):
+    def revoke_permission(self, tenant_id: int, user_id: int, permission_id: int):
         self.repo.remove_user_permission(user_id, permission_id)
 
         db.session.commit()
 
-        self._invalidate_user_cache(user_id)
+        self._invalidate_user_cache(tenant_id, user_id)
 
     # ========================= EFFECTIVE PERMISSIONS =========================
-    def get_effective_permissions(self, user_id: int) -> set[str]:
-        cache_key = f"permissions:user:{user_id}"
+    def get_effective_permissions(self, tenant_id: int, user_id: int) -> set[str]:
+        cache_key = CacheKeys.permissions(tenant_id, user_id)
 
         cached = self.cache.get(cache_key)
         if cached:
@@ -88,7 +89,7 @@ class RBACService:
             else:
                 permissions.discard(perm.code)
 
-        self.cache.set(cache_key, ",".join(permissions), ex=3600)
+        self.cache.set_cache(cache_key, ",".join(permissions))
 
         return permissions
 
