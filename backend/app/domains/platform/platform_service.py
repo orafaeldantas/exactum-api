@@ -90,11 +90,11 @@ class PlatformService:
                 key_to_remove_tenant_session = f"tenant:{tenant.id}:*"
                 CacheService().delete(key_to_remove_tenant_session)
 
-                key_to_put_tenant_black_list = CacheKeys.black_list_tenant(tenant.id)
+                key_to_put_tenant_blocklist = CacheKeys.blocklist_tenant(tenant.id)
 
                 value = "Tenant blocked"
-                ttl = Settings.black_list_ttl()
-                CacheService().set_cache(key_to_put_tenant_black_list, value, ttl)
+                ttl = Settings.blocklist_ttl()
+                CacheService().set_cache(key_to_put_tenant_blocklist, value, ttl)
 
         platform_service.create_log(
             PlatformEventDTO(

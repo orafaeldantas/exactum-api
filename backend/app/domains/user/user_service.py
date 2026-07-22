@@ -205,13 +205,11 @@ class UserService:
                 key_to_remove_user_session = f"tenant:{tenant_id}:user:{user.id}:*"
                 CacheService().delete(key_to_remove_user_session)
 
-                key_to_put_user_black_list = CacheKeys.black_list_user(
-                    tenant_id, user.id
-                )
+                key_to_put_user_blocklist = CacheKeys.blocklist_user(tenant_id, user.id)
 
                 value = "User blocked"
-                ttl = Settings.black_list_ttl()
-                CacheService().set_cache(key_to_put_user_black_list, value, ttl)
+                ttl = Settings.blocklist_ttl()
+                CacheService().set_cache(key_to_put_user_blocklist, value, ttl)
 
             return user
 
