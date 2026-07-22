@@ -1,6 +1,7 @@
 from collections.abc import Sequence
 from uuid import UUID
 
+from app.core.cache.cache_service import CacheService
 from app.database.session import DatabaseSession
 from app.domains.observability.observability_constants import PlatformEvents
 from app.domains.observability.observability_containers import platform_service
@@ -79,6 +80,13 @@ class PlatformService:
         tenant.is_active = bool(new_status)
 
         DatabaseSession.commit()
+
+        if not new_status:
+            remove_tenant_session = not new_status
+
+            if remove_tenant_session:
+                key_to_remove_tenant_session = f"tenant:{tenant.id}:*"
+                CacheService().delete(key_to_remove_tenant_session)
 
         platform_service.create_log(
             PlatformEventDTO(
