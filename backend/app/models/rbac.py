@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from datetime import UTC, datetime
 from uuid import UUID
 
@@ -30,6 +32,10 @@ class Role(Base):
 
     tenant = relationship("Tenant", backref="roles")
 
+    permissions: Mapped[list[Permission]] = relationship(
+        secondary="role_permissions", back_populates="roles"
+    )
+
 
 class Permission(Base):
     __tablename__ = "permissions"
@@ -40,6 +46,10 @@ class Permission(Base):
     description: Mapped[str] = mapped_column(String(255), nullable=True)
 
     created_at: Mapped[datetime] = mapped_column(default=lambda: datetime.now(UTC))
+
+    roles: Mapped[list[Role]] = relationship(
+        secondary="role_permissions", back_populates="permissions"
+    )
 
 
 class RolePermission(Base):
