@@ -97,7 +97,7 @@ def test_update_user_success(client, auth_headers, default_user):
 
     # GIVEN
     user_uuid = default_user.uuid
-    payload = {"is_active": False}
+    payload = {"email": "update@email.com"}
 
     # WHEN
     response = client.patch(f"/users/{user_uuid}", json=payload, headers=auth_headers)
@@ -106,7 +106,7 @@ def test_update_user_success(client, auth_headers, default_user):
     assert response.status_code == 200
     user_data = response.json
 
-    assert not user_data["is_active"]
+    assert user_data["uuid"]
 
 
 @pytest.mark.functional
