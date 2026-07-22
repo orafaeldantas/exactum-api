@@ -6,5 +6,6 @@ class Settings:
     def refresh_token_ttl() -> int:
         return int(current_app.config["JWT_REFRESH_TOKEN_EXPIRES"].total_seconds())
 
+    @staticmethod
     def blocklist_ttl() -> int:
         return int(current_app.config["JWT_ACCESS_TOKEN_EXPIRES"].total_seconds())

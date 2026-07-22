@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import cast
+from typing import Any, cast
 from uuid import UUID
 
 from sqlalchemy.exc import IntegrityError
@@ -34,7 +34,7 @@ class UserService:
 
         users = UserRepository.get_all(tenant_id)
 
-        users_with_role = []
+        users_with_role: list[GetUserDTO] = []
 
         for user in users:
             user_role = get_rbac_service().get_user_roles(user.id)
@@ -124,7 +124,7 @@ class UserService:
         if not user:
             raise UserNotFound()
 
-        changes = {}
+        changes: dict[str, Any] = {}
 
         if data.get("confirme_password"):
             if (data.get("password")) != data.get("confirme_password"):
@@ -197,8 +197,9 @@ class UserService:
                 )
             )
 
-            if changes.get("is_active"):
-                status_user = changes.get("is_active")
+            is_active_value = changes.get("is_active")
+            if is_active_value:
+                status_user = is_active_value
                 remove_user_session = status_user.get("old")
 
             if remove_user_session:
