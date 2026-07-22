@@ -1,6 +1,7 @@
 from collections.abc import Sequence
 
 from sqlalchemy import delete, select
+from sqlalchemy.orm import selectinload
 
 from app.extensions import db
 from app.models.rbac import (
@@ -80,3 +81,12 @@ class RBACRepository:
     def get_role_permissions(self, role_ids: list[int]) -> Sequence[RolePermission]:
         stmt = select(RolePermission).where(RolePermission.role_id.in_(role_ids))
         return list(db.session.execute(stmt).scalars().all())
+
+    # ====================== ROLE WITH PERMISSIONS =======================
+    def get_roles_with_permissions(self, tenant_id: int) -> Sequence[Role]:
+        stmt = (
+            select(Role)
+            .where(Role.tenant_id == tenant_id)
+            .options(selectinload(Role.permissions))
+        )
+        return db.session.execute(stmt).scalars().unique().all()

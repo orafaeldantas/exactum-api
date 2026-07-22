@@ -7,7 +7,7 @@ from flask_smorest import Blueprint
 
 from app.domains.rbac.decorators.permissions import permission_required
 from app.domains.rbac.rbac_controller import RBACController
-from app.domains.rbac.rbac_schema import ResponseRBACSchema
+from app.domains.rbac.rbac_schema import ResponseRBACSchema, ResponseRoleWithPermissions
 
 if TYPE_CHECKING:
     from app.models.rbac import Role
@@ -26,3 +26,14 @@ class RBACRoute(MethodView):
     def get(self) -> Sequence["Role"]:
 
         return RBACController.get_roles()
+
+
+@blp_rbac.route("/roles-permissions")
+class RolesWithPermissionsRoute(MethodView):
+    @jwt_required()
+    @permission_required("rbac:view")
+    @blp_rbac.doc(security=[{"CookieAuth": []}])
+    @blp_rbac.response(200, ResponseRoleWithPermissions(many=True))
+    def get(self) -> Sequence["Role"]:
+
+        return RBACController.get_roles_with_permissions()

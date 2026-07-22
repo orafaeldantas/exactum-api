@@ -1,8 +1,13 @@
+from __future__ import annotations
+
 from collections.abc import Sequence
+from typing import cast
 
 from app.core.cache.cache_keys import CacheKeys
 from app.domains.rbac.constants import DEFAULT_ROLES
+from app.domains.rbac.rbac_dto import RoleWithPermissionsDTO
 from app.domains.rbac.rbac_exceptions import RoleNotFound
+from app.domains.rbac.rbac_mapper import RBACMapper
 from app.domains.rbac.rbac_repository import RBACRepository
 from app.extensions import db
 from app.models.rbac import Role, RolePermission, UserRole
@@ -129,3 +134,15 @@ class RBACService:
                         permission_id=permission.id,
                     )
                 )
+
+    # ====================== GET ROLE WITH PERMISSIONS =======================
+    def get_roles_with_permissions(
+        self, tenant_id: int
+    ) -> Sequence[RoleWithPermissionsDTO]:
+        roles: Sequence[Role] = self.repo.get_roles_with_permissions(tenant_id)
+
+        roles_with_permissions: list[RoleWithPermissionsDTO] = [
+            RBACMapper.role_with_permissions_to_dto(r) for r in roles
+        ]
+
+        return cast(Sequence[RoleWithPermissionsDTO], roles_with_permissions)
