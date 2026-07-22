@@ -1,7 +1,9 @@
 from collections.abc import Sequence
 from uuid import UUID
 
+from app.core.cache.cache_keys import CacheKeys
 from app.core.cache.cache_service import CacheService
+from app.core.config.settings import Settings
 from app.database.session import DatabaseSession
 from app.domains.observability.observability_constants import PlatformEvents
 from app.domains.observability.observability_containers import platform_service
@@ -87,6 +89,12 @@ class PlatformService:
             if remove_tenant_session:
                 key_to_remove_tenant_session = f"tenant:{tenant.id}:*"
                 CacheService().delete(key_to_remove_tenant_session)
+
+                key_to_put_tenant_black_list = CacheKeys.black_list_tenant(tenant.id)
+
+                value = "Tenant blocked"
+                ttl = Settings.black_list_ttl()
+                CacheService().set_cache(key_to_put_tenant_black_list, value, ttl)
 
         platform_service.create_log(
             PlatformEventDTO(

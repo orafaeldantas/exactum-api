@@ -6,7 +6,9 @@ from uuid import UUID
 
 from sqlalchemy.exc import IntegrityError
 
+from app.core.cache.cache_keys import CacheKeys
 from app.core.cache.cache_service import CacheService
+from app.core.config.settings import Settings
 from app.database.session import DatabaseSession
 from app.domains.observability.observability_constants import AuditEvents
 from app.domains.observability.observability_containers import audit_service
@@ -202,6 +204,14 @@ class UserService:
             if remove_user_session:
                 key_to_remove_user_session = f"tenant:{tenant_id}:user:{user.id}:*"
                 CacheService().delete(key_to_remove_user_session)
+
+                key_to_put_user_black_list = CacheKeys.black_list_user(
+                    tenant_id, user.id
+                )
+
+                value = "User blocked"
+                ttl = Settings.black_list_ttl()
+                CacheService().set_cache(key_to_put_user_black_list, value, ttl)
 
             return user
 
