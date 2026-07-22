@@ -202,15 +202,17 @@ class UserService:
                 status_user = is_active_value
                 remove_user_session = status_user.get("old")
 
-            if remove_user_session:
-                key_to_remove_user_session = f"tenant:{tenant_id}:user:{user.id}:*"
-                CacheService().delete(key_to_remove_user_session)
+                if remove_user_session:
+                    key_to_remove_user_session = f"tenant:{tenant_id}:user:{user.id}:*"
+                    CacheService().delete(key_to_remove_user_session)
 
-                key_to_put_user_blocklist = CacheKeys.blocklist_user(tenant_id, user.id)
+                    key_to_put_user_blocklist = CacheKeys.blocklist_user(
+                        tenant_id, user.id
+                    )
 
-                value = "User blocked"
-                ttl = Settings.blocklist_ttl()
-                CacheService().set_cache(key_to_put_user_blocklist, value, ttl)
+                    value = "User blocked"
+                    ttl = Settings.blocklist_ttl()
+                    CacheService().set_cache(key_to_put_user_blocklist, value, ttl)
 
             return user
 
