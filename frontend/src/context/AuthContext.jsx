@@ -1,14 +1,13 @@
-import { createContext, useEffect, useState, useContext } from "react";
-import { apiFetch } from "../services/api";
-import { UserContext } from "../context/UserContext";
-import { TenantContext } from "../context/TenantContext";
+import { createContext, useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { SuperAdminContext } from "../context/SuperAdminContext";
-import { useNavigate } from 'react-router-dom';
+import { TenantContext } from "../context/TenantContext";
+import { UserContext } from "../context/UserContext";
+import { apiFetch } from "../services/api";
 
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
@@ -18,38 +17,37 @@ export function AuthProvider({ children }) {
   const { setProfile } = useContext(UserContext);
   const { setTenantData } = useContext(TenantContext);
   const { setSuperAdmin } = useContext(SuperAdminContext);
-  
+
   async function bootstrap() {
     try {
       const response = await apiFetch("/auth/bootstrap");
-  
+
       if (!response.ok) {
         throw new Error();
       }
-  
+
       const data = await response.json();
 
       if (data?.is_super_admin) {
-        setSuperAdmin(data?.is_super_admin);             
+        setSuperAdmin(data?.is_super_admin);
       } else {
-        setTenantData(data?.tenant);       
+        setTenantData(data?.tenant);
       }
-  
+
       setProfile(data?.user);
       setUser(data?.auth);
-      setPermissions(data?.auth?.permissions);  
-  
+      setPermissions(data?.auth?.permissions);
+
       const isImpersonating = data?.impersonate_mode ?? false;
       setImpersonateMode(isImpersonating);
-  
-      return data; 
-  
-    } catch {
+
+      return data;
+    } catch (err) {
       setSuperAdmin(false);
       setTenantData(null);
       setProfile(null);
       setUser(null);
-      return null; 
+      return null;
     } finally {
       setLoading(false);
     }
@@ -62,7 +60,7 @@ export function AuthProvider({ children }) {
       console.error("Authentication failed");
       return;
     }
-  
+
     if (bootstrapData?.is_super_admin) {
       navigate("/platform/dashboard", { replace: true });
     } else {
@@ -73,13 +71,12 @@ export function AuthProvider({ children }) {
   async function logout() {
     try {
       const response = await apiFetch("/auth/logout", {
-        method: "POST"
+        method: "POST",
       });
 
       const data = await response.json();
-
     } catch (err) {
-      console.log(err)  
+      console.log(err);
     } finally {
       setSuperAdmin(false);
       setProfile(null);
@@ -88,20 +85,30 @@ export function AuthProvider({ children }) {
     }
   }
 
+  function clearLocalSession() {
+    setSuperAdmin(false);
+    setProfile(null);
+    setTenantData(null);
+    setUser(null);
+  }
+
   useEffect(() => {
-    bootstrap();  
+    bootstrap();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      loading, 
-      login, 
-      logout,        
-      impersonateMode,
-      bootstrap,
-      permissions,  
-    }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        login,
+        logout,
+        impersonateMode,
+        bootstrap,
+        permissions,
+        clearLocalSession,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
