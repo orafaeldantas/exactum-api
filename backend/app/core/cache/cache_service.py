@@ -1,4 +1,5 @@
 import json
+from typing import Any
 
 from app.core.config.settings import Settings
 
@@ -12,7 +13,7 @@ class InitCache:
 
 
 class CacheService(InitCache):
-    def get(self, key):
+    def get(self, key: str) -> Any:
 
         value = self.redis_client.get(key)
 
@@ -21,13 +22,13 @@ class CacheService(InitCache):
 
         return None
 
-    def set_cache(self, key, value, ttl=None):
+    def set_cache(self, key: str, value="data to validate", ttl: int = None) -> None:
         # Default cache expiration aligned with JWT refresh token TTL
         if ttl is None:
             ttl = Settings.refresh_token_ttl()
         self.redis_client.set(key, json.dumps(value), ex=ttl)
 
-    def delete(self, key_or_pattern):
+    def delete(self, key_or_pattern: str) -> None:
         redis_client = self.redis_client
 
         if "*" in key_or_pattern:
