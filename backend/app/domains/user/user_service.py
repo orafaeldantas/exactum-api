@@ -6,6 +6,7 @@ from uuid import UUID
 
 from sqlalchemy.exc import IntegrityError
 
+from app.core.cache.cache_service import CacheService
 from app.database.session import DatabaseSession
 from app.domains.observability.observability_constants import AuditEvents
 from app.domains.observability.observability_containers import audit_service
@@ -63,7 +64,7 @@ class UserService:
         if not role:
             raise KeyError("Not found role")
 
-        get_rbac_service().assign_role_to_user(user.id, role.id)
+        get_rbac_service().assign_role_to_user(tenant_id, user.id, role.id)
 
         try:
             DatabaseSession.commit()
@@ -149,7 +150,7 @@ class UserService:
                     "new": role.name,
                 }
 
-                get_rbac_service().assign_role_to_user(user.id, role.id)
+                get_rbac_service().assign_role_to_user(tenant_id, user.id, role.id)
 
         allowed_fields = {
             "username",
@@ -193,6 +194,14 @@ class UserService:
                     },
                 )
             )
+
+            if changes.get("is_active"):
+                status_user = changes.get("is_active")
+                remove_user_session = status_user.get("old")
+
+            if remove_user_session:
+                key_to_remove_user_session = f"tenant:{tenant_id}:user:{user.id}:*"
+                CacheService().delete(key_to_remove_user_session)
 
             return user
 
