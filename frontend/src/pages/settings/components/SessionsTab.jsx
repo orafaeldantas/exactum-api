@@ -56,7 +56,7 @@ export default function SessionsTab({ logout, navigate, isAdmin }) {
         <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <p className="max-w-md text-sm text-slate-600">
             Isso desconecta sua conta de qualquer dispositivo onde você esteja
-            logado — incluindo este. Você precisará entrar novamente.
+            logado, incluindo este. Você precisará entrar novamente.
           </p>
           <button
             type="button"
@@ -89,8 +89,8 @@ export default function SessionsTab({ logout, navigate, isAdmin }) {
           <div className="p-6">
             <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
               <p className="max-w-md text-sm text-red-700">
-                Encerra a sessão de <strong>todos os usuários</strong> deste
-                tenant imediatamente. Use após um incidente de segurança ou
+                Encerra a sessão de <strong>todos os usuários</strong> desta
+                empresa imediatamente. Use após um incidente de segurança ou
                 desligamento de um funcionário.
               </p>
               <button
@@ -124,7 +124,7 @@ export default function SessionsTab({ logout, navigate, isAdmin }) {
           icon={ShieldAlert}
           iconTone="bg-red-100 text-red-600"
           title="Encerrar todas as sessões da empresa"
-          description="Isso vai desconectar imediatamente TODOS os usuários deste tenant, sem aviso prévio. Essa ação não pode ser desfeita."
+          description="Isso vai desconectar imediatamente TODOS os usuários desta empresa, sem aviso prévio. Essa ação não pode ser desfeita."
           confirmLabel="Sim, encerrar todas"
           confirmTone="bg-red-600 hover:bg-red-700"
           onCancel={() => setConfirmTenant(false)}
