@@ -21,8 +21,22 @@ export function getRoles() {
   return { rolesWithPermissions, loadRolesWithPermissions, loadingRoles };
 }
 
-export function createRole() {}
+export async function createRole({ name, permissions }) {
+  await apiFetch("/rbac/roles", {
+    method: "POST",
+    body: JSON.stringify({ name, permissions }),
+  });
+}
 
-export function deleteRole() {}
+export async function updateRole(uuid, { name, permissions }) {
+  await apiFetch(`/rbac/roles/${uuid}`, {
+    method: "PATCH",
+    body: JSON.stringify({ name, permissions }),
+  });
+}
 
-export function updateRole() {}
+export async function deleteRole(uuid) {
+  await apiFetch(`/rbac/roles/${uuid}`, {
+    method: "DELETE",
+  });
+}
