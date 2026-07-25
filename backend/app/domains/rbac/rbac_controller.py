@@ -28,3 +28,8 @@ class RBACController:
     def update_role(data: dict, role_uuid: UUID) -> None:
 
         return get_rbac_service().update_role(g.tenant_id, role_uuid, data)
+
+    @staticmethod
+    def create_role(data: dict) -> None:
+
+        return get_rbac_service().create_role(g.tenant_id, data)

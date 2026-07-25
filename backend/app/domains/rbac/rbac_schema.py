@@ -1,4 +1,5 @@
 from marshmallow import Schema, fields
+from marshmallow.validate import Length
 
 
 class ResponseRBACSchema(Schema):
@@ -36,6 +37,12 @@ class ResponseRoleWithPermissions(ResponseRBACSchema):
 
 
 class UpdateRole(Schema):
-    name = fields.Str(attribute="new_name")
+    name = fields.Str(allow_none=False, validate=Length(min=1))
 
     permissions = fields.List(fields.Str(), attribute="new_permissions")
+
+
+class CreateRole(Schema):
+    name = fields.Str(required=True, allow_none=False, validate=Length(min=1))
+
+    permissions = fields.List(fields.Str(), required=True)

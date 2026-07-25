@@ -11,7 +11,7 @@ from app.domains.rbac.rbac_exceptions import RoleNotFound
 from app.domains.rbac.rbac_mapper import RBACMapper
 from app.domains.rbac.rbac_repository import RBACRepository
 from app.extensions import db
-from app.models.rbac import Role, RolePermission, UserRole
+from app.models.rbac import Permission, Role, RolePermission, UserRole
 
 
 class RBACService:
@@ -136,25 +136,58 @@ class RBACService:
                     )
                 )
 
-    def update_role(self, tenant_id: int, role_uuid: UUID, data: dict):
+    def create_role(self, tenant_id: int, data: dict) -> None:
 
-        role = self.repo.get_role_by_uuid(role_uuid, tenant_id)
+        role_name: str = data.get("name")
+
+        role_permissions: list[str] = data.get("permissions")
+
+        role: Role = Role(
+            tenant_id=tenant_id,
+            name=role_name,
+        )
+
+        db.session.add(role)
+        db.session.flush()
+
+        permissions: Sequence[Permission] = self.repo.get_permissions()
+
+        permissions_map = {permission.code: permission for permission in permissions}
+
+        for permission_code in role_permissions:
+            permission = permissions_map.get(permission_code)
+
+            if not permission:
+                raise ValueError(f"Permission '{role_permissions}' not found.")
+
+            db.session.add(
+                RolePermission(
+                    role_id=role.id,
+                    permission_id=permission.id,
+                )
+            )
+
+        db.session.commit()
+
+    def update_role(self, tenant_id: int, role_uuid: UUID, data: dict) -> None:
+
+        role: Role | None = self.repo.get_role_by_uuid(role_uuid, tenant_id)
 
         if not role:
             raise RoleNotFound()
 
-        new_role_name: str = data.get("new_name", None)
+        new_role_name: str | None = data.get("new_name", None)
 
         if new_role_name:
             if role.name != new_role_name:
                 role.name = str(new_role_name)
 
-        new_permissions: list[str] = data.get("new_permissions", None)
+        new_permissions: list[str] | None = data.get("new_permissions", None)
 
         if new_permissions:
             self.repo.delete_role_permissions(role.id)
 
-            permissions = self.repo.get_permissions()
+            permissions: Sequence[Permission] = self.repo.get_permissions()
 
             permissions_map = {
                 permission.code: permission for permission in permissions

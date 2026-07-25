@@ -26,6 +26,9 @@ PERMISSIONS = [
     "goal:update",
     "goal:delete",
     "rbac:view",
+    "rbac:create",
+    "rbac:update",
+    "rbac:delete",
     "logs:view",
 ]
 

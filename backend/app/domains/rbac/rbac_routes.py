@@ -11,6 +11,7 @@ from flask_smorest import Blueprint
 from app.domains.rbac.decorators.permissions import permission_required
 from app.domains.rbac.rbac_controller import RBACController
 from app.domains.rbac.rbac_schema import (
+    CreateRole,
     ResponseRBACSchema,
     ResponseRoleWithPermissions,
     UpdateRole,
@@ -34,11 +35,20 @@ class RBACRoute(MethodView):
 
         return RBACController.get_roles()
 
+    @jwt_required()
+    @permission_required("rbac:create")
+    @blp_rbac.doc(security=[{"CookieAuth": []}])
+    @blp_rbac.arguments(CreateRole)
+    @blp_rbac.response(201)
+    def post(self, data: dict) -> None:
+
+        return RBACController.create_role(data)
+
 
 @blp_rbac.route("/roles/<uuid:role_uuid>")
 class RoleItem(MethodView):
     @jwt_required()
-    @permission_required("rbac:view")
+    @permission_required("rbac:update")
     @blp_rbac.doc(security=[{"CookieAuth": []}])
     @blp_rbac.arguments(UpdateRole)
     @blp_rbac.response(200)
