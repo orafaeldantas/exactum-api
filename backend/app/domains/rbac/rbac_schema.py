@@ -33,3 +33,9 @@ class ResponseRoleWithPermissions(ResponseRBACSchema):
     """
 
     permissions = fields.Pluck(PermissionSchema, "code", many=True)
+
+
+class UpdateRole(Schema):
+    name = fields.Str(attribute="new_name")
+
+    permissions = fields.List(fields.Str(), attribute="new_permissions")

@@ -1,4 +1,5 @@
 from collections.abc import Sequence
+from uuid import UUID
 
 from sqlalchemy import delete, select
 from sqlalchemy.orm import selectinload
@@ -18,8 +19,8 @@ class RBACRepository:
     def get_role_by_id(self, role_id: int) -> Role | None:
         return db.session.get(Role, role_id)
 
-    def get_role_by_uuid(self, role_uuid) -> Role | None:
-        stmt = select(Role).where(Role.uuid == role_uuid)
+    def get_role_by_uuid(self, role_uuid: UUID, tenant_id: int) -> Role | None:
+        stmt = select(Role).where(Role.uuid == role_uuid, Role.tenant_id == tenant_id)
         return db.session.execute(stmt).scalar_one_or_none()
 
     def get_role_admin_by_tenant(self, tenant_id: int) -> Role | None:
@@ -81,6 +82,11 @@ class RBACRepository:
     def get_role_permissions(self, role_ids: list[int]) -> Sequence[RolePermission]:
         stmt = select(RolePermission).where(RolePermission.role_id.in_(role_ids))
         return list(db.session.execute(stmt).scalars().all())
+
+    def delete_role_permissions(self, role_id: int) -> None:
+        stmt = delete(RolePermission).where(RolePermission.role_id == role_id)
+        db.session.execute(stmt)
+        db.session.commit()
 
     # ====================== ROLE WITH PERMISSIONS =======================
     def get_roles_with_permissions(self, tenant_id: int) -> Sequence[Role]:

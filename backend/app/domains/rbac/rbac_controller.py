@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from typing import TYPE_CHECKING
+from uuid import UUID
 
 from flask import g
 
@@ -22,3 +23,8 @@ class RBACController:
     def get_roles_with_permissions() -> Sequence[RoleWithPermissionsDTO]:
 
         return get_rbac_service().get_roles_with_permissions(tenant_id=g.tenant_id)
+
+    @staticmethod
+    def update_role(data: dict, role_uuid: UUID) -> None:
+
+        return get_rbac_service().update_role(g.tenant_id, role_uuid, data)

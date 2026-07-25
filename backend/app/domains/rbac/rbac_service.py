@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from typing import cast
+from uuid import UUID
 
 from app.core.cache.cache_keys import CacheKeys
 from app.domains.rbac.constants import DEFAULT_ROLES
@@ -134,6 +135,46 @@ class RBACService:
                         permission_id=permission.id,
                     )
                 )
+
+    def update_role(self, tenant_id: int, role_uuid: UUID, data: dict):
+
+        role = self.repo.get_role_by_uuid(role_uuid, tenant_id)
+
+        if not role:
+            raise RoleNotFound()
+
+        new_role_name: str = data.get("new_name", None)
+
+        if new_role_name:
+            if role.name != new_role_name:
+                role.name = str(new_role_name)
+
+        new_permissions: list[str] = data.get("new_permissions", None)
+
+        if new_permissions:
+            self.repo.delete_role_permissions(role.id)
+
+            permissions = self.repo.get_permissions()
+
+            permissions_map = {
+                permission.code: permission for permission in permissions
+            }
+
+            for permission_code in new_permissions:
+                permission = permissions_map.get(permission_code)
+
+                if not permission:
+                    raise ValueError(f"Permission '{new_permissions}' not found.")
+
+                db.session.add(
+                    RolePermission(
+                        role_id=role.id,
+                        permission_id=permission.id,
+                    )
+                )
+
+        if new_permissions or new_role_name:
+            db.session.commit()
 
     # ====================== GET ROLE WITH PERMISSIONS =======================
     def get_roles_with_permissions(
