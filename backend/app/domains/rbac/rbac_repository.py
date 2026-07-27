@@ -33,6 +33,11 @@ class RBACRepository:
         stmt = select(Role).where(Role.tenant_id == tenant_id)
         return db.session.scalars(stmt).all()
 
+    def delete_role(self, role_id: int) -> None:
+        stmt = delete(Role).where(Role.id == role_id)
+        db.session.execute(stmt)
+        db.session.commit()
+
     # ========================= PERMISSION =========================
     def get_permission_by_id(self, permission_id: int) -> Permission | None:
         return db.session.get(Permission, permission_id)

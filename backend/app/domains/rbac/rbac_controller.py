@@ -33,3 +33,8 @@ class RBACController:
     def create_role(data: dict) -> None:
 
         return get_rbac_service().create_role(g.tenant_id, data)
+
+    @staticmethod
+    def delete_role(role_uuid: UUID) -> None:
+
+        return get_rbac_service().delete_role(g.tenant_id, role_uuid)

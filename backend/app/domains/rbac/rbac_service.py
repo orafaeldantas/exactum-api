@@ -209,6 +209,13 @@ class RBACService:
         if new_permissions or new_role_name:
             db.session.commit()
 
+    def delete_role(self, tenant_id: int, role_uuid: UUID) -> None:
+
+        role = self.repo.get_role_by_uuid(role_uuid, tenant_id)
+
+        self.repo.delete_role_permissions(role.id)
+        self.repo.delete_role(role.id)
+
     # ====================== GET ROLE WITH PERMISSIONS =======================
     def get_roles_with_permissions(
         self, tenant_id: int

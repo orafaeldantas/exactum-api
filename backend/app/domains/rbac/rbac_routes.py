@@ -56,6 +56,14 @@ class RoleItem(MethodView):
 
         return RBACController.update_role(data, role_uuid)
 
+    @jwt_required()
+    @permission_required("rbac:delete")
+    @blp_rbac.doc(security=[{"CookieAuth": []}])
+    @blp_rbac.response(204)
+    def delete(self, role_uuid: UUID) -> None:
+
+        return RBACController.delete_role(role_uuid)
+
 
 @blp_rbac.route("/roles-permissions")
 class RolesWithPermissionsRoute(MethodView):
