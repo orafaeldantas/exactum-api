@@ -111,3 +111,13 @@ class AuthController:
             "Impersonate stop",
             tokens,
         )
+
+    @staticmethod
+    def remove_user_session() -> None:
+
+        return AuthService.remove_user_session(g.tenant_id, g.user_id)
+
+    @staticmethod
+    def remove_tenant_session() -> None:
+
+        return AuthService.remove_tenant_session(g.tenant_id)

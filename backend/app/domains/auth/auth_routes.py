@@ -16,6 +16,7 @@ from app.domains.auth.auth_schema import (
     StopImpersonateResponseSchema,
 )
 from app.domains.platform.platform_decorators import require_super_admin
+from app.domains.rbac.decorators.permissions import permission_required
 
 blp_auth = Blueprint(
     "auth", __name__, url_prefix="/auth", description="Authentication operations"
@@ -92,3 +93,24 @@ class StopImpersonateRoute(MethodView):
     def post(self) -> Response:
 
         return AuthController.stop_impersonate()
+
+
+@blp_auth.route("/remove-user-session")
+class RemoveUserSession(MethodView):
+    @jwt_required()
+    @blp_auth.doc(security=[{"CookieAuth": []}])
+    @blp_auth.response(200)
+    def post(self) -> None:
+
+        return AuthController.remove_user_session()
+
+
+@blp_auth.route("/remove-tenant-session")
+class RemoveTenantSession(MethodView):
+    @jwt_required()
+    @permission_required("tenant:update")
+    @blp_auth.doc(security=[{"CookieAuth": []}])
+    @blp_auth.response(200)
+    def post(self) -> None:
+
+        return AuthController.remove_tenant_session()

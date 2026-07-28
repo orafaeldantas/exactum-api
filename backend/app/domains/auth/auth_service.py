@@ -10,6 +10,7 @@ from app.domains.auth.auth_exceptions import (
     BootstrapNotFound,
     InvalidCredentials,
     InvalidInputEmail,
+    LoginSuspended,
     RefreshTokenRevoked,
     TenantBlocked,
     UnauthorizedUser,
@@ -71,6 +72,12 @@ class AuthService:
 
         if not user:
             raise InvalidCredentials()
+
+        if user.is_active and user.tenant.is_active:
+            if CacheService().get(
+                CacheKeys.blocklist_tenant(user.tenant_id)
+            ) or CacheService().get(CacheKeys.blocklist_user(user.tenant_id, user.id)):
+                raise LoginSuspended()
 
         if not user.is_active:
             raise UserBlocked()
@@ -395,3 +402,25 @@ class AuthService:
         )
 
         return create_session
+
+    @staticmethod
+    def remove_user_session(tenant_id: int, user_id: int) -> None:
+        key_to_remove_user_session = f"tenant:{tenant_id}:user:{user_id}:*"
+        CacheService().delete(key_to_remove_user_session)
+
+        key_to_put_user_blocklist = CacheKeys.blocklist_user(tenant_id, user_id)
+
+        value = "Removed user session"
+        ttl = Settings.blocklist_ttl()
+        CacheService().set_cache(key_to_put_user_blocklist, value, ttl)
+
+    @staticmethod
+    def remove_tenant_session(tenant_id: int) -> None:
+        key_to_remove_tenant_session = f"tenant:{tenant_id}:*"
+        CacheService().delete(key_to_remove_tenant_session)
+
+        key_to_put_tenant_blocklist = CacheKeys.blocklist_tenant(tenant_id)
+
+        value = "Removed tenant session"
+        ttl = Settings.blocklist_ttl()
+        CacheService().set_cache(key_to_put_tenant_blocklist, value, ttl)
