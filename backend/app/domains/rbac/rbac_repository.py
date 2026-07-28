@@ -66,6 +66,10 @@ class RBACRepository:
         stmt = delete(UserRole).where(UserRole.user_id == user_id)
         db.session.execute(stmt)
 
+    def delete_user_roles_by_role(self, role_id: int) -> None:
+        stmt = delete(UserRole).where(UserRole.role_id == role_id)
+        db.session.execute(stmt)
+
     # ========================= USER PERMISSIONS =========================
     def get_user_permissions(self, user_id: int) -> Sequence[UserPermission]:
         stmt = select(UserPermission).where(UserPermission.user_id == user_id)

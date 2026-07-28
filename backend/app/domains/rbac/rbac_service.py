@@ -212,7 +212,7 @@ class RBACService:
     def delete_role(self, tenant_id: int, role_uuid: UUID) -> None:
 
         role = self.repo.get_role_by_uuid(role_uuid, tenant_id)
-
+        self.repo.delete_user_roles_by_role(role.id)
         self.repo.delete_role_permissions(role.id)
         self.repo.delete_role(role.id)
 
