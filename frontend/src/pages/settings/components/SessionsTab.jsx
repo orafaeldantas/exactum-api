@@ -15,7 +15,7 @@ export default function SessionsTab({ logout, navigate, isAdmin }) {
     setConfirmMine(false);
     setSavingMine(true);
     try {
-      const response = await apiFetch("/auth/sessions/revoke-all", {
+      const response = await apiFetch("/auth/remove-user-session", {
         method: "POST",
       });
       if (!response.ok) throw new Error();
@@ -33,11 +33,13 @@ export default function SessionsTab({ logout, navigate, isAdmin }) {
     setConfirmTenant(false);
     setSavingTenant(true);
     try {
-      const response = await apiFetch("/tenants/sessions/revoke-all", {
+      const response = await apiFetch("/auth/remove-tenant-session", {
         method: "POST",
       });
       if (!response.ok) throw new Error();
       toast.success("Todas as sessões da empresa foram encerradas.");
+      logout();
+      navigate("/login");
     } catch (err) {
       toast.error("Erro ao encerrar as sessões da empresa");
     } finally {
