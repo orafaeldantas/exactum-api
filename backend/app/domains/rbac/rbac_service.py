@@ -212,6 +212,21 @@ class RBACService:
     def delete_role(self, tenant_id: int, role_uuid: UUID) -> None:
 
         role = self.repo.get_role_by_uuid(role_uuid, tenant_id)
+
+        if not role:
+            raise RoleNotFound()
+
+        users_role = list(self.repo.get_user_roles_by_role(role.id))
+
+        if users_role:
+            new_role = self.repo.get_role_by_name("acesso_restrito", tenant_id)
+
+            if not new_role:
+                raise RoleNotFound()
+
+            for user_role in users_role:
+                user_role.role_id = new_role.id
+
         self.repo.delete_user_roles_by_role(role.id)
         self.repo.delete_role_permissions(role.id)
         self.repo.delete_role(role.id)

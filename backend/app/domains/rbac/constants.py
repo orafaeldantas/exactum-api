@@ -54,4 +54,8 @@ DEFAULT_ROLES = {
         "profile:view",
         "profile:update",
     ],
+    "acesso_restrito": [
+        "profile:view",
+        "profile:update",
+    ],
 }
