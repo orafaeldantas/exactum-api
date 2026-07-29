@@ -46,7 +46,13 @@ export default function PrivateRoute({ children, requiredRole }) {
     return <Navigate to="/reset-password" replace />;
   }
 
-  if (requiredRole && !permissions.includes(requiredRole)) {
+  if (
+    requiredRole &&
+    !(
+      permissions.includes(requiredRole) ||
+      (requiredRole === "profile:view" && superAdmin)
+    )
+  ) {
     if (superAdmin) return <Navigate to="/platform/dashboard" replace />;
 
     return <Navigate to="/dashboard" replace />;
