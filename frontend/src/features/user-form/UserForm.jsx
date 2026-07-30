@@ -23,8 +23,6 @@ export default function UserForm({ initialData = {}, onSubmit, submitText }) {
     }
     return [];
   };
-  console.log(tenantData?.roles);
-  console.log(roles());
 
   const formatLabel = (name) => {
     return name
