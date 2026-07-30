@@ -1,19 +1,26 @@
-import { useContext, useState, useRef, useEffect } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
-import { UserContext } from "../../context/UserContext";
 import { SuperAdminContext } from "../../context/SuperAdminContext";
-import { useNavigate, Link } from "react-router-dom";
+import { UserContext } from "../../context/UserContext";
 
 import { AnimatePresence, motion } from "framer-motion";
 
-import { LogOut, ShieldCheck, Box, ChevronDown, Sparkles, Settings } from "lucide-react";
+import {
+  Box,
+  ChevronDown,
+  LogOut,
+  Settings,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
 
 const ROLES = {
   administrator: "Administrador",
   sales_manager: "Gerente de Vendas",
   seller: "Vendedor",
   stock_clerk: "Estoquista",
-  super_admin: "Administrador do Sistema"
+  super_admin: "Administrador do Sistema",
 };
 
 function Navbar() {
@@ -68,8 +75,8 @@ function Navbar() {
   const roleBadgeClass = isSuperAdmin
     ? "border-slate-300 bg-slate-100 text-slate-800 shadow-sm shadow-slate-200/50"
     : isAdmin
-      ? "border-purple-200 bg-purple-50 text-purple-700 shadow-sm shadow-purple-100/50"
-      : "border-blue-100 bg-blue-50 text-blue-700";
+    ? "border-purple-200 bg-purple-50 text-purple-700 shadow-sm shadow-purple-100/50"
+    : "border-blue-100 bg-blue-50 text-blue-700";
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-gray-200/80 bg-white/70 backdrop-blur-xl transition-all duration-300 after:absolute after:bottom-0 after:left-0 after:h-px after:w-full after:bg-gradient-to-r after:from-transparent after:via-blue-200/50 after:to-transparent">
@@ -80,7 +87,9 @@ function Navbar() {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white shadow-sm shadow-blue-500/20">
               <Box className="h-5 w-5" />
             </div>
-            <span className="text-xl font-bold tracking-tight text-slate-900">Exactum</span>
+            <span className="text-xl font-bold tracking-tight text-slate-900">
+              Exactum
+            </span>
             <span className="hidden items-center rounded-full border border-blue-100 bg-blue-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-blue-600 sm:inline-flex">
               Alpha
             </span>
@@ -146,14 +155,22 @@ function Navbar() {
                             Exactum Workspace
                           </span>
                         </div>
-                        <span className="flex h-2 w-2 rounded-full bg-emerald-500" title="Sistema sincronizado" />
+                        <span
+                          className="flex h-2 w-2 rounded-full bg-emerald-500"
+                          title="Sistema sincronizado"
+                        />
                       </div>
 
                       {/* Header / Perfil */}
                       <div className="flex flex-col gap-3 border-b border-gray-100 px-5 py-4">
                         <div className="w-full min-w-0">
-                          <p className="truncate text-sm font-semibold text-slate-900">{profile.username}</p>
-                          <p className="mt-0.5 truncate text-xs text-slate-500" title={profile.email}>
+                          <p className="truncate text-sm font-semibold text-slate-900">
+                            {profile.username}
+                          </p>
+                          <p
+                            className="mt-0.5 truncate text-xs text-slate-500"
+                            title={profile.email}
+                          >
                             {profile.email || "Sem email"}
                           </p>
                         </div>
@@ -162,7 +179,9 @@ function Navbar() {
                           <span
                             className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${roleBadgeClass}`}
                           >
-                            {(isAdmin || isSuperAdmin) && <ShieldCheck className="h-3 w-3" />}
+                            {(isAdmin || isSuperAdmin) && (
+                              <ShieldCheck className="h-3 w-3" />
+                            )}
                             {ROLES[user?.role?.name] || "Usuário"}
                           </span>
                         </div>
@@ -174,7 +193,7 @@ function Navbar() {
                           role="menuitem"
                           onClick={() => {
                             closeMenu();
-                            navigate(isAdmin ? "/admin-settings" : "/user-settings");
+                            navigate("/settings");
                           }}
                           className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 transition-all duration-200 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                         >

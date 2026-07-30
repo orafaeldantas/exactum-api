@@ -21,19 +21,21 @@ import {
 } from "lucide-react";
 
 const ROLE_LABELS = {
-  administrator: "Administrador",
-  sales_manager: "Gerente de Vendas",
-  seller: "Vendedor",
-  stock_clerk: "Estoquista",
+  administrador: "Administrador",
+  gerente_de_vendas: "Gerente de Vendas",
+  vendedor: "Vendedor",
+  estoquista: "Estoquista",
   super_admin: "Administrador do Sistema",
+  acesso_restrito: "Acesso Restrito (sem cargo definido)",
 };
 
 const ROLE_TONE = {
-  administrator: "bg-purple-50 text-purple-700",
-  sales_manager: "bg-blue-50 text-blue-700",
-  seller: "bg-emerald-50 text-emerald-700",
-  stock_clerk: "bg-amber-50 text-amber-700",
+  administrador: "bg-purple-50 text-purple-700",
+  gerente_de_vendas: "bg-blue-50 text-blue-700",
+  vendedor: "bg-emerald-50 text-emerald-700",
+  estoquista: "bg-amber-50 text-amber-700",
   super_admin: "bg-slate-100 text-slate-700",
+  acesso_restrito: "bg-zinc-200 text-zinc-800",
 };
 
 function RoleBadge({ role }) {

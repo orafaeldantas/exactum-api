@@ -1,27 +1,27 @@
+import {
+  Activity,
+  Box,
+  Building2,
+  ChevronLeft,
+  ChevronRight,
+  CircleDot,
+  DatabaseZap,
+  LayoutDashboard,
+  LogOut,
+  Receipt,
+  ScrollText,
+  Settings,
+  ShieldCheck,
+  ShoppingCart,
+  Terminal,
+  Users,
+} from "lucide-react";
+import { useContext, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { NavLink } from "react-router-dom";
-import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { SuperAdminContext } from "../../context/SuperAdminContext";
 import { apiFetch } from "../../services/api";
-import toast from "react-hot-toast";
-import {
-  LayoutDashboard,
-  Users,
-  ScrollText,
-  Settings,
-  ChevronLeft,
-  ChevronRight,
-  Box,
-  CircleDot,
-  ShoppingCart,
-  Building2,
-  ShieldCheck,
-  Activity,
-  Terminal,
-  LogOut,
-  Receipt,
-  DatabaseZap,
-} from "lucide-react";
 
 const COLLAPSE_STORAGE_KEY = "exactum:sidebar-collapsed";
 
@@ -30,7 +30,8 @@ const linkBaseClass = `
   hover:bg-slate-800 text-slate-400 hover:text-white
 `;
 
-const activeLinkClass = "bg-blue-600 !text-white shadow-[0_4px_12px_-2px_rgba(37,99,235,0.5)]";
+const activeLinkClass =
+  "bg-blue-600 !text-white shadow-[0_4px_12px_-2px_rgba(37,99,235,0.5)]";
 
 /** A single nav entry. Kept as one component so every link stays visually and behaviorally consistent. */
 function NavItem({ to, icon: Icon, label, collapsed }) {
@@ -38,7 +39,9 @@ function NavItem({ to, icon: Icon, label, collapsed }) {
     <NavLink
       to={to}
       title={collapsed ? label : undefined}
-      className={({ isActive }) => `${linkBaseClass} ${isActive ? activeLinkClass : ""}`}
+      className={({ isActive }) =>
+        `${linkBaseClass} ${isActive ? activeLinkClass : ""}`
+      }
     >
       {({ isActive }) => (
         <>
@@ -48,7 +51,12 @@ function NavItem({ to, icon: Icon, label, collapsed }) {
               aria-hidden="true"
             />
           )}
-          <Icon size={20} className={`shrink-0 transition-transform duration-200 group-hover:scale-110 ${collapsed ? "mx-auto" : ""}`} />
+          <Icon
+            size={20}
+            className={`shrink-0 transition-transform duration-200 group-hover:scale-110 ${
+              collapsed ? "mx-auto" : ""
+            }`}
+          />
           {!collapsed && <span className="font-medium">{label}</span>}
         </>
       )}
@@ -78,12 +86,13 @@ function Sidebar() {
 
   async function handleImpersonate() {
     try {
-      const response = await apiFetch('/auth/stop-impersonate', { method: "POST" });
+      const response = await apiFetch("/auth/stop-impersonate", {
+        method: "POST",
+      });
 
       if (!response.ok) throw new Error("Erro ao finalizar acesso");
 
       window.location.href = "/platform/manage-companies";
-
     } catch (err) {
       toast.error(err.message);
     }
@@ -107,7 +116,9 @@ function Sidebar() {
       {/* Logo — brand mark always visible, even collapsed. Stacks vertically when collapsed so it never fights the toggle button for space. */}
       <div
         className={`flex mb-4 ${
-          collapsed ? "flex-col items-center gap-3 py-4" : "h-16 items-center justify-between px-4"
+          collapsed
+            ? "flex-col items-center gap-3 py-4"
+            : "h-16 items-center justify-between px-4"
         }`}
       >
         <div className="flex min-w-0 items-center gap-2">
@@ -116,7 +127,9 @@ function Sidebar() {
           </div>
           {!collapsed && (
             <div className="flex items-center gap-1.5 overflow-hidden whitespace-nowrap">
-              <h2 className="text-lg font-bold text-white tracking-tight">Exactum</h2>
+              <h2 className="text-lg font-bold text-white tracking-tight">
+                Exactum
+              </h2>
               <span className="inline-flex shrink-0 items-center rounded-full border border-blue-500/30 bg-blue-500/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-blue-400">
                 Alpha
               </span>
@@ -133,7 +146,6 @@ function Sidebar() {
       </div>
 
       <nav className="sidebar-scroll flex flex-col gap-2 px-3 overflow-y-auto max-h-[calc(100vh-200px)]">
-
         {/* Return to Admin Button */}
         {isImpersonating && (
           <button
@@ -142,25 +154,64 @@ function Sidebar() {
             className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-white mb-2"
           >
             <LogOut size={20} className={collapsed ? "mx-auto" : ""} />
-            {!collapsed && <span className="font-bold text-xs uppercase tracking-wider">Back to Super</span>}
+            {!collapsed && (
+              <span className="font-bold text-xs uppercase tracking-wider">
+                Back to Super
+              </span>
+            )}
           </button>
         )}
 
         {!isSuperAdmin && (
           <>
-            <NavItem to="/dashboard" icon={LayoutDashboard} label="Dashboard" collapsed={collapsed} />
-            <NavItem to="/products" icon={Box} label="Produtos" collapsed={collapsed} />
-            <NavItem to="/low-stock" icon={CircleDot} label="Estoque Baixo" collapsed={collapsed} />
+            <NavItem
+              to="/dashboard"
+              icon={LayoutDashboard}
+              label="Dashboard"
+              collapsed={collapsed}
+            />
+            <NavItem
+              to="/products"
+              icon={Box}
+              label="Produtos"
+              collapsed={collapsed}
+            />
+            <NavItem
+              to="/low-stock"
+              icon={CircleDot}
+              label="Estoque Baixo"
+              collapsed={collapsed}
+            />
 
             {roles.includes("user:view") && (
-              <NavItem to="/users" icon={Users} label="Usuários" collapsed={collapsed} />
+              <NavItem
+                to="/users"
+                icon={Users}
+                label="Usuários"
+                collapsed={collapsed}
+              />
             )}
 
-            <NavItem to="/checkout" icon={ShoppingCart} label="PDV" collapsed={collapsed} />
-            <NavItem to="/sales" icon={Receipt} label="Histórico de Vendas" collapsed={collapsed} />
+            <NavItem
+              to="/checkout"
+              icon={ShoppingCart}
+              label="PDV"
+              collapsed={collapsed}
+            />
+            <NavItem
+              to="/sales"
+              icon={Receipt}
+              label="Histórico de Vendas"
+              collapsed={collapsed}
+            />
 
             {roles.includes("analytics:view") && (
-              <NavItem to="/logs" icon={ScrollText} label="Logs" collapsed={collapsed} />
+              <NavItem
+                to="/logs"
+                icon={ScrollText}
+                label="Logs"
+                collapsed={collapsed}
+              />
             )}
           </>
         )}
@@ -168,22 +219,51 @@ function Sidebar() {
         {isSuperAdmin && (
           <>
             <div className="mt-6 mb-2 px-4">
-              {!collapsed && <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Gerenciamento do Sistema</p>}
+              {!collapsed && (
+                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                  Gerenciamento do Sistema
+                </p>
+              )}
               {collapsed && <div className="border-t border-slate-800 mx-2" />}
             </div>
 
-            <NavItem to="/platform/dashboard" icon={LayoutDashboard} label="Dashboard" collapsed={collapsed} />
-            <NavItem to="/platform/manage-companies" icon={Building2} label="Empresas" collapsed={collapsed} />
-            <NavItem to="/platform/infra-health" icon={Activity} label="Status do Sistema" collapsed={collapsed} />
-            <NavItem to="/platform/logs" icon={Terminal} label="Logs de Requisições" collapsed={collapsed} />
-            <NavItem to="/platform/events" icon={DatabaseZap} label="Eventos da Plataforma" collapsed={collapsed} />
+            <NavItem
+              to="/platform/dashboard"
+              icon={LayoutDashboard}
+              label="Dashboard"
+              collapsed={collapsed}
+            />
+            <NavItem
+              to="/platform/manage-companies"
+              icon={Building2}
+              label="Empresas"
+              collapsed={collapsed}
+            />
+            <NavItem
+              to="/platform/infra-health"
+              icon={Activity}
+              label="Status do Sistema"
+              collapsed={collapsed}
+            />
+            <NavItem
+              to="/platform/logs"
+              icon={Terminal}
+              label="Logs de Requisições"
+              collapsed={collapsed}
+            />
+            <NavItem
+              to="/platform/events"
+              icon={DatabaseZap}
+              label="Eventos da Plataforma"
+              collapsed={collapsed}
+            />
           </>
         )}
 
         <div className="my-4 border-t border-slate-800 mx-2" />
 
         <NavItem
-          to={user?.role.name === "administrator" ? "/admin-settings" : "/user-settings"}
+          to={"/settings"}
           icon={Settings}
           label="Configurações"
           collapsed={collapsed}
@@ -195,16 +275,22 @@ function Sidebar() {
           {isImpersonating && (
             <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center gap-2 text-amber-500">
               <ShieldCheck size={16} />
-              <span className="text-[10px] font-bold uppercase tracking-tight">Impersonate Mode</span>
+              <span className="text-[10px] font-bold uppercase tracking-tight">
+                Impersonate Mode
+              </span>
             </div>
           )}
           <div className="rounded-2xl bg-slate-800/50 p-4 shadow-[0_1px_2px_rgba(0,0,0,0.1)]">
             <div className="flex items-center justify-between pb-3 border-b border-slate-700">
-              <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Versão</p>
+              <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold">
+                Versão
+              </p>
               <p className="text-xs text-slate-300">v0.1.0-alpha</p>
             </div>
             <div className="flex items-center justify-between pt-3">
-              <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Plano</p>
+              <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold">
+                Plano
+              </p>
               <p className="text-xs text-blue-300">Starter</p>
             </div>
             <button
