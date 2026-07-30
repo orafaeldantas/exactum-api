@@ -29,7 +29,7 @@ class RBACRepository:
 
     def get_role_admin_by_tenant(self, tenant_id: int) -> Role | None:
         stmt = select(Role).where(
-            Role.tenant_id == tenant_id, Role.name == "administrator"
+            Role.tenant_id == tenant_id, Role.name == "administrador"
         )
         return db.session.scalar(stmt)
 
