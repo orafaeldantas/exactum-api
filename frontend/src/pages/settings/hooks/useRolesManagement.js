@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
+import { AuthContext } from "../../../context/AuthContext";
 import {
   createRole,
   deleteRole,
@@ -10,6 +11,7 @@ import {
 export function useRolesManagement() {
   const { rolesWithPermissions, loadRolesWithPermissions, loadingRoles } =
     getRoles();
+  const { bootstrap } = useContext(AuthContext);
   const [formOpen, setFormOpen] = useState(false);
   const [editingRole, setEditingRole] = useState(null);
   const [saving, setSaving] = useState(false);
@@ -51,6 +53,7 @@ export function useRolesManagement() {
         toast.success("Cargo criado com sucesso");
       }
       await loadRolesWithPermissions();
+      await bootstrap();
       setFormOpen(false);
     } catch (err) {
       toast.error("Erro ao salvar cargo");
