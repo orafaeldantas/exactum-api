@@ -58,7 +58,8 @@ export default function SessionsTab({ logout, navigate, isAdmin }) {
         <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <p className="max-w-md text-sm text-slate-600">
             Isso desconecta sua conta de qualquer dispositivo onde você esteja
-            logado, incluindo este. Você precisará entrar novamente.
+            logado, incluindo este. Você precisará entrar novamente depois de 15
+            minutos.
           </p>
           <button
             type="button"
