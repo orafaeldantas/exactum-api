@@ -23,6 +23,7 @@ export default function RolesTab() {
   } = useRolesManagement();
 
   const isAdminRole = (role) => role.name === "administrator";
+  const isRestrictedAccessRole = (role) => role.name === "acesso_restrito";
 
   return (
     <div>
@@ -64,6 +65,7 @@ export default function RolesTab() {
           <div className="divide-y divide-gray-100">
             {rolesWithPermissions.map((role) => {
               const isAdmin = isAdminRole(role);
+              const isRestrictedAccess = isRestrictedAccessRole(role);
               return (
                 <div
                   key={role.uuid}
@@ -74,8 +76,10 @@ export default function RolesTab() {
                       {humanize(role.name)}
                     </p>
                     <p className="text-xs text-slate-400">
-                      {role.permissions?.length ?? 0} permissão
-                      {(role.permissions?.length ?? 0) !== 1 ? "ões" : ""}
+                      {role.permissions?.length}
+                      {(role.permissions?.length ?? 0) !== 1
+                        ? " permissões"
+                        : " permissão"}
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
@@ -99,14 +103,16 @@ export default function RolesTab() {
                     <button
                       type="button"
                       onClick={() => setDeleteTarget(role)}
-                      disabled={isAdmin}
+                      disabled={isAdmin || isRestrictedAccess}
                       title={
                         isAdmin
                           ? "O cargo de administrador não pode ser excluído"
-                          : "Excluir cargo"
+                          : isRestrictedAccess
+                          ? "Este cargo não pode ser excluído"
+                          : "Excluir Cargo"
                       }
                       className={`flex h-9 w-9 items-center justify-center rounded-lg border transition-colors ${
-                        isAdmin
+                        isAdmin || isRestrictedAccess
                           ? "cursor-not-allowed border-gray-100 text-gray-300"
                           : "border-gray-200 bg-white text-slate-500 hover:border-red-200 hover:bg-red-50 hover:text-red-600"
                       }`}
