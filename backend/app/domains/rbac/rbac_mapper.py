@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
-from .rbac_dto import RoleWithPermissionsDTO
+from .rbac_dto import PermissionDict, RoleWithPermissionsDTO
 
 if TYPE_CHECKING:
     from app.models.rbac import Role
@@ -15,5 +15,5 @@ class RBACMapper:
         return RoleWithPermissionsDTO(
             uuid=entity.uuid,
             name=entity.name,
-            permissions=entity.permissions,
+            permissions=cast(list[PermissionDict], entity.permissions),
         )

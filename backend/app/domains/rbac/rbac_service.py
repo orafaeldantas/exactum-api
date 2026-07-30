@@ -138,9 +138,9 @@ class RBACService:
 
     def create_role(self, tenant_id: int, data: dict) -> None:
 
-        role_name: str = data.get("name")
+        role_name: str | None = data.get("name")
 
-        role_permissions: list[str] = data.get("permissions")
+        role_permissions: list[str] = cast(list[str], data.get("permissions", []))
 
         role: Role = Role(
             tenant_id=tenant_id,

@@ -18,6 +18,7 @@ from app.domains.rbac.rbac_schema import (
 )
 
 if TYPE_CHECKING:
+    from app.domains.rbac.rbac_dto import RoleWithPermissionsDTO
     from app.models.rbac import Role
 
 blp_rbac = Blueprint(
@@ -71,6 +72,6 @@ class RolesWithPermissionsRoute(MethodView):
     @permission_required("rbac:view")
     @blp_rbac.doc(security=[{"CookieAuth": []}])
     @blp_rbac.response(200, ResponseRoleWithPermissions(many=True))
-    def get(self) -> Sequence[Role]:
+    def get(self) -> Sequence[RoleWithPermissionsDTO]:
 
         return RBACController.get_roles_with_permissions()

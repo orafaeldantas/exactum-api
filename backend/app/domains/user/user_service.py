@@ -61,7 +61,9 @@ class UserService:
         DatabaseSession.add(user)
         DatabaseSession.flush()
 
-        role = RBACRepository().get_role_by_uuid(data.get("role_uuid"))
+        role_uuid: str | bool = str(data.get("role_uuid", False))
+
+        role = RBACRepository().get_role_by_uuid(cast(UUID, role_uuid), tenant_id)
 
         if not role:
             raise KeyError("Not found role")
@@ -142,7 +144,9 @@ class UserService:
                 raise KeyError("Not found role")
 
             if str(new_role) != str(current_role.uuid):
-                role = RBACRepository().get_role_by_uuid(new_role)
+                role = RBACRepository().get_role_by_uuid(
+                    cast(UUID, new_role), tenant_id
+                )
 
                 if not role:
                     raise KeyError("Not found role")
