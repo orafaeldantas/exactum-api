@@ -57,3 +57,9 @@ class UserBlocked(AppException):
     status_code = 403
 
     message = "user_blocked"
+
+
+class LoginSuspended(AppException):
+    status_code = 403
+
+    message = "login_temporarily_suspended"
