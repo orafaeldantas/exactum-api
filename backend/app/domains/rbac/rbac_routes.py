@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 from collections.abc import Sequence
 from typing import TYPE_CHECKING
+from uuid import UUID
 
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required
@@ -7,9 +10,15 @@ from flask_smorest import Blueprint
 
 from app.domains.rbac.decorators.permissions import permission_required
 from app.domains.rbac.rbac_controller import RBACController
-from app.domains.rbac.rbac_schema import ResponseRBACSchema
+from app.domains.rbac.rbac_schema import (
+    CreateRole,
+    ResponseRBACSchema,
+    ResponseRoleWithPermissions,
+    UpdateRole,
+)
 
 if TYPE_CHECKING:
+    from app.domains.rbac.rbac_dto import RoleWithPermissionsDTO
     from app.models.rbac import Role
 
 blp_rbac = Blueprint(
@@ -23,6 +32,46 @@ class RBACRoute(MethodView):
     @permission_required("rbac:view")
     @blp_rbac.doc(security=[{"CookieAuth": []}])
     @blp_rbac.response(200, ResponseRBACSchema(many=True))
-    def get(self) -> Sequence["Role"]:
+    def get(self) -> Sequence[Role]:
 
         return RBACController.get_roles()
+
+    @jwt_required()
+    @permission_required("rbac:create")
+    @blp_rbac.doc(security=[{"CookieAuth": []}])
+    @blp_rbac.arguments(CreateRole)
+    @blp_rbac.response(201)
+    def post(self, data: dict) -> None:
+
+        return RBACController.create_role(data)
+
+
+@blp_rbac.route("/roles/<uuid:role_uuid>")
+class RoleItem(MethodView):
+    @jwt_required()
+    @permission_required("rbac:update")
+    @blp_rbac.doc(security=[{"CookieAuth": []}])
+    @blp_rbac.arguments(UpdateRole)
+    @blp_rbac.response(200)
+    def patch(self, data: dict, role_uuid: UUID) -> None:
+
+        return RBACController.update_role(data, role_uuid)
+
+    @jwt_required()
+    @permission_required("rbac:delete")
+    @blp_rbac.doc(security=[{"CookieAuth": []}])
+    @blp_rbac.response(204)
+    def delete(self, role_uuid: UUID) -> None:
+
+        return RBACController.delete_role(role_uuid)
+
+
+@blp_rbac.route("/roles-permissions")
+class RolesWithPermissionsRoute(MethodView):
+    @jwt_required()
+    @permission_required("rbac:view")
+    @blp_rbac.doc(security=[{"CookieAuth": []}])
+    @blp_rbac.response(200, ResponseRoleWithPermissions(many=True))
+    def get(self) -> Sequence[RoleWithPermissionsDTO]:
+
+        return RBACController.get_roles_with_permissions()

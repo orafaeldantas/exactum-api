@@ -1,11 +1,17 @@
+from __future__ import annotations
+
 from collections.abc import Sequence
+from typing import cast
+from uuid import UUID
 
 from app.core.cache.cache_keys import CacheKeys
 from app.domains.rbac.constants import DEFAULT_ROLES
+from app.domains.rbac.rbac_dto import RoleWithPermissionsDTO
 from app.domains.rbac.rbac_exceptions import RoleNotFound
+from app.domains.rbac.rbac_mapper import RBACMapper
 from app.domains.rbac.rbac_repository import RBACRepository
 from app.extensions import db
-from app.models.rbac import Role, RolePermission, UserRole
+from app.models.rbac import Permission, Role, RolePermission, UserRole
 
 
 class RBACService:
@@ -129,3 +135,110 @@ class RBACService:
                         permission_id=permission.id,
                     )
                 )
+
+    def create_role(self, tenant_id: int, data: dict) -> None:
+
+        role_name: str | None = data.get("name")
+
+        role_permissions: list[str] = cast(list[str], data.get("permissions", []))
+
+        role: Role = Role(
+            tenant_id=tenant_id,
+            name=role_name,
+        )
+
+        db.session.add(role)
+        db.session.flush()
+
+        permissions: Sequence[Permission] = self.repo.get_permissions()
+
+        permissions_map = {permission.code: permission for permission in permissions}
+
+        for permission_code in role_permissions:
+            permission = permissions_map.get(permission_code)
+
+            if not permission:
+                raise ValueError(f"Permission '{role_permissions}' not found.")
+
+            db.session.add(
+                RolePermission(
+                    role_id=role.id,
+                    permission_id=permission.id,
+                )
+            )
+
+        db.session.commit()
+
+    def update_role(self, tenant_id: int, role_uuid: UUID, data: dict) -> None:
+
+        role: Role | None = self.repo.get_role_by_uuid(role_uuid, tenant_id)
+
+        if not role:
+            raise RoleNotFound()
+
+        new_role_name: str | None = data.get("new_name", None)
+
+        if new_role_name:
+            if role.name != new_role_name:
+                role.name = str(new_role_name)
+
+        new_permissions: list[str] | None = data.get("new_permissions", None)
+
+        if new_permissions:
+            self.repo.delete_role_permissions(role.id)
+
+            permissions: Sequence[Permission] = self.repo.get_permissions()
+
+            permissions_map = {
+                permission.code: permission for permission in permissions
+            }
+
+            for permission_code in new_permissions:
+                permission = permissions_map.get(permission_code)
+
+                if not permission:
+                    raise ValueError(f"Permission '{new_permissions}' not found.")
+
+                db.session.add(
+                    RolePermission(
+                        role_id=role.id,
+                        permission_id=permission.id,
+                    )
+                )
+
+        if new_permissions or new_role_name:
+            db.session.commit()
+
+    def delete_role(self, tenant_id: int, role_uuid: UUID) -> None:
+
+        role = self.repo.get_role_by_uuid(role_uuid, tenant_id)
+
+        if not role:
+            raise RoleNotFound()
+
+        users_role = list(self.repo.get_user_roles_by_role(role.id))
+
+        if users_role:
+            new_role = self.repo.get_role_by_name("acesso_restrito", tenant_id)
+
+            if not new_role:
+                raise RoleNotFound()
+
+            for user_role in users_role:
+                user_role.role_id = new_role.id
+
+        self.repo.delete_user_roles_by_role(role.id)
+        self.repo.delete_role_permissions(role.id)
+        self.repo.delete_role(role.id)
+
+    # ====================== GET ROLE WITH PERMISSIONS =======================
+    def get_roles_with_permissions(
+        self, tenant_id: int
+    ) -> Sequence[RoleWithPermissionsDTO]:
+        roles: Sequence[Role] = self.repo.get_roles_with_permissions(tenant_id)
+
+        roles_with_permissions: list[RoleWithPermissionsDTO] = [
+            RBACMapper.role_with_permissions_to_dto(r) for r in roles
+        ]
+
+        return cast(Sequence[RoleWithPermissionsDTO], roles_with_permissions)

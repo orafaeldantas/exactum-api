@@ -54,8 +54,7 @@ const CreateUser = lazy(() => import("./pages/users/CreateUser"));
 const EditUser = lazy(() => import("./pages/users/EditUser"));
 
 // Settings
-const UserSettings = lazy(() => import("./pages/settings/UserSettings"));
-const AdminSettings = lazy(() => import("./pages/settings/AdminSettings"));
+const Settings = lazy(() => import("./pages/settings/SettingsPage"));
 
 // Platform (system)
 const ManageCompanies = lazy(() => import("./pages/platform/ManageCompanies"));
@@ -160,20 +159,12 @@ function App() {
               <Route path="/product/edit/:uuid" element={<EditProduct />} />
             </Route>
 
-            {/* Sub-block: Critical Settings and Levels */}
+            {/* Sub-block: Settings */}
             <Route
-              path="/user-settings"
+              path="/settings"
               element={
                 <PrivateRoute requiredRole={"profile:view"}>
-                  <UserSettings />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/admin-settings"
-              element={
-                <PrivateRoute requiredRole={"tenant:update"}>
-                  <AdminSettings />
+                  <Settings />
                 </PrivateRoute>
               }
             />

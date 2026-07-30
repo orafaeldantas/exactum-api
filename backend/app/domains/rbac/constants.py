@@ -1,5 +1,5 @@
 DEFAULT_ROLES = {
-    "administrator": [
+    "administrador": [
         "product:view",
         "product:create",
         "product:update",
@@ -24,7 +24,7 @@ DEFAULT_ROLES = {
         "goal:delete",
         "rbac:view",
     ],
-    "sales_manager": [
+    "gerente_de_vendas": [
         "product:view",
         "sale:view",
         "sale:create",
@@ -37,7 +37,7 @@ DEFAULT_ROLES = {
         "profile:view",
         "profile:update",
     ],
-    "seller": [
+    "vendedor": [
         "product:view",
         "sale:view",
         "sale:create",
@@ -45,12 +45,16 @@ DEFAULT_ROLES = {
         "profile:view",
         "profile:update",
     ],
-    "stock_clerk": [
+    "estoquista": [
         "product:view",
         "product:create",
         "product:update",
         "inventory:view",
         "inventory:update",
+        "profile:view",
+        "profile:update",
+    ],
+    "acesso_restrito": [
         "profile:view",
         "profile:update",
     ],

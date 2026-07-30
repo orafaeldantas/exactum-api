@@ -234,6 +234,14 @@ export default function LoginForm() {
       if (err.status == 403 && err.data.error === "user_blocked") {
         setError("Seu usuário está bloqueado.");
       }
+      if (
+        err.status == 403 &&
+        err.data.error === "login_temporarily_suspended"
+      ) {
+        setError(
+          "Por motivos de segurança, sua sessão foi revogada e o acesso a esta conta está temporariamente suspenso."
+        );
+      }
     } finally {
       setLoading(false);
     }

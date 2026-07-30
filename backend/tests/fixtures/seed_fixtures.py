@@ -72,7 +72,7 @@ def default_user(db_session, default_tenant):
 def default_roles(default_tenant):
     roles = get_rbac_service().get_roles(default_tenant.id)
 
-    admin_role = next((role for role in roles if role.name == "administrator"), None)
+    admin_role = next((role for role in roles if role.name == "administrador"), None)
 
     return admin_role
 

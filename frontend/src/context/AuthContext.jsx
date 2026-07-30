@@ -82,6 +82,7 @@ export function AuthProvider({ children }) {
       setProfile(null);
       setTenantData(null);
       setUser(null);
+      setPermissions(null);
     }
   }
 
@@ -90,6 +91,7 @@ export function AuthProvider({ children }) {
     setProfile(null);
     setTenantData(null);
     setUser(null);
+    setPermissions(null);
   }
 
   useEffect(() => {

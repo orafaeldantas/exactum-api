@@ -10,12 +10,9 @@ from app.domains.rbac.rbac_exceptions import ForbiddenException
 
 
 def permission_required(permission: str):
-
     def decorator(func):
-
         @wraps(func)
         def wrapper(*args, **kwargs):
-
             if getattr(g, "is_super_admin", False):
                 return func(*args, **kwargs)
 
@@ -23,14 +20,13 @@ def permission_required(permission: str):
                 g.tenant_id, g.user_id
             )
 
-            if permission not in permissions:
-                raise ForbiddenException()
-
             if CacheService().get(CacheKeys.blocklist_tenant(g.tenant_id)):
                 raise RefreshTokenRevoked()
             elif CacheService().get(CacheKeys.blocklist_user(g.tenant_id, g.user_id)):
                 raise RefreshTokenRevoked()
             else:
+                if permission not in permissions:
+                    raise ForbiddenException()
                 return func(*args, **kwargs)
 
         return wrapper
