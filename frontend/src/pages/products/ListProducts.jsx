@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useContext, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 import { TenantContext } from "../../context/TenantContext";
 
 import ProductDetailsModal from "../../features/product-form/list-product-modal/ProductDetailsModal";
@@ -37,6 +38,10 @@ function RowActions({
 }) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef(null);
+
+  const { permissions } = useContext(AuthContext);
+
+  const hasPermission = (code) => permissions.includes(code);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -90,38 +95,45 @@ function RowActions({
               <Eye className="h-4 w-4 text-slate-400" />
               Detalhes
             </button>
-            <button
-              type="button"
-              role="menuitem"
-              onClick={() => runAndClose(onEdit)}
-              className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm font-medium text-slate-600 transition-colors duration-150 hover:bg-gray-50"
-            >
-              <Pencil className="h-4 w-4 text-slate-400" />
-              Editar
-            </button>
-            <button
-              type="button"
-              role="menuitem"
-              onClick={() => runAndClose(onToggleStatus)}
-              className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm font-medium text-slate-600 transition-colors duration-150 hover:bg-gray-50"
-            >
-              <Power
-                className={`h-4 w-4 ${
-                  product.is_active ? "text-amber-500" : "text-emerald-500"
-                }`}
-              />
-              {product.is_active ? "Desativar" : "Ativar"}
-            </button>
+            {hasPermission("product:update") && (
+              <button
+                type="button"
+                role="menuitem"
+                onClick={() => runAndClose(onEdit)}
+                className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm font-medium text-slate-600 transition-colors duration-150 hover:bg-gray-50"
+              >
+                <Pencil className="h-4 w-4 text-slate-400" />
+                Editar
+              </button>
+            )}
+            {hasPermission("product:update") && (
+              <button
+                type="button"
+                role="menuitem"
+                onClick={() => runAndClose(onToggleStatus)}
+                className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm font-medium text-slate-600 transition-colors duration-150 hover:bg-gray-50"
+              >
+                <Power
+                  className={`h-4 w-4 ${
+                    product.is_active ? "text-amber-500" : "text-emerald-500"
+                  }`}
+                />
+                {product.is_active ? "Desativar" : "Ativar"}
+              </button>
+            )}
+
             <div className="border-t border-gray-100" />
-            <button
-              type="button"
-              role="menuitem"
-              onClick={() => runAndClose(onDelete)}
-              className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm font-medium text-red-600 transition-colors duration-150 hover:bg-red-50"
-            >
-              <Trash2 className="h-4 w-4" />
-              Excluir
-            </button>
+            {hasPermission("product:delete") && (
+              <button
+                type="button"
+                role="menuitem"
+                onClick={() => runAndClose(onDelete)}
+                className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm font-medium text-red-600 transition-colors duration-150 hover:bg-red-50"
+              >
+                <Trash2 className="h-4 w-4" />
+                Excluir
+              </button>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
@@ -176,6 +188,7 @@ function TableSkeleton() {
 
 export default function ListProducts() {
   const { tenantData } = useContext(TenantContext);
+  const { permissions } = useContext(AuthContext);
 
   const lowStockThreshold = tenantData?.global_min_stock ?? 5;
 
@@ -443,13 +456,15 @@ export default function ListProducts() {
             Gerencie os produtos cadastrados no sistema
           </p>
         </div>
-        <button
-          className="flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-[0_8px_16px_-4px_rgba(37,99,235,0.3)] transition-all duration-200 hover:bg-blue-700 hover:shadow-[0_8px_20px_-2px_rgba(37,99,235,0.35)] active:scale-[0.98]"
-          onClick={() => navigate("/products/create")}
-        >
-          <Plus className="h-4 w-4" />
-          Criar Produto
-        </button>
+        {permissions.includes("product:create") && (
+          <button
+            className="flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-[0_8px_16px_-4px_rgba(37,99,235,0.3)] transition-all duration-200 hover:bg-blue-700 hover:shadow-[0_8px_20px_-2px_rgba(37,99,235,0.35)] active:scale-[0.98]"
+            onClick={() => navigate("/products/create")}
+          >
+            <Plus className="h-4 w-4" />
+            Criar Produto
+          </button>
+        )}
       </div>
 
       {/* Summary cards */}
