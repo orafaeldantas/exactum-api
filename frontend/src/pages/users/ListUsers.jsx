@@ -3,6 +3,8 @@ import { useContext, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
+//import { humanize } from "../../pages/settings/utils/humanize";
+import UserDetailsModal from "../../features/user-form/list-user-modal/UserDetailsModal";
 
 import {
   deleteUser,
@@ -12,6 +14,7 @@ import {
 
 import {
   AlertTriangle,
+  Eye,
   MoreVertical,
   Pencil,
   Plus,
@@ -57,9 +60,14 @@ function RowActions({
   onEdit,
   onToggleStatus,
   onDelete,
+  onDetails,
 }) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef(null);
+
+  const { permissions } = useContext(AuthContext);
+
+  const hasPermission = (code) => permissions.includes(code);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -112,41 +120,57 @@ function RowActions({
             <button
               type="button"
               role="menuitem"
-              title={restrictedTitle}
-              disabled={isRestricted}
-              onClick={() => runAndClose(onEdit)}
-              className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm font-medium text-slate-600 transition-colors duration-150 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent"
+              onClick={() => runAndClose(onDetails)}
+              className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm font-medium text-slate-600 transition-colors duration-150 hover:bg-gray-50"
             >
-              <Pencil className="h-4 w-4 text-slate-400" />
-              Editar
+              <Eye className="h-4 w-4 text-slate-400" />
+              Detalhes
             </button>
-            <button
-              type="button"
-              role="menuitem"
-              title={restrictedTitle}
-              disabled={isRestricted}
-              onClick={() => runAndClose(onToggleStatus)}
-              className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm font-medium text-slate-600 transition-colors duration-150 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent"
-            >
-              <Power
-                className={`h-4 w-4 ${
-                  user.is_active ? "text-amber-500" : "text-emerald-500"
-                }`}
-              />
-              {user.is_active ? "Desativar" : "Ativar"}
-            </button>
+
+            {hasPermission("user:update") && (
+              <button
+                type="button"
+                role="menuitem"
+                title={restrictedTitle}
+                disabled={isRestricted}
+                onClick={() => runAndClose(onEdit)}
+                className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm font-medium text-slate-600 transition-colors duration-150 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent"
+              >
+                <Pencil className="h-4 w-4 text-slate-400" />
+                Editar
+              </button>
+            )}
+            {hasPermission("user:update") && (
+              <button
+                type="button"
+                role="menuitem"
+                title={restrictedTitle}
+                disabled={isRestricted}
+                onClick={() => runAndClose(onToggleStatus)}
+                className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm font-medium text-slate-600 transition-colors duration-150 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent"
+              >
+                <Power
+                  className={`h-4 w-4 ${
+                    user.is_active ? "text-amber-500" : "text-emerald-500"
+                  }`}
+                />
+                {user.is_active ? "Desativar" : "Ativar"}
+              </button>
+            )}
             <div className="border-t border-gray-100" />
-            <button
-              type="button"
-              role="menuitem"
-              title={restrictedTitle}
-              disabled={isRestricted}
-              onClick={() => runAndClose(onDelete)}
-              className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm font-medium text-red-600 transition-colors duration-150 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent"
-            >
-              <Trash2 className="h-4 w-4" />
-              Excluir
-            </button>
+            {hasPermission("user:delete") && (
+              <button
+                type="button"
+                role="menuitem"
+                title={restrictedTitle}
+                disabled={isRestricted}
+                onClick={() => runAndClose(onDelete)}
+                className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm font-medium text-red-600 transition-colors duration-150 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent"
+              >
+                <Trash2 className="h-4 w-4" />
+                Excluir
+              </button>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
@@ -177,7 +201,7 @@ export default function ListUsers() {
   const { users = [], loadUsers, loading } = getUsers();
 
   const [error, setError] = useState("");
-  const { impersonateMode } = useContext(AuthContext);
+  const { impersonateMode, permissions } = useContext(AuthContext);
 
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -188,6 +212,9 @@ export default function ListUsers() {
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
+
+  // Details Modal State
+  const [selectedUser, setSelectedUser] = useState(null);
 
   const usersPerPage = 11;
   const navigate = useNavigate();
@@ -277,6 +304,16 @@ export default function ListUsers() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6 relative">
+      <UserDetailsModal
+        user={selectedUser}
+        isOpen={Boolean(selectedUser)}
+        onClose={() => setSelectedUser(null)}
+        onEdit={
+          permissions.includes("user:update")
+            ? (user) => navigate(`/user/edit/${user.uuid}`)
+            : false
+        }
+      />
       {/* STATUS MODAL */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -388,13 +425,15 @@ export default function ListUsers() {
             Gerencie as permissões e acessos dos usuários
           </p>
         </div>
-        <button
-          className="flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-[0_8px_16px_-4px_rgba(37,99,235,0.3)] transition-all duration-200 hover:bg-blue-700 hover:shadow-[0_8px_20px_-2px_rgba(37,99,235,0.35)] active:scale-[0.98]"
-          onClick={() => navigate("/users/create")}
-        >
-          <Plus className="h-4 w-4" />
-          Criar Usuário
-        </button>
+        {permissions.includes("users:create") && (
+          <button
+            className="flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-[0_8px_16px_-4px_rgba(37,99,235,0.3)] transition-all duration-200 hover:bg-blue-700 hover:shadow-[0_8px_20px_-2px_rgba(37,99,235,0.35)] active:scale-[0.98]"
+            onClick={() => navigate("/users/create")}
+          >
+            <Plus className="h-4 w-4" />
+            Criar Usuário
+          </button>
+        )}
       </div>
 
       {/* Error Display */}
@@ -486,6 +525,7 @@ export default function ListUsers() {
                           user={user}
                           isRestricted={isRestricted}
                           isLoading={loadingUserId === user.uuid}
+                          onDetails={() => setSelectedUser(user)}
                           onEdit={() => navigate(`/users/edit/${user.uuid}`)}
                           onToggleStatus={() => openConfirmModal(user)}
                           onDelete={() => openDeleteModal(user)}
