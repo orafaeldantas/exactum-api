@@ -341,7 +341,11 @@ export default function ListProducts() {
         product={selectedProduct}
         isOpen={Boolean(selectedProduct)}
         onClose={() => setSelectedProduct(null)}
-        onEdit={(product) => navigate(`/product/edit/${product.uuid}`)}
+        onEdit={
+          permissions.includes("product:update")
+            ? (product) => navigate(`/product/edit/${product.uuid}`)
+            : false
+        }
       />
 
       {/* STATUS MODAL */}
