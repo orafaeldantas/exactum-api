@@ -1,19 +1,17 @@
-import { useEffect, useContext } from "react"; 
-import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { TenantContext } from "../../../context/TenantContext";
 import {
-  X,
-  Package,
-  AlignLeft,
-  DollarSign,
-  Boxes,
-  Tag,
-  LayoutGrid,
   Activity,
+  AlignLeft,
+  Boxes,
+  LayoutGrid,
+  Package,
   Pencil,
+  Tag,
+  X,
 } from "lucide-react";
-
+import { useContext, useEffect } from "react";
+import { createPortal } from "react-dom";
+import { TenantContext } from "../../../context/TenantContext";
 
 function formatPrice(value) {
   const number = Number(value);
@@ -28,19 +26,26 @@ function InfoRow({ icon: Icon, label, children }) {
         <Icon className="h-4 w-4" />
       </div>
       <div className="min-w-0">
-        <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">{label}</p>
-        <div className="mt-0.5 text-sm font-semibold text-slate-800">{children}</div>
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+          {label}
+        </p>
+        <div className="mt-0.5 text-sm font-semibold text-slate-800">
+          {children}
+        </div>
       </div>
     </div>
   );
 }
 
-export default function ProductDetailsModal({ product, isOpen, onClose, onEdit }) {
-
+export default function ProductDetailsModal({
+  product,
+  isOpen,
+  onClose,
+  onEdit,
+}) {
   const { tenantData } = useContext(TenantContext);
 
-  const lowStockThreshold = tenantData?.global_min_stock ?? 5; 
-
+  const lowStockThreshold = tenantData?.global_min_stock ?? 5;
 
   useEffect(() => {
     if (!isOpen) return;
@@ -60,7 +65,8 @@ export default function ProductDetailsModal({ product, isOpen, onClose, onEdit }
 
   if (typeof document === "undefined") return null;
 
-  const isLowStock = product && Number(product.stock_quantity) <= lowStockThreshold;
+  const isLowStock =
+    product && Number(product.stock_quantity) <= lowStockThreshold;
   const isActive = product?.is_active ?? product?.isActive ?? true;
 
   return createPortal(
@@ -96,13 +102,18 @@ export default function ProductDetailsModal({ product, isOpen, onClose, onEdit }
                   <Package className="h-5 w-5" />
                 </div>
                 <div className="min-w-0">
-                  <h2 id="product-modal-title" className="truncate text-lg font-bold tracking-tight text-slate-900">
+                  <h2
+                    id="product-modal-title"
+                    className="truncate text-lg font-bold tracking-tight text-slate-900"
+                  >
                     {product.name || "Produto sem nome"}
                   </h2>
                   <div className="mt-1 flex flex-wrap items-center gap-1.5">
                     <span
                       className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${
-                        isActive ? "bg-emerald-50 text-emerald-600" : "bg-gray-100 text-slate-500"
+                        isActive
+                          ? "bg-emerald-50 text-emerald-600"
+                          : "bg-gray-100 text-slate-500"
                       }`}
                     >
                       {isActive ? "Ativo" : "Inativo"}
@@ -130,15 +141,22 @@ export default function ProductDetailsModal({ product, isOpen, onClose, onEdit }
             <div className="max-h-[65vh] space-y-6 overflow-y-auto px-6 py-6">
               {/* Preço em destaque */}
               <div className="rounded-xl bg-blue-50/60 p-4">
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-blue-500">Preço</p>
-                <p className="mt-0.5 text-2xl font-black text-blue-700" style={{ fontVariantNumeric: "tabular-nums" }}>
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-blue-500">
+                  Preço
+                </p>
+                <p
+                  className="mt-0.5 text-2xl font-black text-blue-700"
+                  style={{ fontVariantNumeric: "tabular-nums" }}
+                >
                   {formatPrice(product.price)}
                 </p>
               </div>
 
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <InfoRow icon={Boxes} label="Estoque">
-                  <span className={isLowStock ? "text-amber-600" : "text-slate-800"}>
+                  <span
+                    className={isLowStock ? "text-amber-600" : "text-slate-800"}
+                  >
                     {product.stock_quantity ?? 0} unidades
                   </span>
                 </InfoRow>
@@ -158,7 +176,9 @@ export default function ProductDetailsModal({ product, isOpen, onClose, onEdit }
 
               {product.description && (
                 <InfoRow icon={AlignLeft} label="Descrição">
-                  <p className="font-medium leading-relaxed text-slate-600">{product.description}</p>
+                  <p className="font-medium leading-relaxed text-slate-600">
+                    {product.description}
+                  </p>
                 </InfoRow>
               )}
             </div>
