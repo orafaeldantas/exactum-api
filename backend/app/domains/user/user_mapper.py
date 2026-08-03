@@ -13,6 +13,7 @@ class UserMapper:
             username=user_entity.username,
             is_active=user_entity.is_active,
             email=user_entity.email,
+            created_at=user_entity.created_at,
             role=role_entity.name,
             role_uuid=role_entity.uuid,
         )
