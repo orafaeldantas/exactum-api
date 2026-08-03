@@ -24,6 +24,8 @@ class UserResponseSchema(BaseUserSchema):
 
     role_uuid = fields.UUID(dump_only=True)
 
+    created_at = fields.DateTime()
+
 
 class UpdateUserSchema(Schema):
     username = fields.Str()

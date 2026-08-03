@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import datetime
 from uuid import UUID
 
 
@@ -6,6 +7,7 @@ from uuid import UUID
 class GetUserDTO:
     uuid: UUID
     username: str | None
+    created_at: datetime | None
     is_active: bool | None
     email: str | None
     role: str | None
