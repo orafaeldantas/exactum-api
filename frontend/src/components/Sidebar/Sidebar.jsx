@@ -71,7 +71,7 @@ function Sidebar() {
   });
   const { user, impersonateMode, permissions } = useContext(AuthContext);
   const { superAdmin } = useContext(SuperAdminContext);
-  const roles = permissions;
+  const permissions_code = permissions;
 
   useEffect(() => {
     localStorage.setItem(COLLAPSE_STORAGE_KEY, String(collapsed));
@@ -164,26 +164,34 @@ function Sidebar() {
 
         {!isSuperAdmin && (
           <>
-            <NavItem
-              to="/dashboard"
-              icon={LayoutDashboard}
-              label="Dashboard"
-              collapsed={collapsed}
-            />
-            <NavItem
-              to="/products"
-              icon={Box}
-              label="Produtos"
-              collapsed={collapsed}
-            />
-            <NavItem
-              to="/low-stock"
-              icon={CircleDot}
-              label="Estoque Baixo"
-              collapsed={collapsed}
-            />
+            {permissions_code.includes("analytics:view") && (
+              <NavItem
+                to="/dashboard"
+                icon={LayoutDashboard}
+                label="Dashboard"
+                collapsed={collapsed}
+              />
+            )}
 
-            {roles.includes("user:view") && (
+            {permissions_code.includes("product:view") && (
+              <NavItem
+                to="/products"
+                icon={Box}
+                label="Produtos"
+                collapsed={collapsed}
+              />
+            )}
+
+            {permissions_code.includes("inventory:view") && (
+              <NavItem
+                to="/low-stock"
+                icon={CircleDot}
+                label="Estoque Baixo"
+                collapsed={collapsed}
+              />
+            )}
+
+            {permissions_code.includes("user:view") && (
               <NavItem
                 to="/users"
                 icon={Users}
@@ -198,14 +206,17 @@ function Sidebar() {
               label="PDV"
               collapsed={collapsed}
             />
-            <NavItem
-              to="/sales"
-              icon={Receipt}
-              label="Histórico de Vendas"
-              collapsed={collapsed}
-            />
 
-            {roles.includes("analytics:view") && (
+            {permissions_code.includes("sale:view") && (
+              <NavItem
+                to="/sales"
+                icon={Receipt}
+                label="Histórico de Vendas"
+                collapsed={collapsed}
+              />
+            )}
+
+            {permissions_code.includes("analytics:view") && (
               <NavItem
                 to="/logs"
                 icon={ScrollText}
