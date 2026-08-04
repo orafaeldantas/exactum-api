@@ -1,12 +1,6 @@
 import { lazy, Suspense, useContext, useMemo } from "react";
 import { Toaster } from "react-hot-toast";
-import {
-  Navigate,
-  Route,
-  Routes,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { AuthContext } from "./context/AuthContext";
 
 import GlobalLoader from "./components/Loader/GlobalLoader";
@@ -77,13 +71,9 @@ const WelcomeFallback = lazy(() => import("./pages/generic/WelcomeFallback"));
 function App() {
   const { permissions, user, loadingLogout } = useContext(AuthContext);
 
-  const navigate = useNavigate();
-  const location = useLocation();
-
   const defaultRoute = useMemo(() => {
     if (!user) return null;
 
-    // Se permissions for null, undefined ou array vazio
     if (!permissions || permissions.length === 0) return "/welcome";
 
     if (permissions.includes("analytics:view")) return "/dashboard";
