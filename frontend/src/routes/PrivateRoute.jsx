@@ -19,7 +19,6 @@ export default function PrivateRoute({ children, requiredRole }) {
       if (clearLocalSession) {
         clearLocalSession();
       }
-      //navigate("/login", { replace: true });
     };
 
     window.addEventListener("auth:session-expired", handleSessionExpired);
@@ -55,7 +54,11 @@ export default function PrivateRoute({ children, requiredRole }) {
   ) {
     if (superAdmin) return <Navigate to="/platform/dashboard" replace />;
 
-    return <Navigate to="/dashboard" replace />;
+    if (requiredRole === "warningsRoutes") {
+      return children ? children : <Outlet />;
+    }
+
+    return <Navigate to="/" replace />;
   }
 
   return children ? children : <Outlet />;
