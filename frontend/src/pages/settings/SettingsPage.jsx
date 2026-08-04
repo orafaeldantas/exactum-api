@@ -19,7 +19,7 @@ export default function SettingsPage() {
   const { tenantData } = useContext(TenantContext);
   const navigate = useNavigate();
 
-  const isAdmin = user?.role?.name === "administrator";
+  const isAdmin = user?.role?.name === "administrador";
   const [activeTab, setActiveTab] = useState("perfil");
 
   const profileHook = useProfileForm(profile, tenantData, bootstrap);
