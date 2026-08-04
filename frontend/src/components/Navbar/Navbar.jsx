@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { SuperAdminContext } from "../../context/SuperAdminContext";
 import { UserContext } from "../../context/UserContext";
+import { humanize } from "../../pages/settings/utils/humanize";
 
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -15,13 +16,12 @@ import {
   Sparkles,
 } from "lucide-react";
 
-const ROLES = {
-  administrator: "Administrador",
-  sales_manager: "Gerente de Vendas",
-  seller: "Vendedor",
-  stock_clerk: "Estoquista",
-  super_admin: "Administrador do Sistema",
+const show_role = (role) => {
+  if (role === "super_admin") return "Administrador do Sistema";
+  return humanize(role);
 };
+
+//super_admin: "Administrador do Sistema"
 
 function Navbar() {
   const { user, logout } = useContext(AuthContext);
@@ -38,7 +38,7 @@ function Navbar() {
 
   function handleLogout() {
     logout();
-    navigate("/");
+    navigate("/login");
   }
 
   function closeMenu() {
@@ -69,7 +69,7 @@ function Navbar() {
 
   const userInitial = profile?.username?.charAt(0)?.toUpperCase() || "U";
 
-  const isAdmin = user?.role?.name === "administrator";
+  const isAdmin = user?.role?.name === "administrador";
   const isSuperAdmin = superAdmin ?? false;
 
   const roleBadgeClass = isSuperAdmin
@@ -182,7 +182,7 @@ function Navbar() {
                             {(isAdmin || isSuperAdmin) && (
                               <ShieldCheck className="h-3 w-3" />
                             )}
-                            {ROLES[user?.role?.name] || "Usuário"}
+                            {show_role(user?.role?.name) || "Usuário"}
                           </span>
                         </div>
                       </div>
