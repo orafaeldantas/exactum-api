@@ -1,6 +1,13 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useContext, useMemo } from "react";
 import { Toaster } from "react-hot-toast";
-import { Route, Routes } from "react-router-dom";
+import {
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
+import { AuthContext } from "./context/AuthContext";
 
 import GlobalLoader from "./components/Loader/GlobalLoader";
 
@@ -63,7 +70,32 @@ const InfraHealth = lazy(() => import("./pages/platform/InfraHealth"));
 const SystemLogs = lazy(() => import("./pages/platform/SystemLogs"));
 const PlatformEvents = lazy(() => import("./pages/platform/PlatformEvents"));
 
+// Generic
+const NotFound = lazy(() => import("./pages/generic/NotFound"));
+const WelcomeFallback = lazy(() => import("./pages/generic/WelcomeFallback"));
+
 function App() {
+  const { permissions, user, loadingLogout } = useContext(AuthContext);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const defaultRoute = useMemo(() => {
+    if (!user) return null;
+
+    // Se permissions for null, undefined ou array vazio
+    if (!permissions || permissions.length === 0) return "/welcome";
+
+    if (permissions.includes("analytics:view")) return "/dashboard";
+    if (permissions.includes("product:view")) return "/products";
+    if (permissions.includes("user:view")) return "/users";
+    if (permissions.includes("profile:view")) return "/settings";
+
+    return "/welcome";
+  }, [permissions]);
+
+  if (loadingLogout) return <GlobalLoader message="Saindo..." />;
+
   return (
     <>
       <Toaster
@@ -76,6 +108,23 @@ function App() {
 
       <Suspense fallback={<GlobalLoader message="Carregando..." />}>
         <Routes>
+          <Route
+            path="/"
+            element={user ? <Navigate to={defaultRoute} replace /> : <Home />}
+          />
+
+          <Route
+            path="/login"
+            element={user ? <Navigate to={defaultRoute} replace /> : <Login />}
+          />
+
+          <Route element={<InfoLayout />}>
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/support" element={<SupportPage />} />
+          </Route>
+
           {/* 1. PUBLIC / INSTITUTIONAL ROUTES */}
           <Route element={<InfoLayout />}>
             <Route path="/about" element={<AboutPage />} />
@@ -85,10 +134,8 @@ function App() {
           </Route>
 
           <Route element={<PublicRoute />}>
-            <Route path="/" element={<Home />} />
             <Route path="/create-tenant" element={<CreateTenant />} />
             <Route path="/success" element={<SuccessPage />} />
-            <Route path="/login" element={<Login />} />
           </Route>
 
           {/* 2. PROTECTED ROUTES WITHOUT GLOBAL LAYOUT */}
@@ -97,6 +144,19 @@ function App() {
           </Route>
           <Route element={<PrivateRoute requiredRole={"profile:update"} />}>
             <Route path="/reset-password" element={<ResetPassword />} />
+          </Route>
+
+          <Route element={<PrivateRoute requiredRole={"warningsRoutes"} />}>
+            <Route
+              path="/welcome"
+              element={
+                user && permissions?.length > 0 ? (
+                  <Navigate to={defaultRoute} replace />
+                ) : (
+                  <WelcomeFallback />
+                )
+              }
+            />
           </Route>
 
           {/* 3. INTERNAL SYSTEM (DASHBOARD & BACK OFFICE WITH LAYOUT AND SESSION FILTER) */}
@@ -210,6 +270,10 @@ function App() {
                 </PrivateRoute>
               }
             />
+          </Route>
+          {/* NOT FOUND PAGE*/}
+          <Route element={<PrivateRoute requiredRole={"warningsRoutes"} />}>
+            <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
       </Suspense>
