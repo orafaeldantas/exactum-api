@@ -11,6 +11,7 @@ export function AuthProvider({ children }) {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
+  const [loadingLogout, setLoadingLogout] = useState(false);
   const [user, setUser] = useState(null);
   const [impersonateMode, setImpersonateMode] = useState(false);
   const [permissions, setPermissions] = useState("");
@@ -70,6 +71,7 @@ export function AuthProvider({ children }) {
 
   async function logout() {
     try {
+      setLoadingLogout(true);
       const response = await apiFetch("/auth/logout", {
         method: "POST",
       });
@@ -83,6 +85,7 @@ export function AuthProvider({ children }) {
       setTenantData(null);
       setUser(null);
       setPermissions(null);
+      setLoadingLogout(false);
     }
   }
 
@@ -109,6 +112,7 @@ export function AuthProvider({ children }) {
         bootstrap,
         permissions,
         clearLocalSession,
+        loadingLogout,
       }}
     >
       {children}
