@@ -84,7 +84,7 @@ function App() {
     return "/welcome";
   }, [permissions]);
 
-  if (loadingLogout) return <GlobalLoader message="Saindo..." />;
+  if (loadingLogout) return <GlobalLoader message="Carregando..." />;
 
   return (
     <>
