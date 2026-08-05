@@ -23,7 +23,7 @@ export function useRolesManagement() {
   }, []);
 
   const adminRole = useMemo(
-    () => rolesWithPermissions.find((r) => r.name === "administrator"),
+    () => rolesWithPermissions.find((r) => r.name === "administrador"),
     [rolesWithPermissions]
   );
 

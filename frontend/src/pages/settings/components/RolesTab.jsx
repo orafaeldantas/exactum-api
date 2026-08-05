@@ -22,7 +22,7 @@ export default function RolesTab() {
     handleConfirmDelete,
   } = useRolesManagement();
 
-  const isAdminRole = (role) => role.name === "administrator";
+  const isAdminRole = (role) => role.name === "administrador";
   const isRestrictedAccessRole = (role) => role.name === "acesso_restrito";
 
   return (
