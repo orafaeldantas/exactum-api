@@ -111,3 +111,9 @@ gunicorn.pid
 # Mac/Linux hidden files
 # =========================
 .*.sw?
+
+# =========================
+# SSL
+# =========================
+nginx/ssl/*
+!nginx/ssl/.gitkeep
