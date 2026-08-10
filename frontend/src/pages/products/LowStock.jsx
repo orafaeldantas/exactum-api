@@ -100,7 +100,7 @@ export default function LowStockProducts() {
                   <tr key={product.id} className="transition-colors hover:bg-gray-50/50">
                     <td className="px-6 py-4">
                       <div className="font-semibold text-gray-800">{product.name}</div>
-                      <div className="text-xs text-gray-400">ID: #{product.id}</div>
+                      <div className="text-xs text-gray-400">ID: {product.uuid}</div>
                     </td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-bold ${product.stock_quantity <= 3 ? 'text-red-700 bg-red-100' : 'text-orange-700 bg-orange-100'}`}>
@@ -124,7 +124,7 @@ export default function LowStockProducts() {
                       <div className="flex justify-end gap-2">
                         <button 
                           className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-all"
-                          onClick={() => navigate(`/product/edit/${product.id}`)}
+                          onClick={() => navigate(`/product/edit/${product.uuid}`)}
                         >
                           <Pencil className="w-3.5 h-3.5" /> Repor
                         </button>

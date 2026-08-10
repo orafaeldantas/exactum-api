@@ -42,7 +42,7 @@ export default function ResetPassword() {
 
     try {
 
-      const response = await apiFetch(`/users/new_password/${profile.id}`, {
+      const response = await apiFetch(`/users/new_password/${profile.uuid}`, {
         method: "PATCH",
         body: JSON.stringify(data)
       });

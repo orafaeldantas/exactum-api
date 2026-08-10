@@ -7,12 +7,19 @@ from flask_smorest import Api
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from app.cli import register_cli
+from app.core.cache.cache_service import InitCache
+from app.core.middlewares.context import init_request_context
 from app.database.tenant_filter import init_tenant_filter
 from app.exceptions.handlers import register_error_handlers
-from app.middlewares.context import init_request_context
+from app.exceptions.jwt_handlers import register_jwt_handlers
+from app.extensions import db, init_redis, jwt, migrate
+from app.infra.observability.request_logger.config import (
+    setup_request_logger,
+)
+from app.infra.observability.request_logger.logger import (
+    init_request_logger,
+)
 from config import Config
-
-from .extensions import db, jwt, migrate
 
 
 def create_app(config=None):
@@ -30,31 +37,56 @@ def create_app(config=None):
         level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s"
     )
 
+    ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS")
+    if not ALLOWED_ORIGINS:
+        raise RuntimeError(
+            "CRITICAL ERROR: Variable 'ALLOWED_ORIGINS' "
+            "not configured in the environment!"
+        )
+
     CORS(
         app,
-        resources={r"/*": {"origins": "*"}},
+        resources={
+            r"/*": {
+                "origins": ALLOWED_ORIGINS,
+                "allow_headers": ["Content-Type", "Authorization"],
+                "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+                "expose_headers": [],
+                "max_age": 600,
+            }
+        },
         supports_credentials=True,
-        allow_headers=["Content-Type", "Authorization"],
-        methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     )
 
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
     init_request_context(app)
+    init_request_logger(app)
     init_tenant_filter(db)
 
-    if os.getenv("FLASK_ENV") == "production":
-        app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1)
+    init_redis(app)
+    InitCache.init_app(app.extensions["redis"])
 
-    from app.domains.super_admin.super_admin_routes import blp_super_admin
-    from app.routes.analytics.revenue_analytics_routes import blp_revenue_analytics
-    from app.routes.analytics.sold_item_analytics_routes import blp_item_analytics
-    from app.routes.auth_routes import blp_auth
-    from app.routes.product_routes import blp_products
-    from app.routes.sale_routes import blp_sales
-    from app.routes.tenant_routes import blp_tenants
-    from app.routes.user_routes import blp_users
+    setup_request_logger()
+
+    register_jwt_handlers(jwt)
+
+    # x_for2 -> necessary to get the real IP,
+    # since there are two layers of proxies: Cloudflare and Nginx.
+    if os.getenv("FLASK_ENV") == "production":
+        app.wsgi_app = ProxyFix(app.wsgi_app, x_for=2, x_proto=1, x_host=1, x_port=1)
+
+    from app.core.monitoring.health_routes import blp_health
+    from app.domains.auth.auth_routes import blp_auth
+    from app.domains.platform.platform_routes import blp_platform
+    from app.domains.product.product_routes import blp_products
+    from app.domains.rbac.rbac_routes import blp_rbac
+    from app.domains.sale.routes.revenue_analytics_routes import blp_revenue_analytics
+    from app.domains.sale.routes.sale_routes import blp_sales
+    from app.domains.sale.routes.sold_item_analytics_routes import blp_item_analytics
+    from app.domains.tenant.tenant_routes import blp_tenants
+    from app.domains.user.user_routes import blp_users
 
     app.url_map.strict_slashes = False
 
@@ -65,6 +97,8 @@ def create_app(config=None):
     api.register_blueprint(blp_sales)
     api.register_blueprint(blp_item_analytics)
     api.register_blueprint(blp_revenue_analytics)
-    api.register_blueprint(blp_super_admin)
+    api.register_blueprint(blp_platform)
+    api.register_blueprint(blp_health)
+    api.register_blueprint(blp_rbac)
 
     return app

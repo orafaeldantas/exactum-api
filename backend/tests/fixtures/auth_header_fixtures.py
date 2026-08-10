@@ -9,7 +9,3 @@ def auth_headers(client, default_user):
     )
 
     assert response.status_code == 200, f"Login failure: {response.json}"
-
-    token = response.json["access_token"]
-
-    return {"Authorization": f"Bearer {token}"}

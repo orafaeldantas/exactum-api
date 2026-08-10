@@ -17,6 +17,9 @@ dependencies = [
     "psycopg2-binary==2.9.11",
     "python-dotenv>=1.2.2",
     "gunicorn==26.0.0",
+    "redis>=8.0.0",
+    "uuid6>=2025.0.1",
+    "msgpack>=1.2.1",
 ]
 
 [dependency-groups]

@@ -1,20 +1,23 @@
-import { lazy, Suspense } from "react";
-import { Routes, Route } from "react-router-dom";
+import { lazy, Suspense, useContext, useMemo } from "react";
 import { Toaster } from "react-hot-toast";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { AuthContext } from "./context/AuthContext";
 
 import GlobalLoader from "./components/Loader/GlobalLoader";
 
 // Layouts and Security Routes
+import InfoLayout from "./layouts/InfoLayout";
 import Layout from "./layouts/MainLayout";
-import InfoLayout from "./layouts/InfoLayout"; 
-import RoleRoute from "./routes/RoleRoute";
+import PrivateRoute from "./routes/PrivateRoute";
+import PublicRoute from "./routes/PublicRoute";
 
 // ======= On-Demand Loading (Lazy Pages) =======
 // Public & Institutional
 const Home = lazy(() => import("./pages/home/Home"));
 const AboutPage = lazy(() => import("./pages/informations/AboutPage"));
-const PrivacyPage = lazy(() => import("./pages/informations/Privacy"));
-const TermsPage = lazy(() => import("./pages/informations/Terms"));
+const PrivacyPage = lazy(() => import("./pages/informations/PrivacyPage"));
+const TermsPage = lazy(() => import("./pages/informations/TermsPage"));
+const SupportPage = lazy(() => import("./pages/informations/SupportPage"));
 
 // Authentication
 const Login = lazy(() => import("./pages/auth/Login"));
@@ -27,7 +30,12 @@ const SuccessPage = lazy(() => import("./pages/tenants/SuccessPage"));
 // Dashboard & Metrics
 const Dashboard = lazy(() => import("./pages/dashboard/Dashboard"));
 const RevenuePeriod = lazy(() => import("./pages/revenue/RevenuePeriod"));
-const AverageTicketAnalytics = lazy(() => import("./pages/revenue/AverageTicket"));
+const AverageTicketAnalytics = lazy(() =>
+  import("./pages/revenue/AverageTicket")
+);
+
+// Logs
+const AuditLogs = lazy(() => import("./pages/logs-tenant/AuditLogs"));
 
 // Sales & PDV
 const LocalSales = lazy(() => import("./pages/pdv/LocalSales"));
@@ -45,75 +53,217 @@ const LowStockProducts = lazy(() => import("./pages/products/LowStock"));
 const ListUsers = lazy(() => import("./pages/users/ListUsers"));
 const CreateUser = lazy(() => import("./pages/users/CreateUser"));
 const EditUser = lazy(() => import("./pages/users/EditUser"));
-const ManageCompanies = lazy(() => import("./pages/manage/ManageCompanies"));
 
 // Settings
-const UserSettings = lazy(() => import("./pages/settings/UserSettings"));
-const AdminSettings = lazy(() => import("./pages/settings/AdminSettings"));
+const Settings = lazy(() => import("./pages/settings/SettingsPage"));
 
+// Platform (system)
+const ManageCompanies = lazy(() => import("./pages/platform/ManageCompanies"));
+const SystemDashboard = lazy(() => import("./pages/platform/SystemDashboard"));
+const InfraHealth = lazy(() => import("./pages/platform/InfraHealth"));
+const SystemLogs = lazy(() => import("./pages/platform/SystemLogs"));
+const PlatformEvents = lazy(() => import("./pages/platform/PlatformEvents"));
+
+// Generic
+const NotFound = lazy(() => import("./pages/generic/NotFound"));
+const WelcomeFallback = lazy(() => import("./pages/generic/WelcomeFallback"));
 
 function App() {
+  const { permissions, user, loadingLogout } = useContext(AuthContext);
+
+  const defaultRoute = useMemo(() => {
+    if (!user) return null;
+
+    if (!permissions || permissions.length === 0) return "/welcome";
+
+    if (permissions.includes("analytics:view")) return "/dashboard";
+    if (permissions.includes("product:view")) return "/products";
+    if (permissions.includes("user:view")) return "/users";
+    if (permissions.includes("profile:view")) return "/settings";
+
+    return "/welcome";
+  }, [permissions]);
+
+  if (loadingLogout) return <GlobalLoader message="Carregando..." />;
+
   return (
     <>
-      <Toaster 
-        position="top-right" 
+      <Toaster
+        position="top-right"
         toastOptions={{
           duration: 3000,
-          style: { background: "#1e293b", color: "#fff" }
+          style: { background: "#1e293b", color: "#fff" },
         }}
       />
 
-      <Suspense fallback={<GlobalLoader message="Carregando Exactum..." />}>
+      <Suspense fallback={<GlobalLoader message="Carregando..." />}>
         <Routes>
-          
+          <Route
+            path="/"
+            element={user ? <Navigate to={defaultRoute} replace /> : <Home />}
+          />
+
+          <Route
+            path="/login"
+            element={user ? <Navigate to={defaultRoute} replace /> : <Login />}
+          />
+
+          <Route element={<InfoLayout />}>
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/support" element={<SupportPage />} />
+          </Route>
+
           {/* 1. PUBLIC / INSTITUTIONAL ROUTES */}
           <Route element={<InfoLayout />}>
             <Route path="/about" element={<AboutPage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/terms" element={<TermsPage />} />
+            <Route path="/support" element={<SupportPage />} />
           </Route>
 
-          <Route path="/" element={<Home />} />
-          <Route path="/create-tenant" element={<CreateTenant />} />
-          <Route path="/success" element={<SuccessPage />} />
-          <Route path="/login" element={<Login />} />
+          <Route element={<PublicRoute />}>
+            <Route path="/create-tenant" element={<CreateTenant />} />
+            <Route path="/success" element={<SuccessPage />} />
+          </Route>
 
           {/* 2. PROTECTED ROUTES WITHOUT GLOBAL LAYOUT */}
-          <Route path="/checkout" element={<RoleRoute><LocalSales /></RoleRoute>} />
-          <Route path="/reset-password" element={<RoleRoute><ResetPassword /></RoleRoute>} />
-          
+          <Route element={<PrivateRoute requiredRole={"sale:create"} />}>
+            <Route path="/checkout" element={<LocalSales />} />
+          </Route>
+          <Route element={<PrivateRoute requiredRole={"profile:update"} />}>
+            <Route path="/reset-password" element={<ResetPassword />} />
+          </Route>
+
+          <Route element={<PrivateRoute requiredRole={"warningsRoutes"} />}>
+            <Route
+              path="/welcome"
+              element={
+                user && permissions?.length > 0 ? (
+                  <Navigate to={defaultRoute} replace />
+                ) : (
+                  <WelcomeFallback />
+                )
+              }
+            />
+          </Route>
+
           {/* 3. INTERNAL SYSTEM (DASHBOARD & BACK OFFICE WITH LAYOUT AND SESSION FILTER) */}
-          <Route element={<RoleRoute><Layout /></RoleRoute>}>
-            
-            <Route path="/dashboard" element={<Dashboard />} />
+          <Route
+            element={
+              <PrivateRoute>
+                <Layout />
+              </PrivateRoute>
+            }
+          >
+            <Route element={<PrivateRoute requiredRole={"analytics:view"} />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+            </Route>
+            <Route element={<PrivateRoute requiredRole={"logs:view"} />}>
+              <Route path="/logs" element={<AuditLogs />} />
+            </Route>
 
             {/* Sub-block: Billing (Admin / Super Admin) */}
-            <Route element={<RoleRoute requiredRole={["admin", "super-admin"]} />}>
+            <Route element={<PrivateRoute requiredRole={"analytics:view"} />}>
               <Route path="/revenue" element={<RevenuePeriod />} />
-              <Route path="/average-ticket" element={<AverageTicketAnalytics />} />
+            </Route>
+            <Route element={<PrivateRoute requiredRole={"analytics:view"} />}>
+              <Route
+                path="/average-ticket"
+                element={<AverageTicketAnalytics />}
+              />
+            </Route>
+            <Route element={<PrivateRoute requiredRole={"sale:view"} />}>
               <Route path="/products-sales" element={<ListProductsSales />} />
+            </Route>
+            <Route element={<PrivateRoute requiredRole={"sale:view"} />}>
               <Route path="/sales" element={<ListSales />} />
-              <Route path="/sales/:id" element={<ListSaleItems />} />
+            </Route>
+            <Route element={<PrivateRoute requiredRole={"sale:view"} />}>
+              <Route path="/sales/:uuid" element={<ListSaleItems />} />
             </Route>
 
             {/* Sub-block: User Control */}
-            <Route element={<RoleRoute requiredRole={["admin", "super-admin"]} />}>
+            <Route element={<PrivateRoute requiredRole={"user:view"} />}>
               <Route path="/users" element={<ListUsers />} />
+            </Route>
+            <Route element={<PrivateRoute requiredRole={"user:create"} />}>
               <Route path="/users/create" element={<CreateUser />} />
-              <Route path="/users/edit/:id" element={<EditUser />} />
+            </Route>
+            <Route element={<PrivateRoute requiredRole={"user:update"} />}>
+              <Route path="/users/edit/:uuid" element={<EditUser />} />
             </Route>
 
             {/* Sub-block: Products (Accessible to all authenticated users, except editors) */}
-            <Route path="/products" element={<ListProducts />} />
-            <Route path="/low-stock" element={<LowStockProducts />} />
-            <Route path="/products/create" element={<CreateProduct />} />
-            <Route path="/product/edit/:id" element={<EditProduct />} />
+            <Route element={<PrivateRoute requiredRole={"product:view"} />}>
+              <Route path="/products" element={<ListProducts />} />
+            </Route>
+            <Route element={<PrivateRoute requiredRole={"product:update"} />}>
+              <Route path="/low-stock" element={<LowStockProducts />} />
+            </Route>
+            <Route element={<PrivateRoute requiredRole={"product:create"} />}>
+              <Route path="/products/create" element={<CreateProduct />} />
+            </Route>
+            <Route element={<PrivateRoute requiredRole={"product:update"} />}>
+              <Route path="/product/edit/:uuid" element={<EditProduct />} />
+            </Route>
 
-            {/* Sub-block: Critical Settings and Levels */}
-            <Route path="/user-settings" element={<RoleRoute requiredRole={["user", "super-admin"]}><UserSettings /></RoleRoute>} />
-            <Route path="/admin-settings" element={<RoleRoute requiredRole={["admin"]}><AdminSettings /></RoleRoute>} />
-            <Route path="/manage-companies" element={<RoleRoute requiredRole={["super-admin"]}><ManageCompanies /></RoleRoute>} />
+            {/* Sub-block: Settings */}
+            <Route
+              path="/settings"
+              element={
+                <PrivateRoute requiredRole={"profile:view"}>
+                  <Settings />
+                </PrivateRoute>
+              }
+            />
 
+            {/* Sub-block: Super Admin Control */}
+            <Route
+              path="/platform/manage-companies"
+              element={
+                <PrivateRoute requiredRole={"super-admin"}>
+                  <ManageCompanies />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/platform/dashboard"
+              element={
+                <PrivateRoute requiredRole={"super-admin"}>
+                  <SystemDashboard />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/platform/infra-health"
+              element={
+                <PrivateRoute requiredRole={"super-admin"}>
+                  <InfraHealth />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/platform/logs"
+              element={
+                <PrivateRoute requiredRole={"super-admin"}>
+                  <SystemLogs />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/platform/events"
+              element={
+                <PrivateRoute requiredRole={"super-admin"}>
+                  <PlatformEvents />
+                </PrivateRoute>
+              }
+            />
+          </Route>
+          {/* NOT FOUND PAGE*/}
+          <Route element={<PrivateRoute requiredRole={"warningsRoutes"} />}>
+            <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
       </Suspense>

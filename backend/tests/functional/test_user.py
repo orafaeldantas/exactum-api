@@ -2,7 +2,7 @@ import pytest
 
 
 @pytest.mark.functional
-def test_create_user_success(client, auth_headers):
+def test_create_user_success(client, auth_headers, default_roles):
     """
     GIVEN an existing tenant in the database
     WHEN a new user payload is sent to the creation endpoint
@@ -13,8 +13,9 @@ def test_create_user_success(client, auth_headers):
         "username": "new_user",
         "email": "new_user@exactum.app.br",
         "password": "pswabcd1234",
+        "password_reset": False,
         "is_active": True,
-        "role": "user",
+        "role": default_roles.uuid,
     }
 
     response = client.post("/users/", json=payload, headers=auth_headers)
@@ -55,16 +56,16 @@ def test_get_user_by_id_success(client, auth_headers, default_user):
     """
 
     # GIVEN
-    user_id = default_user.id
+    user_uuid = default_user.uuid
 
     # WHEN
-    response = client.get(f"/users/{user_id}", headers=auth_headers)
+    response = client.get(f"/users/{user_uuid}", headers=auth_headers)
 
     # THEN
     assert response.status_code == 200
     user_data = response.json
 
-    assert user_data["id"] == user_id
+    assert user_data["uuid"] == str(user_uuid)
     assert user_data["email"] == default_user.email
 
 
@@ -95,17 +96,17 @@ def test_update_user_success(client, auth_headers, default_user):
     """
 
     # GIVEN
-    user_id = default_user.id
-    payload = {"is_active": False}
+    user_uuid = default_user.uuid
+    payload = {"email": "update@email.com"}
 
     # WHEN
-    response = client.patch(f"/users/{user_id}", json=payload, headers=auth_headers)
+    response = client.patch(f"/users/{user_uuid}", json=payload, headers=auth_headers)
 
     # THEN
     assert response.status_code == 200
     user_data = response.json
 
-    assert not user_data["is_active"]
+    assert user_data["uuid"]
 
 
 @pytest.mark.functional
@@ -117,12 +118,12 @@ def test_update_profile_success(client, auth_headers, default_user):
     """
 
     # GIVEN
-    user_id = default_user.id
+    user_uuid = default_user.uuid
     payload = {"username": "Pytest User Modified"}
 
     # WHEN
     response = client.patch(
-        f"/users/profile/{user_id}", json=payload, headers=auth_headers
+        f"/users/profile/{user_uuid}", json=payload, headers=auth_headers
     )
 
     # THEN

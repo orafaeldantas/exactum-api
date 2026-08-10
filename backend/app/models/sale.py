@@ -1,16 +1,25 @@
 from datetime import UTC, datetime
 from decimal import Decimal
+from uuid import UUID
 
-from sqlalchemy import ForeignKey, Numeric, String
+from sqlalchemy import UUID as SQLUUID
+from sqlalchemy import BigInteger, ForeignKey, Numeric, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from app.core.identifiers.uuid_generator import UUIDGenerator
 from app.extensions import Base
 
 
 class Sale(Base):
     __tablename__ = "sales"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    uuid: Mapped[UUID] = mapped_column(
+        SQLUUID(as_uuid=True),
+        unique=True,
+        nullable=False,
+        default=UUIDGenerator.generate,
+    )
     tenant_id: Mapped[int] = mapped_column(ForeignKey("tenants.id"))
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
 
@@ -27,7 +36,7 @@ class Sale(Base):
 class ItemSale(Base):
     __tablename__ = "items_sales"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
     sale_id: Mapped[int] = mapped_column(ForeignKey("sales.id"))
     tenant_id: Mapped[int] = mapped_column(ForeignKey("tenants.id"))
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))

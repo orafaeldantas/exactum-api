@@ -1,6 +1,7 @@
 import logging
 
 from flask import jsonify
+from flask_jwt_extended import unset_jwt_cookies
 
 from app.exceptions.app_exceptions import AppException
 
@@ -12,7 +13,12 @@ def register_error_handlers(app):
     @app.errorhandler(AppException)
     def handle_app_exception(error):
 
-        return jsonify({"error": error.message}), error.status_code
+        response = jsonify({"error": error.message})
+
+        if error.clear_auth_cookies:
+            unset_jwt_cookies(response)
+
+        return response, error.status_code
 
     @app.errorhandler(Exception)
     def handle_generic_exception(error):

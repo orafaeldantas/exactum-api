@@ -1,9 +1,8 @@
-import { useState, useContext } from "react";
-import { apiFetch } from "./api";
+import { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { apiFetch } from "./api";
 
-
-export function getUser() { 
+export function getUser() {
   const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(false);
   const { user } = useContext(AuthContext);
@@ -14,7 +13,6 @@ export function getUser() {
       const response = await apiFetch(`/users/${user.id}`);
       const data = await response.json();
       setUserData(data);
-      console.log(data)
     } catch (err) {
       console.error("Erro ao carregar:", err);
     } finally {
@@ -25,9 +23,7 @@ export function getUser() {
   return { userData, loadUser, loading };
 }
 
-
-
-export function getUsers() { 
+export function getUsers() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -44,17 +40,15 @@ export function getUsers() {
     }
   }
 
-
   return { users, loadUsers, loading };
 }
 
-export async function toggleUserStatus(userId, currentStatus) {
-
-  const response = await apiFetch(`/users/${userId}`, {
+export async function toggleUserStatus(userUuid, currentStatus) {
+  const response = await apiFetch(`/users/${userUuid}`, {
     method: "PATCH",
     body: JSON.stringify({
-      is_active: !currentStatus
-    })
+      is_active: !currentStatus,
+    }),
   });
 
   if (!response.ok) {
@@ -62,4 +56,16 @@ export async function toggleUserStatus(userId, currentStatus) {
   }
 
   return response.json();
+}
+
+export async function deleteUser(userUuid) {
+  const response = await apiFetch(`/users/${userUuid}`, {
+    method: "DELETE",
+  });
+
+  if (response == 204) {
+    return null;
+  } else {
+    throw new Error("Erro ao excluir status do usuário");
+  }
 }

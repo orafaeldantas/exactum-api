@@ -1,6 +1,7 @@
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from redis import Redis
 from sqlalchemy.orm import DeclarativeBase
 
 
@@ -9,25 +10,20 @@ class Base(DeclarativeBase):
 
 
 db = SQLAlchemy(model_class=Base)
-
-
-migrate = Migrate(directory="migrations")
 jwt = JWTManager()
+migrate = Migrate(directory="migrations")
+
+redis_client: Redis | None = None
 
 
-@jwt.invalid_token_loader
-def invalid_token(reason):
-    print("JWT INVALID:", reason)
-    return {"error": reason}, 422
+def init_redis(app) -> None:
+    global redis_client
 
+    redis_client = Redis(
+        host=app.config["REDIS_HOST"],
+        port=app.config["REDIS_PORT"],
+        db=app.config["REDIS_DB"],
+        decode_responses=True,
+    )
 
-@jwt.unauthorized_loader
-def missing_token(reason):
-    print("JWT MISSING:", reason)
-    return {"error": reason}, 401
-
-
-@jwt.expired_token_loader
-def expired(jwt_header, jwt_payload):
-    print("JWT EXPIRED")
-    return {"error": "expired"}, 401
+    app.extensions["redis"] = redis_client
