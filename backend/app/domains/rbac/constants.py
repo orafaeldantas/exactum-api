@@ -23,6 +23,7 @@ DEFAULT_ROLES = {
         "goal:update",
         "goal:delete",
         "rbac:view",
+        "logs:view",
     ],
     "gerente_de_vendas": [
         "product:view",
