@@ -1,6 +1,6 @@
 import logging
 import time
-from datetime import timedelta
+from datetime import date, timedelta
 
 from seeds.mocks.products_mock import (
     product_five,
@@ -106,7 +106,7 @@ def run_seed(app):
                     user_id=user_id,
                     start_year=2026,
                     end_year=2026,
-                    max_month=6,
+                    max_month=date.today().month,
                     force_day=True,
                 )
 
