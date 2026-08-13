@@ -147,9 +147,8 @@ export default function ManageCompanies() {
   const displayName = (t) => t.fantasyName || t.fantasy_name || t.name;
   const legalName = (t) => t.name;
 
-  // -------------------- Render --------------------
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="animate-in fade-in duration-500 pb-10 h-full min-h-0 overflow-y-auto pr-3 custom-scroll">
       {/* Header */}
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
@@ -252,12 +251,8 @@ export default function ManageCompanies() {
                 key={t.uuid}
                 className="group relative flex flex-col rounded-2xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition-all hover:border-blue-200"
               >
-                {/* Top row: ID + Access button */}
-                <div className="flex justify-between items-start mb-3">
-                  <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-0.5 text-[10px] font-mono font-semibold text-gray-500 uppercase tracking-wider">
-                    <Hash className="w-3 h-3" />
-                    {t.uuid}
-                  </span>
+                {/* Access button */}
+                <div className="flex justify-end items-start mb-3">
                   <button
                     onClick={() => openImpersonateConfirmation(t)}
                     className="flex items-center gap-1.5 rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-100 transition-colors"
@@ -494,6 +489,12 @@ export default function ManageCompanies() {
                 value={
                   tenantDetails.users_count || tenantDetails.usersCount || 0
                 }
+              />
+
+              <DetailRow
+                icon={<Hash className="w-4 h-4" />}
+                label="Identificador"
+                value={tenantDetails.uuid}
               />
             </div>
 
