@@ -102,6 +102,7 @@ function Sidebar() {
     <aside
       className={`
         sticky top-0 h-screen bg-slate-900 transition-all duration-300 ease-in-out border-r border-slate-800
+        flex flex-col overflow-hidden
         ${collapsed ? "w-20" : "w-64"}
       `}
     >
@@ -115,10 +116,10 @@ function Sidebar() {
 
       {/* Logo — brand mark always visible, even collapsed. Stacks vertically when collapsed so it never fights the toggle button for space. */}
       <div
-        className={`flex mb-4 ${
+        className={`flex-shrink-0 ${
           collapsed
-            ? "flex-col items-center gap-3 py-4"
-            : "h-16 items-center justify-between px-4"
+            ? "flex flex-col items-center gap-3 py-4"
+            : "flex h-16 items-center justify-between px-4"
         }`}
       >
         <div className="flex min-w-0 items-center gap-2">
@@ -145,13 +146,14 @@ function Sidebar() {
         </button>
       </div>
 
-      <nav className="sidebar-scroll flex flex-col gap-2 px-3 overflow-y-auto max-h-[calc(100vh-200px)]">
+      {/* Navegação principal - ocupa todo espaço restante e rola se necessário */}
+      <nav className="sidebar-scroll flex-1 overflow-y-auto px-3 py-2 space-y-1">
         {/* Return to Admin Button */}
         {isImpersonating && (
           <button
             onClick={handleImpersonate}
             title={collapsed ? "Voltar ao Super Admin" : undefined}
-            className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-white mb-2"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-white mb-2 w-full"
           >
             <LogOut size={20} className={collapsed ? "mx-auto" : ""} />
             {!collapsed && (
@@ -282,16 +284,16 @@ function Sidebar() {
       </nav>
 
       {!collapsed && !isSuperAdmin && (
-        <div className="absolute bottom-6 left-6 right-6 flex flex-col gap-2">
+        <div className="flex-shrink-0 p-4 mt-auto">
           {isImpersonating && (
-            <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center gap-2 text-amber-500">
+            <div className="p-3 rounded-xl my-5 bg-amber-500/10 border border-amber-500/20 flex items-center gap-2 text-amber-500">
               <ShieldCheck size={16} />
               <span className="text-[10px] font-bold uppercase tracking-tight">
                 Impersonate Mode
               </span>
             </div>
           )}
-          <div className="rounded-2xl bg-slate-800/50 p-4 shadow-[0_1px_2px_rgba(0,0,0,0.1)]">
+          <div className="rounded-2xl bg-slate-800/50 p-4 shadow">
             <div className="flex items-center justify-between pb-3 border-b border-slate-700">
               <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold">
                 Versão
@@ -306,7 +308,6 @@ function Sidebar() {
             </div>
             <button
               disabled
-              title="Disponível em breve"
               className="mt-3 w-full cursor-not-allowed rounded-lg border border-slate-700 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-500"
             >
               Fazer upgrade · Em breve
