@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
+import UserFormSkeleton from "../../components/Loader/UserFormSkeleton";
 import UserForm from "../../features/user-form/UserForm";
 import { apiFetch } from "../../services/api";
 
@@ -47,7 +48,7 @@ export default function EditUser() {
   }
 
   if (!user) {
-    return <p>Carregando...</p>;
+    return <UserFormSkeleton />;
   }
 
   return (
