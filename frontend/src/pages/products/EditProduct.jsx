@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
+import ProductFormSkeleton from "../../components/Loader/ProductFormSkeleton";
 import ProductForm from "../../features/product-form/ProductForm";
 import { apiFetch } from "../../services/api";
 
@@ -49,7 +50,7 @@ export default function EditProduct() {
   }
 
   if (!product) {
-    return <p>Carregando...</p>;
+    return <ProductFormSkeleton />;
   }
 
   return (
