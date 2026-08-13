@@ -303,7 +303,7 @@ export default function ListUsers() {
   const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6 relative">
+    <div className="animate-in fade-in duration-500 pb-10 h-full min-h-0 overflow-y-auto pr-3 custom-scroll">
       <UserDetailsModal
         user={selectedUser}
         isOpen={Boolean(selectedUser)}
