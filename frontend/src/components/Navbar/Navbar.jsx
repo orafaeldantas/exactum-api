@@ -80,7 +80,7 @@ function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-gray-200/80 bg-white/70 backdrop-blur-xl transition-all duration-300 after:absolute after:bottom-0 after:left-0 after:h-px after:w-full after:bg-gradient-to-r after:from-transparent after:via-blue-200/50 after:to-transparent">
-      <div className="mx-auto max-w-screen-2xl px-4 sm:px-6 lg:px-1">
+      <div className="mx-auto max-[1844px]:mx-8 max-w-screen-2xl px-4 sm:px-6 lg:px-1">
         <div className="flex h-16 items-center justify-between">
           {/* Left side */}
           <Link to="/dashboard" className="flex items-center gap-2 select-none">
