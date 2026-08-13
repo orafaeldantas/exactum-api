@@ -28,6 +28,8 @@ function formatPrice(value) {
   return number.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
+import { createPortal } from "react-dom";
+
 function RowActions({
   product,
   isLoading,
@@ -37,15 +39,82 @@ function RowActions({
   onDelete,
 }) {
   const [open, setOpen] = useState(false);
+  const [dropdownStyle, setDropdownStyle] = useState({});
+  const buttonRef = useRef(null);
   const menuRef = useRef(null);
 
   const { permissions } = useContext(AuthContext);
-
   const hasPermission = (code) => permissions.includes(code);
+
+  const calculatePosition = () => {
+    if (!buttonRef.current) return;
+
+    const rect = buttonRef.current.getBoundingClientRect();
+    const menuHeight = menuRef.current?.offsetHeight || 240;
+    const viewportHeight = window.innerHeight;
+    const margin = 8;
+
+    const spaceBelow = viewportHeight - rect.bottom;
+    const spaceAbove = rect.top;
+
+    let top, left;
+
+    const menuWidth = 192;
+
+    // Decidir direção
+    if (spaceBelow >= menuHeight) {
+      top = rect.bottom + margin;
+    } else if (spaceAbove >= menuHeight) {
+      top = rect.top - menuHeight - margin;
+    } else {
+      top = Math.max(margin, rect.bottom + margin);
+    }
+
+    left = rect.right - menuWidth;
+
+    if (left < margin) left = margin;
+    if (left + menuWidth > window.innerWidth - margin) {
+      left = window.innerWidth - menuWidth - margin;
+    }
+
+    setDropdownStyle({
+      position: "fixed",
+      top: top,
+      left: left,
+      zIndex: 9999,
+      transformOrigin:
+        spaceBelow >= menuHeight ? "top center" : "bottom center",
+      width: menuWidth,
+    });
+  };
+
+  useEffect(() => {
+    if (!open) return;
+    const timer = requestAnimationFrame(() => {
+      calculatePosition();
+    });
+    return () => cancelAnimationFrame(timer);
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const handleUpdate = () => calculatePosition();
+    window.addEventListener("scroll", handleUpdate, true);
+    window.addEventListener("resize", handleUpdate);
+    return () => {
+      window.removeEventListener("scroll", handleUpdate, true);
+      window.removeEventListener("resize", handleUpdate);
+    };
+  }, [open]);
 
   useEffect(() => {
     function handleClickOutside(event) {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target)
+      ) {
         setOpen(false);
       }
     }
@@ -59,8 +128,9 @@ function RowActions({
   }
 
   return (
-    <div className="relative flex justify-end" ref={menuRef}>
+    <div className="relative flex justify-end">
       <button
+        ref={buttonRef}
         type="button"
         onClick={() => setOpen((v) => !v)}
         disabled={isLoading}
@@ -76,67 +146,71 @@ function RowActions({
         )}
       </button>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, y: -6, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -6, scale: 0.97 }}
-            transition={{ duration: 0.15, ease: "easeOut" }}
-            role="menu"
-            className="fixed right-auto left-auto mt-11 z-50 w-48 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04),0_16px_32px_-12px_rgba(15,23,42,0.2)]"
-          >
-            <button
-              type="button"
-              role="menuitem"
-              onClick={() => runAndClose(onDetails)}
-              className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm font-medium text-slate-600 transition-colors duration-150 hover:bg-gray-50"
+      {open &&
+        createPortal(
+          <AnimatePresence>
+            <motion.div
+              ref={menuRef}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.15 }}
+              role="menu"
+              style={dropdownStyle}
+              className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04),0_16px_32px_-12px_rgba(15,23,42,0.2)]"
             >
-              <Eye className="h-4 w-4 text-slate-400" />
-              Detalhes
-            </button>
-            {hasPermission("product:update") && (
               <button
                 type="button"
                 role="menuitem"
-                onClick={() => runAndClose(onEdit)}
+                onClick={() => runAndClose(onDetails)}
                 className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm font-medium text-slate-600 transition-colors duration-150 hover:bg-gray-50"
               >
-                <Pencil className="h-4 w-4 text-slate-400" />
-                Editar
+                <Eye className="h-4 w-4 text-slate-400" />
+                Detalhes
               </button>
-            )}
-            {hasPermission("product:update") && (
-              <button
-                type="button"
-                role="menuitem"
-                onClick={() => runAndClose(onToggleStatus)}
-                className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm font-medium text-slate-600 transition-colors duration-150 hover:bg-gray-50"
-              >
-                <Power
-                  className={`h-4 w-4 ${
-                    product.is_active ? "text-amber-500" : "text-emerald-500"
-                  }`}
-                />
-                {product.is_active ? "Desativar" : "Ativar"}
-              </button>
-            )}
+              {hasPermission("product:update") && (
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => runAndClose(onEdit)}
+                  className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm font-medium text-slate-600 transition-colors duration-150 hover:bg-gray-50"
+                >
+                  <Pencil className="h-4 w-4 text-slate-400" />
+                  Editar
+                </button>
+              )}
+              {hasPermission("product:update") && (
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => runAndClose(onToggleStatus)}
+                  className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm font-medium text-slate-600 transition-colors duration-150 hover:bg-gray-50"
+                >
+                  <Power
+                    className={`h-4 w-4 ${
+                      product.is_active ? "text-amber-500" : "text-emerald-500"
+                    }`}
+                  />
+                  {product.is_active ? "Desativar" : "Ativar"}
+                </button>
+              )}
 
-            <div className="border-t border-gray-100" />
-            {hasPermission("product:delete") && (
-              <button
-                type="button"
-                role="menuitem"
-                onClick={() => runAndClose(onDelete)}
-                className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm font-medium text-red-600 transition-colors duration-150 hover:bg-red-50"
-              >
-                <Trash2 className="h-4 w-4" />
-                Excluir
-              </button>
-            )}
-          </motion.div>
+              <div className="border-t border-gray-100" />
+              {hasPermission("product:delete") && (
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => runAndClose(onDelete)}
+                  className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm font-medium text-red-600 transition-colors duration-150 hover:bg-red-50"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  Excluir
+                </button>
+              )}
+            </motion.div>
+          </AnimatePresence>,
+          document.body
         )}
-      </AnimatePresence>
     </div>
   );
 }
