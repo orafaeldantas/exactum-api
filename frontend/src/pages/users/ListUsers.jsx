@@ -120,7 +120,6 @@ function RowActions({
     return () => cancelAnimationFrame(timer);
   }, [open]);
 
-  // Recalcular em scroll/resize
   useEffect(() => {
     if (!open) return;
     const handleUpdate = () => calculatePosition();
@@ -132,7 +131,6 @@ function RowActions({
     };
   }, [open]);
 
-  // Fechar ao clicar fora
   useEffect(() => {
     function handleClickOutside(event) {
       if (
