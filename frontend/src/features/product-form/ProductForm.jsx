@@ -69,7 +69,7 @@ export default function ProductForm({
           </div>
 
           <div className="space-y-5">
-            {/* Nome */}
+            {/* Name */}
             <div>
               <label className={labelClass}>
                 <Package className="w-4 h-4 text-slate-400" /> Nome do Produto
@@ -84,7 +84,7 @@ export default function ProductForm({
               />
             </div>
 
-            {/* Descrição */}
+            {/* Description */}
             <div>
               <label className={labelClass}>
                 <AlignLeft className="w-4 h-4 text-slate-400" /> Descrição
@@ -98,7 +98,7 @@ export default function ProductForm({
               />
             </div>
 
-            {/* Grid: Preço e Estoque */}
+            {/* Grid: Price and Stock */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <label className={labelClass}>
@@ -127,7 +127,7 @@ export default function ProductForm({
               </div>
             </div>
 
-            {/* Grid: SKU e Categoria */}
+            {/* Grid: SKU and Category */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <label className={labelClass}>
@@ -170,7 +170,7 @@ export default function ProductForm({
               </select>
             </div>
 
-            {/* Botão de Ação */}
+            {/* Action Button */}
             <div className="pt-4">
               <button
                 type="submit"

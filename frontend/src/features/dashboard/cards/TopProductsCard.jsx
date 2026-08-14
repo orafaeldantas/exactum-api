@@ -118,7 +118,7 @@ function TopProductsCard({ topItems }) {
                   </div>
                 </div>
 
-                {/* QUANTIDADE */}
+                {/* QUANTITY */}
                 <div className="text-right shrink-0">
                   <p className="text-sm sm:text-base md:text-lg min-[1564px]:md:text-xl font-extrabold text-slate-900">
                     {item.total_quantity}
