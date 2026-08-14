@@ -14,10 +14,10 @@ class SoldItemBaseSchema(Schema):
 
 
 class BestSellersSchema(SoldItemBaseSchema):
-    pass
+    category = fields.Str()
 
 
 class SoldItemSchema(SoldItemBaseSchema):
     revenue = fields.Decimal(places=2)
 
-    product_id = fields.Int()
+    product_uuid = fields.UUID()
