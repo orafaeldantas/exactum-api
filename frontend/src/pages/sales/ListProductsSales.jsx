@@ -225,7 +225,7 @@ export default function ListSoldItems() {
                   >
                     <td className="px-6 py-4">
                       <span className="font-mono text-sm font-medium text-slate-600">
-                        {item.product_id ?? (
+                        {item.product_uuid ?? (
                           <span className="text-slate-300">N/A</span>
                         )}
                       </span>
