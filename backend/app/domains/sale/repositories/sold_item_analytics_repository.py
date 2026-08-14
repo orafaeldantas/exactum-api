@@ -21,7 +21,8 @@ class SoldItemAnalyticsRepository:
             select(
                 ItemSale.name,
                 ItemSale.sku,
-                ItemSale.product_id,
+                ItemSale.product_uuid,
+                ItemSale.category,
                 func.sum(ItemSale.quantity).label("total_quantity"),
                 func.sum(ItemSale.item_price * ItemSale.quantity).label("revenue"),
             )
@@ -30,7 +31,9 @@ class SoldItemAnalyticsRepository:
                 ItemSale.created_at >= start_date,
                 ItemSale.created_at < end_date,
             )
-            .group_by(ItemSale.name, ItemSale.sku, ItemSale.product_id)
+            .group_by(
+                ItemSale.name, ItemSale.sku, ItemSale.product_uuid, ItemSale.category
+            )
             .order_by(func.sum(ItemSale.quantity).desc())
             .limit(quantity)
         )
@@ -44,6 +47,7 @@ class SoldItemAnalyticsRepository:
         stmt = (
             select(
                 ItemSale.name.label("product_name"),
+                ItemSale.category.label("category"),
                 func.sum(ItemSale.quantity).label("total_quantity"),
                 func.sum(ItemSale.quantity * ItemSale.item_price).label("item_revenue"),
             )
@@ -51,7 +55,7 @@ class SoldItemAnalyticsRepository:
                 ItemSale.tenant_id == tenant_id,
                 ItemSale.created_at.between(start_date, end_date),
             )
-            .group_by(ItemSale.name)
+            .group_by(ItemSale.name, ItemSale.category)
             .order_by(func.sum(ItemSale.quantity).desc())
         )
 

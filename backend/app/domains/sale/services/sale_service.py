@@ -43,11 +43,13 @@ class SaleService:
                 name=item.get("name"),
                 quantity=item.get("quantity"),
                 sku=item.get("sku"),
+                category=product.category,
                 item_price=item.get("item_price"),
                 sale_id=new_sale.id,
                 tenant_id=tenant_id,
                 user_id=user_id,
                 product_id=product.id,
+                product_uuid=product.uuid,
                 channel=sale.get("channel"),
             )
 
