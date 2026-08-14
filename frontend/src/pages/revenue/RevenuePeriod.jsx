@@ -196,7 +196,7 @@ export default function RevenueAnalytics() {
       minDuration={250}
       message="Buscando dados..."
     >*/
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="animate-in fade-in duration-500 pb-10 h-full min-h-0 overflow-y-auto pr-3 custom-scroll">
       {/* ========== HEADER ========== */}
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
