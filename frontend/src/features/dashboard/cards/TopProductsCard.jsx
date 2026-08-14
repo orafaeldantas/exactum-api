@@ -37,7 +37,7 @@ function TopProductsCard({ topItems }) {
 
           return (
             <button
-              key={item.id ?? i}
+              key={item.uuid ?? i}
               type="button"
               title={item.name}
               className={`
@@ -112,7 +112,6 @@ function TopProductsCard({ topItems }) {
                         </span>
                       )}
                     </div>
-
                     <p className="text-[9px] sm:text-[10px] min-[1564px]:sm:text-xs text-slate-500 font-medium truncate">
                       {item.category || "Categoria Geral"}
                     </p>
@@ -134,7 +133,7 @@ function TopProductsCard({ topItems }) {
                       font-bold
                     "
                   >
-                    {item.category > 1 ? "unidades" : "unidade"}
+                    {item.total_quantity > 1 ? "unidades" : "unidade"}
                   </p>
                 </div>
               </div>
