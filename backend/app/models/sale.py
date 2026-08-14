@@ -44,11 +44,16 @@ class ItemSale(Base):
     product_id: Mapped[int | None] = mapped_column(
         ForeignKey("products.id"), default=None
     )
+    product_uuid: Mapped[UUID | None] = mapped_column(
+        ForeignKey("products.uuid"), default=None
+    )
     sku: Mapped[str] = mapped_column(String(50), ForeignKey("products.sku"))
+    category: Mapped[str | None] = mapped_column(String(120))
 
     name: Mapped[str] = mapped_column(String(255))
     quantity: Mapped[int] = mapped_column(default=1)
     item_price: Mapped[Decimal] = mapped_column(Numeric(10, 2))
+
     channel: Mapped[str] = mapped_column(String(50), default="physical")
 
     created_at: Mapped[datetime] = mapped_column(default=lambda: datetime.now(UTC))
