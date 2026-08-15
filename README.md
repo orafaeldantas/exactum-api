@@ -82,7 +82,7 @@ O projeto é desenvolvido com forte foco em engenharia de backend, arquitetura d
 
 O Exactum é uma plataforma SaaS de ERP focada nas necessidades operacionais de pequenas e médias empresas do varejo.
 
-A gestão de estoque no pequeno varejo ainda costuma ser feita "no olho". O resultado é um ciclo prejudicial: capital imobilizado em mercadoria parada ou perda de faturamento por falta de produto. O Exactum centraliza o fluxo de entradas, saídas e PDV, utilizando o histórico de movimentação para transformar a reposição de estoque em uma decisão orientada a dados — em vez de intuição.
+A gestão de estoque no pequeno varejo ainda costuma ser feita "no olho". O resultado é um ciclo prejudicial: capital imobilizado em mercadoria parada ou perda de faturamento por falta de produto. O Exactum centraliza o fluxo de entradas, saídas e PDV, utilizando o histórico de movimentação para transformar a reposição de estoque em uma decisão orientada a dados, em vez de intuição.
 
 A plataforma reúne:
 
@@ -140,9 +140,10 @@ Essas limitações são acompanhadas através do roadmap e podem resultar em alt
 
 ## Destaques de Engenharia
 
-O Exactum não é construído apenas em torno de suas funcionalidades de negócio. Diversas preocupações transversais (*cross-cutting concerns*) são tratadas como componentes de primeira classe da plataforma.
+O Exactum não é construído apenas em torno de suas funcionalidades de negócio. Diversas preocupações transversais (_cross-cutting concerns_) são tratadas como componentes de primeira classe da plataforma.
 
 **Segurança**
+
 - Autenticação baseada em cookies HttpOnly
 - Separação entre access token e refresh token
 - Rotação de refresh token
@@ -155,6 +156,7 @@ O Exactum não é construído apenas em torno de suas funcionalidades de negóci
 - Fluxos estruturados de autenticação e autorização
 
 **Autorização**
+
 - Role-Based Access Control (RBAC)
 - Gestão granular de permissões
 - Autorização escopada por tenant
@@ -164,6 +166,7 @@ O Exactum não é construído apenas em torno de suas funcionalidades de negóci
 - UX sensível a permissões no frontend
 
 **Multi-Tenancy**
+
 - Isolamento lógico de tenants
 - Contexto de tenant estabelecido em nível de requisição
 - Filtro explícito de tenant na camada de persistência
@@ -172,6 +175,7 @@ O Exactum não é construído apenas em torno de suas funcionalidades de negóci
 - Suspensão administrativa de tenant
 
 **Observabilidade**
+
 - Logging estruturado de requisições em JSON
 - IDs de correlação de requisição
 - Telemetria operacional baseada em logs estruturados de requisições HTTP (métricas e dashboards dedicados ainda não implementados — ver [Limitações Conhecidas](#limitações-conhecidas))
@@ -181,6 +185,7 @@ O Exactum não é construído apenas em torno de suas funcionalidades de negóci
 - Separação entre observabilidade operacional e de negócio
 
 **Confiabilidade & Integridade**
+
 - Operações críticas executadas dentro de transações
 - Controle de consistência entre vendas e estoque
 - Tratamento centralizado de exceções
@@ -189,6 +194,7 @@ O Exactum não é construído apenas em torno de suas funcionalidades de negóci
 - Identificação e rastreamento de requisições
 
 **Dados & Persistência**
+
 - PostgreSQL
 - ORM SQLAlchemy
 - Operações de negócio transacionais
@@ -198,6 +204,7 @@ O Exactum não é construído apenas em torno de suas funcionalidades de negóci
 - Identificadores públicos baseados em UUID
 
 **Práticas de Engenharia**
+
 - Testes automatizados
 - Integração contínua
 - Deploy automatizado
@@ -225,6 +232,7 @@ O Exactum fornece a base para gestão de estoque no varejo, incluindo:
 O módulo de PDV oferece um fluxo operacional para registro de vendas mantendo a consistência do estoque.
 
 Principais capacidades:
+
 - Registro de vendas
 - Seleção de produtos
 - Baixa automática de estoque
@@ -235,6 +243,7 @@ Principais capacidades:
 **Dashboard Gerencial**
 
 O dashboard oferece visibilidade em nível de negócio através de indicadores como:
+
 - Receita
 - Volume de vendas
 - Ticket médio
@@ -245,6 +254,7 @@ O dashboard oferece visibilidade em nível de negócio através de indicadores c
 **Administração**
 
 As capacidades administrativas incluem:
+
 - Gestão de usuários
 - Gestão de papéis (roles)
 - Gestão de permissões
@@ -352,6 +362,7 @@ Refresh tokens são rotacionados durante operações de renovação, permitindo 
 **Gestão de Sessão**
 
 O Redis é utilizado como parte da camada de gestão de sessão para suportar operações como:
+
 - Rastreamento de sessões ativas
 - Gestão de refresh tokens
 - Revogação de tokens
@@ -390,6 +401,7 @@ A autorização é aplicada no backend e refletida no frontend para garantir uma
 **Impersonate Administrativo**
 
 Super-administradores podem operar temporariamente no contexto de outro usuário, para fins diagnósticos e administrativos. O impersonate é explicitamente rastreado através de eventos de plataforma, incluindo:
+
 - Início do impersonate
 - Fim do impersonate
 - Usuário-alvo
@@ -453,11 +465,11 @@ O Exactum separa a observabilidade operacional dos eventos de plataforma e da au
         Operations       Super Admin       Tenant Admin
 ```
 
-| Camada | Propósito | Consumidor |
-|---|---|---|
-| Logs de Infraestrutura | Requisições HTTP e diagnóstico operacional | Plataforma / operações |
-| Eventos de Plataforma | Atividade administrativa e de plataforma | Super-admin |
-| Logs de Auditoria | Histórico de atividade visível ao tenant | Administradores do tenant |
+| Camada                 | Propósito                                  | Consumidor                |
+| ---------------------- | ------------------------------------------ | ------------------------- |
+| Logs de Infraestrutura | Requisições HTTP e diagnóstico operacional | Plataforma / operações    |
+| Eventos de Plataforma  | Atividade administrativa e de plataforma   | Super-admin               |
+| Logs de Auditoria      | Histórico de atividade visível ao tenant   | Administradores do tenant |
 
 **Logs de Infraestrutura**
 
@@ -490,43 +502,43 @@ Esse modelo evita que a auditoria seja apenas "uma tabela de logs": cada registr
 
 **Backend**
 
-| Tecnologia | Propósito |
-|---|---|
-| Python | Linguagem principal do backend |
-| Flask | Framework web |
-| Flask-Smorest | API REST e integração com OpenAPI |
-| Marshmallow | Validação e serialização |
-| SQLAlchemy | ORM e abstração de persistência |
-| PostgreSQL | Banco de dados relacional principal |
-| Redis | Gestão de sessão e tokens |
+| Tecnologia    | Propósito                           |
+| ------------- | ----------------------------------- |
+| Python        | Linguagem principal do backend      |
+| Flask         | Framework web                       |
+| Flask-Smorest | API REST e integração com OpenAPI   |
+| Marshmallow   | Validação e serialização            |
+| SQLAlchemy    | ORM e abstração de persistência     |
+| PostgreSQL    | Banco de dados relacional principal |
+| Redis         | Gestão de sessão e tokens           |
 
 **Frontend**
 
-| Tecnologia | Propósito |
-|---|---|
-| React | Interface de usuário |
-| Vite | Build tooling do frontend |
-| Tailwind CSS | Estilização da UI |
+| Tecnologia   | Propósito                 |
+| ------------ | ------------------------- |
+| React        | Interface de usuário      |
+| Vite         | Build tooling do frontend |
+| Tailwind CSS | Estilização da UI         |
 
 **Infraestrutura**
 
-| Tecnologia | Propósito |
-|---|---|
-| Docker | Containerização |
-| Docker Compose | Orquestração de serviços |
-| Nginx | Reverse proxy e servidor web |
-| Linux | Ambiente de produção |
-| Hetzner VPS | Hospedagem da aplicação |
+| Tecnologia     | Propósito                    |
+| -------------- | ---------------------------- |
+| Docker         | Containerização              |
+| Docker Compose | Orquestração de serviços     |
+| Nginx          | Reverse proxy e servidor web |
+| Linux          | Ambiente de produção         |
+| Hetzner VPS    | Hospedagem da aplicação      |
 
 **Desenvolvimento & Qualidade**
 
-| Tecnologia | Propósito |
-|---|---|
-| Pytest | Testes automatizados |
-| Ruff | Linting e qualidade de código |
-| GitHub Actions | CI/CD |
-| Alembic / Flask-Migrate | Migrações de banco de dados |
-| OpenAPI / Swagger | Documentação da API |
+| Tecnologia              | Propósito                     |
+| ----------------------- | ----------------------------- |
+| Pytest                  | Testes automatizados          |
+| Ruff                    | Linting e qualidade de código |
+| GitHub Actions          | CI/CD                         |
+| Alembic / Flask-Migrate | Migrações de banco de dados   |
+| OpenAPI / Swagger       | Documentação da API           |
 
 ## Decisões Técnicas
 
@@ -537,11 +549,11 @@ Uma abordagem comum em aplicações multi-tenant é confiar em um único filtro 
 1. **Validação via contexto da requisição:** toda requisição que entra na API passa pelas etapas de autenticação e estabelecimento do contexto de segurança. A partir desse contexto, o tenant associado à operação é determinado e propagado pela aplicação.
 2. **Filtro explícito na persistência:** a camada de persistência não confia exclusivamente no contexto da requisição; operações sobre dados tenant-scoped aplicam explicitamente o tenant correspondente.
 
-> As duas camadas precisam bater perfeitamente para que qualquer dado seja exposto. Esse isolamento redundante reduz significativamente o risco de vazamento de informações entre contas — nenhuma estratégia de isolamento elimina esse risco por completo.
+> As duas camadas precisam bater perfeitamente para que qualquer dado seja exposto. Esse isolamento redundante reduz significativamente o risco de vazamento de informações entre contas, porém, nenhuma estratégia de isolamento elimina esse risco por completo.
 
 **🔑 Recuperação de senha via credencial temporária**
 
-Em vez do fluxo tradicional de e-mail com links de expiração rápida, o administrador define uma senha temporária para o usuário. No primeiro login, o sistema força a troca imediata para uma senha definitiva — um fluxo desenhado sob medida para o perfil do pequeno varejo, onde o gestor tem contato direto com sua equipe de frente de caixa.
+Em vez do fluxo tradicional de e-mail com links de expiração rápida, o administrador define uma senha temporária para o usuário. No primeiro login, o sistema força a troca imediata para uma senha definitiva. Um fluxo desenhado sob medida para o perfil do pequeno varejo, onde o gestor tem contato direto com sua equipe de frente de caixa.
 
 **🔑 Evolução da estratégia de autenticação: de JWT em sessionStorage para cookies HttpOnly**
 
@@ -574,6 +586,7 @@ A documentação cobre os endpoints disponíveis, schemas de requisição/respos
 **Pré-requisitos**
 
 Certifique-se de ter instalado:
+
 - Git
 - Docker & Docker Compose
 - Node.js 22+
@@ -617,11 +630,11 @@ npm run dev
 
 **Serviços locais**
 
-| Serviço | URL |
-|---|---|
-| Frontend | http://localhost:5173 |
-| Backend API | http://localhost:5000 |
-| Swagger UI | http://localhost:5000/doc/swagger |
+| Serviço     | URL                               |
+| ----------- | --------------------------------- |
+| Frontend    | http://localhost:5173             |
+| Backend API | http://localhost:5000             |
+| Swagger UI  | http://localhost:5000/doc/swagger |
 
 Para o ambiente de desenvolvimento completo e procedimentos de troubleshooting:
 
@@ -730,7 +743,7 @@ exactum-api/
 └── README.md
 ```
 
-O README é a porta de entrada do projeto — ele responde rapidamente "o que é, por que existe, o que possui, como é arquitetado e como executar". Detalhes de arquitetura, threat model, ADRs, schema de banco e contratos de auditoria ficam documentados em `docs/`, mantendo o README principal focado em conceitos de sistema.
+O README é a porta de entrada do projeto, ele responde rapidamente "o que é, por que existe, o que possui, como é arquitetado e como executar". Detalhes de arquitetura, threat model, ADRs, schema de banco e contratos de auditoria ficam documentados em `docs/`, mantendo o README principal focado em conceitos de sistema.
 
 → [Arquitetura da Aplicação](./docs/architecture/application-architecture.md)
 
@@ -739,6 +752,7 @@ O README é a porta de entrada do projeto — ele responde rapidamente "o que é
 A documentação do Exactum é organizada por área de engenharia.
 
 **Arquitetura**
+
 - [Visão Geral da Arquitetura](./docs/architecture/overview.md)
 - [Contexto do Sistema](./docs/architecture/system-context.md)
 - [Arquitetura da Aplicação](./docs/architecture/application-architecture.md)
@@ -747,6 +761,7 @@ A documentação do Exactum é organizada por área de engenharia.
 - [Registros de Decisão Arquitetural (ADRs)](./docs/architecture/decisions/)
 
 **Segurança**
+
 - [Visão Geral de Segurança](./docs/security/overview.md)
 - [Autenticação](./docs/security/authentication.md)
 - [Autorização & RBAC](./docs/security/authorization.md)
@@ -755,12 +770,14 @@ A documentação do Exactum é organizada por área de engenharia.
 - [Threat Model](./docs/security/threat-model.md)
 
 **Observabilidade**
+
 - [Visão Geral de Observabilidade](./docs/observability/overview.md)
 - [Logs de Infraestrutura](./docs/observability/infrastructure-logging.md)
 - [Eventos de Plataforma](./docs/observability/platform-events.md)
 - [Logs de Auditoria](./docs/observability/audit-logging.md)
 
 **API**
+
 - [Visão Geral da API](./docs/api/overview.md)
 - [Autenticação](./docs/api/authentication.md)
 - [Convenções da API](./docs/api/conventions.md)
@@ -768,11 +785,13 @@ A documentação do Exactum é organizada por área de engenharia.
 - [Versionamento da API](./docs/api/versioning.md)
 
 **Banco de Dados**
+
 - [Arquitetura do Banco](./docs/database/overview.md)
 - [Schema do Banco](./docs/database/schema.md)
 - [Migrações do Banco](./docs/database/migrations.md)
 
 **Operações**
+
 - [Ambiente de Desenvolvimento](./docs/operations/development.md)
 - [Deploy](./docs/operations/deployment.md)
 - [Docker](./docs/operations/docker.md)
@@ -780,10 +799,12 @@ A documentação do Exactum é organizada por área de engenharia.
 - [Runbook Operacional](./docs/operations/runbook.md)
 
 **Testes**
+
 - [Estratégia de Testes](./docs/testing/strategy.md)
 - [CI/CD](./docs/testing/ci.md)
 
 **Outros documentos de primeira classe**
+
 - [CHANGELOG.md](./CHANGELOG.md) — histórico de versões e mudanças
 - [SECURITY.md](./SECURITY.md) — política de segurança e reporte de vulnerabilidades
 
