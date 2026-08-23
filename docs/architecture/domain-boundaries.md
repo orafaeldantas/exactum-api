@@ -159,9 +159,7 @@ da implementação do estoque.
 
 ---
 
-### 3.4 Compartilhamento de dados não significa compartilhamento de
-
-responsabilidade
+### 3.4 Compartilhamento de dados não significa compartilhamento de responsabilidade
 
 Dois domínios podem utilizar informações relacionadas à mesma entidade
 sem que ambos sejam responsáveis por sua manutenção.
@@ -220,6 +218,7 @@ domínios.
 As fronteiras principais são:
 
 ```text
+────────────────────────────────────────────────────────────────────────────────
 | Domínio                   | Responsabilidade                                 |
 | ------------------------- | ------------------------------------------------ |
 | Auth                      | Autenticação e identidade de sessão              |
@@ -231,6 +230,7 @@ As fronteiras principais são:
 | Sales                     | Vendas e operações do PDV                        |
 | Reporting                 | Indicadores e informações derivadas              |
 | Platform / Administration | Operações administrativas em nível de plataforma |
+────────────────────────────────────────────────────────────────────────────────
 ```
 
 Algumas dessas áreas podem futuramente ser consolidadas ou subdivididas
@@ -451,6 +451,9 @@ Products define o que um produto é.
 
 Ele não é responsável por determinar quanto estoque existe.
 
+> Nota: Na versão atual, Products ainda assume o papel da quatindade de estoque, sendo essa uma
+> alteração para a próxima versão do Exactum
+
 ---
 
 ## 10. Inventory
@@ -483,7 +486,7 @@ Inventory
  └── Availability
 ```
 
-Relação com Products
+### Relação com Products
 
 Inventory referencia produtos, mas não deve assumir a responsabilidade
 pelo catálogo.
