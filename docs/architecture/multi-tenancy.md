@@ -1522,13 +1522,13 @@ Essa abordagem fornece uma base adequada para o estágio atual do produto, mante
 
 ## Referências
 
-[Visão Geral da Arquitetura](./overview.md)
-[Contexto do Sistema](./system-context.md)
-[Arquitetura da Aplicação](./application-architecture.md)
-[Fronteiras de Domínio](./domain-boundaries.md)
-[Autenticação](../security/authentication.md)
-[Autorização & RBAC](../security/authorization.md)
-[Gestão de Sessão](../security/session-management.md)
-[Isolamento de Tenant](../security/tenant-isolation.md)
-[Threat Model](../security/threat-model.md)
-[Logs de Auditoria](../observability/audit-logging.md)
+- [Visão Geral da Arquitetura](./overview.md)
+- [Contexto do Sistema](./system-context.md)
+- [Arquitetura da Aplicação](./application-architecture.md)
+- [Fronteiras de Domínio](./domain-boundaries.md)
+- [Autenticação](../security/authentication.md)
+- [Autorização & RBAC](../security/authorization.md)
+- [Gestão de Sessão](../security/session-management.md)
+- [Isolamento de Tenant](../security/tenant-isolation.md)
+- [Threat Model](../security/threat-model.md)
+- [Logs de Auditoria](../observability/audit-logging.md)
