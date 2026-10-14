@@ -868,14 +868,14 @@ O próximo grande ciclo de desenvolvimento está focado em melhorar as fronteira
 - [ ] Ampliação da cobertura de testes automatizados
 - [ ] Melhorias contínuas de observabilidade
 - [ ] Cache de alta performance com Redis
-- [ ] Processamento assíncrono de tarefas com Celery + RabbitMQ
-- [ ] Observabilidade centralizada com Prometheus + Grafana
 
 **Futuro**
 
 Capacidades futuras em exploração:
 
 - [ ] Análise preditiva de estoque com machine learning
+- [ ] Processamento assíncrono de tarefas com Celery + RabbitMQ
+- [ ] Observabilidade centralizada com Prometheus + Grafana
 - [ ] Insights de negócio assistidos por IA (integração com Groq API)
 - [ ] Processamento de tarefas em background
 - [ ] Integrações com marketplaces externos (Mercado Livre, Shopee, WooCommerce)
