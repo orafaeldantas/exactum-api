@@ -895,21 +895,27 @@ O Exactum é desenvolvido intencionalmente como algo além de um protótipo func
 Os principais princípios que guiam o projeto são:
 
 **Segurança por Design**
+
 Decisões de segurança devem ser incorporadas à arquitetura, em vez de adicionadas apenas após a funcionalidade estar pronta.
 
 **Fronteiras Explícitas**
+
 Lógica de negócio, preocupações de infraestrutura, preocupações HTTP e persistência devem ter responsabilidades claramente definidas.
 
 **Observabilidade como Preocupação de Primeira Classe**
+
 Um sistema em produção deve fornecer informação suficiente para entender o que aconteceu, quando aconteceu e em qual contexto.
 
 **Isolamento de Dados**
+
 Sistemas multi-tenant exigem fronteiras explícitas e defensivas de acesso a dados.
 
 **Evolução sobre Perfeição**
+
 A arquitetura pode evoluir conforme o sistema se torna mais complexo. Decisões técnicas são documentadas para preservar contexto e tornar futuras refatorações deliberadas, e não acidentais.
 
 **Engenharia através da Prática**
+
 O Exactum é desenvolvido como um ambiente prático para aplicar conceitos como arquitetura de software, modelagem de domínio, engenharia de backend, design de banco de dados, conceitos de sistemas distribuídos, segurança, observabilidade, CI/CD, infraestrutura e testes.
 
 ## Contribuindo
