@@ -1,4 +1,4 @@
-# API Errors
+# Erros da API
 
 ## 1. Objetivo
 
@@ -31,7 +31,7 @@ O cliente deve conseguir identificar programaticamente o resultado de uma opera�
 
 ---
 
-# 2. Error Handling Principles
+# 2. Princípios de Tratamento de Erros
 
 O tratamento de erros da API segue alguns princípios:
 
@@ -60,7 +60,7 @@ O consumidor da API não precisa conhecer a implementação interna que produziu
 
 ---
 
-# 3. Error Categories
+# 3. Categorias de Erro
 
 Os erros podem ser classificados conceitualmente em diferentes categorias:
 
@@ -80,7 +80,7 @@ Essa classificação ajuda a manter comportamento consistente entre endpoints.
 
 ---
 
-# 4. HTTP Status Codes
+# 4. Status Codes HTTP
 
 A API utiliza HTTP status codes como primeira camada de identificação do resultado.
 
@@ -99,7 +99,7 @@ Outros status codes podem ser utilizados quando houver uma necessidade específi
 
 ---
 
-# 5. Error Response Structure
+# 5. Estrutura da Resposta de Erro
 
 ## 5.1 Formato atual
 
@@ -181,7 +181,7 @@ Essa unificação é uma mudança de contrato e deve ser coordenada com o fronte
 
 ---
 
-# 6. Error Code
+# 6. Código de Erro
 
 O campo `code` identifica semanticamente o erro.
 
@@ -213,7 +213,7 @@ porque mensagens podem ser alteradas, traduzidas ou aprimoradas sem necessariame
 
 ---
 
-# 7. Error Message
+# 7. Mensagem de Erro
 
 O campo `message` fornece uma descrição legível do erro.
 
@@ -248,7 +248,7 @@ Mensagens não devem conter:
 
 ---
 
-# 8. Validation Errors
+# 8. Erros de Validação
 
 Erros de validação ocorrem quando os dados fornecidos pelo cliente não respeitam o formato ou as restrições esperadas pela API.
 
@@ -284,7 +284,7 @@ A estrutura de `details` deve permitir ao frontend associar erros aos campos cor
 
 ---
 
-# 9. Validation Error Details
+# 9. Detalhes do Erro de Validação
 
 Quando um erro possui múltiplos problemas, cada campo pode possuir sua própria lista de mensagens.
 
@@ -308,7 +308,7 @@ A API deve evitar estruturas excessivamente específicas que dificultem a reutil
 
 ---
 
-# 10. Authentication Errors
+# 10. Erros de Autenticação
 
 Erros de autenticação indicam que a API não conseguiu estabelecer uma identidade autenticada válida.
 
@@ -342,7 +342,7 @@ A API não deve expor informações desnecessárias sobre o motivo interno da fa
 
 ---
 
-# 11. Authorization Errors
+# 11. Erros de Autorização
 
 Quando o usuário está autenticado, mas não possui autorização para realizar uma operação, a API deve utilizar:
 
@@ -375,7 +375,7 @@ A decisão de autorização pertence ao backend.
 
 ---
 
-# 12. Resource Not Found
+# 12. Recurso Não Encontrado
 
 Quando um recurso solicitado não existe ou não pode ser retornado dentro do contexto autorizado, a API pode utilizar:
 
@@ -400,7 +400,7 @@ O comportamento deve preservar o tenant isolation.
 
 ---
 
-# 13. Resource Conflicts
+# 13. Conflitos de Recursos
 
 Conflitos ocorrem quando a operação é válida em termos estruturais, mas entra em conflito com o estado atual do sistema.
 
@@ -430,7 +430,7 @@ Exemplo:
 
 ---
 
-# 14. Business Errors
+# 14. Erros de Negócio
 
 Business Errors representam violações de regras do domínio ou da aplicação.
 
@@ -449,11 +449,11 @@ A aplicação pode estar funcionando corretamente e ainda assim rejeitar uma ope
 
 ---
 
-# 15. Business Error vs Validation Error
+# 15. Erro de Negócio vs Erro de Validação
 
 Esses conceitos não devem ser confundidos.
 
-### Validation Error
+### Erro de Validação
 
 A entrada não possui o formato ou estrutura esperada.
 
@@ -465,7 +465,7 @@ Exemplo:
 }
 ```
 
-### Business Error
+### Erro de Negócio
 
 A entrada possui formato válido, mas a operação não é permitida pelas regras do sistema.
 
@@ -491,7 +491,7 @@ Uma requisição pode passar pela validação estrutural e posteriormente ser re
 
 ---
 
-# 16. Rate Limit Errors
+# 16. Erros de Rate Limit
 
 Quando uma requisição excede o limite estabelecido pela API:
 
@@ -518,7 +518,7 @@ Rate limiting possui documentação operacional própria e integra-se à observa
 
 ---
 
-# 17. Internal Errors
+# 17. Erros Internos
 
 Erros inesperados devem resultar em uma resposta genérica ao cliente.
 
@@ -554,7 +554,7 @@ Essas informações pertencem aos logs internos.
 
 ---
 
-# 18. Exception Handling
+# 18. Tratamento de Exceções
 
 Exceções devem ser tratadas em uma camada centralizada sempre que possível.
 
@@ -581,11 +581,11 @@ Isso evita que cada endpoint implemente manualmente sua própria lógica de trat
 
 ---
 
-# 19. Known vs Unexpected Errors
+# 19. Erros Conhecidos vs Inesperados
 
 Uma distinção importante é entre erros conhecidos e exceções inesperadas.
 
-### Known Error
+### Erro Conhecido
 
 A aplicação sabe que aquela condição pode ocorrer e possui um comportamento definido.
 
@@ -597,7 +597,7 @@ PERMISSION_DENIED
 INSUFFICIENT_STOCK
 ```
 
-### Unexpected Error
+### Erro Inesperado
 
 A aplicação encontrou uma condição que não deveria ocorrer normalmente.
 
@@ -614,7 +614,7 @@ Unexpected Errors devem ser tratados de maneira genérica para o cliente.
 
 ---
 
-# 20. Application Exceptions
+# 20. Exceções da Aplicação
 
 A aplicação pode utilizar exceções específicas para representar erros conhecidos.
 
@@ -636,7 +636,7 @@ O objetivo é evitar que Application Services precisem conhecer detalhes da resp
 
 ---
 
-# 21. Framework Independence
+# 21. Independência de Framework
 
 Application Services e regras de negócio não devem depender diretamente de objetos de resposta HTTP.
 
@@ -665,7 +665,7 @@ Essa separação reduz o acoplamento entre domínio, aplicação e Flask.
 
 ---
 
-# 22. Error Mapping
+# 22. Mapeamento de Erros
 
 Erros internos devem possuir um mapeamento claro para HTTP.
 
@@ -687,7 +687,7 @@ A regra principal é que a camada HTTP seja responsável por traduzir o erro de 
 
 ---
 
-# 23. Error Codes Naming
+# 23. Nomenclatura dos Códigos de Erro
 
 Os códigos de erro devem utilizar nomes descritivos e consistentes.
 
@@ -710,7 +710,7 @@ Os códigos devem representar a condição sem incluir detalhes temporários ou 
 
 ---
 
-# 24. Error Code Stability
+# 24. Estabilidade dos Códigos de Erro
 
 Uma vez utilizado como parte do contrato público, um error code deve ser tratado como uma interface.
 
@@ -734,7 +734,7 @@ A mensagem pode evoluir independentemente do código quando a semântica permane
 
 ---
 
-# 25. Sensitive Information
+# 25. Informações Sensíveis
 
 Respostas de erro nunca devem expor informações sensíveis.
 
@@ -759,7 +759,7 @@ O princípio deve ser:
 
 ---
 
-# 26. Tenant Isolation and Errors
+# 26. Isolamento de Tenant e Erros
 
 Em uma arquitetura multi-tenant, erros também precisam respeitar tenant isolation.
 
@@ -782,7 +782,7 @@ O tratamento de `404` e outros erros relacionados a recursos deve ser analisado 
 
 ---
 
-# 27. Error Logging
+# 27. Logs de Erro
 
 Erros relevantes devem ser registrados de forma apropriada nos logs.
 
@@ -808,7 +808,7 @@ Entretanto, informações sensíveis devem ser removidas ou sanitizadas.
 
 ---
 
-# 28. Client Error vs Internal Log
+# 28. Erro para o Cliente vs Log Interno
 
 Uma mesma falha pode possuir duas representações diferentes.
 
@@ -857,7 +857,7 @@ Mais detalhes em:
 
 ---
 
-# 30. Error Responses and Frontend
+# 30. Respostas de Erro e Frontend
 
 O frontend deve tratar erros principalmente por:
 
@@ -885,7 +885,7 @@ Isso evita que a lógica do frontend fique acoplada a mensagens textuais do back
 
 ---
 
-# 31. Error Responses and Localization
+# 31. Respostas de Erro e Localização
 
 As mensagens retornadas pela API podem futuramente precisar suportar diferentes idiomas.
 
@@ -915,7 +915,7 @@ A estratégia definitiva de localization pode ser definida posteriormente.
 
 ---
 
-# 32. Error Handling and Transactions
+# 32. Tratamento de Erros e Transações
 
 Operações que envolvem múltiplas alterações devem considerar o comportamento transacional.
 
@@ -940,7 +940,7 @@ A responsabilidade transacional pertence à camada apropriada da aplicação e p
 
 ---
 
-# 33. Concurrency Errors
+# 33. Erros de Concorrência
 
 Operações concorrentes podem gerar conflitos.
 
@@ -957,7 +957,7 @@ A API deve evitar simplesmente retornar `500` para uma condição de concorrênc
 
 ---
 
-# 34. Error Handling and Retries
+# 34. Tratamento de Erros e Retentativas
 
 Nem todo erro deve ser automaticamente repetido pelo cliente.
 
@@ -979,7 +979,7 @@ Por isso, mecanismos como **Idempotency Keys** podem ser relevantes para futuras
 
 ---
 
-# 35. Error Handling and Observability
+# 35. Tratamento de Erros e Observabilidade
 
 O tratamento de erros faz parte da estratégia geral de observabilidade.
 
@@ -1005,7 +1005,7 @@ A aplicação deve evitar duplicação excessiva de logs e eventos.
 
 ---
 
-# 36. Avoiding Duplicate Logging
+# 36. Evitando Logs Duplicados
 
 Um erro conhecido não deve necessariamente ser registrado como `ERROR` em todas as camadas.
 
@@ -1031,7 +1031,7 @@ Erros inesperados devem possuir um ponto apropriado de logging com contexto sufi
 
 ---
 
-# 37. Error Handling and Security
+# 37. Tratamento de Erros e Segurança
 
 O tratamento de erros também faz parte da security architecture.
 
@@ -1056,48 +1056,48 @@ O objetivo não é esconder todos os erros, mas fornecer somente a informação 
 
 ---
 
-# 38. Testing Error Responses
+# 38. Testando Respostas de Erro
 
 As respostas de erro devem possuir testes automatizados.
 
 Testes devem verificar:
 
-### Validation
+### Validação
 
 - campos obrigatórios;
 - tipos inválidos;
 - valores inválidos;
 - múltiplos erros.
 
-### Authentication
+### Autenticação
 
 - token ausente;
 - token inválido;
 - sessão revogada.
 
-### Authorization
+### Autorização
 
 - permission denied;
 - role inadequada.
 
-### Resources
+### Recursos
 
 - resource not found;
 - duplicate resource.
 
-### Business Rules
+### Regras de Negócio
 
 - invalid state;
 - insufficient stock;
 - invalid operation.
 
-### Infrastructure
+### Infraestrutura
 
 - unexpected exception;
 - database failure;
 - Redis failure.
 
-### Contract
+### Contrato
 
 - status code;
 - error code;
@@ -1106,7 +1106,7 @@ Testes devem verificar:
 
 ---
 
-# 39. OpenAPI and Errors
+# 39. OpenAPI e Erros
 
 O contrato OpenAPI deve documentar respostas de erro relevantes.
 
@@ -1130,7 +1130,7 @@ Isso permite que consumidores compreendam o contrato antes de executar as opera�
 
 ---
 
-# 40. Error Response Example
+# 40. Exemplo de Resposta de Erro
 
 Um erro completo pode ser representado conceitualmente como:
 
@@ -1164,7 +1164,7 @@ A diferença é intencional:
 
 ---
 
-# 41. Current State
+# 41. Estado Atual
 
 Atualmente:
 
@@ -1180,7 +1180,7 @@ A seção 5.1 descreve os formatos atuais em detalhe.
 
 ---
 
-# 42. Future Evolution
+# 42. Evolução Futura
 
 A estratégia de erros poderá evoluir com:
 
@@ -1200,7 +1200,7 @@ Essas evoluções devem preservar a compatibilidade e a previsibilidade do contr
 
 ---
 
-# 43. Design Principles
+# 43. Princípios de Design
 
 As principais diretrizes são:
 
@@ -1230,7 +1230,7 @@ As principais diretrizes são:
 
 ---
 
-# 44. Related Documentation
+# 44. Documentos Relacionados
 
 - `docs/api/overview.md`
 - `docs/api/conventions.md`

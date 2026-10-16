@@ -1,4 +1,4 @@
-# Database Migrations
+# Migrations do Banco de Dados
 
 ## 1. Objetivo
 
@@ -26,7 +26,7 @@ A estratégia apresentada representa o modelo atual do projeto e sua direção d
 
 ---
 
-## 2. Database Schema e Versionamento
+## 2. Schema do Banco e Versionamento
 
 O schema do PostgreSQL representa o estado estrutural persistente do Exactum.
 
@@ -164,7 +164,7 @@ Esse processo mantém explícita a relação entre alteração de código e alte
 
 ---
 
-## 7. Autogenerate
+## 7. Geração Automática (autogenerate)
 
 O Alembic pode comparar o estado conhecido pelos models com o schema atual e gerar uma migration candidata por meio do mecanismo de `autogenerate`.
 
@@ -212,7 +212,7 @@ Uma migration tecnicamente válida pode ainda ser inadequada para produção.
 
 ---
 
-## 9. Migration Structure
+## 9. Estrutura das Migrations
 
 Uma migration do Alembic normalmente possui uma estrutura semelhante a:
 
@@ -243,7 +243,7 @@ A → B → C → D
 
 ---
 
-## 10. Revision Graph
+## 10. Grafo de Revisões
 
 As migrations formam um grafo de dependências baseado em `revision` e `down_revision`.
 
@@ -268,7 +268,7 @@ Antes do merge, o histórico deve ser reconciliado quando necessário.
 
 ---
 
-## 11. Single Migration Head
+## 11. Head Único de Migrations
 
 O ambiente de produção deve possuir uma sequência de migrations claramente resolvida.
 
@@ -288,7 +288,7 @@ Já múltiplas heads não intencionais indicam que o histórico precisa ser corr
 
 ---
 
-## 12. Migration Naming
+## 12. Nomenclatura de Migrations
 
 Os nomes das migrations devem comunicar a intenção da alteração.
 
@@ -308,7 +308,7 @@ Ele deve permitir identificar rapidamente o propósito da migration.
 
 ---
 
-## 13. Small and Focused Migrations
+## 13. Migrations Pequenas e Focadas
 
 Migrations devem preferencialmente ser pequenas e focadas.
 
@@ -337,7 +337,7 @@ Isso melhora:
 
 ---
 
-## 14. Schema Changes
+## 14. Mudanças de Schema
 
 Mudanças estruturais podem incluir:
 
@@ -359,7 +359,7 @@ Alterações simples de metadata podem ter impacto pequeno, enquanto alteraçõe
 
 ---
 
-## 15. Adding Columns
+## 15. Adição de Colunas
 
 Adicionar uma coluna geralmente é uma operação simples, mas alguns casos exigem cuidado.
 
@@ -376,7 +376,7 @@ Isso permite uma estratégia de evolução gradual.
 
 ---
 
-## 16. Adding Non-Nullable Columns
+## 16. Adição de Colunas Não Nulas
 
 Adicionar diretamente uma coluna `NOT NULL` em uma tabela que já possui dados pode exigir preenchimento dos registros existentes.
 
@@ -402,7 +402,7 @@ Essa estratégia reduz o risco de incompatibilidade durante deployment.
 
 ---
 
-## 17. Defaults
+## 17. Valores Padrão
 
 Defaults devem ser utilizados conscientemente.
 
@@ -451,13 +451,13 @@ Backfills devem ser planejados considerando:
 
 ---
 
-## 19. Schema Migration vs Data Migration
+## 19. Migração de Schema vs Migração de Dados
 
 Nem toda migration é puramente estrutural.
 
 É útil distinguir:
 
-### Schema Migration
+### Migração de Schema
 
 Altera a estrutura:
 
@@ -469,7 +469,7 @@ constraint
 foreign key
 ```
 
-### Data Migration
+### Migração de Dados
 
 Altera os dados existentes:
 
@@ -485,7 +485,7 @@ Uma migration pode conter ambos, mas mudanças de dados devem ser avaliadas cuid
 
 ---
 
-## 20. Data Transformation
+## 20. Transformação de Dados
 
 Transformações de dados devem ser determinísticas sempre que possível.
 
@@ -503,7 +503,7 @@ A migration deve conseguir produzir o mesmo resultado quando executada no mesmo 
 
 ---
 
-## 21. Destructive Migrations
+## 21. Migrations Destrutivas
 
 Operações destrutivas incluem:
 
@@ -520,11 +520,11 @@ Uma migration destrutiva não deve ser tratada como uma alteração comum.
 
 ---
 
-## 22. Expand and Contract
+## 22. Expandir e Contrair (Expand and Contract)
 
 Para alterações que afetam aplicações em execução, uma estratégia útil é o padrão **Expand and Contract**.
 
-### Expand
+### Expansão (Expand)
 
 Adicionar a nova estrutura sem remover a antiga.
 
@@ -546,7 +546,7 @@ Old + New Schema
 New Application
 ```
 
-### Contract
+### Contrato
 
 Remover estruturas antigas somente quando não forem mais utilizadas.
 
@@ -561,7 +561,7 @@ Esse padrão reduz problemas de incompatibilidade entre versões.
 
 ---
 
-## 23. Backward Compatibility
+## 23. Compatibilidade Retroativa
 
 Durante um deployment, pode existir um período em que:
 
@@ -614,7 +614,7 @@ Essa estratégia é especialmente relevante em deployments onde versões podem c
 
 ---
 
-## 25. Changing Data Types
+## 25. Alteração de Tipos de Dados
 
 Alterações de tipo devem considerar:
 
@@ -681,7 +681,7 @@ Quando uma regra é estruturalmente importante para a integridade dos dados, ela
 
 ---
 
-## 28. Indexes
+## 28. Índices
 
 Indexes também fazem parte da evolução do schema.
 
@@ -725,7 +725,7 @@ Para alterações de grande porte, a operação deve ser tratada como uma mudan�
 
 ---
 
-## 30. Tenant-Aware Migrations
+## 30. Migrations Conscientes de Tenant
 
 Como o Exactum é multi-tenant, migrations devem ser tratadas no nível do schema compartilhado.
 
@@ -745,7 +745,7 @@ Migration estrutural não deve tentar reproduzir lógica de isolamento de tenant
 
 ---
 
-## 31. Tenant Data During Backfills
+## 31. Dados do Tenant Durante Backfills
 
 Embora a estrutura seja compartilhada, backfills podem operar sobre dados pertencentes a diferentes tenants.
 
@@ -877,7 +877,7 @@ Quando necessário, a aplicação pode suportar temporariamente ambas as represe
 
 ---
 
-## 37. Transactional Behavior
+## 37. Comportamento Transacional
 
 Migrations podem utilizar transações dependendo da operação e das capacidades do PostgreSQL.
 
@@ -906,7 +906,7 @@ Entretanto, operações específicas do PostgreSQL possuem comportamentos e rest
 
 ---
 
-## 38. Long-Running Migrations
+## 38. Migrations de Longa Duração
 
 Migrations longas representam risco operacional.
 
@@ -934,7 +934,7 @@ Isso permite maior controle sobre o deployment.
 
 ---
 
-## 39. Locking
+## 39. Locks
 
 Alterações de schema podem adquirir locks.
 
@@ -951,7 +951,7 @@ O risco deve ser avaliado em relação ao tamanho das tabelas e ao tráfego do a
 
 ---
 
-## 40. Production Migrations
+## 40. Migrations em Produção
 
 Migrations de produção devem ser executadas de maneira controlada.
 
@@ -1010,7 +1010,7 @@ Essa separação permite controlar explicitamente quando o schema é atualizado.
 
 ---
 
-## 42. Migration Failure
+## 42. Falha de Migration
 
 Se uma migration falhar, o deployment não deve simplesmente assumir que o banco está atualizado.
 
@@ -1031,7 +1031,7 @@ O primeiro passo é identificar a migration e o estado real do banco.
 
 ---
 
-## 43. Database Version
+## 43. Versão do Banco de Dados
 
 O Alembic mantém a identificação da revision aplicada ao banco.
 
@@ -1105,7 +1105,7 @@ Entretanto, downgrade não deve ser tratado como garantia de recuperação de da
 
 ---
 
-## 46. Downgrade e Data Loss
+## 46. Downgrade e Perda de Dados
 
 Uma migration pode ser estruturalmente reversível, mas seus dados podem não ser.
 
@@ -1133,7 +1133,7 @@ Backups continuam sendo necessários.
 
 ---
 
-## 47. Backup Before High-Risk Changes
+## 47. Backup Antes de Mudanças de Alto Risco
 
 Alterações de alto risco em produção devem considerar backup apropriado antes da execução.
 
@@ -1149,7 +1149,7 @@ Backup e rollback são mecanismos diferentes e complementares.
 
 ---
 
-## 48. Migration Testing
+## 48. Testes de Migrations
 
 Migrations devem ser testadas.
 
@@ -1191,7 +1191,7 @@ Expected Previous State
 
 ---
 
-## 49. Fresh Database Test
+## 49. Teste com Banco Limpo
 
 Um teste importante consiste em criar um banco vazio e aplicar todas as migrations desde o início.
 
@@ -1217,7 +1217,7 @@ Esse processo reduz o risco de depender de alterações manuais que nunca foram 
 
 ---
 
-## 50. Existing Database Test
+## 50. Teste com Banco Existente
 
 Também é importante testar migrations sobre um banco que representa uma versão anterior.
 
@@ -1235,7 +1235,7 @@ Uma migration pode funcionar em um banco vazio e ainda falhar em um banco real c
 
 ---
 
-## 51. Migration CI
+## 51. Migrations no CI
 
 O CI deve validar migrations quando possível.
 
@@ -1261,7 +1261,7 @@ Isso permite detectar migrations inválidas antes de chegar ao ambiente de produ
 
 ---
 
-## 52. Migration and Tests
+## 52. Migrations e Testes
 
 Testes de aplicação não substituem testes de migration.
 
@@ -1279,7 +1279,7 @@ Ambos devem fazer parte do ciclo de qualidade.
 
 ---
 
-## 53. Migration Review Checklist
+## 53. Checklist de Revisão de Migrations
 
 Antes de mergear uma migration:
 
@@ -1348,7 +1348,7 @@ A migration não deve depender de lógica externa que não esteja versionada.
 
 ---
 
-## 56. Migration Idempotency
+## 56. Idempotência de Migrations
 
 Uma migration normal do Alembic não precisa ser idempotente no sentido de poder ser executada infinitas vezes.
 
@@ -1358,7 +1358,7 @@ Entretanto, operações internas devem evitar comportamentos inesperados quando 
 
 ---
 
-## 57. Schema Drift
+## 57. Divergência de Schema (Schema Drift)
 
 **Schema drift** ocorre quando o banco se afasta do schema esperado pelo repositório.
 
@@ -1380,7 +1380,7 @@ Por isso, alterações estruturais devem passar pelo sistema de migrations.
 
 ---
 
-## 58. Manual Database Changes
+## 58. Mudanças Manuais no Banco de Dados
 
 Alterações manuais diretamente em produção devem ser evitadas.
 
@@ -1412,7 +1412,7 @@ Assim, migrations possuem valor além da execução técnica.
 
 ---
 
-## 60. Relationship with Domain Evolution
+## 60. Relação com a Evolução do Domínio
 
 Mudanças arquiteturais podem resultar em mudanças no schema.
 
@@ -1434,7 +1434,7 @@ Uma separação conceitual pode ser realizada primeiro na aplicação e somente 
 
 ---
 
-## 61. Future Inventory Evolution
+## 61. Evolução Futura de Estoque
 
 Atualmente, responsabilidades relacionadas a estoque ainda estão distribuídas principalmente entre os domínios de Product e Sales.
 
@@ -1464,7 +1464,7 @@ Essa mudança deve ser feita de forma incremental e compatível com os dados exi
 
 ---
 
-## 62. Future Reporting Evolution
+## 62. Evolução Futura de Relatórios
 
 Reporting também poderá evoluir para uma estrutura própria.
 
@@ -1485,7 +1485,7 @@ O estado atual não pressupõe um Reporting context independente.
 
 ---
 
-## 63. Read Models
+## 63. Modelos de Leitura
 
 Caso o Exactum adote read models no futuro, as migrations poderão criar estruturas específicas para leitura.
 
@@ -1505,7 +1505,7 @@ Essas estruturas devem ser tratadas como projeções derivadas quando essa estra
 
 ---
 
-## 64. Materialized Views
+## 64. Views Materializadas
 
 O PostgreSQL permite materialized views para cenários específicos de leitura.
 
@@ -1551,7 +1551,7 @@ Essa estrutura não faz parte necessariamente do schema atual, mas representa um
 
 ---
 
-## 66. Async Processing
+## 66. Processamento Assíncrono
 
 A futura adoção de:
 
@@ -1567,7 +1567,7 @@ Estado transitório de filas e workers não deve ser confundido com schema relac
 
 ---
 
-## 67. Deployment Compatibility
+## 67. Compatibilidade do Deployment
 
 Migrations devem ser compatíveis com o processo de deployment utilizado pelo Exactum.
 
@@ -1587,7 +1587,7 @@ Quando uma mudança exige mais de uma etapa, o deployment deve seguir uma sequê
 
 ---
 
-## 68. Failed Deployment
+## 68. Deployment com Falha
 
 Em caso de falha durante deployment:
 
@@ -1615,7 +1615,7 @@ não se deve assumir automaticamente que o banco pode simplesmente ser revertido
 
 ---
 
-## 69. Recovery Strategy
+## 69. Estratégia de Recuperação
 
 A recuperação depende da natureza da falha.
 
@@ -1652,7 +1652,7 @@ O procedimento deve considerar o tipo de alteração e o estado real do sistema.
 
 ---
 
-## 70. Production Safety
+## 70. Segurança em Produção
 
 Antes de executar uma migration relevante em produção, deve-se considerar:
 
@@ -1672,7 +1672,7 @@ Database migrations fazem parte do processo operacional da aplicação.
 
 ---
 
-## 71. Observability During Migrations
+## 71. Observabilidade Durante Migrations
 
 Migrations de produção devem ser observadas.
 
@@ -1692,7 +1692,7 @@ Logs de deployment devem permitir identificar qual revision foi aplicada.
 
 ---
 
-## 72. Migration Version and Deployment Version
+## 72. Versão da Migration e Versão do Deployment
 
 É útil conseguir correlacionar:
 
@@ -1718,7 +1718,7 @@ Essa relação facilita troubleshooting e investigação de incidentes.
 
 ---
 
-## 73. Reproducibility
+## 73. Reprodutibilidade
 
 O schema de um ambiente deve ser reproduzível a partir do código versionado.
 
@@ -1738,7 +1738,7 @@ Isso reduz dependência de conhecimento manual sobre o estado do banco.
 
 ---
 
-## 74. Development Workflow
+## 74. Fluxo de Desenvolvimento
 
 Fluxo recomendado para alterações de schema:
 
@@ -1759,7 +1759,7 @@ A migration deve fazer parte do mesmo change set da alteração de código que d
 
 ---
 
-## 75. Migration Commit
+## 75. Commit de Migrations
 
 Uma alteração de schema deve, sempre que possível, ser commitada junto com a alteração da aplicação que depende dela.
 
@@ -1777,7 +1777,7 @@ Isso mantém código e schema evoluindo juntos.
 
 ---
 
-## 76. Migration and Git
+## 76. Migrations e Git
 
 As migrations são artefatos versionados pelo Git.
 
@@ -1794,7 +1794,7 @@ Não existe uma separação entre “código” e “migration” do ponto de vi
 
 ---
 
-## 77. Migration and Semantic Changes
+## 77. Migrations e Mudanças Semânticas
 
 Nem toda mudança de domínio exige uma migration.
 
@@ -1818,7 +1818,7 @@ A necessidade de migration deve ser determinada pela alteração real no estado 
 
 ---
 
-## 78. Database as Source of Persistence Integrity
+## 78. O Banco de Dados como Fonte da Integridade da Persistência
 
 A aplicação implementa regras de negócio, mas o PostgreSQL também deve proteger a integridade estrutural dos dados quando apropriado.
 
@@ -1841,7 +1841,7 @@ As duas camadas possuem responsabilidades complementares.
 
 ---
 
-## 79. Avoiding Business Logic in Migrations
+## 79. Evitando Regras de Negócio em Migrations
 
 Migrations não devem se transformar em uma segunda aplicação.
 
@@ -1857,7 +1857,7 @@ A responsabilidade principal da migration é evoluir o estado persistente.
 
 ---
 
-## 80. External Dependencies
+## 80. Dependências Externas
 
 Uma migration não deve depender de:
 
@@ -1875,7 +1875,7 @@ Quanto menos dependências externas, mais reproduzível e previsível é o proce
 
 ---
 
-## 81. Migration and Security
+## 81. Migrations e Segurança
 
 Alterações de schema também possuem impacto de segurança.
 
@@ -1892,7 +1892,7 @@ Uma migration de segurança deve ser tratada como mudança sensível e validada 
 
 ---
 
-## 82. Migration and Tenant Isolation
+## 82. Migrations e Isolamento de Tenant
 
 Mudanças estruturais nunca devem introduzir acidentalmente um caminho que permita acesso cross-tenant.
 
@@ -1908,7 +1908,7 @@ Schema design e tenant isolation estão diretamente relacionados.
 
 ---
 
-## 83. Migration and Auditability
+## 83. Migrations e Auditabilidade
 
 Alterações importantes no schema devem ser rastreáveis pelo Git e pelo histórico de migrations.
 
@@ -1929,7 +1929,7 @@ Operations
 
 ---
 
-## 84. Current State
+## 84. Estado Atual
 
 Atualmente, o Exactum utiliza PostgreSQL como database relacional principal e Alembic/Flask-Migrate para versionamento do schema.
 
@@ -1946,7 +1946,7 @@ O modelo permanece baseado em PostgreSQL compartilhado entre tenants.
 
 ---
 
-## 85. Known Evolution Points
+## 85. Pontos de Evolução Conhecidos
 
 Alguns pontos podem evoluir conforme o sistema amadureça:
 
@@ -1969,7 +1969,7 @@ Esses pontos representam possibilidades de evolução, não necessariamente func
 
 ---
 
-## 86. Design Principles
+## 86. Princípios de Design
 
 A estratégia de migrations do Exactum segue alguns princípios:
 
@@ -2007,7 +2007,7 @@ Mudanças arquiteturais e de schema devem ser introduzidas gradualmente quando o
 
 ---
 
-## 87. Related Documentation
+## 87. Documentos Relacionados
 
 Este documento se relaciona diretamente com:
 
@@ -2027,7 +2027,7 @@ Este documento se relaciona diretamente com:
 
 ---
 
-## 88. Naming and Architectural Evolution
+## 88. Nomenclatura e Evolução Arquitetural
 
 A documentação utiliza alguns conceitos arquiteturais que podem não possuir correspondência literal com nomes existentes no código.
 

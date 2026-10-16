@@ -59,31 +59,31 @@ Uma release precisa preservar a consistência entre:
 
 O processo de deployment do Exactum segue alguns princípios fundamentais.
 
-### Reproducibility
+### Reprodutibilidade
 
 Uma mesma versão deve poder ser implantada de maneira previsível.
 
-### Automation
+### Automação
 
 Operações repetitivas devem ser executadas automaticamente sempre que possível.
 
-### Validation Before Deployment
+### Validação Antes do Deployment
 
 O código deve passar pelas verificações automatizadas antes de chegar ao ambiente de produção.
 
-### Explicit Database Changes
+### Mudanças Explícitas no Banco de Dados
 
 Alterações estruturais no banco devem ser tratadas explicitamente através de migrations.
 
-### Traceability
+### Rastreabilidade
 
 Uma release deve poder ser relacionada ao commit que originou o deployment.
 
-### Operational Safety
+### Segurança Operacional
 
 Operações potencialmente destrutivas devem ser evitadas ou executadas de maneira explícita.
 
-### Production Verification
+### Verificação em Produção
 
 O sucesso do processo de deploy não deve ser considerado apenas pelo fato de o pipeline ter terminado sem erro.
 
@@ -125,7 +125,7 @@ O Cloudflare participa da camada externa de infraestrutura, enquanto o Nginx e o
 
 ---
 
-# 3. Source of Truth
+# 3. Fonte da Verdade
 
 O código-fonte do Exactum é mantido em Git.
 
@@ -148,7 +148,7 @@ Isso reduz o risco de **configuration drift** entre o código versionado e o amb
 
 ---
 
-# 4. Git Workflow
+# 4. Fluxo de Git
 
 Uma release começa normalmente a partir de uma alteração no código.
 
@@ -188,7 +188,7 @@ Essa relação é importante para investigação de problemas e eventual rollbac
 
 ---
 
-# 5. Continuous Integration
+# 5. Integração Contínua
 
 Antes do deployment, o código passa pelo processo de **Continuous Integration (CI)**.
 
@@ -355,7 +355,7 @@ O processo deve preservar os volumes e demais estados persistentes que não faze
 
 ---
 
-# 11. Database Migrations
+# 11. Migrations do Banco de Dados
 
 Alterações no schema do banco de dados devem utilizar **Alembic migrations**, através da integração utilizada pelo projeto.
 
@@ -383,7 +383,7 @@ Não é suficiente alterar o model da aplicação e assumir que o banco de produ
 
 ---
 
-# 12. Migration Before Application
+# 12. Migration Antes da Aplicação
 
 Uma migration pode precisar ser executada antes da atualização da aplicação.
 
@@ -419,11 +419,11 @@ Essa abordagem reduz riscos durante deployments que envolvem mudanças de schema
 
 ---
 
-# 13. Expand and Contract
+# 13. Expandir e Contrair (Expand and Contract)
 
 Para mudanças mais sensíveis no banco, uma estratégia útil é o padrão **Expand and Contract**.
 
-### Expand
+### Expansão (Expand)
 
 Adicionar a nova estrutura sem remover a antiga.
 
@@ -433,7 +433,7 @@ Old schema
 New schema
 ```
 
-### Application Update
+### Atualização da Aplicação
 
 Atualizar a aplicação para utilizar a nova estrutura.
 
@@ -443,7 +443,7 @@ Application
       └── New schema
 ```
 
-### Contract
+### Contrato
 
 Somente depois de confirmar que a estrutura antiga não é mais utilizada, removê-la.
 
@@ -455,7 +455,7 @@ Essa estratégia reduz a dependência de deployments perfeitamente atômicos.
 
 ---
 
-# 14. Backward Compatibility
+# 14. Compatibilidade Retroativa
 
 Durante um deployment, diferentes componentes podem existir temporariamente em estados diferentes.
 
@@ -516,7 +516,7 @@ Isso é mais significativo do que simplesmente verificar se o container está `r
 
 ---
 
-# 16. Deployment Verification
+# 16. Verificação do Deployment
 
 Um deployment bem-sucedido possui pelo menos três níveis de validação.
 
@@ -529,7 +529,7 @@ CI/CD
    └── success
 ```
 
-## 16.2 Infrastructure
+## 16.2 Infraestrutura
 
 Verificar os containers.
 
@@ -539,7 +539,7 @@ docker compose ps
 
 e analisar logs quando necessário.
 
-## 16.3 Application
+## 16.3 Aplicação
 
 Verificar a aplicação através de:
 
@@ -582,7 +582,7 @@ Eles servem para verificar se o sistema realmente está operacional após a publ
 
 ---
 
-# 18. Authentication Verification
+# 18. Verificação da Autenticação
 
 Como a autenticação do Exactum utiliza HttpOnly cookies, mudanças relacionadas a:
 
@@ -619,7 +619,7 @@ Logout
 
 ---
 
-# 19. Session Management
+# 19. Gerenciamento de Sessões
 
 O Redis participa do gerenciamento de sessões do Exactum.
 
@@ -675,7 +675,7 @@ Também devem ser considerados:
 
 ---
 
-# 21. Tenant Isolation
+# 21. Isolamento de Tenant
 
 Mudanças relacionadas à persistência ou autenticação podem afetar diretamente a isolation entre tenants.
 
@@ -696,7 +696,7 @@ Uma release não pode ser considerada segura apenas porque o fluxo de um tenant 
 
 ---
 
-# 22. Observability durante Deployment
+# 22. Observabilidade durante o Deployment
 
 Observability deve fazer parte do processo de deployment.
 
@@ -735,7 +735,7 @@ Quais erros apareceram?
 
 ---
 
-# 23. Release Correlation
+# 23. Correlação com Releases
 
 Cada deployment deve poder ser relacionado a uma alteração específica no Git.
 
@@ -761,7 +761,7 @@ Essa rastreabilidade é importante para troubleshooting e incident response.
 
 ---
 
-# 24. Configuration Changes
+# 24. Mudanças de Configuração
 
 Nem toda mudança de produção envolve código.
 
@@ -862,7 +862,7 @@ Essa operação depende de o schema e demais componentes continuarem compatívei
 
 ---
 
-# 28. Rollback de Database
+# 28. Rollback do Banco de Dados
 
 Database rollback é uma operação mais delicada.
 
@@ -884,7 +884,7 @@ Em determinados casos, restaurar um backup pode ser mais apropriado do que execu
 
 ---
 
-# 29. Failed Deployment
+# 29. Deployment com Falha
 
 Quando um deployment falha, a prioridade deve ser:
 
@@ -926,7 +926,7 @@ Por isso, o processo de recovery precisa considerar o estado real do ambiente, e
 
 ---
 
-# 31. Database Backup Before Risky Changes
+# 31. Backup do Banco Antes de Mudanças de Risco
 
 Antes de migrations ou operações que possam alterar dados de maneira relevante, deve existir uma estratégia apropriada de backup.
 
@@ -978,7 +978,7 @@ Uma mudança no frontend que depende de uma API ainda inexistente pode quebrar o
 
 ---
 
-# 33. API Compatibility
+# 33. Compatibilidade da API
 
 Mudanças na API devem considerar consumidores existentes.
 
@@ -1087,7 +1087,7 @@ Esses mecanismos podem ser introduzidos conforme a necessidade do sistema.
 
 ---
 
-# 38. Graceful Shutdown
+# 38. Encerramento Gracioso (Graceful Shutdown)
 
 Serviços devem, quando possível, encerrar processos de maneira controlada.
 
@@ -1103,7 +1103,7 @@ A estratégia de graceful shutdown pode se tornar mais importante conforme o Exa
 
 ---
 
-# 39. Background Jobs
+# 39. Jobs em Segundo Plano
 
 Atualmente, o Exactum ainda possui uma arquitetura predominantemente síncrona.
 
@@ -1137,13 +1137,13 @@ Essa evolução exigirá uma estratégia de deployment mais sofisticada.
 
 ---
 
-# 40. Release Types
+# 40. Tipos de Release
 
 Nem todas as releases possuem o mesmo nível de risco.
 
 Uma classificação operacional útil é:
 
-### Low Risk
+### Baixo Risco
 
 Exemplos:
 
@@ -1151,7 +1151,7 @@ Exemplos:
 - pequenas alterações de frontend;
 - correções isoladas.
 
-### Medium Risk
+### Risco Médio
 
 Exemplos:
 
@@ -1161,7 +1161,7 @@ Exemplos:
 - Nginx;
 - mudanças significativas de backend.
 
-### High Risk
+### Alto Risco
 
 Exemplos:
 
@@ -1246,11 +1246,11 @@ Verificar:
 docker compose logs
 ```
 
-### 5. Health
+### 5. Saúde
 
 Verificar o endpoint de health.
 
-### 6. Database
+### 6. Banco de Dados
 
 Verificar migrations e conexão.
 
@@ -1262,7 +1262,7 @@ Verificar disponibilidade e estado relevante.
 
 Verificar routing e proxy.
 
-### 9. Application
+### 9. Aplicação
 
 Investigar logs e `request_id`.
 
@@ -1272,7 +1272,7 @@ Se necessário, retornar para uma versão conhecida.
 
 ---
 
-# 44. Deployment e Observability
+# 44. Deployment e Observabilidade
 
 Deployment e observability são complementares.
 
@@ -1299,7 +1299,7 @@ podem ser correlacionadas durante investigação.
 
 ---
 
-# 45. Incident Response
+# 45. Resposta a Incidentes
 
 Quando uma release causa um problema relevante, o processo deve priorizar restauração do serviço.
 
@@ -1338,7 +1338,7 @@ O objetivo não é apenas corrigir o código, mas compreender:
 
 ---
 
-# 46. Deployment Auditability
+# 46. Auditabilidade do Deployment
 
 Mudanças de produção devem possuir rastreabilidade.
 
@@ -1370,7 +1370,7 @@ Essa informação pode ser complementada futuramente por eventos de plataforma d
 
 ---
 
-# 47. Versioning
+# 47. Versionamento
 
 A versão da aplicação deve possuir uma relação clara com o código implantado.
 
@@ -1394,7 +1394,7 @@ O versionamento formal da API possui regras próprias e é documentado em:
 
 ---
 
-# 48. Roll Forward
+# 48. Correção para Frente (Roll Forward)
 
 Nem todo problema deve ser resolvido através de rollback.
 
@@ -1431,7 +1431,7 @@ A escolha entre rollback e roll forward depende de:
 
 ---
 
-# 49. Deployment Reproducibility
+# 49. Reprodutibilidade do Deployment
 
 Um deployment deve evitar depender de conhecimento implícito do operador.
 
@@ -1459,7 +1459,7 @@ A documentação de deployment deve complementar os workflows automatizados.
 
 ---
 
-# 50. Production Safety
+# 50. Segurança em Produção
 
 Operações em produção devem ser realizadas com cautela.
 
@@ -1529,7 +1529,7 @@ Atualizações relevantes devem passar pelo CI antes do deployment.
 
 ---
 
-# 53. Failed Migration
+# 53. Migration com Falha
 
 Se uma migration falhar, o processo deve parar antes de prosseguir cegamente com a atualização da aplicação.
 
@@ -1556,7 +1556,7 @@ A situação do banco deve ser avaliada antes de executar novamente ou tentar qu
 
 ---
 
-# 54. Database Locking
+# 54. Locks no Banco de Dados
 
 Migrations podem gerar locks dependendo das operações realizadas.
 
@@ -1590,7 +1590,7 @@ A infraestrutura deve ser observada durante releases que envolvem builds ou migr
 
 ---
 
-# 56. Resource Constraints
+# 56. Restrições de Recursos
 
 Containers podem competir pelos recursos disponíveis no host.
 
@@ -1620,7 +1620,7 @@ Limpeza e monitoramento operacional fazem parte da manutenção do ambiente.
 
 ---
 
-# 57. Disk Usage
+# 57. Uso de Disco
 
 O host de produção pode acumular:
 
@@ -1637,7 +1637,7 @@ Operações automáticas de limpeza devem ser utilizadas com cuidado, especialme
 
 ---
 
-# 58. Deployment Frequency
+# 58. Frequência de Deployment
 
 A frequência de deployment deve acompanhar a maturidade do sistema.
 
@@ -1655,7 +1655,7 @@ Por outro lado, mudanças de infraestrutura ou schema podem justificar releases 
 
 ---
 
-# 59. Release Notes
+# 59. Notas de Release
 
 Mudanças relevantes devem ser registradas no histórico do projeto.
 
@@ -1672,7 +1672,7 @@ Isso cria uma camada adicional de rastreabilidade entre código e releases.
 
 ---
 
-# 60. Documentation as Part of Deployment
+# 60. Documentação como Parte do Deployment
 
 Uma alteração operacional relevante deve atualizar sua documentação correspondente.
 
@@ -1699,7 +1699,7 @@ A documentação deve acompanhar a evolução real do sistema.
 
 ---
 
-# 61. Environment Separation
+# 61. Separação de Ambientes
 
 Desenvolvimento e produção devem permanecer separados.
 
@@ -1725,7 +1725,7 @@ Essa separação é essencial para evitar operações acidentais no ambiente de 
 
 ---
 
-# 62. Production Parity
+# 62. Paridade com Produção
 
 Embora desenvolvimento e produção possam possuir diferenças, elas devem permanecer suficientemente próximas nos aspectos relevantes.
 
@@ -1744,7 +1744,7 @@ Quanto maior a diferença entre os ambientes, maior a chance de um comportamento
 
 ---
 
-# 63. Deployment Checklist Simplificado
+# 63. Checklist de Deployment Simplificado
 
 Para uma release comum:
 
@@ -1855,35 +1855,35 @@ Por isso, deployment é tratado como parte da engenharia do sistema.
 
 O processo de deployment do Exactum segue os seguintes princípios:
 
-### Automated Where Safe
+### Automatizado Quando Seguro
 
 Automatizar operações repetitivas sem remover controles necessários.
 
-### Explicit Where Risky
+### Explícito Quando Arriscado
 
 Operações potencialmente destrutivas devem exigir maior controle.
 
-### Reproducible
+### Reprodutível
 
 O deployment deve poder ser repetido de maneira previsível.
 
-### Traceable
+### Rastreável
 
 Toda alteração deve possuir relação com uma versão ou commit.
 
-### Observable
+### Observável
 
 O ambiente deve permitir verificar o resultado do deployment.
 
-### Recoverable
+### Recuperável
 
 Falhas devem possuir caminhos conhecidos de recuperação.
 
-### Compatible
+### Compatível
 
 Mudanças de aplicação e banco devem considerar compatibilidade durante a transição.
 
-### Minimal Operational Complexity
+### Complexidade Operacional Mínima
 
 A infraestrutura deve permanecer proporcional ao estágio e às necessidades do sistema.
 

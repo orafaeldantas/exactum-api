@@ -1,6 +1,6 @@
-# Threat Model
+# Modelo de Ameaças
 
-## 1. Overview
+## 1. Visão Geral
 
 Este documento descreve o modelo de ameaças do Exactum, identificando os principais ativos, atores, superfícies de ataque, ameaças e controles de segurança da plataforma.
 
@@ -39,7 +39,7 @@ A segurança é tratada como uma propriedade transversal da aplicação:
 
 ---
 
-# 2. Scope
+# 2. Escopo
 
 Este threat model cobre principalmente:
 
@@ -74,7 +74,7 @@ O documento não pretende substituir:
 
 ---
 
-# 3. Security Objectives
+# 3. Objetivos de Segurança
 
 Os principais objetivos de segurança são:
 
@@ -105,11 +105,11 @@ Security Objectives
 
 ---
 
-# 4. Assets
+# 4. Ativos
 
 Os ativos relevantes para segurança incluem dados, credenciais, infraestrutura e contexto operacional.
 
-## 4.1. User Data
+## 4.1. Dados do Usuário
 
 Informações relacionadas aos usuários da plataforma.
 
@@ -123,7 +123,7 @@ Exemplos:
 
 ---
 
-## 4.2. Tenant Data
+## 4.2. Dados do Tenant
 
 Dados pertencentes às organizações utilizando o sistema.
 
@@ -140,7 +140,7 @@ O principal requisito é impedir que dados de um tenant sejam expostos para outr
 
 ---
 
-## 4.3. Authentication Credentials
+## 4.3. Credenciais de Autenticação
 
 Credenciais utilizadas para autenticação.
 
@@ -158,7 +158,7 @@ Unauthorized Access
 
 ---
 
-## 4.4. Session Credentials
+## 4.4. Credenciais da Sessão
 
 Incluem tokens e informações utilizadas para manter sessões autenticadas.
 
@@ -166,7 +166,7 @@ O comprometimento de uma sessão pode permitir que um atacante atue como o usuá
 
 ---
 
-## 4.5. Authorization Data
+## 4.5. Dados de Autorização
 
 Inclui:
 
@@ -180,7 +180,7 @@ A manipulação indevida desses dados pode resultar em privilege escalation.
 
 ---
 
-## 4.6. Audit Records
+## 4.6. Registros de Auditoria
 
 Registros utilizados para rastrear operações relevantes.
 
@@ -193,7 +193,7 @@ Esses dados são importantes para:
 
 ---
 
-## 4.7. Infrastructure
+## 4.7. Infraestrutura
 
 Inclui:
 
@@ -210,7 +210,7 @@ Comprometimento da infraestrutura pode comprometer múltiplos tenants simultanea
 
 ---
 
-## 4.8. Source Code
+## 4.8. Código-Fonte
 
 O código-fonte contém:
 
@@ -224,7 +224,7 @@ O código deve ser considerado informação potencialmente sensível do ponto de
 
 ---
 
-# 5. Trust Boundaries
+# 5. Fronteiras de Confiança
 
 Trust boundaries representam pontos onde dados ou autoridade passam de um contexto para outro.
 
@@ -274,11 +274,11 @@ Cada fronteira deve ser tratada como potencial ponto de ataque.
 
 ---
 
-# 6. Threat Actors
+# 6. Agentes de Ameaça
 
 O modelo considera diferentes tipos de atores.
 
-## 6.1. Unauthenticated Attacker
+## 6.1. Atacante Não Autenticado
 
 Atacante sem conta autenticada.
 
@@ -293,7 +293,7 @@ Pode tentar:
 
 ---
 
-## 6.2. Authenticated Low-Privilege User
+## 6.2. Usuário Autenticado com Baixo Privilégio
 
 Usuário legítimo com permissões limitadas.
 
@@ -310,7 +310,7 @@ Pode tentar:
 
 ---
 
-## 6.3. Compromised Account
+## 6.3. Conta Comprometida
 
 Uma conta legítima comprometida por terceiros.
 
@@ -324,7 +324,7 @@ O objetivo pode ser utilizar essas permissões para ampliar o acesso.
 
 ---
 
-## 6.4. Malicious Tenant Administrator
+## 6.4. Administrador de Tenant Malicioso
 
 Administrador legítimo de um tenant que tenta:
 
@@ -336,7 +336,7 @@ Administrador legítimo de um tenant que tenta:
 
 ---
 
-## 6.5. Malicious Insider
+## 6.5. Insider Malicioso
 
 Ator com acesso privilegiado à infraestrutura, código ou operações.
 
@@ -351,7 +351,7 @@ Pode tentar:
 
 ---
 
-## 6.6. Compromised Infrastructure
+## 6.6. Infraestrutura Comprometida
 
 Um atacante que consegue comprometer:
 
@@ -366,7 +366,7 @@ Esse cenário possui impacto potencialmente elevado porque pode ultrapassar as b
 
 ---
 
-# 7. Attack Surface
+# 7. Superfície de Ataque
 
 A superfície de ataque do Exactum inclui:
 
@@ -412,7 +412,7 @@ Também fazem parte da superfície:
 
 ---
 
-# 8. Threat Classification
+# 8. Classificação de Ameaças
 
 As ameaças podem ser organizadas segundo categorias inspiradas no modelo STRIDE.
 
@@ -431,13 +431,13 @@ O modelo abaixo utiliza essas categorias como referência conceitual.
 
 # 9. Spoofing
 
-## 9.1. Credential Compromise
+## 9.1. Comprometimento de Credenciais
 
-### Threat
+### Ameaça
 
 Um atacante obtém credenciais válidas de um usuário.
 
-### Impact
+### Impacto
 
 O atacante pode autenticar-se como a vítima.
 
@@ -451,7 +451,7 @@ Authentication
 Valid User Session
 ```
 
-### Mitigations
+### Mitigações
 
 - autenticação no backend;
 - proteção de credenciais;
@@ -461,23 +461,23 @@ Valid User Session
 - revogação de refresh tokens;
 - cookies HttpOnly.
 
-### Residual Risk
+### Risco Residual
 
 Uma credencial legítima comprometida continua sendo uma ameaça significativa enquanto mecanismos adicionais de proteção não estiverem presentes.
 
 ---
 
-# 10. Session Theft
+# 10. Roubo de Sessão
 
-### Threat
+### Ameaça
 
 Um atacante obtém um token ou sessão válida.
 
-### Impact
+### Impacto
 
 O atacante pode atuar como o usuário comprometido.
 
-### Mitigations
+### Mitigações
 
 - cookies HttpOnly;
 - separação entre access token e refresh token;
@@ -487,17 +487,17 @@ O atacante pode atuar como o usuário comprometido.
 - logout invalidando sessão;
 - controle de expiração.
 
-### Residual Risk
+### Risco Residual
 
 Comprometimento do ambiente do usuário ou infraestrutura pode ainda permitir captura ou abuso de uma sessão válida.
 
 ---
 
-# 11. Tampering
+# 11. Adulteração
 
-## 11.1. Request Parameter Manipulation
+## 11.1. Manipulação de Parâmetros da Requisição
 
-### Threat
+### Ameaça
 
 O atacante modifica parâmetros da requisição.
 
@@ -515,7 +515,7 @@ com payload alterado para tentar modificar:
 }
 ```
 
-### Mitigations
+### Mitigações
 
 - backend como autoridade;
 - tenant context;
@@ -525,9 +525,9 @@ com payload alterado para tentar modificar:
 
 ---
 
-## 11.2. Role Manipulation
+## 11.2. Manipulação de Role
 
-### Threat
+### Ameaça
 
 Um usuário tenta alterar diretamente sua role.
 
@@ -539,21 +539,21 @@ Exemplo conceitual:
 }
 ```
 
-### Impact
+### Impacto
 
 Privilege escalation.
 
-### Mitigations
+### Mitigações
 
 Roles e permissions são controladas pelo backend e não devem ser aceitas como autoridade simplesmente porque foram fornecidas pelo cliente.
 
 ---
 
-# 12. Privilege Escalation
+# 12. Escalada de Privilégio
 
 Privilege escalation representa um dos riscos mais importantes em uma aplicação com RBAC.
 
-## 12.1. Horizontal Privilege Escalation
+## 12.1. Escalada Horizontal de Privilégio
 
 Um usuário acessa recursos de outro usuário com privilégios equivalentes.
 
@@ -565,7 +565,7 @@ User A
 
 ---
 
-## 12.2. Vertical Privilege Escalation
+## 12.2. Escalada Vertical de Privilégio
 
 Um usuário obtém privilégios superiores.
 
@@ -576,7 +576,7 @@ User
 Admin
 ```
 
-### Mitigations
+### Mitigações
 
 - RBAC;
 - permissions granulares;
@@ -587,11 +587,11 @@ Admin
 
 ---
 
-# 13. Cross-Tenant Access
+# 13. Acesso Cross-Tenant
 
 Este é um dos riscos mais importantes do Exactum por se tratar de uma plataforma SaaS multi-tenant.
 
-### Threat
+### Ameaça
 
 Um usuário do tenant A acessa dados do tenant B.
 
@@ -603,14 +603,14 @@ Tenant A
 Tenant B Data
 ```
 
-### Impact
+### Impacto
 
 - exposição de dados;
 - modificação indevida;
 - exclusão indevida;
 - comprometimento da confiança entre tenants.
 
-### Mitigations
+### Mitigações
 
 - tenant context;
 - autorização;
@@ -619,7 +619,7 @@ Tenant B Data
 - isolamento defensivo em múltiplas camadas;
 - testes cross-tenant.
 
-### Security Invariant
+### Invariante de Segurança
 
 ```text
 EffectiveTenant == ResourceTenant
@@ -641,7 +641,7 @@ GET /api/products/<uuid>
 
 O UUID pode ser válido, mas pertencer a outro tenant.
 
-### Mitigation
+### Mitigação
 
 A busca deve considerar o contexto do tenant.
 
@@ -658,7 +658,7 @@ UUIDs reduzem previsibilidade, mas não substituem autorização.
 
 ---
 
-# 15. Cross-Tenant Mutation
+# 15. Alteração Cross-Tenant
 
 Uma variação particularmente grave ocorre quando o atacante consegue modificar um recurso pertencente a outro tenant.
 
@@ -671,14 +671,14 @@ Tenant A
 PUT Product belonging to Tenant B
 ```
 
-### Impact
+### Impacto
 
 - corrupção de dados;
 - alteração de estoque;
 - alteração de vendas;
 - perda de integridade.
 
-### Mitigation
+### Mitigação
 
 Toda operação de escrita deve validar simultaneamente:
 
@@ -694,11 +694,11 @@ Resource
 
 ---
 
-# 16. Cross-Tenant Deletion
+# 16. Exclusão Cross-Tenant
 
 A exclusão de recursos possui risco adicional porque pode causar perda de dados.
 
-### Mitigations
+### Mitigações
 
 - authorization;
 - tenant scoping;
@@ -709,9 +709,9 @@ A exclusão de recursos possui risco adicional porque pode causar perda de dados
 
 ---
 
-# 17. Broken Access Control
+# 17. Controle de Acesso Quebrado (Broken Access Control)
 
-### Threat
+### Ameaça
 
 Um endpoint executa uma operação protegida sem verificar adequadamente a autorização.
 
@@ -723,7 +723,7 @@ POST /api/admin/...
 
 sem verificar a permission necessária.
 
-### Mitigations
+### Mitigações
 
 - autorização no backend;
 - RBAC;
@@ -733,9 +733,9 @@ sem verificar a permission necessária.
 
 ---
 
-# 18. Frontend Trust
+# 18. Confiança no Frontend
 
-### Threat
+### Ameaça
 
 O atacante modifica o frontend ou envia requisições diretamente sem utilizar a interface oficial.
 
@@ -749,7 +749,7 @@ Browser
    └── Direct HTTP Request
 ```
 
-### Mitigation
+### Mitigação
 
 O frontend não é considerado uma boundary de segurança.
 
@@ -773,9 +773,9 @@ Security Authority
 
 ---
 
-# 19. Tenant Identifier Manipulation
+# 19. Manipulação do Identificador do Tenant
 
-### Threat
+### Ameaça
 
 O atacante tenta alterar `tenant_id` em:
 
@@ -784,7 +784,7 @@ O atacante tenta alterar `tenant_id` em:
 - body;
 - header.
 
-### Mitigation
+### Mitigação
 
 O tenant efetivo deve derivar do contexto autenticado e das regras de autorização.
 
@@ -792,13 +792,13 @@ O valor enviado pelo cliente não deve substituir o contexto confiável.
 
 ---
 
-# 20. Session Fixation and Replay
+# 20. Fixação de Sessão e Replay
 
-### Threat
+### Ameaça
 
 Um atacante tenta reutilizar ou fixar credenciais de sessão.
 
-### Mitigations
+### Mitigações
 
 - refresh token rotation;
 - revocation;
@@ -811,13 +811,13 @@ O gerenciamento de sessão é uma camada importante contra reutilização prolon
 
 ---
 
-# 21. Refresh Token Abuse
+# 21. Abuso de Refresh Token
 
-### Threat
+### Ameaça
 
 Comprometimento de um refresh token permite tentar obter novos access tokens.
 
-### Mitigations
+### Mitigações
 
 O fluxo de refresh utiliza:
 
@@ -843,13 +843,13 @@ Isso reduz a janela de reutilização de um refresh token comprometido.
 
 ---
 
-# 22. Revoked Session Abuse
+# 22. Abuso de Sessão Revogada
 
-### Threat
+### Ameaça
 
 Um usuário é bloqueado ou realiza logout, mas uma sessão previamente válida continua sendo aceita.
 
-### Mitigations
+### Mitigações
 
 - Redis-backed session management;
 - refresh token revocation;
@@ -859,11 +859,11 @@ Um usuário é bloqueado ou realiza logout, mas uma sessão previamente válida 
 
 ---
 
-# 23. Impersonation Abuse
+# 23. Abuso de Impersonation
 
 Impersonation possui risco elevado por envolver autoridade de plataforma.
 
-### Threats
+### Ameaças
 
 Um atacante pode tentar:
 
@@ -873,7 +873,7 @@ Um atacante pode tentar:
 - ocultar a identidade original;
 - manipular o contexto do tenant.
 
-### Mitigations
+### Mitigações
 
 - operação explicitamente protegida;
 - distinção entre identidade original e efetiva;
@@ -902,17 +902,17 @@ A identidade original deve permanecer rastreável.
 
 ---
 
-# 24. Audit Log Tampering
+# 24. Adulteração de Logs de Auditoria
 
-### Threat
+### Ameaça
 
 Um atacante tenta alterar ou remover evidências de uma operação.
 
-### Impact
+### Impacto
 
 Perda de accountability e dificuldade de investigação.
 
-### Mitigations
+### Mitigações
 
 - separação conceitual entre logs de infraestrutura, platform events e tenant audit;
 - geração de eventos pelo backend;
@@ -920,17 +920,17 @@ Perda de accountability e dificuldade de investigação.
 - persistência adequada;
 - acesso restrito à infraestrutura.
 
-### Residual Risk
+### Risco Residual
 
 Se um atacante obtiver controle administrativo completo da infraestrutura, registros locais podem ser comprometidos.
 
 ---
 
-# 25. Information Disclosure
+# 25. Exposição de Informações
 
-## 25.1. Sensitive Error Messages
+## 25.1. Mensagens de Erro Sensíveis
 
-### Threat
+### Ameaça
 
 Mensagens de erro revelam:
 
@@ -940,7 +940,7 @@ Mensagens de erro revelam:
 - credenciais;
 - detalhes de infraestrutura.
 
-### Mitigations
+### Mitigações
 
 - tratamento centralizado de exceções;
 - respostas padronizadas;
@@ -948,13 +948,13 @@ Mensagens de erro revelam:
 
 ---
 
-## 25.2. Resource Enumeration
+## 25.2. Enumeração de Recursos
 
-### Threat
+### Ameaça
 
 Um atacante utiliza diferenças de respostas para descobrir recursos existentes.
 
-### Mitigations
+### Mitigações
 
 - autorização;
 - respostas consistentes;
@@ -965,9 +965,9 @@ UUIDs ajudam contra enumeração previsível, mas não devem ser considerados me
 
 ---
 
-# 26. Cache Data Leakage
+# 26. Vazamento de Dados via Cache
 
-### Threat
+### Ameaça
 
 Dados de um tenant são retornados a outro através de cache.
 
@@ -980,7 +980,7 @@ product:<id>
 
 Se o escopo não for suficiente, uma entrada criada para Tenant A pode ser reutilizada por Tenant B.
 
-### Mitigation
+### Mitigação
 
 Quando necessário, incluir tenant no escopo da chave:
 
@@ -992,22 +992,22 @@ O cache deve preservar os mesmos limites de segurança do banco de dados.
 
 ---
 
-# 27. Redis Compromise
+# 27. Comprometimento do Redis
 
 Redis é utilizado para gerenciamento de sessões e pode conter informações sensíveis relacionadas ao ciclo de vida de autenticação.
 
-### Threat
+### Ameaça
 
 Acesso indevido ao Redis.
 
-### Impact
+### Impacto
 
 - comprometimento de sessões;
 - manipulação de estado;
 - revogação indevida;
 - potencial comprometimento de autenticação.
 
-### Mitigations
+### Mitigações
 
 - Redis não deve ser exposto publicamente;
 - acesso restrito pela infraestrutura;
@@ -1017,19 +1017,19 @@ Acesso indevido ao Redis.
 
 ---
 
-# 28. PostgreSQL Compromise
+# 28. Comprometimento do PostgreSQL
 
-### Threat
+### Ameaça
 
 Acesso direto não autorizado ao banco.
 
-### Impact
+### Impacto
 
 Potencial comprometimento de todos os tenants.
 
 Esse cenário ultrapassa as proteções normais da aplicação.
 
-### Mitigations
+### Mitigações
 
 - credenciais protegidas;
 - acesso de rede restrito;
@@ -1039,7 +1039,7 @@ Esse cenário ultrapassa as proteções normais da aplicação.
 - backups;
 - infraestrutura protegida.
 
-### Residual Risk
+### Risco Residual
 
 Comprometimento do banco possui potencial de impacto sistêmico.
 
@@ -1047,11 +1047,11 @@ Comprometimento do banco possui potencial de impacto sistêmico.
 
 # 29. SQL Injection
 
-### Threat
+### Ameaça
 
 Entrada controlada pelo atacante altera a estrutura de uma query SQL.
 
-### Mitigations
+### Mitigações
 
 - SQLAlchemy;
 - parâmetros;
@@ -1063,13 +1063,13 @@ Mesmo utilizando ORM, consultas SQL customizadas devem seguir as mesmas prática
 
 ---
 
-# 30. Denial of Service
+# 30. Negação de Serviço
 
-### Threat
+### Ameaça
 
 Um atacante envia quantidade excessiva de requisições ou explora operações custosas.
 
-### Impact
+### Impacto
 
 - degradação;
 - indisponibilidade;
@@ -1077,7 +1077,7 @@ Um atacante envia quantidade excessiva de requisições ou explora operações c
 - aumento de conexões;
 - sobrecarga do banco.
 
-### Mitigations
+### Mitigações
 
 - rate limiting;
 - Nginx;
@@ -1085,19 +1085,19 @@ Um atacante envia quantidade excessiva de requisições ou explora operações c
 - otimização de queries;
 - limites apropriados.
 
-### Future Improvements
+### Melhorias Futuras
 
 A introdução de processamento assíncrono, filas e observabilidade de métricas pode melhorar a capacidade de detectar e absorver determinadas cargas.
 
 ---
 
-# 31. Brute Force
+# 31. Força Bruta
 
-### Threat
+### Ameaça
 
 Tentativas repetidas de autenticação para descobrir credenciais.
 
-### Mitigations
+### Mitigações
 
 - rate limiting;
 - controle de sessão;
@@ -1107,9 +1107,9 @@ Tentativas repetidas de autenticação para descobrir credenciais.
 
 ---
 
-# 32. Password Recovery Abuse
+# 32. Abuso da Recuperação de Senha
 
-### Threat
+### Ameaça
 
 O mecanismo de recuperação de senha pode ser abusado para:
 
@@ -1118,7 +1118,7 @@ O mecanismo de recuperação de senha pode ser abusado para:
 - reutilizar tokens;
 - realizar ataques de engenharia social.
 
-### Mitigations
+### Mitigações
 
 - credenciais temporárias;
 - expiração;
@@ -1132,11 +1132,11 @@ O mecanismo de recuperação de senha pode ser abusado para:
 
 A autenticação por cookies introduz uma consideração importante: browsers enviam cookies automaticamente.
 
-### Threat
+### Ameaça
 
 Um site externo tenta induzir o browser do usuário a executar uma operação autenticada.
 
-### Mitigations
+### Mitigações
 
 O desenho de autenticação deve considerar:
 
@@ -1150,13 +1150,13 @@ A configuração efetiva deve ser revisada conforme o modelo de deployment e os 
 
 ---
 
-# 34. Cookie Theft
+# 34. Roubo de Cookie
 
-### Threat
+### Ameaça
 
 Um atacante obtém acesso aos cookies de autenticação.
 
-### Mitigations
+### Mitigações
 
 - `HttpOnly`;
 - `Secure`;
@@ -1172,18 +1172,18 @@ Um atacante obtém acesso aos cookies de autenticação.
 
 # 35. XSS
 
-### Threat
+### Ameaça
 
 Código JavaScript malicioso é executado no contexto da aplicação.
 
-### Potential Impact
+### Impacto Potencial
 
 - manipulação da interface;
 - ações em nome do usuário;
 - roubo de informações acessíveis ao JavaScript;
 - exploração de funcionalidades.
 
-### Mitigations
+### Mitigações
 
 - escaping;
 - validação;
@@ -1195,7 +1195,7 @@ Cookies HttpOnly reduzem o impacto de determinados cenários de roubo de sessão
 
 ---
 
-# 36. CSRF and XSS Relationship
+# 36. Relação entre CSRF e XSS
 
 Esses riscos não devem ser tratados como equivalentes.
 
@@ -1233,7 +1233,7 @@ No estado atual, qualquer funcionalidade que introduza esse comportamento deve p
 
 ---
 
-# 38. File Upload Risks
+# 38. Riscos de Upload de Arquivos
 
 Caso funcionalidades de upload sejam adicionadas, devem ser avaliados:
 
@@ -1251,7 +1251,7 @@ Uploads devem sempre respeitar tenant isolation.
 
 ---
 
-# 39. Dependency Risks
+# 39. Riscos de Dependências
 
 A aplicação depende de bibliotecas e componentes externos.
 
@@ -1267,11 +1267,11 @@ Exemplos:
 - Docker;
 - bibliotecas de frontend.
 
-### Threat
+### Ameaça
 
 Uma vulnerabilidade em dependência pode comprometer a aplicação.
 
-### Mitigations
+### Mitigações
 
 - atualização de dependências;
 - lockfiles;
@@ -1281,7 +1281,7 @@ Uma vulnerabilidade em dependência pode comprometer a aplicação.
 
 ---
 
-# 40. Supply Chain
+# 40. Cadeia de Suprimentos (Supply Chain)
 
 A cadeia de desenvolvimento também representa uma superfície de ataque.
 
@@ -1303,7 +1303,7 @@ Production
 
 Um atacante que comprometa qualquer etapa pode potencialmente inserir código malicioso no ambiente de produção.
 
-### Mitigations
+### Mitigações
 
 - Git;
 - revisão de código;
@@ -1314,17 +1314,17 @@ Um atacante que comprometa qualquer etapa pode potencialmente inserir código ma
 
 ---
 
-# 41. CI/CD Credential Compromise
+# 41. Comprometimento de Credenciais de CI/CD
 
-### Threat
+### Ameaça
 
 Comprometimento de credenciais utilizadas pelo pipeline.
 
-### Impact
+### Impacto
 
 O atacante pode executar deployment ou acessar infraestrutura.
 
-### Mitigations
+### Mitigações
 
 - secrets armazenados no mecanismo de secrets do CI;
 - acesso mínimo necessário;
@@ -1334,17 +1334,17 @@ O atacante pode executar deployment ou acessar infraestrutura.
 
 ---
 
-# 42. Container Escape
+# 42. Escape de Container
 
-### Threat
+### Ameaça
 
 Uma vulnerabilidade permite que um atacante escape do container e acesse o host.
 
-### Impact
+### Impacto
 
 Comprometimento potencial da infraestrutura inteira.
 
-### Mitigations
+### Mitigações
 
 - imagens atualizadas;
 - princípio de least privilege;
@@ -1355,11 +1355,11 @@ Comprometimento potencial da infraestrutura inteira.
 
 ---
 
-# 43. Nginx Exposure
+# 43. Exposição do Nginx
 
 Nginx funciona como reverse proxy e boundary de entrada.
 
-### Threats
+### Ameaças
 
 - configuração incorreta;
 - exposição de portas;
@@ -1367,7 +1367,7 @@ Nginx funciona como reverse proxy e boundary de entrada.
 - proxy abuse;
 - acesso direto a serviços internos.
 
-### Mitigations
+### Mitigações
 
 Arquitetura:
 
@@ -1385,9 +1385,9 @@ Serviços internos como PostgreSQL e Redis não devem ser expostos diretamente �
 
 ---
 
-# 44. Secrets Management
+# 44. Gerenciamento de Secrets
 
-### Threat
+### Ameaça
 
 Credenciais são armazenadas:
 
@@ -1397,7 +1397,7 @@ Credenciais são armazenadas:
 - em logs;
 - em arquivos públicos.
 
-### Impact
+### Impacto
 
 Comprometimento de:
 
@@ -1407,7 +1407,7 @@ Comprometimento de:
 - serviços externos;
 - infraestrutura.
 
-### Mitigations
+### Mitigações
 
 Secrets devem ser fornecidos por configuração de ambiente ou mecanismos apropriados de secret management.
 
@@ -1415,11 +1415,11 @@ Nunca devem ser versionados no repositório.
 
 ---
 
-# 45. Logging Risks
+# 45. Riscos de Logging
 
 Logs podem se tornar uma fonte de vazamento.
 
-### Threat
+### Ameaça
 
 Dados sensíveis são registrados inadvertidamente.
 
@@ -1432,19 +1432,19 @@ Refresh token
 Session secret
 ```
 
-### Mitigation
+### Mitigação
 
 Logs estruturados devem registrar contexto operacional sem armazenar segredos desnecessários.
 
 ---
 
-# 46. Repudiation
+# 46. Repúdio
 
-### Threat
+### Ameaça
 
 Um usuário nega ter realizado determinada operação.
 
-### Mitigations
+### Mitigações
 
 - audit logs;
 - platform events;
@@ -1469,7 +1469,7 @@ Request
 
 ---
 
-# 47. Correlation and Incident Investigation
+# 47. Correlação e Investigação de Incidentes
 
 Correlation IDs permitem relacionar diferentes registros de uma mesma operação.
 
@@ -1488,7 +1488,7 @@ Isso melhora significativamente a capacidade de investigação.
 
 ---
 
-# 48. Threat Matrix
+# 48. Matriz de Ameaças
 
 A tabela abaixo resume as principais ameaças.
 
@@ -1514,7 +1514,7 @@ A tabela abaixo resume as principais ameaças.
 
 ---
 
-# 49. Risk Prioritization
+# 49. Priorização de Riscos
 
 A prioridade de segurança deve considerar:
 
@@ -1524,7 +1524,7 @@ Risk = Likelihood × Impact
 
 As ameaças de maior prioridade são aquelas que podem comprometer múltiplos tenants ou permitir privilege escalation.
 
-### Critical Priority
+### Prioridade Crítica
 
 - cross-tenant access;
 - privilege escalation;
@@ -1534,7 +1534,7 @@ As ameaças de maior prioridade são aquelas que podem comprometer múltiplos te
 - database compromise;
 - secret compromise.
 
-### High Priority
+### Prioridade Alta
 
 - BOLA / IDOR;
 - XSS;
@@ -1543,7 +1543,7 @@ As ameaças de maior prioridade são aquelas que podem comprometer múltiplos te
 - DoS;
 - CI/CD compromise.
 
-### Medium Priority
+### Prioridade Média
 
 - information disclosure;
 - resource enumeration;
@@ -1554,7 +1554,7 @@ A classificação deve ser revisada conforme o sistema evolui.
 
 ---
 
-# 50. Defense in Depth
+# 50. Defesa em Profundidade
 
 O Exactum utiliza uma abordagem de defesa em profundidade.
 
@@ -1592,7 +1592,7 @@ O objetivo é evitar que o comprometimento de uma única camada resulte automati
 
 ---
 
-# 51. Security Assumptions
+# 51. Premissas de Segurança
 
 O modelo assume que:
 
@@ -1611,41 +1611,41 @@ Caso essas premissas deixem de ser verdadeiras, o risco do sistema muda signific
 
 ---
 
-# 52. Security Invariants
+# 52. Invariantes de Segurança
 
 Alguns invariantes devem permanecer verdadeiros independentemente da implementação.
 
-## Identity
+## Identidade
 
 ```text
 Authenticated identity must be established by trusted mechanisms.
 ```
 
-## Authorization
+## Autorização
 
 ```text
 No permission → No operation.
 ```
 
-## Tenant Isolation
+## Isolamento de Tenant
 
 ```text
 Tenant A cannot access Tenant B resources.
 ```
 
-## Resource Ownership
+## Propriedade do Recurso
 
 ```text
 Authorized user + wrong tenant ≠ authorized operation.
 ```
 
-## Session
+## Sessão
 
 ```text
 Revoked session ≠ valid session.
 ```
 
-## Platform Privilege
+## Privilégio de Plataforma
 
 ```text
 Tenant privilege ≠ platform privilege.
@@ -1659,11 +1659,11 @@ Frontend validation ≠ security control.
 
 ---
 
-# 53. Security Testing Strategy
+# 53. Estratégia de Testes de Segurança
 
 O threat model deve ser refletido diretamente na estratégia de testes.
 
-## Authentication
+## Autenticação
 
 Testar:
 
@@ -1674,7 +1674,7 @@ Testar:
 - logout;
 - usuário bloqueado.
 
-## Authorization
+## Autorização
 
 Testar:
 
@@ -1683,7 +1683,7 @@ Testar:
 - privilege escalation;
 - operações administrativas.
 
-## Tenant Isolation
+## Isolamento de Tenant
 
 Testar:
 
@@ -1717,7 +1717,7 @@ Testar:
 
 ---
 
-# 54. Security Regression Testing
+# 54. Testes de Regressão de Segurança
 
 Qualquer alteração em:
 
@@ -1739,7 +1739,7 @@ Um refactor arquitetural não deve ser considerado seguro apenas porque os teste
 
 ---
 
-# 55. Incident Detection
+# 55. Detecção de Incidentes
 
 Os mecanismos de observabilidade devem ajudar a identificar comportamentos anômalos.
 
@@ -1759,7 +1759,7 @@ A correlação entre logs e eventos permite investigar a sequência de uma poss�
 
 ---
 
-# 56. Incident Response Considerations
+# 56. Considerações sobre Resposta a Incidentes
 
 Em caso de suspeita de comprometimento, medidas possíveis incluem:
 
@@ -1797,7 +1797,7 @@ Dependendo da natureza do incidente, pode ser necessário:
 
 ---
 
-# 57. Residual Risk
+# 57. Risco Residual
 
 Nenhum mecanismo elimina completamente o risco.
 
@@ -1828,7 +1828,7 @@ O objetivo do threat model é reduzir e controlar esses riscos, não afirmar seg
 
 ---
 
-# 58. Future Security Improvements
+# 58. Melhorias Futuras de Segurança
 
 Conforme o Exactum evolui, possíveis melhorias incluem:
 
@@ -1852,7 +1852,7 @@ Essas melhorias devem ser introduzidas conforme o risco e a maturidade do sistem
 
 ---
 
-# 59. Threat Model Evolution
+# 59. Evolução do Modelo de Ameaças
 
 O threat model não é um documento estático.
 
@@ -1875,41 +1875,41 @@ Uma nova superfície de ataque deve resultar em uma nova avaliação de ameaças
 
 ---
 
-# 60. Security Review Checklist
+# 60. Checklist de Revisão de Segurança
 
 Antes de considerar uma nova funcionalidade pronta, verificar:
 
-### Authentication
+### Autenticação
 
 - [ ] A operação exige autenticação?
 - [ ] A sessão é validada?
 - [ ] O estado do usuário é considerado?
 
-### Authorization
+### Autorização
 
 - [ ] A permission correta é exigida?
 - [ ] O backend realiza a validação?
 - [ ] Existe possibilidade de privilege escalation?
 
-### Tenant Isolation
+### Isolamento de Tenant
 
 - [ ] O recurso pertence ao tenant correto?
 - [ ] A query possui tenant scoping?
 - [ ] O cliente consegue manipular o tenant?
 
-### Data
+### Dados
 
 - [ ] Dados sensíveis podem aparecer na resposta?
 - [ ] Logs podem registrar dados sensíveis?
 - [ ] Cache respeita tenant isolation?
 
-### Operations
+### Operações
 
 - [ ] A operação é auditável?
 - [ ] Existe correlation ID?
 - [ ] Falhas são registradas adequadamente?
 
-### Infrastructure
+### Infraestrutura
 
 - [ ] Novas portas foram expostas?
 - [ ] Novos secrets foram introduzidos?
@@ -1917,7 +1917,7 @@ Antes de considerar uma nova funcionalidade pronta, verificar:
 
 ---
 
-# 61. Relationship with Security Architecture
+# 61. Relação com a Arquitetura de Segurança
 
 O threat model complementa os demais documentos de segurança.
 
@@ -1945,7 +1945,7 @@ Este documento descreve **contra quais ameaças esses mecanismos devem proteger 
 
 ---
 
-# 62. Relationship with Architecture
+# 62. Relação com a Arquitetura
 
 As ameaças também influenciam a arquitetura.
 
@@ -1991,53 +1991,53 @@ Ela influencia as próprias fronteiras arquiteturais.
 
 ---
 
-# 63. Guiding Principles
+# 63. Princípios Norteadores
 
 O modelo de ameaças do Exactum segue os seguintes princípios:
 
-### Assume the Client Is Untrusted
+### Assumir que o Cliente Não é Confiável
 
 Toda entrada externa deve ser considerada potencialmente maliciosa.
 
-### Deny by Default
+### Negar por Padrão
 
 Operações não autorizadas devem ser rejeitadas.
 
-### Verify at the Boundary
+### Verificar na Fronteira
 
 Dados e identidade devem ser validados antes de atravessar fronteiras de confiança.
 
-### Enforce on the Backend
+### Aplicar no Backend
 
 Regras críticas de segurança pertencem ao backend.
 
-### Scope by Tenant
+### Escopo por Tenant
 
 Dados tenant-scoped devem permanecer vinculados ao tenant autorizado.
 
-### Least Privilege
+### Menor Privilégio
 
 Privilégios devem ser mínimos e explícitos.
 
-### Defense in Depth
+### Defesa em Profundidade
 
 Nenhuma camada deve ser considerada a única proteção.
 
-### Fail Closed
+### Falhar de Forma Fechada (Fail Closed)
 
 Em caso de dúvida, a operação deve falhar de maneira segura.
 
-### Audit Security-Sensitive Actions
+### Auditar Ações Sensíveis à Segurança
 
 Operações administrativas e de segurança devem possuir rastreabilidade.
 
-### Security Evolves with the System
+### A Segurança Evolui com o Sistema
 
 Novas funcionalidades devem resultar em novas avaliações de ameaça.
 
 ---
 
-# 64. Summary
+# 64. Resumo
 
 O threat model do Exactum identifica como principais riscos:
 
@@ -2093,7 +2093,7 @@ O threat model deve acompanhar a evolução do Exactum e ser revisado sempre que
 
 ---
 
-# 65. Related Documentation
+# 65. Documentos Relacionados
 
 - `docs/security/overview.md`
 - `docs/security/authentication.md`

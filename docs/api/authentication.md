@@ -1,4 +1,4 @@
-# API Authentication
+# Autenticação da API
 
 ## 1. Objetivo
 
@@ -30,7 +30,7 @@ As decisões de segurança e os mecanismos internos de sessão são detalhados t
 
 ---
 
-# 2. Authentication Boundary
+# 2. Fronteira de Autenticação
 
 A API é responsável por determinar se uma requisição possui uma identidade autenticada válida.
 
@@ -58,7 +58,7 @@ A API deve validar as credenciais e reconstruir o contexto autenticado antes de 
 
 ---
 
-# 3. Authentication Model
+# 3. Modelo de Autenticação
 
 O Exactum utiliza **JWT-based authentication** com tokens armazenados em cookies protegidos pelo navegador.
 
@@ -83,7 +83,7 @@ Essa separação reduz a necessidade de utilizar um token de longa duração par
 
 ---
 
-# 4. HttpOnly Cookies
+# 4. Cookies HttpOnly
 
 Os tokens não são armazenados pelo frontend em `localStorage` ou `sessionStorage`.
 
@@ -113,7 +113,7 @@ Essa estratégia reduz a exposição direta dos tokens ao código JavaScript exe
 
 ---
 
-# 5. Cookie Authentication Flow
+# 5. Fluxo de Autenticação por Cookie
 
 O fluxo básico de autenticação ocorre da seguinte maneira:
 
@@ -176,7 +176,7 @@ Os tokens são transportados pelos cookies.
 
 ---
 
-# 7. Successful Authentication
+# 7. Autenticação Bem-Sucedida
 
 Após um login bem-sucedido, o backend configura os cookies de autenticação.
 
@@ -193,7 +193,7 @@ O cliente não deve depender da leitura desses cookies via JavaScript.
 
 ---
 
-# 8. Authentication State
+# 8. Estado de Autenticação
 
 A aplicação frontend não deve determinar o estado de autenticação decodificando JWTs localmente.
 
@@ -227,7 +227,7 @@ Authenticated / Unauthenticated
 
 ---
 
-# 9. Protected Endpoints
+# 9. Endpoints Protegidos
 
 Endpoints que exigem autenticação devem rejeitar requisições sem credenciais válidas.
 
@@ -254,7 +254,7 @@ A autenticação ocorre antes da execução da operação protegida.
 
 ---
 
-# 10. Authentication Context
+# 10. Contexto de Autenticação
 
 Após a validação do token, a aplicação constrói um contexto associado à requisição.
 
@@ -283,17 +283,17 @@ Esse contexto pode ser utilizado posteriormente pela camada de autorização e p
 
 ---
 
-# 11. Authentication vs Authorization
+# 11. Autenticação vs Autorização
 
 Authentication e Authorization são responsabilidades diferentes.
 
-### Authentication
+### Autenticação
 
 Determina:
 
 > Quem é o usuário ou ator associado à requisição?
 
-### Authorization
+### Autorização
 
 Determina:
 
@@ -369,7 +369,7 @@ No Exactum, o refresh token também participa do controle de sessão e rotação
 
 ---
 
-# 14. Refresh Endpoint
+# 14. Endpoint de Refresh
 
 O endpoint de refresh é responsável por renovar a autenticação.
 
@@ -393,7 +393,7 @@ A API então:
 
 ---
 
-# 15. Refresh Token Rotation
+# 15. Rotação de Refresh Token
 
 O Exactum utiliza **refresh token rotation**.
 
@@ -419,7 +419,7 @@ Essa estratégia reduz o impacto de um refresh token reutilizado indevidamente.
 
 ---
 
-# 16. Refresh Token JTI
+# 16. JTI do Refresh Token
 
 Os refresh tokens possuem um identificador único associado à sua identidade.
 
@@ -441,7 +441,7 @@ Essa associação permite controlar a sessão além da simples validação cript
 
 ---
 
-# 17. Redis Session State
+# 17. Estado de Sessão no Redis
 
 O Redis participa do gerenciamento das sessões de autenticação.
 
@@ -462,7 +462,7 @@ Essa abordagem também permite que o backend possua uma visão operacional das s
 
 ---
 
-# 18. Token Validation vs Session Validation
+# 18. Validação de Token vs Validação de Sessão
 
 Uma diferença importante é:
 
@@ -530,7 +530,7 @@ API
 
 ---
 
-# 20. Cookie Clearing
+# 20. Remoção de Cookies
 
 O logout deve remover os cookies utilizando configurações compatíveis com aquelas utilizadas quando os cookies foram criados.
 
@@ -545,7 +545,7 @@ Uma configuração inconsistente pode resultar em cookies que permanecem no nave
 
 ---
 
-# 21. Revocation
+# 21. Revogação
 
 Uma sessão pode ser revogada por diferentes motivos.
 
@@ -562,7 +562,7 @@ A revogação deve impedir que a sessão continue sendo utilizada normalmente.
 
 ---
 
-# 22. User Blocking
+# 22. Bloqueio de Usuários
 
 O estado da conta do usuário deve ser considerado durante a autenticação.
 
@@ -585,7 +585,7 @@ O comportamento exato depende da operação e das regras de segurança implement
 
 ---
 
-# 23. Tenant Suspension
+# 23. Suspensão de Tenant
 
 O contexto de tenant também pode afetar a validade operacional da sessão.
 
@@ -608,7 +608,7 @@ Isso impede que a validade criptográfica de um token seja tratada como autoriza
 
 ---
 
-# 24. Authentication Errors
+# 24. Erros de Autenticação
 
 Erros de autenticação devem possuir comportamento consistente.
 
@@ -631,7 +631,7 @@ A estrutura geral de erros é definida em:
 
 ---
 
-# 25. Authentication Cookies and Browser
+# 25. Cookies de Autenticação e Navegador
 
 Como a autenticação utiliza cookies, o comportamento do navegador deve ser considerado parte do sistema.
 
@@ -653,7 +653,7 @@ No caso de aplicações frontend separadas da API, o envio de credenciais deve s
 
 ---
 
-# 26. CSRF Considerations
+# 26. Considerações sobre CSRF
 
 Como a autenticação da API utiliza cookies, **Cross-Site Request Forgery (CSRF)** é uma preocupação de segurança relevante para a arquitetura do Exactum.
 
@@ -714,7 +714,7 @@ Cada mecanismo possui uma responsabilidade diferente dentro da security architec
 
 ---
 
-# 27. Authentication and CORS
+# 27. Autenticação e CORS
 
 Quando frontend e backend possuem origens diferentes, a política de CORS deve considerar o envio de credenciais.
 
@@ -739,7 +739,7 @@ Ele é uma política aplicada pelo navegador e não deve ser tratado como mecani
 
 ---
 
-# 28. Authentication and Multi-Tenancy
+# 28. Autenticação e Multi-Tenancy
 
 A identidade autenticada está relacionada ao contexto de tenant.
 
@@ -763,7 +763,7 @@ Authentication não substitui Tenant Isolation.
 
 ---
 
-# 29. Authentication and Impersonation
+# 29. Autenticação e Impersonation
 
 O Exactum possui suporte a impersonation para operações administrativas de plataforma.
 
@@ -795,7 +795,7 @@ A operação também deve ser rastreável por observabilidade e Platform Events.
 
 ---
 
-# 30. Impersonation Authentication Context
+# 30. Contexto de Autenticação no Impersonation
 
 Durante uma impersonation, a API precisa preservar a distinção entre:
 
@@ -819,7 +819,7 @@ Isso impede que a identidade administrativa original seja perdida durante o flux
 
 ---
 
-# 31. Authentication and Observability
+# 31. Autenticação e Observabilidade
 
 Eventos relevantes de autenticação devem ser observáveis.
 
@@ -850,7 +850,7 @@ A classificação depende do significado operacional e de segurança da operaç�
 
 ---
 
-# 32. Correlation
+# 32. Correlação
 
 Requisições de autenticação devem utilizar o mecanismo de correlação da aplicação quando aplicável.
 
@@ -885,7 +885,7 @@ Mais detalhes em:
 
 ---
 
-# 33. Sensitive Data
+# 33. Dados Sensíveis
 
 Informações sensíveis nunca devem ser registradas desnecessariamente.
 
@@ -905,7 +905,7 @@ Logs de autenticação devem registrar informações suficientes para investiga�
 
 ---
 
-# 34. Password Handling
+# 34. Tratamento de Senhas
 
 Passwords não devem ser armazenadas em texto puro.
 
@@ -928,7 +928,7 @@ A senha fornecida pelo cliente não deve ser persistida nem registrada em logs.
 
 ---
 
-# 35. Authentication Rate Limiting
+# 35. Rate Limiting na Autenticação
 
 Endpoints relacionados à autenticação são candidatos importantes para Rate Limiting.
 
@@ -945,7 +945,7 @@ Rate Limiting não substitui outras medidas de segurança.
 
 ---
 
-# 36. Session Lifecycle
+# 36. Ciclo de Vida da Sessão
 
 O ciclo de vida simplificado de uma sessão pode ser representado como:
 
@@ -978,7 +978,7 @@ Logout ou revogação encerram a sessão.
 
 ---
 
-# 37. Authentication Failure Handling
+# 37. Tratamento de Falhas de Autenticação
 
 Falhas de autenticação devem ser tratadas de maneira previsível.
 
@@ -1000,7 +1000,7 @@ A decisão exata depende do modelo de ameaça e da política de segurança da ap
 
 ---
 
-# 38. Authentication and API Clients
+# 38. Autenticação e Clientes da API
 
 O modelo de autenticação baseado em cookies é especialmente adequado ao frontend web do Exactum.
 
@@ -1019,7 +1019,7 @@ A estratégia específica deverá ser documentada quando esses consumidores fore
 
 ---
 
-# 39. Authentication and Service-to-Service Communication
+# 39. Autenticação e Comunicação entre Serviços
 
 Atualmente, a autenticação principal da API é orientada ao contexto de usuários.
 
@@ -1040,7 +1040,7 @@ A escolha deve ser orientada pelo modelo de ameaça e pelo tipo de integração 
 
 ---
 
-# 40. Testing Authentication
+# 40. Testando a Autenticação
 
 A autenticação deve possuir cobertura de testes para cenários positivos e negativos.
 
@@ -1054,7 +1054,7 @@ Exemplos:
 - tenant indisponível;
 - cookies configurados corretamente.
 
-### Protected Endpoints
+### Endpoints Protegidos
 
 - cookie ausente;
 - token inválido;
@@ -1078,7 +1078,7 @@ Exemplos:
 - limpeza dos cookies;
 - invalidação da sessão.
 
-### Security
+### Segurança
 
 - ausência de tokens em respostas JSON;
 - ausência de credenciais em logs;
@@ -1088,7 +1088,7 @@ Exemplos:
 
 ---
 
-# 41. OpenAPI and Authentication
+# 41. OpenAPI e Autenticação
 
 O contrato OpenAPI deve representar corretamente como a autenticação funciona.
 
@@ -1111,7 +1111,7 @@ O Swagger deve permitir que o desenvolvedor compreenda:
 
 ---
 
-# 42. Frontend Integration
+# 42. Integração com o Frontend
 
 O frontend deve tratar autenticação como um estado controlado pelo servidor.
 
@@ -1143,7 +1143,7 @@ Isso também reduz a necessidade de lógica de parsing de JWT no cliente.
 
 ---
 
-# 43. Authentication and Error Recovery
+# 43. Autenticação e Recuperação de Erros
 
 Quando uma requisição protegida falhar porque a autenticação expirou, o frontend pode tentar renovar a sessão utilizando o refresh endpoint, quando apropriado.
 
@@ -1173,7 +1173,7 @@ Uma falha definitiva de refresh deve resultar no encerramento do estado autentic
 
 ---
 
-# 44. Authentication Security Principles
+# 44. Princípios de Segurança da Autenticação
 
 As principais diretrizes são:
 
@@ -1192,7 +1192,7 @@ As principais diretrizes são:
 
 ---
 
-# 45. Current State
+# 45. Estado Atual
 
 Atualmente, o Exactum utiliza:
 
@@ -1221,7 +1221,7 @@ A API permanece responsável pela validação das credenciais e pela construçã
 
 ---
 
-# 46. Future Evolution
+# 46. Evolução Futura
 
 A estratégia de autenticação poderá evoluir conforme o Exactum incorpore novos consumidores e requisitos.
 
@@ -1245,7 +1245,7 @@ Esses mecanismos somente devem ser incorporados quando houver necessidade real e
 
 ---
 
-# 47. Related Documentation
+# 47. Documentos Relacionados
 
 - `docs/api/overview.md`
 - `docs/api/conventions.md`

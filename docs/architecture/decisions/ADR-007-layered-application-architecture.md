@@ -1,4 +1,4 @@
-# ADR-007 — Layered Application Architecture
+# ADR-007 — Arquitetura de Aplicação em Camadas
 
 - **Status:** Accepted
 - **Date:** None
@@ -326,7 +326,7 @@ Authentication, Authorization e Tenant Isolation continuam sendo responsabilidad
 
 ---
 
-# 8. Persistence e Database
+# 8. Persistência e Banco de Dados
 
 A camada de persistência representa a implementação orientada ao armazenamento dos dados da aplicação.
 
@@ -504,11 +504,11 @@ Essa direção também facilita futuras mudanças de infraestrutura.
 
 ---
 
-# 12. Application Logic e Domain Logic
+# 12. Lógica da Aplicação e Lógica de Domínio
 
 A arquitetura diferencia progressivamente **Application Logic** de **Domain Logic**.
 
-### Application Logic
+### Lógica da Aplicação
 
 Está relacionada à execução dos casos de uso:
 
@@ -518,7 +518,7 @@ Está relacionada à execução dos casos de uso:
 - transações;
 - interação entre domínios e infraestrutura.
 
-### Domain Logic
+### Lógica de Domínio
 
 Está relacionada ao comportamento e às regras próprias do domínio:
 
@@ -539,7 +539,7 @@ Essa decisão evita tanto:
 
 ---
 
-# 13. Authentication e Authorization
+# 13. Autenticação e Autorização
 
 Authentication e Authorization são preocupações transversais da aplicação, mas não devem ser confundidas com as camadas de execução do caso de uso.
 
@@ -582,7 +582,7 @@ Essa decisão está diretamente relacionada aos ADRs de:
 
 ---
 
-# 14. Tenant Context
+# 14. Contexto do Tenant
 
 O Tenant Context é estabelecido durante o ciclo de vida da requisição.
 
@@ -619,7 +619,7 @@ Isso segue o princípio:
 
 ---
 
-# 15. Error Handling
+# 15. Tratamento de Erros
 
 Error Handling é tratado como uma preocupação transversal.
 
@@ -652,7 +652,7 @@ Erros de segurança não devem expor informações internas desnecessárias sobr
 
 ---
 
-# 16. Observability
+# 16. Observabilidade
 
 Observability também é tratada como uma preocupação transversal.
 
@@ -693,7 +693,7 @@ Dessa maneira, informações de diferentes partes do Request Lifecycle podem ser
 
 ---
 
-# 17. Transaction Boundaries
+# 17. Fronteiras Transacionais
 
 Application Services representam um local apropriado para coordenar operações que envolvem múltiplas operações de persistência e que devem representar um único caso de uso.
 
@@ -717,7 +717,7 @@ O princípio arquitetural é que os limites transacionais devem estar associados
 
 ---
 
-# 18. Implicações para Testing
+# 18. Implicações para os Testes
 
 A arquitetura permite organizar os testes de acordo com as responsabilidades de cada camada.
 
@@ -816,7 +816,7 @@ A arquitetura adotada utiliza conceitos compatíveis com MVC quando apropriado, 
 
 ---
 
-# 21. Hexagonal Architecture
+# 21. Arquitetura Hexagonal
 
 A **Hexagonal Architecture**, também conhecida como **Ports and Adapters**, fornece uma separação mais explícita entre o núcleo da aplicação e suas interfaces externas.
 

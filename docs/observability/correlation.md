@@ -1,4 +1,4 @@
-# Correlation
+# Correlação
 
 ## 1. Objetivo
 
@@ -68,7 +68,7 @@ Isso permite conectar eventos que, individualmente, possuem informações difere
 
 ---
 
-## 3. Objetivo da Correlation
+## 3. Objetivo da Correlação
 
 A finalidade principal não é apenas identificar uma requisição.
 
@@ -97,7 +97,7 @@ Isso reduz significativamente o tempo necessário para diagnóstico.
 
 ---
 
-## 4. Request Context
+## 4. Contexto da Requisição
 
 O `request_id` deve fazer parte do contexto da requisição enquanto ela estiver sendo processada.
 
@@ -186,7 +186,7 @@ Request
 
 ---
 
-## 6. Correlation and Infrastructure Logs
+## 6. Correlação e Logs de Infraestrutura
 
 Infrastructure Logs devem incluir o `request_id` quando o registro estiver associado a uma requisição.
 
@@ -216,7 +216,7 @@ A busca pelo mesmo `request_id` permite relacionar os registros.
 
 ---
 
-## 7. Correlation and Audit Logs
+## 7. Correlação e Logs de Auditoria
 
 Quando uma ação de negócio gera um Audit Log durante uma requisição HTTP, o registro deve preservar o `request_id` correspondente sempre que possível.
 
@@ -246,7 +246,7 @@ O `request_id` conecta as duas perspectivas.
 
 ---
 
-## 8. Correlation and Platform Events
+## 8. Correlação e Eventos de Plataforma
 
 Platform Events também podem carregar informações de correlação quando são originados durante uma requisição.
 
@@ -279,7 +279,7 @@ Ambos podem compartilhar o mesmo contexto de correlação.
 
 ---
 
-## 9. Correlation vs. Event ID
+## 9. Correlação vs. Event ID
 
 `request_id` e `event_id` possuem responsabilidades diferentes.
 
@@ -322,7 +322,7 @@ O `request_id` permite relacioná-lo à execução que o originou.
 
 ---
 
-## 10. Correlation vs. Trace ID
+## 10. Correlação vs. Trace ID
 
 Correlation e distributed tracing são conceitos relacionados, mas não idênticos.
 
@@ -350,7 +350,7 @@ Nesse cenário, o `request_id` pode continuar existindo como identificador de ap
 
 ---
 
-## 11. Correlation Across Layers
+## 11. Correlação entre Camadas
 
 O identificador de correlação deve permanecer disponível durante o fluxo da aplicação.
 
@@ -376,7 +376,7 @@ Isso evita transformar conceitos de infraestrutura em dependências obrigatória
 
 ---
 
-## 12. Avoiding Framework Coupling
+## 12. Evitando Acoplamento ao Framework
 
 Uma preocupação importante é evitar que Correlation introduza forte acoplamento com Flask.
 
@@ -407,7 +407,7 @@ Essa separação é particularmente importante para a evolução arquitetural pl
 
 ---
 
-## 13. Correlation and Authentication
+## 13. Correlação e Autenticação
 
 Authentication fornece o contexto de identidade da requisição.
 
@@ -437,7 +437,7 @@ Entretanto, informações de autenticação devem ser tratadas com cuidado e nã
 
 ---
 
-## 14. Correlation and Authorization
+## 14. Correlação e Autorização
 
 Authorization determina se determinada ação pode ser executada.
 
@@ -469,7 +469,7 @@ O objetivo é permitir investigação suficiente sem aumentar exposição de dad
 
 ---
 
-## 15. Correlation and Impersonation
+## 15. Correlação e Impersonation
 
 Impersonation exige atenção especial porque uma única operação pode envolver mais de uma identidade conceitual.
 
@@ -509,7 +509,7 @@ A correlação deve preservar informações suficientes para distinguir o origin
 
 ---
 
-## 16. Correlation and Tenant Isolation
+## 16. Correlação e Isolamento de Tenant
 
 Correlation IDs não substituem Tenant Isolation.
 
@@ -532,7 +532,7 @@ Essa distinção é importante para evitar transformar identificadores de observ
 
 ---
 
-## 17. Request Lifecycle
+## 17. Ciclo de Vida da Requisição
 
 Um fluxo típico de correlação pode ser representado como:
 
@@ -562,7 +562,7 @@ Os registros produzidos durante esse fluxo devem preservar o contexto de correla
 
 ---
 
-## 18. Request ID Generation
+## 18. Geração do Request ID
 
 O sistema deve possuir uma estratégia consistente para estabelecer o `request_id`.
 
@@ -580,7 +580,7 @@ Um identificador fornecido por um cliente não deve ser automaticamente consider
 
 ---
 
-## 19. Response Correlation
+## 19. Correlação de Respostas
 
 Quando apropriado, o `request_id` também pode ser disponibilizado na resposta HTTP.
 
@@ -600,7 +600,7 @@ O identificador exposto ao cliente não deve revelar informações sensíveis.
 
 ---
 
-## 20. Error Investigation
+## 20. Investigação de Erros
 
 Correlation é especialmente importante durante erros.
 
@@ -650,7 +650,7 @@ Esse fluxo reduz ambiguidades durante troubleshooting.
 
 ---
 
-## 21. Correlation and Exception Handling
+## 21. Correlação e Tratamento de Exceções
 
 O tratamento centralizado de exceções deve preservar o contexto de correlação.
 
@@ -678,7 +678,7 @@ Isso permite que o usuário forneça o identificador ao suporte ou operador sem 
 
 ---
 
-## 22. Sensitive Data
+## 22. Dados Sensíveis
 
 Correlation deve ser implementada sem transformar o sistema de observabilidade em uma fonte de vazamento de informações.
 
@@ -707,7 +707,7 @@ Um `request_id` deve ser um identificador técnico, não um recipiente para info
 
 ---
 
-## 23. Cardinality and Performance
+## 23. Cardinalidade e Performance
 
 Correlation IDs normalmente possuem alta cardinalidade.
 
@@ -740,7 +740,7 @@ Essa distinção será importante para a futura integração com Prometheus.
 
 ---
 
-## 24. Background Jobs
+## 24. Jobs em Segundo Plano
 
 Quando o sistema evoluir para processamento assíncrono com ferramentas como Celery e RabbitMQ, o conceito de correlation deverá ser estendido.
 
@@ -781,7 +781,7 @@ A implementação concreta deve ser definida quando o processamento assíncrono 
 
 ---
 
-## 25. Correlation Across Services
+## 25. Correlação entre Serviços
 
 Se o Exactum futuramente possuir múltiplos serviços, a estratégia poderá evoluir para uma combinação de:
 
@@ -816,7 +816,7 @@ Não é necessário introduzir distributed tracing antes que exista uma necessid
 
 ---
 
-## 26. Correlation and Observability Stack
+## 26. Correlação e Stack de Observabilidade
 
 Correlation funciona como uma camada transversal da estratégia de Observability.
 
@@ -841,11 +841,11 @@ Ele permite que sejam utilizados em conjunto.
 
 ---
 
-## 27. Operational Investigation
+## 27. Investigação Operacional
 
 Um processo de investigação pode começar por diferentes pontos.
 
-### Starting from Request ID
+### Partindo do Request ID
 
 ```text
 request_id
@@ -857,7 +857,7 @@ Audit / Platform Events
 Database / Redis context
 ```
 
-### Starting from Audit Log
+### Partindo do Log de Auditoria
 
 ```text
 Audit Log
@@ -869,7 +869,7 @@ Infrastructure Logs
 Application execution
 ```
 
-### Starting from Error
+### Partindo do Erro
 
 ```text
 Error
@@ -881,7 +881,7 @@ Request
 Application flow
 ```
 
-### Starting from User
+### Partindo do Usuário
 
 ```text
 user_uuid
@@ -897,7 +897,7 @@ Cada identificador responde a uma pergunta diferente.
 
 ---
 
-## 28. Searchability
+## 28. Capacidade de Busca
 
 Os registros devem ser estruturados de maneira que `request_id` possa ser pesquisado facilmente.
 
@@ -927,7 +927,7 @@ Isso é especialmente útil quando o volume de logs crescer.
 
 ---
 
-## 29. Ordering
+## 29. Ordenação
 
 Correlation não garante, por si só, a ordenação perfeita dos registros.
 
@@ -948,7 +948,7 @@ Em processamento assíncrono, a ordem de persistência pode não representar exa
 
 ---
 
-## 30. Distributed and Asynchronous Limitations
+## 30. Limitações Distribuídas e Assíncronas
 
 Em uma arquitetura síncrona simples, `request_id` pode representar adequadamente uma execução HTTP.
 
@@ -980,7 +980,7 @@ A implementação deve ser introduzida somente quando o sistema efetivamente pos
 
 ---
 
-## 31. Testing Correlation
+## 31. Testando a Correlação
 
 A estratégia de Correlation deve ser coberta por testes.
 
@@ -1002,7 +1002,7 @@ Também deve ser garantido que uma requisição não reutilize acidentalmente o 
 
 ---
 
-## 32. Anti-Patterns
+## 32. Antipadrões
 
 Algumas práticas devem ser evitadas.
 
@@ -1046,7 +1046,7 @@ O domínio não deve depender diretamente de objetos ou APIs específicas do fra
 
 ---
 
-## 33. Current State
+## 33. Estado Atual
 
 A estratégia atual do Exactum utiliza principalmente `request_id` como mecanismo de correlação entre operações relacionadas.
 
@@ -1066,7 +1066,7 @@ O nível de correlação poderá evoluir conforme novos componentes e fluxos for
 
 ---
 
-## 34. Future Evolution
+## 34. Evolução Futura
 
 Conforme a arquitetura do Exactum evoluir, a estratégia poderá incorporar:
 
@@ -1088,7 +1088,7 @@ Essas evoluções devem preservar o princípio fundamental:
 
 ---
 
-## 35. Design Principles
+## 35. Princípios de Design
 
 A estratégia de Correlation do Exactum deve seguir os seguintes princípios:
 
@@ -1107,7 +1107,7 @@ A estratégia de Correlation do Exactum deve seguir os seguintes princípios:
 
 ---
 
-## 36. Related Documentation
+## 36. Documentos Relacionados
 
 - [`Observability Overview`](./overview.md)
 - [`Infrastructure Logging`](./infrastructure-logging.md)

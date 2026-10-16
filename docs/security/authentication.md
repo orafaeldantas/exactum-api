@@ -1,4 +1,4 @@
-# Authentication
+# Autenticação
 
 ## Objetivo
 
@@ -383,7 +383,7 @@ Esse mecanismo reduz a possibilidade de reutilização indefinida de um refresh 
 
 ---
 
-# Refresh Token Reuse
+# Reutilização de Refresh Token
 
 Como os refresh tokens são rotacionados, um token anterior deixa de representar a sessão atual após uma renovação bem-sucedida.
 
@@ -898,7 +898,7 @@ Detalha o ciclo de vida das sessões e a utilização do Redis.
 
 Detalha as fronteiras utilizadas para impedir acesso cruzado entre tenants.
 
-### Threat Model
+### Modelo de Ameaças
 
 → [`threat-model.md`](./threat-model.md)
 

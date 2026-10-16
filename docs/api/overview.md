@@ -1,4 +1,4 @@
-# API Overview
+# Visão Geral da API
 
 ## 1. Objetivo
 
@@ -55,7 +55,7 @@ A API não deve concentrar toda a lógica de negócio.
 
 ---
 
-## 3. API as an Application Boundary
+## 3. A API como Fronteira da Aplicação
 
 A API representa uma fronteira entre o ambiente externo e a aplicação.
 
@@ -119,7 +119,7 @@ A interface HTTP deve representar recursos e operações de negócio de forma co
 
 ---
 
-## 5. Resources
+## 5. Recursos
 
 Os principais recursos da API correspondem aos conceitos expostos pela aplicação.
 
@@ -143,7 +143,7 @@ Isso permite que a API seja modelada de acordo com as necessidades dos consumido
 
 ---
 
-## 6. HTTP Methods
+## 6. Métodos HTTP
 
 A API utiliza os métodos HTTP de acordo com a natureza da operação.
 
@@ -184,7 +184,7 @@ A semântica específica de cada endpoint deve ser definida de maneira consisten
 
 ---
 
-## 7. Resource Identifiers
+## 7. Identificadores de Recursos
 
 A API utiliza identificadores públicos apropriados para exposição externa.
 
@@ -212,7 +212,7 @@ A utilização de identificadores públicos também reduz a exposição desneces
 
 ---
 
-## 8. Multi-Tenant API
+## 8. API Multi-Tenant
 
 O Exactum é uma aplicação **multi-tenant**.
 
@@ -238,7 +238,7 @@ A API deve sempre considerar o contexto autenticado e as regras de autorização
 
 ---
 
-## 9. Authentication
+## 9. Autenticação
 
 A API utiliza autenticação baseada em sessão JWT armazenada em **HttpOnly Cookies**.
 
@@ -278,7 +278,7 @@ docs/security/authentication.md
 
 ---
 
-## 10. Authorization
+## 10. Autorização
 
 Authentication responde:
 
@@ -314,7 +314,7 @@ A autorização definitiva ocorre no backend.
 
 ---
 
-## 11. Validation
+## 11. Validação
 
 A API deve validar dados recebidos antes que eles alcancem as camadas responsáveis pelas operações de negócio.
 
@@ -330,7 +330,7 @@ A validação pode incluir:
 
 É importante diferenciar **input validation** de **business validation**.
 
-### Input Validation
+### Validação de Entrada
 
 Verifica se a entrada possui uma estrutura válida.
 
@@ -342,7 +342,7 @@ minimum_stock
     → non-negative
 ```
 
-### Business Validation
+### Validação de Negócio
 
 Verifica se a operação é válida segundo as regras do negócio.
 
@@ -356,11 +356,11 @@ A segunda categoria pertence à lógica da aplicação/domínio e não deve ser 
 
 ---
 
-## 12. Serialization and Deserialization
+## 12. Serialização e Desserialização
 
 A API precisa transformar dados entre representações externas e internas.
 
-### Request
+### Requisição
 
 ```text
 JSON
@@ -370,7 +370,7 @@ Deserialization
 Application Input
 ```
 
-### Response
+### Resposta
 
 ```text
 Application Result
@@ -386,7 +386,7 @@ Isso ajuda a manter respostas previsíveis e reduz o acoplamento entre o formato
 
 ---
 
-## 13. API Contract
+## 13. Contrato da API
 
 A API deve possuir contratos claros para seus endpoints.
 
@@ -463,7 +463,7 @@ Status codes devem possuir semântica consistente entre endpoints.
 
 ---
 
-## 15. Error Handling
+## 15. Tratamento de Erros
 
 Erros da API devem possuir uma estrutura consistente.
 
@@ -487,7 +487,7 @@ Formato atual para exceções da aplicação:
 }
 ```
 
-Erros de validação e de JWT possuem formatos próprios, e um contrato unificado com códigos semânticos está planejado. Ver [`docs/api/errors.md`](./errors.md#5-error-response-structure).
+Erros de validação e de JWT possuem formatos próprios, e um contrato unificado com códigos semânticos está planejado. Ver [`docs/api/errors.md`](./errors.md#5-estrutura-da-resposta-de-erro).
 
 Detalhes como stack traces, SQL queries, secrets ou informações internas de infraestrutura não devem ser expostos ao cliente.
 
@@ -499,7 +499,7 @@ docs/api/errors.md
 
 ---
 
-## 16. Separation of Client Errors and Internal Errors
+## 16. Separação entre Erros do Cliente e Erros Internos
 
 Um erro interno pode possuir muito mais informações do que aquilo que deve ser retornado ao cliente.
 
@@ -535,7 +535,7 @@ Internal Diagnostic Information
 
 ---
 
-## 17. API and Observability
+## 17. API e Observabilidade
 
 A API participa diretamente da estratégia de Observability.
 
@@ -575,7 +575,7 @@ docs/observability/
 
 ---
 
-## 18. Request Lifecycle
+## 18. Ciclo de Vida da Requisição
 
 Um fluxo HTTP típico pode ser representado por:
 
@@ -694,7 +694,7 @@ A API não deve acessar diretamente o banco de dados a partir do controller.
 
 ---
 
-## 22. Database and Redis
+## 22. Banco de Dados e Redis
 
 A API utiliza diferentes mecanismos de persistência e infraestrutura.
 
@@ -722,7 +722,7 @@ docs/operations/
 
 ---
 
-## 23. Security Boundary
+## 23. Fronteira de Segurança
 
 A API deve ser tratada como uma **security boundary**.
 
@@ -756,7 +756,7 @@ Mesmo que um usuário manipule diretamente uma requisição HTTP, o backend deve
 
 ---
 
-## 24. Idempotency
+## 24. Idempotência
 
 Algumas operações podem exigir comportamento idempotente.
 
@@ -776,7 +776,7 @@ Não se deve presumir que todas as operações da API possuem o mesmo comportame
 
 ---
 
-## 25. Pagination
+## 25. Paginação
 
 Endpoints que retornam coleções potencialmente grandes devem considerar paginação.
 
@@ -808,7 +808,7 @@ A paginação também deve considerar:
 
 ---
 
-## 26. Filtering and Sorting
+## 26. Filtragem e Ordenação
 
 Endpoints de coleção podem oferecer mecanismos de:
 
@@ -835,7 +835,7 @@ Filtros fornecidos pelo cliente não devem permitir acesso fora do tenant contex
 
 ---
 
-## 27. API and Transactions
+## 27. API e Transações
 
 Operações que alteram múltiplos recursos ou exigem consistência entre diferentes mudanças devem utilizar transações de maneira apropriada.
 
@@ -858,7 +858,7 @@ O controller não deve ser responsável por coordenar diretamente detalhes de tr
 
 ---
 
-## 28. API and Concurrency
+## 28. API e Concorrência
 
 A API pode receber múltiplas requisições simultâneas para o mesmo recurso.
 
@@ -914,7 +914,7 @@ A política detalhada deve permanecer alinhada com a estratégia de Security e O
 
 ---
 
-## 30. API Versioning
+## 30. Versionamento da API
 
 A API deve possuir uma estratégia explícita para evolução de contratos.
 
@@ -950,7 +950,7 @@ Esses conceitos possuem ciclos de evolução diferentes.
 
 ---
 
-## 31. Backward Compatibility
+## 31. Compatibilidade Retroativa
 
 Quando consumidores dependem da API, mudanças de contrato devem considerar compatibilidade.
 
@@ -970,7 +970,7 @@ Quando uma alteração incompatível for necessária, ela deve possuir estratég
 
 ---
 
-## 32. Documentation
+## 32. Documentação
 
 A API deve possuir documentação suficiente para que seus consumidores compreendam:
 
@@ -1022,7 +1022,7 @@ Como a autenticação utiliza HttpOnly Cookies, a documentação deve deixar cla
 
 ---
 
-## 34. Frontend Integration
+## 34. Integração com o Frontend
 
 O frontend React é um consumidor da API, mas não possui privilégios especiais de segurança.
 
@@ -1059,7 +1059,7 @@ O frontend não pode:
 
 ---
 
-## 35. External Consumers
+## 35. Consumidores Externos
 
 Embora o frontend seja atualmente um consumidor importante, a API deve manter uma separação suficiente para permitir futuros consumidores.
 
@@ -1078,7 +1078,7 @@ Isso reforça a necessidade de manter contratos HTTP claros e independentes da i
 
 ---
 
-## 36. API Security Principles
+## 36. Princípios de Segurança da API
 
 A API deve seguir princípios como:
 
@@ -1097,7 +1097,7 @@ A API deve seguir princípios como:
 
 ---
 
-## 37. Current Architectural Position
+## 37. Posição Arquitetural Atual
 
 A API atualmente funciona como a camada HTTP da aplicação e está organizada em torno de:
 
@@ -1121,7 +1121,7 @@ O objetivo do processo de refatoração é fortalecer os limites entre domínios
 
 ---
 
-## 38. Future Evolution
+## 38. Evolução Futura
 
 A evolução planejada da API pode incluir:
 
@@ -1144,7 +1144,7 @@ Essas evoluções devem preservar a API como uma fronteira estável entre consum
 
 ---
 
-## 39. Design Principles
+## 39. Princípios de Design
 
 A API do Exactum deve seguir os seguintes princípios:
 
@@ -1166,7 +1166,7 @@ A API do Exactum deve seguir os seguintes princípios:
 
 ---
 
-## 40. Related Documentation
+## 40. Documentos Relacionados
 
 ### API
 
@@ -1175,14 +1175,14 @@ A API do Exactum deve seguir os seguintes princípios:
 - [`API Errors`](./errors.md)
 - [`API Versioning`](./versioning.md)
 
-### Architecture
+### Arquitetura
 
 - [`Architecture Overview`](../architecture/overview.md)
 - [`Application Architecture`](../architecture/application-architecture.md)
 - [`Domain Boundaries`](../architecture/domain-boundaries.md)
 - [`Multi-Tenancy`](../architecture/multi-tenancy.md)
 
-### Security
+### Segurança
 
 - [`Authentication`](../security/authentication.md)
 - [`Authorization`](../security/authorization.md)
@@ -1190,7 +1190,7 @@ A API do Exactum deve seguir os seguintes princípios:
 - [`Tenant Isolation`](../security/tenant-isolation.md)
 - [`Threat Model`](../security/threat-model.md)
 
-### Observability
+### Observabilidade
 
 - [`Observability Overview`](../observability/overview.md)
 - [`Infrastructure Logging`](../observability/infrastructure-logging.md)

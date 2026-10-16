@@ -1,4 +1,4 @@
-# Security Overview
+# Visão Geral de Segurança
 
 ## Objetivo
 
@@ -148,7 +148,7 @@ A existência de múltiplas barreiras reduz o impacto de uma eventual falha em u
 
 ---
 
-## Trust Boundaries
+## Fronteiras de Confiança
 
 O sistema possui diferentes fronteiras de confiança.
 
@@ -610,7 +610,7 @@ A segurança do sistema emerge da combinação dessas fronteiras, e não de um �
 
 ---
 
-## Threat Model
+## Modelo de Ameaças
 
 O modelo de segurança é complementado por um threat model dedicado.
 
@@ -655,7 +655,7 @@ Detalha RBAC, permissões, escopos e operações administrativas.
 
 Detalha os mecanismos utilizados para garantir o isolamento lógico entre tenants.
 
-### Threat Model
+### Modelo de Ameaças
 
 → [`threat-model.md`](./threat-model.md)
 

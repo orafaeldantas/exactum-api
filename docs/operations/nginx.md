@@ -153,7 +153,7 @@ Essa organização simplifica a integração entre frontend e backend.
 
 ---
 
-# 4. Frontend Static Files
+# 4. Arquivos Estáticos do Frontend
 
 O frontend React é compilado antes de ser disponibilizado em produção.
 
@@ -188,7 +188,7 @@ Não é necessário manter um processo Node executando para servir o frontend fi
 
 ---
 
-# 5. SPA Routing
+# 5. Roteamento da SPA
 
 O frontend do Exactum utiliza uma arquitetura de aplicação web baseada em React.
 
@@ -233,7 +233,7 @@ Isso evita erros `404` ao acessar diretamente uma rota válida do frontend.
 
 ---
 
-# 6. API Routing
+# 6. Roteamento da API
 
 As requisições destinadas à API utilizam o prefixo:
 
@@ -272,7 +272,7 @@ O Nginx não deve duplicar regras de negócio da API.
 
 ---
 
-# 7. Docker Network
+# 7. Rede Docker
 
 No ambiente containerizado, Nginx e API podem se comunicar através da Docker network.
 
@@ -442,7 +442,7 @@ Atua na lógica da aplicação:
 
 ---
 
-# 12. Trust Boundaries
+# 12. Fronteiras de Confiança
 
 A presença do Cloudflare não significa que o backend deve confiar cegamente em qualquer informação recebida através de headers.
 
@@ -476,7 +476,7 @@ A aplicação deve diferenciar headers controlados pela infraestrutura confiáve
 
 ---
 
-# 13. Request Headers
+# 13. Headers da Requisição
 
 O Nginx pode encaminhar headers relevantes para o backend.
 
@@ -495,7 +495,7 @@ Eles não devem ser considerados automaticamente confiáveis apenas porque possu
 
 ---
 
-# 14. Host Header
+# 14. Header Host
 
 O header `Host` representa o domínio utilizado pelo cliente.
 
@@ -514,7 +514,7 @@ Requests destinadas a hosts inesperados podem ser rejeitadas ou tratadas de mane
 
 ---
 
-# 15. Forwarded Protocol
+# 15. Protocolo Encaminhado
 
 Quando existem múltiplas camadas de proxy, o backend pode receber a requisição através de HTTP interno mesmo que o cliente tenha utilizado HTTPS externamente.
 
@@ -547,7 +547,7 @@ https
 
 ---
 
-# 16. HttpOnly Cookies
+# 16. Cookies HttpOnly
 
 A autenticação do Exactum utiliza cookies HttpOnly para transportar os tokens de autenticação.
 
@@ -589,7 +589,7 @@ O backend continua sendo a autoridade para validar os tokens.
 
 ---
 
-# 17. Cookie Path
+# 17. Path do Cookie
 
 A configuração dos cookies precisa ser compatível com a topologia da aplicação.
 
@@ -623,7 +623,7 @@ API
 
 ---
 
-# 18. Authentication Flow
+# 18. Fluxo de Autenticação
 
 O fluxo simplificado de autenticação é:
 
@@ -716,7 +716,7 @@ O estado atual do Exactum possui essa questão documentada como uma preocupaçã
 
 ---
 
-# 21. Security Headers
+# 21. Headers de Segurança
 
 O Nginx pode ser utilizado para adicionar ou controlar determinados security headers.
 
@@ -736,7 +736,7 @@ Por exemplo, uma Content Security Policy muito restritiva pode quebrar recursos 
 
 ---
 
-# 22. Content Security Policy
+# 22. Content Security Policy (CSP)
 
 Uma **Content Security Policy (CSP)** pode reduzir determinados tipos de risco relacionados à execução de conteúdo não autorizado.
 
@@ -769,7 +769,7 @@ Essas duas camadas possuem responsabilidades diferentes.
 
 Pode limitar tráfego HTTP em nível de infraestrutura.
 
-### Application
+### Aplicação
 
 Pode aplicar regras relacionadas ao significado da operação.
 
@@ -785,7 +785,7 @@ Uma camada não necessariamente substitui a outra.
 
 ---
 
-# 24. Authentication Rate Limiting
+# 24. Rate Limiting na Autenticação
 
 Endpoints como login podem ser particularmente sensíveis a abuso.
 
@@ -818,7 +818,7 @@ A estratégia exata deve considerar:
 
 ---
 
-# 25. Request Size
+# 25. Tamanho da Requisição
 
 O Nginx pode controlar o tamanho máximo das requisições.
 
@@ -897,7 +897,7 @@ O ambiente atual não precisa possuir múltiplas instâncias apenas para utiliza
 
 ---
 
-# 28. Single Instance
+# 28. Instância Única
 
 Atualmente, a infraestrutura do Exactum é relativamente simples.
 
@@ -953,7 +953,7 @@ Isso exigiria outras preocupações, como:
 
 ---
 
-# 30. Stateless API
+# 30. API Stateless
 
 A utilização de Redis para session state contribui para reduzir a dependência de estado local da instância da API.
 
@@ -1006,7 +1006,7 @@ Os dois podem ser correlacionados através de informações de request quando a 
 
 ---
 
-# 32. Error Logs
+# 32. Logs de Erro
 
 Além dos access logs, o Nginx possui logs relacionados a erros operacionais.
 
@@ -1030,7 +1030,7 @@ Application problem
 
 ---
 
-# 33. Correlation
+# 33. Correlação
 
 O Exactum utiliza `request_id` como parte de sua estratégia de correlação.
 
@@ -1079,7 +1079,7 @@ A minimização de dados deve fazer parte da configuração.
 
 ---
 
-# 35. Static Cache
+# 35. Cache Estático
 
 O Nginx pode fornecer mecanismos de cache para recursos estáticos.
 
@@ -1129,7 +1129,7 @@ O objetivo é evitar que frontend antigo e API nova permaneçam incompatíveis p
 
 ---
 
-# 37. API Caching
+# 37. Cache na API
 
 O Nginx não deve ser utilizado indiscriminadamente para cachear respostas da API.
 
@@ -1154,7 +1154,7 @@ Qualquer estratégia de cache da API deve considerar explicitamente:
 
 ---
 
-# 38. Authentication e Cache
+# 38. Autenticação e Cache
 
 Responses relacionadas a usuários autenticados exigem atenção especial.
 
@@ -1179,7 +1179,7 @@ Por isso, caching de endpoints autenticados deve ser evitado ou projetado com ex
 
 ---
 
-# 39. Compression
+# 39. Compressão
 
 O Nginx pode fornecer compressão HTTP para determinados recursos.
 
@@ -1195,7 +1195,7 @@ Para assets já comprimidos, aplicar compressão adicional pode trazer pouco ben
 
 ---
 
-# 40. Connection Handling
+# 40. Gerenciamento de Conexões
 
 O Nginx mantém conexões HTTP entre clientes e upstreams.
 
@@ -1275,7 +1275,7 @@ Não existe necessidade de configurar suporte a esses mecanismos antes de serem 
 
 ---
 
-# 44. Security Boundary
+# 44. Fronteira de Segurança
 
 O Nginx representa uma camada de infraestrutura, mas não deve ser tratado como a única security boundary.
 
@@ -1306,7 +1306,7 @@ Cada camada possui responsabilidades diferentes.
 
 ---
 
-# 45. Nginx não faz Authorization
+# 45. Nginx não faz Autorização
 
 O Nginx pode controlar acesso em determinados cenários, mas não deve substituir o Authorization model da aplicação.
 
@@ -1331,7 +1331,7 @@ Isso mantém as regras de negócio centralizadas na aplicação.
 
 ---
 
-# 46. Nginx não faz Tenant Isolation
+# 46. Nginx não faz Isolamento de Tenant
 
 Da mesma forma, o Nginx não é responsável por determinar se:
 
@@ -1347,7 +1347,7 @@ A isolation deve continuar sendo aplicada através das regras de aplicação e c
 
 ---
 
-# 47. Nginx e API Errors
+# 47. Nginx e Erros da API
 
 O Nginx pode gerar erros próprios, como:
 
@@ -1409,7 +1409,7 @@ Nesse cenário, logs e `request_id` podem ajudar a acompanhar a operação até 
 
 ---
 
-# 50. Nginx Configuration Validation
+# 50. Validação da Configuração do Nginx
 
 Alterações na configuração do Nginx devem ser validadas antes de serem aplicadas.
 
@@ -1435,7 +1435,7 @@ A validação deve fazer parte do processo operacional sempre que possível.
 
 ---
 
-# 51. Reload versus Restart
+# 51. Reload vs Restart
 
 Alterações de configuração podem, dependendo do caso, utilizar reload em vez de restart.
 
@@ -1547,7 +1547,7 @@ Essa semelhança ajuda a manter o contrato de `/api` entre os ambientes.
 
 ---
 
-# 55. API Prefix
+# 55. Prefixo da API
 
 O uso de `/api` como prefixo possui importância operacional.
 
@@ -1588,7 +1588,7 @@ Um pequeno erro em qualquer uma dessas camadas pode produzir falhas difíceis de
 
 ---
 
-# 57. Static Asset Security
+# 57. Segurança de Arquivos Estáticos
 
 Arquivos estáticos devem ser disponibilizados somente a partir do diretório destinado ao frontend.
 
@@ -1620,7 +1620,7 @@ A aplicação e a infraestrutura devem trabalhar em conjunto para evitar esse ti
 
 ---
 
-# 59. Sensitive Files
+# 59. Arquivos Sensíveis
 
 Arquivos como:
 
@@ -1639,7 +1639,7 @@ A melhor estratégia é não colocar esses arquivos no diretório público do fr
 
 ---
 
-# 60. HTTP Methods
+# 60. Métodos HTTP
 
 O Nginx pode restringir métodos HTTP em determinadas rotas quando necessário.
 
@@ -1670,7 +1670,7 @@ O Nginx não deve duplicar toda essa lógica de routing da API.
 
 ---
 
-# 61. OPTIONS Requests
+# 61. Requisições OPTIONS
 
 Requests `OPTIONS` podem aparecer durante o comportamento de CORS.
 
@@ -1680,7 +1680,7 @@ Uma configuração de Nginx que bloqueie indiscriminadamente `OPTIONS` pode caus
 
 ---
 
-# 62. HTTP Status Codes
+# 62. Status Codes HTTP
 
 O Nginx pode produzir status codes antes que a request alcance o backend.
 
@@ -1700,7 +1700,7 @@ Essa diferença deve ser considerada na observability e no troubleshooting.
 
 ---
 
-# 63. Monitoring
+# 63. Monitoramento
 
 O Nginx pode fornecer métricas operacionais importantes, como:
 
@@ -1783,7 +1783,7 @@ System slow
 
 ---
 
-# 66. Bottleneck Investigation
+# 66. Investigação de Gargalos
 
 Quando a aplicação apresenta lentidão, o Nginx pode ajudar a determinar em qual camada o problema está.
 
@@ -1809,7 +1809,7 @@ Se o tempo gasto estiver concentrado no upstream, o problema provavelmente não 
 
 ---
 
-# 67. Availability
+# 67. Disponibilidade
 
 O Nginx pode continuar executando mesmo quando a API está indisponível.
 
@@ -1825,7 +1825,7 @@ Um health check operacional precisa verificar a cadeia completa quando o objetiv
 
 ---
 
-# 68. Dependency Failure
+# 68. Falha de Dependência
 
 Se PostgreSQL estiver indisponível:
 
@@ -2023,23 +2023,23 @@ A utilização do Nginx no Exactum segue alguns princípios:
 
 O tráfego externo deve ser intermediado por uma camada HTTP controlada.
 
-### Minimal Exposure
+### Exposição Mínima
 
 Serviços internos não devem ser expostos desnecessariamente.
 
-### Separation of Concerns
+### Separação de Responsabilidades
 
 Nginx cuida de infraestrutura HTTP; Flask cuida da aplicação.
 
-### Explicit Routing
+### Roteamento Explícito
 
 Frontend e API possuem responsabilidades de routing claramente definidas.
 
-### Secure Transport
+### Transporte Seguro
 
 O ambiente de produção deve utilizar HTTPS.
 
-### Observability
+### Observabilidade
 
 Access logs e error logs devem permitir investigação operacional.
 
@@ -2047,11 +2047,11 @@ Access logs e error logs devem permitir investigação operacional.
 
 Configurações devem ser versionadas e reproduzíveis.
 
-### Defense in Depth
+### Defesa em Profundidade
 
 Nginx representa uma camada adicional de segurança, não substituto da segurança da aplicação.
 
-### Production Simplicity
+### Simplicidade em Produção
 
 A configuração atual deve permanecer proporcional ao estágio do projeto.
 

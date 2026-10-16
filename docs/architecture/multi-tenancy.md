@@ -158,7 +158,7 @@ mesmo que o usuário consiga fornecer identificadores válidos dessas entidades.
 
 ---
 
-## 5. Tenant Context
+## 5. Contexto do Tenant
 
 O conceito central da arquitetura é o Tenant Context.
 
@@ -239,7 +239,7 @@ A API continua responsável por determinar e validar o contexto efetivo da opera
 
 ---
 
-## 7. Tenant Context e Autenticação
+## 7. Contexto do Tenant e Autenticação
 
 Tenancy e autenticação são conceitos relacionados, mas distintos.
 
@@ -283,7 +283,7 @@ Essa separação é importante porque possuir uma identidade válida não signif
 
 ---
 
-## 8. Tenant Context e Autorização
+## 8. Contexto do Tenant e Autorização
 
 A autorização do Exactum ocorre dentro de um contexto de tenancy.
 
@@ -334,13 +334,13 @@ A autorização e o isolamento de tenant são preocupações complementares.
 
 ---
 
-## 9. Tenant-Scoped e Platform-Scoped Data
+## 9. Dados com Escopo de Tenant e de Plataforma
 
 Nem todos os dados do Exactum pertencem a um tenant.
 
 A arquitetura diferencia dados pertencentes à plataforma de dados pertencentes a um tenant.
 
-### 9.1 Tenant-Scoped Data
+### 9.1 Dados com Escopo de Tenant
 
 São dados cujo significado existe dentro de uma organização específica.
 
@@ -360,7 +360,7 @@ Esses dados devem ser sempre operados dentro de um contexto de tenant.
 
 ---
 
-### 9.2 Platform-Scoped Data
+### 9.2 Dados com Escopo de Plataforma
 
 São dados relacionados à própria plataforma e à administração global do Exactum.
 
@@ -411,7 +411,7 @@ Usuários normais não possuem essa capacidade.
 
 ---
 
-## 11. Impersonate e Tenant Context
+## 11. Impersonate e Contexto do Tenant
 
 O recurso de impersonate administrativo permite que um super-admin opere temporariamente no contexto de outro usuário.
 
@@ -572,7 +572,7 @@ Essa estratégia não elimina completamente a possibilidade de bugs de isolament
 
 ---
 
-## 14. Resource Ownership
+## 14. Propriedade do Recurso
 
 O tenant deve ser tratado como parte da propriedade lógica dos recursos tenant-scoped.
 
@@ -643,7 +643,7 @@ Portanto, UUID deve ser entendido como uma estratégia de identificação públi
 
 ---
 
-## 16. Database Model
+## 16. Modelo de Dados
 
 O banco PostgreSQL é compartilhado entre os tenants.
 
@@ -837,7 +837,7 @@ Current Tenant
 
 ---
 
-## 22. Auditoria e Tenant Isolation
+## 22. Auditoria e Isolamento de Tenant
 
 Logs de auditoria são tenant-scoped quando representam atividade realizada dentro de um tenant.
 
@@ -881,7 +881,7 @@ Platform Event
 
 ---
 
-## 23. Observabilidade e Tenant Context
+## 23. Observabilidade e Contexto do Tenant
 
 O tenant também faz parte do contexto operacional das requisições.
 
@@ -963,7 +963,7 @@ constitui a verdadeira fronteira de segurança.
 
 ---
 
-## 25. Fluxo Completo de uma Requisição Tenant-Scoped
+## 25. Fluxo Completo de uma Requisição com Escopo de Tenant
 
 ```text
 Uma requisição típica pode ser representada da seguinte maneira:
@@ -1004,7 +1004,7 @@ Cada etapa possui uma responsabilidade específica.
 
 ## 26. Responsabilidades por Camada
 
-### Authentication
+### Autenticação
 
 Responsável por estabelecer a identidade autenticada da requisição.
 
@@ -1012,19 +1012,19 @@ Não é responsável, isoladamente, por garantir o isolamento dos dados.
 
 ---
 
-### Tenant Context
+### Contexto do Tenant
 
 Responsável por estabelecer o contexto organizacional em que a operação está ocorrendo.
 
 ---
 
-### Authorization
+### Autorização
 
 Responsável por determinar se o usuário possui capacidade para executar determinada operação dentro daquele contexto.
 
 ---
 
-### Application Layer
+### Camada de Aplicação
 
 Responsável por coordenar o caso de uso sem permitir que a operação ignore as fronteiras estabelecidas.
 
@@ -1036,7 +1036,7 @@ Responsável por executar operações de persistência dentro do escopo de tenan
 
 ---
 
-### Database
+### Banco de Dados
 
 Responsável pela persistência e integridade dos dados.
 
@@ -1158,7 +1158,7 @@ Cada camada reduz a possibilidade de uma falha isolada resultar diretamente em e
 
 ---
 
-## 31. Threat Model Simplificado
+## 31. Modelo de Ameaças Simplificado
 
 A arquitetura de tenancy considera principalmente os seguintes riscos:
 
@@ -1264,7 +1264,7 @@ O objetivo não é testar apenas a existência do filtro, mas o comportamento de
 
 ---
 
-## 33. Tenant Lifecycle
+## 33. Ciclo de Vida do Tenant
 
 O tenant possui um ciclo de vida administrado pela plataforma.
 
@@ -1295,7 +1295,7 @@ A gestão desse ciclo de vida é uma preocupação de plataforma, não apenas de
 
 ---
 
-## 34. Sessões e Tenant Suspension
+## 34. Sessões e Suspensão de Tenant
 
 A gestão de sessão via Redis permite que eventos relacionados ao tenant tenham impacto sobre sessões associadas.
 
@@ -1349,7 +1349,7 @@ Conceitualmente:
 
 ---
 
-## 36. Evolução para Domain-Oriented Architecture
+## 36. Evolução para uma Arquitetura Orientada a Domínios
 
 À medida que o Exactum evoluir para fronteiras de domínio mais fortes, o conceito de tenant deverá continuar sendo tratado como uma preocupação arquitetural transversal.
 
@@ -1380,7 +1380,7 @@ O modelo atual não impede uma futura evolução da estratégia de isolamento.
 
 Dependendo do crescimento do Exactum, diferentes estratégias podem ser consideradas.
 
-### Shared Database / Shared Schema
+### Banco Compartilhado / Schema Compartilhado
 
 Modelo atual:
 
@@ -1400,7 +1400,7 @@ Vantagens:
 
 ---
 
-### Shared Database / Separate Schema
+### Banco Compartilhado / Schema Separado
 
 Possível evolução:
 
@@ -1416,7 +1416,7 @@ Pode oferecer maior separação lógica, mas aumenta a complexidade operacional.
 
 ---
 
-### Database per Tenant
+### Banco de Dados por Tenant
 
 Outra possibilidade:
 

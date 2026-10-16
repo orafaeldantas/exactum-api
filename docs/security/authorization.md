@@ -1,4 +1,4 @@
-# Authorization & RBAC
+# Autorização e RBAC
 
 > Documento de arquitetura responsável por definir o modelo de autorização, controle de acesso e isolamento de contexto utilizado pelo Exactum.
 
@@ -205,7 +205,7 @@ Todos os roles incluem `profile:view` e `profile:update`. O super-admin não uti
 
 ## 4. Conceitos
 
-### 4.1 User
+### 4.1 User (Usuário)
 
 Representa a identidade autenticada que executa uma operação na plataforma.
 
@@ -238,7 +238,7 @@ Os papéis podem ser administrados conforme as necessidades do tenant.
 
 ---
 
-### 4.3 Permission
+### 4.3 Permissão
 
 Representa uma capacidade específica do sistema.
 
@@ -381,7 +381,7 @@ e complementado por:
 
 ---
 
-## 8. Tenant-Scoped Authorization
+## 8. Autorização com Escopo de Tenant
 
 Para operações normais de negócio, o usuário opera dentro do contexto de um tenant.
 
@@ -452,7 +452,7 @@ O contexto de super-admin não deve ser confundido com uma role comum pertencent
 
 Existem dois níveis conceituais de administração.
 
-### Tenant Administration
+### Administração do Tenant
 
 Responsável pela administração de recursos pertencentes ao próprio tenant.
 
@@ -465,7 +465,7 @@ Exemplos:
 - operações de negócio;
 - configurações relacionadas ao tenant.
 
-### Platform Administration
+### Administração da Plataforma
 
 Responsável pela administração da própria plataforma.
 
@@ -576,7 +576,7 @@ O backend deve sempre repetir a decisão de autorização.
 
 ---
 
-## 14. Authorization Boundary
+## 14. Fronteira de Autorização
 
 A fronteira de autorização está localizada no backend.
 
@@ -672,7 +672,7 @@ Uma autorização bem-sucedida não deve permitir que uma query ignore o context
 
 ---
 
-## 17. Defense in Depth
+## 17. Defesa em Profundidade
 
 O modelo de segurança do Exactum utiliza múltiplas barreiras.
 

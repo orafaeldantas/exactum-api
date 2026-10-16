@@ -1,4 +1,4 @@
-# Exactum — Technical Documentation
+# Exactum — Documentação Técnica
 
 > Documentação técnica e arquitetural do Exactum ERP.
 
@@ -102,7 +102,7 @@ SECURITY.md
 
 ---
 
-# 3. Architecture
+# 3. Arquitetura
 
 A seção `architecture/` descreve a organização estrutural e conceitual do sistema.
 
@@ -245,7 +245,7 @@ Exemplos de decisões que podem ser registradas futuramente:
 
 ---
 
-# 4. Security
+# 4. Segurança
 
 A seção `security/` documenta os mecanismos responsáveis pela proteção do sistema.
 
@@ -387,7 +387,7 @@ O documento também diferencia controles existentes de controles planejados.
 
 ---
 
-# 5. Observability
+# 5. Observabilidade
 
 A seção `observability/` descreve como o Exactum registra, correlaciona e acompanha o comportamento da aplicação.
 
@@ -659,7 +659,7 @@ O documento também aborda:
 
 ---
 
-# 7. Database
+# 7. Banco de Dados
 
 A seção `database/` documenta o modelo de persistência do Exactum.
 
@@ -772,7 +772,7 @@ Também aborda:
 
 ---
 
-# 8. Operations
+# 8. Operações
 
 A seção `operations/` documenta como desenvolver, executar, empacotar, publicar e operar o Exactum.
 
@@ -905,7 +905,7 @@ Exemplos:
 
 ---
 
-# 9. Testing
+# 9. Testes
 
 A seção `testing/` documenta a estratégia de qualidade e validação do Exactum.
 
@@ -985,7 +985,7 @@ A documentação também cobre:
 
 ---
 
-# 10. Root-level project documentation
+# 10. Documentação na raiz do projeto
 
 Além da documentação técnica dentro de `docs/`, alguns arquivos possuem responsabilidades específicas no nível do repositório.
 
@@ -1034,7 +1034,7 @@ Define os termos legais de distribuição e utilização do código.
 
 ---
 
-# 11. Relationship between documentation areas
+# 11. Relação entre as áreas da documentação
 
 As diferentes áreas da documentação não devem ser interpretadas como documentos isolados.
 
@@ -1106,7 +1106,7 @@ A documentação deve acompanhar essas relações.
 
 ---
 
-# 12. Documentation principles
+# 12. Princípios da documentação
 
 A documentação do Exactum segue alguns princípios.
 
@@ -1185,7 +1185,7 @@ Isso permite que a documentação preserve o significado arquitetural mesmo quan
 
 ---
 
-# 13. Keeping documentation synchronized
+# 13. Mantendo a documentação sincronizada
 
 A documentação deve evoluir junto com o código.
 
@@ -1209,7 +1209,7 @@ Uma mudança significativa não deve ser considerada completamente concluída en
 
 ---
 
-# 14. Documentation and pull requests
+# 14. Documentação e pull requests
 
 Quando uma alteração possuir impacto arquitetural, de segurança, API, banco de dados, operação ou observabilidade, o Pull Request deve considerar a atualização dos documentos correspondentes.
 
@@ -1256,7 +1256,7 @@ A documentação reduz essa dependência.
 
 ---
 
-# 16. Current architectural direction
+# 16. Direção arquitetural atual
 
 O Exactum encontra-se em uma fase de evolução de uma arquitetura predominantemente **layered** para uma organização com fronteiras de domínio mais explícitas.
 
@@ -1299,7 +1299,7 @@ O objetivo é aumentar progressivamente:
 
 ---
 
-# 17. Future documentation areas
+# 17. Áreas futuras de documentação
 
 Conforme o Exactum evoluir, novos documentos poderão ser adicionados.
 
@@ -1335,7 +1335,7 @@ Devem ser adicionados quando existir complexidade real que justifique sua docume
 
 ---
 
-# 18. Documentation maturity
+# 18. Maturidade da documentação
 
 A documentação pode evoluir juntamente com a maturidade técnica do sistema.
 
@@ -1365,7 +1365,7 @@ O objetivo é manter documentação suficiente para que a complexidade do sistem
 
 ---
 
-# 19. Related project files
+# 19. Arquivos relacionados do projeto
 
 Documentos externos à pasta `docs/` também fazem parte da documentação do projeto.
 
@@ -1401,7 +1401,7 @@ Source Code
 
 ---
 
-# 20. Documentation navigation
+# 20. Navegação da documentação
 
 Para compreender o Exactum progressivamente, uma ordem recomendada de leitura é:
 
@@ -1455,19 +1455,19 @@ Testing
 
 ---
 
-# 21. Final principle
+# 21. Princípio final
 
 A documentação do Exactum deve responder a três perguntas fundamentais:
 
-### What?
+### O quê?
 
 O que o sistema possui?
 
-### Why?
+### Por quê?
 
 Por que foi projetado dessa maneira?
 
-### How?
+### Como?
 
 Como isso é implementado e operado atualmente?
 
@@ -1529,7 +1529,7 @@ Portanto, esta documentação deve ser interpretada como uma representação do 
 
 ---
 
-# 22. Conclusion
+# 22. Conclusão
 
 A documentação técnica do Exactum existe para preservar o conhecimento arquitetural do sistema e tornar sua evolução previsível.
 

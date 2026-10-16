@@ -1,4 +1,4 @@
-# Platform Events
+# Eventos de Plataforma
 
 > **Status:** Active
 > **Scope:** Platform-level events and administrative activity
@@ -7,7 +7,7 @@
 
 ---
 
-# 1. Purpose
+# 1. Propósito
 
 Este documento define o conceito, a finalidade e as responsabilidades dos **Platform Events** no Exactum.
 
@@ -30,7 +30,7 @@ Um evento representa um **acontecimento significativo**, enquanto um infrastruct
 
 ---
 
-# 2. What Is a Platform Event?
+# 2. O que é um Evento de Plataforma?
 
 Um Platform Event representa algo que aconteceu dentro do contexto operacional da plataforma e que possui significado próprio para administração, segurança ou operação.
 
@@ -71,7 +71,7 @@ A diferença está no significado do acontecimento e em quem precisa consumi-lo.
 
 ---
 
-# 3. Platform Events vs Infrastructure Logs
+# 3. Eventos de Plataforma vs Logs de Infraestrutura
 
 As duas categorias podem representar a mesma operação em perspectivas diferentes.
 
@@ -112,13 +112,13 @@ Essa separação é fundamental para manter a observabilidade organizada.
 
 ---
 
-# 4. Platform Events vs Audit Logs
+# 4. Eventos de Plataforma vs Logs de Auditoria
 
 Platform Events também não substituem **Tenant Audit Logs**.
 
 A diferença principal é o **escopo**.
 
-### Platform Events
+### Eventos de Plataforma
 
 Representam acontecimentos no nível da plataforma.
 
@@ -131,7 +131,7 @@ Exemplos:
 - platform-level administrative action;
 - global security event.
 
-### Tenant Audit Logs
+### Logs de Auditoria do Tenant
 
 Representam ações realizadas dentro do contexto operacional de um tenant.
 
@@ -162,7 +162,7 @@ Uma operação pode gerar mais de uma dessas representações, desde que cada um
 
 ---
 
-# 5. Why Platform Events Exist
+# 5. Por que os Eventos de Plataforma Existem
 
 Infrastructure logs são excelentes para troubleshooting técnico, mas não são ideais para representar o histórico operacional da plataforma.
 
@@ -191,11 +191,11 @@ O evento transforma um acontecimento relevante em uma unidade de informação pr
 
 ---
 
-# 6. Event Characteristics
+# 6. Características dos Eventos
 
 Um Platform Event deve possuir algumas características.
 
-## 6.1 Explicit
+## 6.1 Explícito
 
 O evento deve representar claramente o acontecimento.
 
@@ -227,7 +227,7 @@ O evento deve possuir contexto suficiente para identificar:
 
 ---
 
-## 6.3 Structured
+## 6.3 Estruturado
 
 Os eventos devem possuir estrutura consistente e previsível.
 
@@ -243,7 +243,7 @@ Isso permite:
 
 ---
 
-## 6.4 Traceable
+## 6.4 Rastreável
 
 Quando o evento for originado por uma requisição HTTP, deve ser possível correlacioná-lo com o `request_id`.
 
@@ -261,7 +261,7 @@ Database / Redis / External Services
 
 ---
 
-# 7. Event Structure
+# 7. Estrutura do Evento
 
 Uma estrutura conceitual pode ser representada por:
 
@@ -281,7 +281,7 @@ O princípio é manter uma estrutura suficientemente consistente para que difere
 
 ---
 
-# 8. Core Event Fields
+# 8. Campos Principais do Evento
 
 Os seguintes campos são relevantes para Platform Events.
 
@@ -301,7 +301,7 @@ Eventos de nível global, por exemplo, podem não possuir `tenant_id`.
 
 ---
 
-# 9. Event Naming Convention
+# 9. Convenção de Nomenclatura de Eventos
 
 Os nomes dos eventos devem ser:
 
@@ -340,11 +340,11 @@ Quanto mais específico o evento, maior seu valor operacional.
 
 ---
 
-# 10. Event Categories
+# 10. Categorias de Eventos
 
 Platform Events podem ser agrupados em categorias.
 
-## 10.1 Tenant Lifecycle
+## 10.1 Ciclo de Vida do Tenant
 
 Eventos relacionados ao ciclo de vida de um tenant.
 
@@ -361,7 +361,7 @@ Esses eventos ajudam a reconstruir a evolução operacional de um tenant.
 
 ---
 
-## 10.2 User Administration
+## 10.2 Administração de Usuários
 
 Eventos relacionados ao gerenciamento administrativo de usuários em nível de plataforma.
 
@@ -399,7 +399,7 @@ Esses eventos devem permitir identificar:
 
 ---
 
-# 11. Impersonation Traceability
+# 11. Rastreabilidade do Impersonation
 
 O Exactum permite que um super-admin atue temporariamente como outro usuário.
 
@@ -445,7 +445,7 @@ Isso impede que operações realizadas durante impersonation sejam interpretadas
 
 ---
 
-# 12. Tenant Lifecycle
+# 12. Ciclo de Vida do Tenant
 
 O ciclo de vida de um tenant pode produzir eventos relevantes.
 
@@ -471,7 +471,7 @@ A suspensão possui significado operacional próprio.
 
 ---
 
-# 13. Security Events
+# 13. Eventos de Segurança
 
 Alguns eventos de segurança podem possuir importância suficiente para serem representados como Platform Events.
 
@@ -498,7 +498,7 @@ A decisão deve considerar:
 
 ---
 
-# 14. Administrative Operations
+# 14. Operações Administrativas
 
 Operações administrativas de alto privilégio podem gerar Platform Events.
 
@@ -523,7 +523,7 @@ A finalidade é permitir responder:
 
 ---
 
-# 15. Actor Context
+# 15. Contexto do Ator
 
 Todo evento que represente uma ação deve, quando possível, identificar seu **actor**.
 
@@ -540,11 +540,11 @@ target_user_id = regular-user
 
 Esses conceitos não devem ser confundidos.
 
-### Actor
+### Ator
 
 Quem executou a operação.
 
-### Target
+### Alvo
 
 Quem ou o que foi afetado pela operação.
 
@@ -565,7 +565,7 @@ Essa distinção é fundamental para impersonation e administração da platafor
 
 ---
 
-# 16. System-Generated Events
+# 16. Eventos Gerados pelo Sistema
 
 Nem todo Platform Event precisa possuir um usuário como actor.
 
@@ -597,7 +597,7 @@ quando necessário.
 
 ---
 
-# 17. Event Metadata
+# 17. Metadados do Evento
 
 Eventos podem possuir metadata adicional.
 
@@ -620,7 +620,7 @@ Não deve se transformar em um mecanismo para armazenar dados arbitrários.
 
 ---
 
-# 18. Sensitive Information
+# 18. Informações Sensíveis
 
 Platform Events devem seguir os mesmos princípios de segurança definidos para infrastructure logs.
 
@@ -638,7 +638,7 @@ Também deve ser evitado armazenar informações pessoais ou comerciais que não
 
 ---
 
-# 19. Event Immutability
+# 19. Imutabilidade dos Eventos
 
 Depois de registrado, um Platform Event deve ser tratado conceitualmente como um registro histórico.
 
@@ -673,7 +673,7 @@ e não uma alteração retroativa do primeiro evento.
 
 ---
 
-# 20. Event Ordering
+# 20. Ordenação de Eventos
 
 Eventos relacionados podem precisar de ordenação temporal.
 
@@ -695,7 +695,7 @@ Entretanto, consumidores não devem assumir que timestamps isolados são suficie
 
 ---
 
-# 21. Correlation
+# 21. Correlação
 
 Platform Events originados por requisições devem preservar o `request_id` sempre que possível.
 
@@ -721,7 +721,7 @@ A estratégia detalhada está documentada em [Correlation](./correlation.md).
 
 ---
 
-# 22. Event and HTTP Request
+# 22. Evento e Requisição HTTP
 
 Uma única ação administrativa pode gerar múltiplas representações.
 
@@ -733,13 +733,13 @@ POST /api/platform/tenants/{id}/suspend
 
 Pode resultar em:
 
-### Infrastructure Log
+### Log de Infraestrutura
 
 ```text
 http_request_completed
 ```
 
-### Platform Event
+### Evento de Plataforma
 
 ```text
 tenant_suspended
@@ -759,7 +759,7 @@ Platform Event
 
 ---
 
-# 23. Event and Database State
+# 23. Evento e Estado do Banco de Dados
 
 Platform Events também não substituem o estado atual do banco.
 
@@ -792,7 +792,7 @@ permitem uma compreensão mais completa do sistema.
 
 ---
 
-# 24. Transactional Consistency
+# 24. Consistência Transacional
 
 Quando um Platform Event representa uma alteração persistente importante, a aplicação deve considerar a consistência entre:
 
@@ -824,7 +824,7 @@ Conforme a arquitetura do Exactum evoluir, mecanismos como **transactional event
 
 ---
 
-# 25. Event Delivery
+# 25. Entrega de Eventos
 
 Platform Events podem ter diferentes destinos.
 
@@ -848,7 +848,7 @@ A existência de um Platform Event não implica necessariamente que ele será pu
 
 ---
 
-# 26. Synchronous vs Asynchronous Events
+# 26. Eventos Síncronos vs Assíncronos
 
 Um evento pode ser criado dentro de uma operação síncrona:
 
@@ -880,7 +880,7 @@ A estratégia atual deve evitar acoplar o conceito de Platform Event a um mecani
 
 ---
 
-# 27. Event Consumers
+# 27. Consumidores de Eventos
 
 Os consumidores de Platform Events podem incluir:
 
@@ -897,7 +897,7 @@ Por isso, o schema deve ser estável e previsível.
 
 ---
 
-# 28. Event Versioning
+# 28. Versionamento de Eventos
 
 À medida que novos consumidores forem introduzidos, mudanças no formato dos eventos devem ser tratadas com cuidado.
 
@@ -925,7 +925,7 @@ O mecanismo definitivo de versionamento dependerá da evolução da arquitetura.
 
 ---
 
-# 29. Event Storage
+# 29. Armazenamento de Eventos
 
 O armazenamento de Platform Events deve considerar:
 
@@ -953,7 +953,7 @@ Essa diferença deve ser refletida na estratégia de armazenamento.
 
 ---
 
-# 30. Access Control
+# 30. Controle de Acesso
 
 Platform Events podem revelar informações administrativas e de segurança.
 
@@ -970,7 +970,7 @@ não devem ficar disponíveis indiscriminadamente para usuários comuns do siste
 
 ---
 
-# 31. Tenant Visibility
+# 31. Visibilidade do Tenant
 
 Nem todo Platform Event deve ser visível para usuários de tenants.
 
@@ -988,7 +988,7 @@ Tenant Scope
 
 ---
 
-# 32. Relation With RBAC
+# 32. Relação com RBAC
 
 O acesso a Platform Events deve respeitar o modelo de autorização da plataforma.
 
@@ -1006,7 +1006,7 @@ O backend permanece responsável por aplicar a autorização.
 
 ---
 
-# 33. Observability Integration
+# 33. Integração com Observabilidade
 
 Platform Events são uma das fontes de observabilidade do Exactum.
 
@@ -1030,7 +1030,7 @@ Cada mecanismo responde a uma classe diferente de perguntas.
 
 ---
 
-# 34. Investigation Example
+# 34. Exemplo de Investigação
 
 Considere que um operador descubra que um tenant está suspenso inesperadamente.
 
@@ -1069,7 +1069,7 @@ Isso permite reconstruir tanto o **que aconteceu** quanto **como aconteceu**.
 
 ---
 
-# 35. Impersonation Investigation Example
+# 35. Exemplo de Investigação de Impersonation
 
 Considere uma operação realizada durante impersonation.
 
@@ -1103,7 +1103,7 @@ Esse nível de rastreabilidade é importante para operações administrativas de
 
 ---
 
-# 36. Failure Handling
+# 36. Tratamento de Falhas
 
 A criação de um Platform Event deve ser tratada de acordo com a criticidade do evento.
 
@@ -1129,7 +1129,7 @@ A criticidade do evento determina o comportamento apropriado.
 
 ---
 
-# 37. Idempotency
+# 37. Idempotência
 
 Eventos que possam ser processados por consumidores externos ou assíncronos devem considerar **idempotency**.
 
@@ -1179,11 +1179,11 @@ A adoção definitiva de `event_id` deve acompanhar a evolução do event infras
 
 ---
 
-# 39. Domain Events vs Platform Events
+# 39. Eventos de Domínio vs Eventos de Plataforma
 
 O conceito de Platform Event não deve ser confundido com **Domain Event**.
 
-### Domain Event
+### Evento de Domínio
 
 Representa uma mudança ou ocorrência significativa dentro de um domínio de negócio.
 
@@ -1193,7 +1193,7 @@ Exemplo conceitual:
 SaleCompleted
 ```
 
-### Platform Event
+### Evento de Plataforma
 
 Representa um acontecimento relevante no nível da plataforma.
 
@@ -1226,7 +1226,7 @@ Infrastructure
 
 ---
 
-# 40. DDD Evolution
+# 40. Evolução para DDD
 
 A evolução do Exactum em direção a uma arquitetura mais próxima de **DDD** pode aumentar a quantidade de eventos significativos produzidos pelo sistema.
 
@@ -1240,7 +1240,7 @@ Eventos internos de implementação não precisam necessariamente ser persistido
 
 ---
 
-# 41. Avoiding Event Noise
+# 41. Evitando Ruído de Eventos
 
 Assim como logs excessivos prejudicam a observabilidade, eventos excessivos também reduzem seu valor.
 
@@ -1266,7 +1266,7 @@ A criação de eventos deve ser orientada pelo valor da informação.
 
 ---
 
-# 42. Security Considerations
+# 42. Considerações de Segurança
 
 Platform Events devem ser tratados como dados potencialmente sensíveis.
 
@@ -1289,7 +1289,7 @@ Especial atenção deve ser dada aos eventos relacionados a:
 
 ---
 
-# 43. Testing
+# 43. Testes
 
 Platform Events devem possuir testes que garantam seu comportamento esperado.
 
@@ -1322,7 +1322,7 @@ tenant_id = Tenant A
 
 ---
 
-# 44. Operational Queries
+# 44. Queries Operacionais
 
 A estrutura dos eventos deve permitir perguntas operacionais como:
 
@@ -1350,7 +1350,7 @@ Essas perguntas representam um dos principais motivos para manter Platform Event
 
 ---
 
-# 45. Example Event Set
+# 45. Exemplo de Conjunto de Eventos
 
 Um conjunto inicial de eventos pode incluir:
 
@@ -1363,7 +1363,7 @@ tenant_suspended
 tenant_deleted
 ```
 
-### User
+### User (Usuário)
 
 ```text
 user_blocked
@@ -1377,7 +1377,7 @@ impersonation_started
 impersonation_stopped
 ```
 
-### Security
+### Segurança
 
 ```text
 security_policy_changed
@@ -1391,7 +1391,7 @@ Novos eventos devem ser adicionados conforme surgirem necessidades reais da plat
 
 ---
 
-# 46. Current State
+# 46. Estado Atual
 
 Atualmente, Platform Events fazem parte da estratégia de observabilidade e rastreabilidade administrativa do Exactum.
 
@@ -1407,7 +1407,7 @@ A implementação deve continuar evoluindo junto com a arquitetura de observabil
 
 ---
 
-# 47. Future Evolution
+# 47. Evolução Futura
 
 A evolução futura pode incluir:
 
@@ -1449,7 +1449,7 @@ Essa arquitetura não representa necessariamente a implementação atual, mas um
 
 ---
 
-# 48. Design Principles Summary
+# 48. Resumo dos Princípios de Design
 
 A estratégia de Platform Events do Exactum pode ser resumida nos seguintes princípios:
 
@@ -1468,7 +1468,7 @@ A estratégia de Platform Events do Exactum pode ser resumida nos seguintes prin
 
 ---
 
-# 49. Related Documentation
+# 49. Documentos Relacionados
 
 - [Observability Overview](./overview.md)
 - [Infrastructure Logging](./infrastructure-logging.md)

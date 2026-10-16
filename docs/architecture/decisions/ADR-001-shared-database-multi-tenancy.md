@@ -1,4 +1,4 @@
-# ADR-001 — Shared Database Multi-Tenancy
+# ADR-001 — Multi-Tenancy com Banco Compartilhado
 
 - **Status:** Accepted
 - **Date:** None
@@ -9,7 +9,7 @@
 
 ---
 
-# 1. Context
+# 1. Contexto
 
 O Exactum é um ERP desenvolvido como uma aplicação **multi-tenant**.
 
@@ -51,7 +51,7 @@ As principais alternativas consideradas foram:
 
 ---
 
-# 2. Decision
+# 2. Decisão
 
 O Exactum utilizará uma arquitetura de **Shared Database Multi-Tenancy**, mantendo os tenants no mesmo banco de dados e no mesmo schema lógico.
 
@@ -112,7 +112,7 @@ O objetivo é evitar que uma falha isolada em uma camada resulte diretamente em 
 
 ---
 
-# 3. Rationale
+# 3. Justificativa
 
 A decisão foi tomada considerando o estágio atual do Exactum, sua escala esperada, a complexidade operacional e a necessidade de manter uma arquitetura que permita evolução futura sem introduzir infraestrutura desnecessariamente complexa.
 
@@ -155,9 +155,9 @@ Uma migration pode ser aplicada ao schema compartilhado em vez de precisar ser e
 
 ---
 
-# 4. Alternatives Considered
+# 4. Alternativas Consideradas
 
-## 4.1 Database per Tenant
+## 4.1 Banco de Dados por Tenant
 
 Nesta abordagem cada tenant possuiria seu próprio database.
 
@@ -168,14 +168,14 @@ PostgreSQL
    └── exactum_tenant_c
 ```
 
-### Advantages
+### Vantagens
 
 - isolamento físico mais forte;
 - possibilidade de backup/restauração individual;
 - possibilidade de configuração específica por tenant;
 - menor risco de consulta acidental atravessar tenants.
 
-### Disadvantages
+### Desvantagens
 
 - maior complexidade operacional;
 - migrations precisam considerar múltiplos databases;
@@ -184,13 +184,13 @@ PostgreSQL
 - maior consumo de recursos;
 - administração mais complexa conforme o número de tenants cresce.
 
-### Decision
+### Decisão
 
 Não adotado para o estágio atual do Exactum.
 
 ---
 
-## 4.2 Schema per Tenant
+## 4.2 Schema por Tenant
 
 Nesta abordagem cada tenant possuiria um schema separado dentro do PostgreSQL.
 
@@ -202,13 +202,13 @@ PostgreSQL
    └── tenant_c
 ```
 
-### Advantages
+### Vantagens
 
 - separação lógica maior que um schema compartilhado;
 - possibilidade de estruturas específicas por tenant;
 - menor risco de mistura acidental de dados.
 
-### Disadvantages
+### Desvantagens
 
 - aumento da complexidade de migrations;
 - aumento do número de objetos no database;
@@ -216,13 +216,13 @@ PostgreSQL
 - dificuldade crescente conforme o número de tenants aumenta;
 - necessidade de administrar dinamicamente schemas.
 
-### Decision
+### Decisão
 
 Não adotado para o estágio atual do Exactum.
 
 ---
 
-## 4.3 Shared Database / Shared Schema
+## 4.3 Banco Compartilhado / Schema Compartilhado
 
 Nesta abordagem todos os tenants utilizam as mesmas tabelas e o isolamento é realizado através de uma chave de tenant.
 
@@ -236,7 +236,7 @@ uuid | tenant_uuid | name
   3  | tenant-A   | Product C
 ```
 
-### Advantages
+### Vantagens
 
 - infraestrutura simples;
 - migrations centralizadas;
@@ -246,7 +246,7 @@ uuid | tenant_uuid | name
 - boa adequação ao estágio atual do produto;
 - facilidade para consultas e operações administrativas controladas.
 
-### Disadvantages
+### Desvantagens
 
 - maior responsabilidade sobre Tenant Isolation;
 - qualquer consulta incorreta pode potencialmente acessar dados de outro tenant;
@@ -254,13 +254,13 @@ uuid | tenant_uuid | name
 - necessidade de testes específicos de isolamento;
 - queries precisam considerar o tenant corretamente.
 
-### Decision
+### Decisão
 
 **Adotado.**
 
 ---
 
-# 5. Tenant Context
+# 5. Contexto do Tenant
 
 O tenant deve fazer parte do contexto da requisição autenticada.
 
@@ -293,7 +293,7 @@ Ele representa o **contexto de execução**, enquanto as regras de Authorization
 
 ---
 
-# 6. Repository-Level Isolation
+# 6. Isolamento na Camada de Repository
 
 Os repositories possuem responsabilidade importante na aplicação da estratégia de isolamento.
 
@@ -341,7 +341,7 @@ A implementação concreta pode variar conforme a evolução da arquitetura, mas
 
 ---
 
-# 7. Why the Frontend Is Not Trusted
+# 7. Por que o Frontend Não é Confiável
 
 O frontend não é considerado uma fronteira de segurança.
 
@@ -370,17 +370,17 @@ A API e suas camadas internas devem validar o contexto e as permissões independ
 
 ---
 
-# 8. Tenant Isolation and Authorization
+# 8. Isolamento de Tenant e Autorização
 
 Tenant Isolation e Authorization são conceitos relacionados, mas distintos.
 
-### Tenant Isolation
+### Isolamento de Tenant
 
 Responde:
 
 > Este recurso pertence ao contexto do tenant da requisição?
 
-### Authorization
+### Autorização
 
 Responde:
 
@@ -426,7 +426,7 @@ deve ser rejeitada por Tenant Isolation.
 
 ---
 
-# 9. Database Constraints
+# 9. Constraints do Banco de Dados
 
 O modelo shared-schema exige que relacionamentos e constraints sejam projetados levando em consideração o tenant quando necessário.
 
@@ -460,7 +460,7 @@ As constraints devem refletir as regras de negócio e o escopo real dos recursos
 
 ---
 
-# 10. Cross-Tenant Relationships
+# 10. Relacionamentos Cross-Tenant
 
 Relacionamentos entre entidades tenant-scoped devem ser tratados com cuidado.
 
@@ -499,7 +499,7 @@ Essa regra reduz o risco de inconsistências e de cross-tenant references.
 
 ---
 
-# 11. Security Implications
+# 11. Implicações de Segurança
 
 A principal consequência de segurança dessa decisão é que **Tenant Isolation se torna uma responsabilidade crítica da aplicação**.
 
@@ -538,7 +538,7 @@ Automated Tests
 
 ---
 
-# 12. Testing Implications
+# 12. Implicações nos Testes
 
 A escolha de Shared Database / Shared Schema torna os testes de Tenant Isolation especialmente importantes.
 
@@ -586,7 +586,7 @@ Tenant Isolation deve ser tratado como uma **security invariant** do sistema.
 
 ---
 
-# 13. Operational Implications
+# 13. Implicações Operacionais
 
 O modelo compartilhado simplifica algumas operações.
 
@@ -610,7 +610,7 @@ O backup pode ser realizado sobre o database compartilhado.
 
 Entretanto, isso significa que mecanismos de restauração individual por tenant exigiriam estratégias adicionais caso essa necessidade surja no futuro.
 
-## Monitoring
+## Monitoramento
 
 O monitoramento pode acompanhar o database como uma infraestrutura compartilhada.
 
@@ -627,7 +627,7 @@ quando necessário.
 
 ---
 
-# 14. Performance Implications
+# 14. Implicações de Performance
 
 Shared Database / Shared Schema permite que múltiplos tenants utilizem a mesma infraestrutura de banco.
 
@@ -656,7 +656,7 @@ Em escala maior, a arquitetura poderá precisar avaliar estratégias diferentes.
 
 ---
 
-# 15. Data Access Rules
+# 15. Regras de Acesso a Dados
 
 Como regra arquitetural:
 
@@ -675,7 +675,7 @@ O requisito é que o isolamento seja:
 
 ---
 
-# 16. Super-Admin Considerations
+# 16. Considerações sobre o Super-Admin
 
 O Exactum possui operações de plataforma executadas por super-admin.
 
@@ -709,11 +709,11 @@ docs/architecture/decisions/ADR-006-impersonation-model.md
 
 ---
 
-# 17. Consequences
+# 17. Consequências
 
 A decisão produz os seguintes efeitos.
 
-## 17.1 Positive Consequences
+## 17.1 Consequências Positivas
 
 ### Infraestrutura mais simples
 
@@ -741,7 +741,7 @@ Todos os tenants utilizam o mesmo schema lógico.
 
 ---
 
-## 17.2 Negative Consequences
+## 17.2 Consequências Negativas
 
 ### Maior responsabilidade da aplicação
 
@@ -755,11 +755,11 @@ Uma alteração incorreta em queries pode potencialmente afetar a segurança ent
 
 Tenant Isolation precisa possuir cobertura significativa.
 
-### Shared Resources
+### Recursos Compartilhados
 
 Todos os tenants compartilham recursos de infraestrutura.
 
-### Individual Tenant Recovery
+### Recuperação de um Tenant Específico
 
 A restauração isolada de um tenant pode exigir mecanismos adicionais.
 
@@ -787,7 +787,7 @@ Esse trade-off é considerado adequado ao estágio atual do produto.
 
 ---
 
-# 19. Future Evolution
+# 19. Evolução Futura
 
 A decisão não impede uma futura mudança de estratégia de tenancy.
 
@@ -824,7 +824,7 @@ A decisão atual não deve ser interpretada como uma restrição permanente à a
 
 ---
 
-# 20. Current State
+# 20. Estado Atual
 
 Atualmente o Exactum utiliza uma arquitetura de database compartilhado para seus tenants.
 
@@ -859,11 +859,11 @@ docs/database/schema.md
 
 ---
 
-# 21. Related Decisions
+# 21. Decisões Relacionadas
 
 Esta decisão possui relação direta com outras decisões arquiteturais.
 
-### Authentication
+### Autenticação
 
 O tenant context é associado à identidade autenticada.
 
@@ -871,7 +871,7 @@ O tenant context é associado à identidade autenticada.
 ADR-003 — HttpOnly Cookie Authentication
 ```
 
-### Session Management
+### Gerenciamento de Sessões
 
 Sessões carregam informações necessárias para identificar o contexto da autenticação.
 
@@ -887,7 +887,7 @@ Super-admin pode assumir temporariamente o contexto de outro usuário/tenant.
 ADR-006 — Impersonation Model
 ```
 
-### Application Architecture
+### Arquitetura da Aplicação
 
 A aplicação precisa distribuir corretamente as responsabilidades de Tenant Isolation entre suas camadas.
 
@@ -897,7 +897,7 @@ ADR-007 — Layered Application Architecture
 
 ---
 
-# 22. Related Documentation
+# 22. Documentos Relacionados
 
 - `docs/architecture/overview.md`
 - `docs/architecture/system-context.md`
@@ -916,7 +916,7 @@ ADR-007 — Layered Application Architecture
 
 ---
 
-# 23. Decision Summary
+# 23. Resumo da Decisão
 
 | Aspect              | Decision                        |
 | ------------------- | ------------------------------- |
@@ -933,7 +933,7 @@ ADR-007 — Layered Application Architecture
 
 ---
 
-# 24. Final Decision
+# 24. Decisão Final
 
 The Exactum adopts **Shared Database / Shared Schema Multi-Tenancy**.
 
@@ -945,6 +945,6 @@ The architecture therefore treats Tenant Isolation as a **security invariant**, 
 
 ---
 
-## Architectural Principle
+## Princípio Arquitetural
 
 > **Tenants share infrastructure, but never share authorization context.**

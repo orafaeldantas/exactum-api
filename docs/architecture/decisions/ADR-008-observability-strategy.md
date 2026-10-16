@@ -1,4 +1,4 @@
-# ADR-008 — Observability Strategy
+# ADR-008 — Estratégia de Observabilidade
 
 - **Status:** Accepted
 - **Date:** 2026-09-28
@@ -174,7 +174,7 @@ Essa separação evita transformar um único mecanismo em responsável por todas
 
 ---
 
-# 5. Structured Logging
+# 5. Logging Estruturado
 
 O Exactum utiliza **Structured Logging** como mecanismo principal para informações técnicas e operacionais.
 
@@ -204,7 +204,7 @@ O princípio é que informações importantes para diagnóstico devem ser repres
 
 ---
 
-# 6. Objetivos do Logging
+# 6. Objetivos dos Logs
 
 Os logs possuem como principais objetivos:
 
@@ -356,7 +356,7 @@ Sua função é permitir rastreabilidade técnica.
 
 ---
 
-# 12. Platform Events
+# 12. Eventos de Plataforma
 
 O Exactum utiliza o conceito de **Platform Events** para representar acontecimentos relevantes da própria plataforma.
 
@@ -387,11 +387,11 @@ A nomenclatura exata dos eventos pode evoluir conforme o domínio e a plataforma
 
 ---
 
-# 13. Platform Events não são Domain Events
+# 13. Eventos de Plataforma não são Eventos de Domínio
 
 É importante diferenciar **Platform Events** de **Domain Events**.
 
-### Platform Event
+### Evento de Plataforma
 
 Representa um acontecimento relevante para a plataforma ou infraestrutura da aplicação.
 
@@ -403,7 +403,7 @@ SESSION_REVOKED
 IMPERSONATION_STARTED
 ```
 
-### Domain Event
+### Evento de Domínio
 
 Representa um acontecimento significativo dentro de um domínio de negócio.
 
@@ -421,7 +421,7 @@ O Exactum não deve tratar automaticamente qualquer evento como Domain Event.
 
 ---
 
-# 14. Audit Logging
+# 14. Logs de Auditoria
 
 **Audit Logging** possui finalidade diferente de Structured Logging.
 
@@ -494,17 +494,17 @@ Essa decisão é diretamente relacionada à **ADR-006 — Impersonation Model**.
 
 ---
 
-# 16. Audit Logging e Structured Logging
+# 16. Logs de Auditoria e Logging Estruturado
 
 Structured Logging e Audit Logging não devem ser tratados como a mesma coisa.
 
-### Structured Logging
+### Logging Estruturado
 
 Tem como objetivo principal:
 
 > entender o que aconteceu tecnicamente.
 
-### Audit Logging
+### Logs de Auditoria
 
 Tem como objetivo principal:
 
@@ -528,7 +528,7 @@ Quando uma operação exige auditoria, o registro deve ser tratado explicitament
 
 ---
 
-# 17. Request Lifecycle
+# 17. Ciclo de Vida da Requisição
 
 A estratégia de Observability acompanha o Request Lifecycle.
 
@@ -585,7 +585,7 @@ Isso cria uma visão operacional da execução sem exigir que cada mecanismo arm
 
 ---
 
-# 18. Error Observability
+# 18. Observabilidade de Erros
 
 Falhas da aplicação devem ser observáveis sem expor informações desnecessárias ao cliente.
 
@@ -611,7 +611,7 @@ O Correlation ID pode ser utilizado como referência para localizar os registros
 
 ---
 
-# 19. Observability e Multi-Tenancy
+# 19. Observabilidade e Multi-Tenancy
 
 Como o Exactum é multi-tenant, informações de tenant são importantes para diagnóstico e investigação.
 
@@ -631,7 +631,7 @@ A informação registrada para observabilidade não concede acesso ao tenant.
 
 ---
 
-# 20. Observability e Authentication
+# 20. Observabilidade e Autenticação
 
 Eventos relacionados à autenticação possuem relevância operacional e de segurança.
 
@@ -658,7 +658,7 @@ Tokens e credenciais completas não devem ser registrados.
 
 ---
 
-# 21. Observability e Authorization
+# 21. Observabilidade e Autorização
 
 Operações relacionadas a Authorization podem possuir relevância especial.
 
@@ -678,7 +678,7 @@ A classificação depende da natureza da operação.
 
 ---
 
-# 22. Observability e Impersonation
+# 22. Observabilidade e Impersonation
 
 Impersonation possui tratamento especial devido ao impacto de segurança e accountability.
 
@@ -708,7 +708,7 @@ Isso segue o princípio estabelecido na ADR-006:
 
 ---
 
-# 23. Logs versus Events versus Audit
+# 23. Logs vs Eventos vs Auditoria
 
 A separação conceitual pode ser resumida da seguinte maneira:
 
@@ -748,7 +748,7 @@ Nem todos os eventos precisam gerar todos os mecanismos.
 
 ---
 
-# 24. Metrics
+# 24. Métricas
 
 Métricas são reconhecidas como parte importante da estratégia de Observability, mas sua adoção completa é considerada uma etapa de evolução.
 
@@ -862,7 +862,7 @@ Não é necessário utilizar a mesma política de retenção para todos os tipos
 
 ---
 
-# 28. Falha da Infraestrutura de Observability
+# 28. Falha da Infraestrutura de Observabilidade
 
 A infraestrutura de observabilidade não deve impedir indiscriminadamente a execução da aplicação.
 
@@ -885,7 +885,7 @@ Essas necessidades poderão motivar futuramente mecanismos como:
 
 ---
 
-# 29. Segurança da Observability
+# 29. Segurança da Observabilidade
 
 Observability também deve ser considerada parte da superfície de segurança.
 
@@ -913,13 +913,13 @@ Princípios importantes:
 
 ---
 
-# 30. Testing
+# 30. Testes
 
 Os mecanismos de Observability devem possuir testes adequados.
 
 Exemplos:
 
-### Structured Logging
+### Logging Estruturado
 
 Verificar se eventos importantes produzem os campos esperados.
 
@@ -932,11 +932,11 @@ Verificar:
 - associação aos logs;
 - comportamento em requisições inválidas.
 
-### Platform Events
+### Eventos de Plataforma
 
 Verificar se eventos são produzidos nos momentos esperados.
 
-### Audit Logging
+### Logs de Auditoria
 
 Verificar:
 
@@ -979,7 +979,7 @@ Essa abordagem foi considerada insuficiente.
 
 ---
 
-# 32. Apenas Audit Logging
+# 32. Apenas Logs de Auditoria
 
 Outra alternativa seria registrar todas as operações relevantes como auditoria.
 
@@ -997,7 +997,7 @@ Audit e diagnóstico possuem objetivos diferentes.
 
 ---
 
-# 33. Observability Completa desde o Início
+# 33. Observabilidade Completa desde o Início
 
 Outra alternativa seria implantar imediatamente:
 
@@ -1056,7 +1056,7 @@ Uma operação pode ser acompanhada através do Request Lifecycle.
 
 Eventos relevantes de Authentication, Authorization e Impersonation podem ser investigados.
 
-### Accountability
+### Responsabilização
 
 Operações administrativas podem preservar a identidade responsável.
 
@@ -1305,7 +1305,7 @@ Metrics, Distributed Tracing e ferramentas especializadas de monitoramento poder
 
 A estratégia deverá permanecer proporcional ao estágio da plataforma, evitando tanto observabilidade insuficiente quanto complexidade operacional prematura.
 
-## Architectural Principle
+## Princípio Arquitetural
 
 > **Observability must provide enough context to understand what happened, without conflating diagnostics, platform events and accountability.**
 

@@ -1,4 +1,4 @@
-# Continuous Integration Testing
+# Testes na Integração Contínua
 
 ## 1. Objetivo
 
@@ -39,7 +39,7 @@ Deployment
 
 ---
 
-# 2. Continuous Integration
+# 2. Integração Contínua
 
 Continuous Integration significa integrar alterações ao código principal frequentemente e utilizar automação para verificar se essas alterações continuam compatíveis com o sistema.
 
@@ -151,7 +151,7 @@ Pull Requests são especialmente importantes porque permitem validar uma mudanç
 
 ---
 
-# 6. Branch Protection
+# 6. Proteção de Branch
 
 Quando aplicável, branches principais devem utilizar regras que exijam a conclusão dos checks críticos.
 
@@ -193,7 +193,7 @@ Evitar depender de configurações implícitas do runner.
 
 ---
 
-# 8. Python Version
+# 8. Versão do Python
 
 A versão do Python utilizada pelo CI deve acompanhar a versão suportada pelo projeto.
 
@@ -205,7 +205,7 @@ Uma mudança futura de Python deve ser tratada como alteração de infraestrutur
 
 ---
 
-# 9. Dependency Management
+# 9. Gerenciamento de Dependências
 
 O projeto utiliza `uv` como parte da estratégia de gerenciamento de dependências Python.
 
@@ -227,7 +227,7 @@ A instalação deve ser reproduzível.
 
 ---
 
-# 10. Reproducibility
+# 10. Reprodutibilidade
 
 Um pipeline saudável deve ser reproduzível.
 
@@ -252,7 +252,7 @@ but fails in CI
 
 ---
 
-# 11. Environment Variables
+# 11. Variáveis de Ambiente
 
 O CI deve fornecer apenas as variáveis necessárias para execução dos testes.
 
@@ -275,7 +275,7 @@ Os valores reais devem permanecer protegidos.
 
 ---
 
-# 12. Test Services
+# 12. Serviços de Teste
 
 Quando os testes dependem de infraestrutura real, o CI deve disponibilizar serviços correspondentes.
 
@@ -340,7 +340,7 @@ O estado do Redis não deve sobreviver entre execuções de maneira que altere o
 
 ---
 
-# 15. Service Readiness
+# 15. Prontidão dos Serviços
 
 Iniciar um container não significa necessariamente que o serviço está pronto.
 
@@ -398,7 +398,7 @@ O objetivo é detectar:
 
 ---
 
-# 17. Static Quality Before Tests
+# 17. Qualidade Estática Antes dos Testes
 
 Checks baratos devem preferencialmente executar antes dos testes mais pesados.
 
@@ -440,7 +440,7 @@ A configuração deve permanecer centralizada no projeto sempre que possível.
 
 ---
 
-# 19. Test Selection
+# 19. Seleção de Testes
 
 O CI pode utilizar diferentes conjuntos de testes dependendo do objetivo do pipeline.
 
@@ -462,7 +462,7 @@ A estratégia concreta deve evitar duplicação desnecessária.
 
 ---
 
-# 20. Test Markers
+# 20. Markers de Teste
 
 Quando a suíte crescer, markers podem separar categorias como:
 
@@ -493,7 +493,7 @@ Não devem ser criados apenas para aumentar a quantidade de configurações.
 
 ---
 
-# 21. Full Test Suite
+# 21. Suíte de Testes Completa
 
 Antes de uma alteração ser considerada pronta para deployment, a suíte completa relevante deve ser executada.
 
@@ -511,7 +511,7 @@ Essas áreas possuem efeitos sistêmicos.
 
 ---
 
-# 22. Coverage
+# 22. Cobertura
 
 O CI deve coletar coverage durante a execução dos testes.
 
@@ -527,7 +527,7 @@ O objetivo principal é detectar lacunas, não produzir um número artificialmen
 
 ---
 
-# 23. Coverage Threshold
+# 23. Limite Mínimo de Cobertura
 
 Um threshold pode ser utilizado como quality gate.
 
@@ -545,7 +545,7 @@ Ele não deve substituir análise de risco.
 
 ---
 
-# 24. Coverage Atual
+# 24. Cobertura Atual
 
 A cobertura atual é publicada no Codecov (badge no `README.md` da raiz) e o CI exige no mínimo **80%**.
 
@@ -557,7 +557,7 @@ Por isso, mudanças em áreas críticas devem continuar recebendo atenção espe
 
 ---
 
-# 25. Coverage e Novas Funcionalidades
+# 25. Cobertura e Novas Funcionalidades
 
 Uma nova funcionalidade deve incluir testes proporcionais ao risco.
 
@@ -581,7 +581,7 @@ A exigência deve ser proporcional à responsabilidade.
 
 ---
 
-# 26. Coverage Regression
+# 26. Regressão de Cobertura
 
 Uma redução de coverage não significa automaticamente que uma alteração é ruim.
 
@@ -600,7 +600,7 @@ A engenharia fornece a interpretação.
 
 ---
 
-# 27. Database Migrations no CI
+# 27. Migrations no CI
 
 Migrations devem ser verificadas automaticamente sempre que possível.
 
@@ -620,7 +620,7 @@ Isso reduz o risco de uma migration funcionar apenas em um banco local já exist
 
 ---
 
-# 28. Migration Regression
+# 28. Regressão de Migrations
 
 Uma migration nova deve ser avaliada considerando:
 
@@ -638,7 +638,7 @@ Deve verificar que o estado resultante é utilizável.
 
 ---
 
-# 29. API Contract Validation
+# 29. Validação do Contrato da API
 
 O CI pode validar contratos da API através dos API Tests.
 
@@ -656,7 +656,7 @@ Isso protege o frontend e futuros consumidores da API contra mudanças acidentai
 
 ---
 
-# 30. Security Checks
+# 30. Verificações de Segurança
 
 Mudanças relacionadas à segurança devem possuir cobertura automatizada.
 
@@ -676,7 +676,7 @@ Uma alteração de segurança que quebra um teste deve interromper o pipeline at
 
 ---
 
-# 31. Tenant Isolation no CI
+# 31. Isolamento de Tenant no CI
 
 Tenant isolation deve ser tratada como quality gate.
 
@@ -698,7 +698,7 @@ Isso é especialmente importante porque alterações em repositories e services 
 
 ---
 
-# 32. Authentication Regression no CI
+# 32. Regressão de Autenticação no CI
 
 A suíte de CI deve proteger o fluxo:
 
@@ -744,7 +744,7 @@ Isso reduz o risco de uma alteração de autenticação afetar o comportamento d
 
 ---
 
-# 34. Error Handling no CI
+# 34. Tratamento de Erros no CI
 
 Os testes devem verificar que exceptions conhecidas continuam sendo convertidas para respostas HTTP adequadas.
 
@@ -764,7 +764,7 @@ Também deve ser verificado que exceptions inesperadas não expõem detalhes int
 
 ---
 
-# 35. Build Validation
+# 35. Validação do Build
 
 Além de testes, o CI deve validar que a aplicação pode ser construída.
 
@@ -812,7 +812,7 @@ O objetivo é detectar:
 
 ---
 
-# 37. Build vs Test
+# 37. Build vs Testes
 
 Build e Test validam propriedades diferentes.
 
@@ -828,7 +828,7 @@ Portanto, ambos podem ser necessários.
 
 ---
 
-# 38. Deployment Gate
+# 38. Gate de Deployment
 
 O deployment não deve depender apenas de:
 
@@ -944,7 +944,7 @@ O pipeline deve tornar essas falhas distinguíveis quando possível.
 
 ---
 
-# 43. Flaky Tests no CI
+# 43. Testes Instáveis (Flaky) no CI
 
 Flaky tests devem ser tratados como problemas de qualidade.
 
@@ -1015,7 +1015,7 @@ Quando testes precisam de credenciais fictícias, devem utilizar valores especí
 
 ---
 
-# 46. Test Artifacts
+# 46. Artefatos de Teste
 
 Quando apropriado, o CI pode produzir artifacts como:
 
@@ -1028,7 +1028,7 @@ Artifacts devem ser avaliados quanto à possibilidade de conter informações se
 
 ---
 
-# 47. Test Reports
+# 47. Relatórios de Teste
 
 Um relatório útil deve permitir responder:
 
@@ -1045,7 +1045,7 @@ Isso melhora a velocidade de diagnóstico.
 
 ---
 
-# 48. Caching
+# 48. Cache
 
 Caching de dependências pode reduzir o tempo do CI.
 
@@ -1061,7 +1061,7 @@ O pipeline deve permitir invalidar ou reconstruir caches quando necessário.
 
 ---
 
-# 49. Dependency Updates
+# 49. Atualização de Dependências
 
 Alterações em dependências devem executar a suíte completa relevante.
 
@@ -1079,7 +1079,7 @@ Uma atualização aparentemente pequena pode alterar comportamento.
 
 ---
 
-# 50. Python Version Updates
+# 50. Atualizações da Versão do Python
 
 Mudanças na versão do Python devem ser tratadas como mudanças sistêmicas.
 
@@ -1102,7 +1102,7 @@ O objetivo é evitar diferenças entre CI e produção.
 
 ---
 
-# 51. CI Failure Policy
+# 51. Política de Falhas no CI
 
 Nem toda mensagem do pipeline possui o mesmo nível de severidade.
 
@@ -1141,7 +1141,7 @@ Os gates podem evoluir conforme a maturidade do projeto.
 
 ---
 
-# 53. Fast Feedback
+# 53. Feedback Rápido
 
 Uma propriedade importante do CI é fornecer feedback rapidamente.
 
@@ -1173,7 +1173,7 @@ Entretanto, o ganho de velocidade não deve comprometer a confiabilidade.
 
 ---
 
-# 54. Parallelization
+# 54. Paralelização
 
 Quando a suíte crescer, partes independentes podem ser executadas em paralelo.
 
@@ -1194,7 +1194,7 @@ O paralelismo deve ser introduzido somente quando:
 
 ---
 
-# 55. CI Resource Usage
+# 55. Uso de Recursos no CI
 
 O pipeline deve evitar consumo desnecessário.
 
@@ -1218,7 +1218,7 @@ Cost
 
 ---
 
-# 56. Local Reproduction
+# 56. Reprodução Local
 
 Uma falha de CI deve, sempre que possível, poder ser reproduzida localmente.
 
@@ -1299,7 +1299,7 @@ A documentação deve acompanhar o pipeline real.
 
 ---
 
-# 59. CI e Observability
+# 59. CI e Observabilidade
 
 O CI também pode contribuir para a observabilidade do processo de desenvolvimento.
 
@@ -1382,7 +1382,7 @@ Se o comportamento permanece protegido, mudanças internas podem ser realizadas 
 
 ---
 
-# 63. CI e Database Changes
+# 63. CI e Mudanças no Banco de Dados
 
 Alterações de banco merecem atenção especial.
 
@@ -1408,7 +1408,7 @@ antes do deployment.
 
 ---
 
-# 64. CI e Security Changes
+# 64. CI e Mudanças de Segurança
 
 Alterações em:
 
@@ -1497,7 +1497,7 @@ Isso reduz a probabilidade de problemas previsíveis chegarem à produção.
 
 ---
 
-# 69. Current Pipeline Philosophy
+# 69. Filosofia Atual do Pipeline
 
 A filosofia atual pode ser resumida em:
 
@@ -1620,7 +1620,7 @@ Essa arquitetura deve ser adotada progressivamente.
 
 ---
 
-# 73. Failure Recovery
+# 73. Recuperação de Falhas
 
 Uma falha no CI não altera automaticamente o código.
 
@@ -1642,7 +1642,7 @@ O objetivo é manter o pipeline como fonte confiável de validação.
 
 ---
 
-# 74. Anti-Patterns
+# 74. Antipadrões
 
 Evitar:
 
@@ -1664,7 +1664,7 @@ Evitar:
 "Está lento, vamos esperar mais."
 ```
 
-### Reduzir coverage artificialmente
+### Reduzir a cobertura artificialmente
 
 ```text
 "Vou excluir esse código da coverage."

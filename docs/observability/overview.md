@@ -1,6 +1,6 @@
-# Observability Overview
+# Visão Geral da Observabilidade
 
-## 1. Overview
+## 1. Visão Geral
 
 Observability é um dos pilares operacionais do Exactum.
 
@@ -51,7 +51,7 @@ Qual foi o resultado?
 
 ---
 
-# 2. Objectives
+# 2. Objetivos
 
 A arquitetura de observabilidade possui os seguintes objetivos:
 
@@ -70,7 +70,7 @@ Observabilidade deve ajudar tanto durante desenvolvimento quanto em produção.
 
 ---
 
-# 3. Observability Model
+# 3. Modelo de Observabilidade
 
 O Exactum utiliza três categorias principais de registros:
 
@@ -102,9 +102,9 @@ Um audit log descreve **uma ação relevante dentro do contexto de um tenant**.
 
 ---
 
-# 4. Three Observability Layers
+# 4. Três Camadas de Observabilidade
 
-## 4.1. Infrastructure Logs
+## 4.1. Logs de Infraestrutura
 
 Infrastructure logs representam eventos técnicos relacionados à execução da aplicação.
 
@@ -124,7 +124,7 @@ Seu principal objetivo é responder:
 
 ---
 
-## 4.2. Platform Events
+## 4.2. Eventos de Plataforma
 
 Platform events representam atividades relevantes para a operação da plataforma.
 
@@ -143,7 +143,7 @@ Seu principal objetivo é responder:
 
 ---
 
-## 4.3. Tenant Audit Logs
+## 4.3. Logs de Auditoria do Tenant
 
 Tenant audit logs representam ações relevantes realizadas dentro do contexto de um tenant.
 
@@ -161,7 +161,7 @@ Seu principal objetivo é responder:
 
 ---
 
-# 5. Observability Architecture
+# 5. Arquitetura de Observabilidade
 
 O fluxo conceitual pode ser representado por:
 
@@ -196,7 +196,7 @@ O correlation ID funciona como elemento de ligação entre diferentes registros 
 
 ---
 
-# 6. Observability Signals
+# 6. Sinais de Observabilidade
 
 A evolução da observabilidade do Exactum pode ser organizada em três sinais principais:
 
@@ -245,7 +245,7 @@ Os campos efetivamente registrados devem respeitar o contexto da operação.
 
 ---
 
-# 8. Structured Logging
+# 8. Logging Estruturado
 
 O Exactum utiliza logging estruturado para facilitar:
 
@@ -278,7 +278,7 @@ O formato exato pode evoluir conforme a infraestrutura de observabilidade amadur
 
 ---
 
-# 9. Contextual Logging
+# 9. Logs Contextuais
 
 Um log isolado frequentemente possui pouco valor.
 
@@ -351,7 +351,7 @@ O mecanismo é detalhado em:
 
 ---
 
-# 11. Request Observability
+# 11. Observabilidade de Requisições
 
 Cada requisição HTTP representa uma unidade importante de observabilidade.
 
@@ -392,7 +392,7 @@ Isso permite analisar comportamento e desempenho da API.
 
 ---
 
-# 12. Error Observability
+# 12. Observabilidade de Erros
 
 Erros devem possuir dois tratamentos distintos:
 
@@ -413,7 +413,7 @@ Essa separação reduz o risco de exposição de informações internas.
 
 ---
 
-# 13. Exceptions and Observability
+# 13. Exceções e Observabilidade
 
 O tratamento centralizado de exceções permite manter comportamento consistente.
 
@@ -434,7 +434,7 @@ O objetivo é evitar que cada endpoint implemente seu próprio mecanismo de logg
 
 ---
 
-# 14. Authentication Observability
+# 14. Observabilidade da Autenticação
 
 Eventos relacionados à autenticação possuem importância operacional e de segurança.
 
@@ -460,7 +460,7 @@ Ela fornece visibilidade sobre seu funcionamento.
 
 ---
 
-# 15. Authorization Observability
+# 15. Observabilidade da Autorização
 
 Alterações e falhas relacionadas à autorização também podem ser relevantes para observabilidade.
 
@@ -488,7 +488,7 @@ Isso permite investigar possíveis tentativas de privilege escalation.
 
 ---
 
-# 16. Tenant-Aware Observability
+# 16. Observabilidade Consciente de Tenant
 
 Como o Exactum é multi-tenant, o contexto do tenant é importante para observabilidade.
 
@@ -515,7 +515,7 @@ O contexto de observabilidade apenas registra o contexto efetivo da operação.
 
 ---
 
-# 17. Platform Events
+# 17. Eventos de Plataforma
 
 Platform events representam acontecimentos relevantes para a operação da plataforma.
 
@@ -538,7 +538,7 @@ O documento específico é:
 
 ---
 
-# 18. Tenant Audit
+# 18. Auditoria do Tenant
 
 Audit logging representa uma camada diferente dos logs técnicos.
 
@@ -573,7 +573,7 @@ A implementação detalhada está descrita em:
 
 ---
 
-# 19. Infrastructure Logs vs Audit Logs
+# 19. Logs de Infraestrutura vs Logs de Auditoria
 
 Esses mecanismos não devem ser misturados.
 
@@ -588,7 +588,7 @@ Esses mecanismos não devem ser misturados.
 
 Exemplo:
 
-### Infrastructure Log
+### Log de Infraestrutura
 
 ```text
 POST /api/products
@@ -597,7 +597,7 @@ duration=82ms
 request_id=abc
 ```
 
-### Audit Log
+### Log de Auditoria
 
 ```text
 User X created Product Y
@@ -608,7 +608,7 @@ Os dois podem representar a mesma operação, mas possuem objetivos diferentes.
 
 ---
 
-# 20. Platform Events vs Tenant Audit
+# 20. Eventos de Plataforma vs Auditoria do Tenant
 
 A distinção também existe entre platform events e tenant audit.
 
@@ -646,7 +646,7 @@ Essa separação ajuda a preservar diferentes níveis de autoridade e consumo da
 
 ---
 
-# 21. Security and Observability
+# 21. Segurança e Observabilidade
 
 Observabilidade possui papel importante na segurança.
 
@@ -676,7 +676,7 @@ Detect / Investigate
 
 ---
 
-# 22. Observability and Tenant Isolation
+# 22. Observabilidade e Isolamento de Tenant
 
 Eventos de tenant devem manter o tenant correto.
 
@@ -705,7 +705,7 @@ Isso aumenta a capacidade de investigação de potenciais falhas de isolamento.
 
 ---
 
-# 23. Observability and Impersonation
+# 23. Observabilidade e Impersonation
 
 Impersonation exige rastreabilidade adicional.
 
@@ -745,7 +745,7 @@ A sequência deve permanecer investigável.
 
 ---
 
-# 24. Observability and Sessions
+# 24. Observabilidade e Sessões
 
 O gerenciamento de sessões também produz eventos importantes.
 
@@ -767,7 +767,7 @@ O modelo completo de sessão está documentado em:
 
 ---
 
-# 25. Data Sensitivity
+# 25. Sensibilidade dos Dados
 
 Observabilidade deve respeitar o princípio:
 
@@ -793,7 +793,7 @@ Dados sensíveis devem ser:
 
 ---
 
-# 26. Payload Logging
+# 26. Registro de Payloads
 
 Payloads de requisições podem conter dados sensíveis.
 
@@ -814,7 +814,7 @@ Quando payloads forem necessários para diagnóstico, campos sensíveis devem se
 
 ---
 
-# 27. Log Levels
+# 27. Níveis de Log
 
 Os logs devem possuir níveis apropriados.
 
@@ -854,7 +854,7 @@ A configuração de produção deve evitar volume excessivo de logs desnecessár
 
 ---
 
-# 28. Logging Volume
+# 28. Volume de Logs
 
 Nem todo evento precisa ser registrado com o mesmo nível de detalhe.
 
@@ -880,7 +880,7 @@ Operational Cost
 
 ---
 
-# 29. Observability Storage
+# 29. Armazenamento de Observabilidade
 
 A estratégia de armazenamento pode evoluir conforme a infraestrutura amadurece.
 
@@ -909,7 +909,7 @@ Essas ferramentas fazem parte da evolução planejada da observabilidade.
 
 ---
 
-# 30. Metrics
+# 30. Métricas
 
 Métricas representam uma dimensão futura importante.
 
@@ -930,7 +930,7 @@ Métricas também podem ser segmentadas por dimensões relevantes, desde que iss
 
 ---
 
-# 31. Metrics vs Logs
+# 31. Métricas vs Logs
 
 Logs respondem:
 
@@ -954,7 +954,7 @@ Os dois sinais se complementam.
 
 ---
 
-# 32. Metrics and Alerting
+# 32. Métricas e Alertas
 
 Quando métricas forem introduzidas, poderão alimentar mecanismos de alerta.
 
@@ -987,7 +987,7 @@ Problem is detected
 
 ---
 
-# 33. Observability and Performance
+# 33. Observabilidade e Performance
 
 Observabilidade também deve ajudar na análise de desempenho.
 
@@ -1018,7 +1018,7 @@ Isso ajuda a localizar gargalos.
 
 ---
 
-# 34. Database Observability
+# 34. Observabilidade do Banco de Dados
 
 PostgreSQL representa uma dependência crítica.
 
@@ -1035,7 +1035,7 @@ No futuro, métricas específicas podem complementar os logs.
 
 ---
 
-# 35. Redis Observability
+# 35. Observabilidade do Redis
 
 Redis também é componente importante devido ao gerenciamento de sessões.
 
@@ -1052,7 +1052,7 @@ O objetivo é identificar rapidamente problemas que afetem autenticação e sess
 
 ---
 
-# 36. Nginx Observability
+# 36. Observabilidade do Nginx
 
 Nginx representa a principal camada HTTP de entrada.
 
@@ -1068,7 +1068,7 @@ A correlação com os logs da API permite investigar problemas de ponta a ponta.
 
 ---
 
-# 37. End-to-End Investigation
+# 37. Investigação de Ponta a Ponta
 
 O objetivo final da arquitetura é permitir uma investigação de ponta a ponta.
 
@@ -1099,11 +1099,11 @@ Uma única operação deve poder ser reconstruída a partir dos sinais disponív
 
 ---
 
-# 38. Operational Questions
+# 38. Perguntas Operacionais
 
 Uma arquitetura de observabilidade adequada deve ajudar a responder:
 
-### Availability
+### Disponibilidade
 
 ```text
 A aplicação está funcionando?
@@ -1115,31 +1115,31 @@ A aplicação está funcionando?
 A aplicação está lenta?
 ```
 
-### Errors
+### Erros
 
 ```text
 Onde os erros estão acontecendo?
 ```
 
-### Security
+### Segurança
 
 ```text
 Existem comportamentos suspeitos?
 ```
 
-### Accountability
+### Responsabilização
 
 ```text
 Quem realizou determinada operação?
 ```
 
-### Tenant Isolation
+### Isolamento de Tenant
 
 ```text
 Existe alguma tentativa de acesso cross-tenant?
 ```
 
-### Infrastructure
+### Infraestrutura
 
 ```text
 Qual componente está causando a falha?
@@ -1147,7 +1147,7 @@ Qual componente está causando a falha?
 
 ---
 
-# 39. Observability Workflow
+# 39. Fluxo de Observabilidade
 
 O fluxo de investigação pode ser representado como:
 
@@ -1179,67 +1179,67 @@ Remediation
 
 ---
 
-# 40. Observability Principles
+# 40. Princípios de Observabilidade
 
-## 40.1. Context Over Messages
+## 40.1. Contexto Acima de Mensagens
 
 Logs devem priorizar contexto estruturado em vez de mensagens vagas.
 
 ---
 
-## 40.2. Correlation First
+## 40.2. Correlação em Primeiro Lugar
 
 Eventos relacionados devem poder ser correlacionados.
 
 ---
 
-## 40.3. Security-Aware Logging
+## 40.3. Logging Orientado à Segurança
 
 Logs nunca devem comprometer os próprios mecanismos de segurança.
 
 ---
 
-## 40.4. Separate Operational and Audit Concerns
+## 40.4. Separar Responsabilidades Operacionais e de Auditoria
 
 Logs técnicos e registros de auditoria possuem finalidades diferentes.
 
 ---
 
-## 40.5. Tenant Awareness
+## 40.5. Consciência de Tenant
 
 Operações tenant-scoped devem preservar contexto de tenant quando apropriado.
 
 ---
 
-## 40.6. Minimize Sensitive Data
+## 40.6. Minimizar Dados Sensíveis
 
 Registrar somente o necessário.
 
 ---
 
-## 40.7. Prefer Structured Data
+## 40.7. Preferir Dados Estruturados
 
 Dados estruturados são mais fáceis de consultar e agregar.
 
 ---
 
-## 40.8. Design for Investigation
+## 40.8. Projetado para Investigação
 
 Os registros devem ser úteis durante incident response e troubleshooting.
 
 ---
 
-## 40.9. Observability Must Evolve
+## 40.9. A Observabilidade Deve Evoluir
 
 A observabilidade deve acompanhar o crescimento da arquitetura.
 
 ---
 
-# 41. Failure Scenarios
+# 41. Cenários de Falha
 
 A observabilidade deve permitir investigar cenários como:
 
-### API Failure
+### Falha da API
 
 ```text
 Request
@@ -1254,7 +1254,7 @@ Application Log
 Root Cause
 ```
 
-### Database Failure
+### Falha do Banco de Dados
 
 ```text
 Request
@@ -1269,7 +1269,7 @@ PostgreSQL Error
 Structured Log
 ```
 
-### Redis Failure
+### Falha do Redis
 
 ```text
 Authentication
@@ -1284,7 +1284,7 @@ Connection Error
 Operational Alert
 ```
 
-### Suspicious Authorization
+### Autorização Suspeita
 
 ```text
 User
@@ -1304,7 +1304,7 @@ Investigation
 
 ---
 
-# 42. Observability and Reliability
+# 42. Observabilidade e Confiabilidade
 
 Observabilidade não garante disponibilidade, mas reduz o tempo necessário para detectar e corrigir problemas.
 
@@ -1322,7 +1322,7 @@ Uma boa observabilidade busca reduzir ambos.
 
 ---
 
-# 43. Current State
+# 43. Estado Atual
 
 No estado atual, o Exactum possui como principais mecanismos:
 
@@ -1340,7 +1340,7 @@ Esses mecanismos formam a base da observabilidade atual.
 
 ---
 
-# 44. Current Limitations
+# 44. Limitações Atuais
 
 A observabilidade atual ainda possui limitações.
 
@@ -1357,7 +1357,7 @@ Essas limitações são compatíveis com o estágio atual do projeto e fazem par
 
 ---
 
-# 45. Planned Evolution
+# 45. Evolução Planejada
 
 A evolução planejada pode ser representada por:
 
@@ -1390,7 +1390,7 @@ A adoção dessas tecnologias deve ocorrer conforme a complexidade do sistema ju
 
 ---
 
-# 46. Distributed Tracing
+# 46. Tracing Distribuído
 
 Distributed tracing não é requisito da arquitetura atual.
 
@@ -1425,7 +1425,7 @@ um trace distribuído poderá complementar os correlation IDs.
 
 ---
 
-# 47. Observability During Architectural Evolution
+# 47. Observabilidade Durante a Evolução Arquitetural
 
 A evolução para uma arquitetura mais orientada a domínios deve preservar observabilidade.
 
@@ -1458,7 +1458,7 @@ Result
 
 ---
 
-# 48. Observability and DDD Evolution
+# 48. Observabilidade e Evolução para DDD
 
 À medida que os domínios forem separados de maneira mais explícita, eventos de domínio poderão futuramente complementar os platform events existentes.
 
@@ -1482,7 +1482,7 @@ O modelo atual não deve ser artificialmente transformado em event-driven archit
 
 ---
 
-# 49. Testing Observability
+# 49. Testando a Observabilidade
 
 Observabilidade também deve ser testada.
 
@@ -1514,7 +1514,7 @@ Expected Event
 
 ---
 
-# 50. Observability Security Tests
+# 50. Testes de Segurança da Observabilidade
 
 Testes específicos devem verificar que informações sensíveis não sejam registradas.
 
@@ -1542,7 +1542,7 @@ O mesmo princípio se aplica a:
 
 ---
 
-# 51. Retention
+# 51. Retenção
 
 A política de retenção deve considerar:
 
@@ -1558,7 +1558,7 @@ A retenção deve ser definida de maneira consciente conforme o ambiente e os re
 
 ---
 
-# 52. Access Control
+# 52. Controle de Acesso
 
 Observability data também precisa de controle de acesso.
 
@@ -1589,7 +1589,7 @@ A observabilidade não deve criar uma nova forma de vazamento de dados.
 
 ---
 
-# 53. Privacy Considerations
+# 53. Considerações de Privacidade
 
 Logs e auditoria podem conter informações relacionadas a usuários e tenants.
 
@@ -1614,7 +1614,7 @@ Privacy
 
 ---
 
-# 54. Observability Maturity
+# 54. Maturidade da Observabilidade
 
 A maturidade da observabilidade pode evoluir progressivamente.
 
@@ -1643,7 +1643,7 @@ O Exactum está evoluindo entre os níveis intermediários, com structured loggi
 
 ---
 
-# 55. Design Goals for Future Telemetry
+# 55. Objetivos de Design para Telemetria Futura
 
 Quando novas ferramentas forem introduzidas, devem preservar:
 
@@ -1660,7 +1660,7 @@ A adoção de uma ferramenta não deve substituir os princípios arquiteturais.
 
 ---
 
-# 56. Summary
+# 56. Resumo
 
 A arquitetura de observabilidade do Exactum é baseada na separação entre:
 
@@ -1698,7 +1698,7 @@ O objetivo não é simplesmente armazenar informações, mas construir uma visã
 
 ---
 
-# 57. Core Principle
+# 57. Princípio Central
 
 O princípio central da observabilidade do Exactum é:
 
@@ -1710,16 +1710,16 @@ Significa registrar **as informações certas, no lugar certo, com o contexto ce
 
 ---
 
-# 58. Related Documentation
+# 58. Documentos Relacionados
 
-### Architecture
+### Arquitetura
 
 - `docs/architecture/overview.md`
 - `docs/architecture/application-architecture.md`
 - `docs/architecture/domain-boundaries.md`
 - `docs/architecture/multi-tenancy.md`
 
-### Security
+### Segurança
 
 - `docs/security/authentication.md`
 - `docs/security/authorization.md`
@@ -1727,7 +1727,7 @@ Significa registrar **as informações certas, no lugar certo, com o contexto ce
 - `docs/security/tenant-isolation.md`
 - `docs/security/threat-model.md`
 
-### Observability
+### Observabilidade
 
 - `docs/observability/infrastructure-logging.md`
 - `docs/observability/platform-events.md`

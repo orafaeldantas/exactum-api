@@ -1,4 +1,4 @@
-# Infrastructure Logging
+# Logs de Infraestrutura
 
 > **Status:** Active
 > **Scope:** Application and infrastructure logging
@@ -7,7 +7,7 @@
 
 ---
 
-## 1. Purpose
+## 1. Propósito
 
 Este documento define como o Exactum utiliza **infrastructure logging** para registrar informações técnicas relacionadas à execução da aplicação e de sua infraestrutura.
 
@@ -35,11 +35,11 @@ A separação dessas responsabilidades evita transformar o sistema de logging em
 
 ---
 
-# 2. Logging Philosophy
+# 2. Filosofia de Logging
 
 O logging do Exactum segue alguns princípios fundamentais.
 
-## 2.1 Structured Logging
+## 2.1 Logging Estruturado
 
 Os logs devem ser estruturados sempre que possível, evitando depender exclusivamente de mensagens textuais não estruturadas.
 
@@ -68,7 +68,7 @@ O formato estruturado permite que os logs sejam posteriormente consumidos por fe
 
 ---
 
-## 2.2 Contextual Logging
+## 2.2 Logs Contextuais
 
 Um log isolado frequentemente possui pouco valor.
 
@@ -113,11 +113,11 @@ Logs que não contribuem para responder perguntas operacionais devem ser evitado
 
 ---
 
-# 3. Responsibility Boundary
+# 3. Fronteira de Responsabilidade
 
 O infrastructure logging possui uma responsabilidade diferente dos demais mecanismos de observabilidade.
 
-### Infrastructure Logs
+### Logs de Infraestrutura
 
 Registram informações relacionadas à execução técnica.
 
@@ -135,7 +135,7 @@ Exemplos:
 - problemas de infraestrutura;
 - operações técnicas relevantes.
 
-### Platform Events
+### Eventos de Plataforma
 
 Representam acontecimentos relevantes para a plataforma.
 
@@ -148,7 +148,7 @@ Exemplos:
 - administrative operations;
 - platform-level security events.
 
-### Tenant Audit Logs
+### Logs de Auditoria do Tenant
 
 Representam ações realizadas dentro do contexto de negócio de um tenant.
 
@@ -164,7 +164,7 @@ A distinção é importante porque **nem todo log técnico é um evento de negó
 
 ---
 
-# 4. Log Structure
+# 4. Estrutura dos Logs
 
 Os logs devem utilizar uma estrutura consistente.
 
@@ -195,7 +195,7 @@ O princípio é:
 
 ---
 
-# 5. Standard Fields
+# 5. Campos Padrão
 
 Os seguintes campos representam informações comuns que podem ser utilizadas pelos logs da aplicação.
 
@@ -223,7 +223,7 @@ A presença dos campos depende do contexto do evento.
 
 ---
 
-# 6. Event Naming
+# 6. Nomenclatura de Eventos
 
 Eventos estruturados devem utilizar nomes previsíveis e consistentes.
 
@@ -262,7 +262,7 @@ descreve claramente o acontecimento.
 
 ---
 
-# 7. HTTP Request Logging
+# 7. Logs de Requisições HTTP
 
 As requisições HTTP representam uma das principais fontes de infraestrutura observável do Exactum.
 
@@ -317,7 +317,7 @@ Isso permite responder rapidamente perguntas como:
 
 ---
 
-# 8. Request Duration
+# 8. Duração da Requisição
 
 A duração da requisição deve ser registrada quando possível.
 
@@ -392,7 +392,7 @@ A estratégia detalhada de geração, propagação e utilização desse identifi
 
 ---
 
-# 10. Authentication Logging
+# 10. Logs de Autenticação
 
 Operações relacionadas à autenticação possuem relevância operacional e de segurança.
 
@@ -436,7 +436,7 @@ Mas não deve registrar:
 
 ---
 
-# 11. Authorization Logging
+# 11. Logs de Autorização
 
 Falhas de autorização também podem ser relevantes para troubleshooting e segurança.
 
@@ -459,7 +459,7 @@ Entretanto, deve-se evitar registrar dados excessivos ou informações internas 
 
 ---
 
-# 12. Database Logging
+# 12. Logs do Banco de Dados
 
 Problemas relacionados ao PostgreSQL devem ser registrados quando impedirem ou comprometerem uma operação.
 
@@ -494,7 +494,7 @@ O log pode conter informações técnicas suficientes para investigação, mas n
 
 ---
 
-# 13. Redis Logging
+# 13. Logs do Redis
 
 O Redis é utilizado pelo sistema para operações relacionadas à sessão e gerenciamento de tokens.
 
@@ -521,7 +521,7 @@ Da mesma forma que no PostgreSQL, informações confidenciais nunca devem ser in
 
 ---
 
-# 14. Exception Logging
+# 14. Logs de Exceções
 
 Exceções representam uma das principais fontes de informação para troubleshooting.
 
@@ -547,7 +547,7 @@ O cliente, entretanto, não deve necessariamente receber o mesmo conteúdo.
 
 ---
 
-# 15. Internal Error vs Client Response
+# 15. Erro Interno vs Resposta ao Cliente
 
 Um princípio importante é separar:
 
@@ -586,7 +586,7 @@ Isso evita expor:
 
 ---
 
-# 16. Duplicate Error Logging
+# 16. Logs de Erro Duplicados
 
 A mesma exceção não deve ser registrada repetidamente em todas as camadas sem necessidade.
 
@@ -613,7 +613,7 @@ Camadas inferiores podem adicionar contexto ou propagar a exceção sem necessar
 
 ---
 
-# 17. Log Levels
+# 17. Níveis de Log
 
 O sistema utiliza níveis de severidade para diferenciar eventos.
 
@@ -688,7 +688,7 @@ O nível `CRITICAL` deve ser reservado para situações realmente severas.
 
 ---
 
-# 18. Sensitive Data Sanitization
+# 18. Sanitização de Dados Sensíveis
 
 Logging nunca deve ser tratado como um local seguro para armazenar dados arbitrários.
 
@@ -720,7 +720,7 @@ devem ser tratados como dados sensíveis.
 
 ---
 
-# 19. Request Body Logging
+# 19. Registro do Corpo da Requisição
 
 O request body não deve ser registrado indiscriminadamente.
 
@@ -739,7 +739,7 @@ Em produção, o comportamento padrão deve favorecer a minimização de dados.
 
 ---
 
-# 20. Query Parameters
+# 20. Parâmetros de Query
 
 Query parameters também podem conter informações sensíveis.
 
@@ -762,7 +762,7 @@ Quando parâmetros puderem conter dados sensíveis, eles devem ser:
 
 ---
 
-# 21. Multi-Tenant Context
+# 21. Contexto Multi-Tenant
 
 O Exactum é uma aplicação multi-tenant.
 
@@ -844,7 +844,7 @@ Entretanto, o log deve evitar armazenar dados sensíveis utilizados durante a re
 
 ---
 
-# 24. External Dependencies
+# 24. Dependências Externas
 
 Quando o Exactum depender de serviços externos, falhas nessas dependências devem possuir contexto suficiente para investigação.
 
@@ -874,7 +874,7 @@ Credenciais e secrets nunca devem ser incluídos.
 
 ---
 
-# 25. Application Layers
+# 25. Camadas da Aplicação
 
 Infrastructure logging deve respeitar a separação entre as camadas da aplicação.
 
@@ -920,7 +920,7 @@ Devem evitar transformar cada chamada interna em um log indiscriminado.
 
 Podem registrar falhas técnicas relacionadas à persistência quando necessário.
 
-### Persistence / Infrastructure
+### Persistência / Infraestrutura
 
 Pode registrar problemas de integração com PostgreSQL, Redis ou outros recursos.
 
@@ -928,7 +928,7 @@ A aplicação deve evitar espalhar responsabilidades de logging de infraestrutur
 
 ---
 
-# 26. Domain Independence
+# 26. Independência do Domínio
 
 O domínio da aplicação não deve depender diretamente de mecanismos específicos do Flask ou de infraestrutura de logging.
 
@@ -954,11 +954,11 @@ Infrastructure logging pertence principalmente à camada de infraestrutura e aos
 
 ---
 
-# 27. Development vs Production
+# 27. Desenvolvimento vs Produção
 
 O comportamento dos logs pode variar conforme o ambiente.
 
-## Development
+## Desenvolvimento
 
 Pode ser útil possuir informações mais detalhadas para facilitar:
 
@@ -971,7 +971,7 @@ Logs `DEBUG` podem ser habilitados quando necessário.
 
 ---
 
-## Production
+## Produção
 
 Produção deve priorizar:
 
@@ -987,7 +987,7 @@ Logs excessivamente verbosos em produção podem dificultar a identificação de
 
 ---
 
-# 28. Logging Failures
+# 28. Registro de Falhas
 
 O mecanismo de logging não deve se tornar um ponto único de falha da aplicação.
 
@@ -1017,7 +1017,7 @@ A observabilidade deve ajudar a operação, não comprometer a disponibilidade d
 
 ---
 
-# 29. Performance Considerations
+# 29. Considerações de Performance
 
 Logging possui custo.
 
@@ -1049,7 +1049,7 @@ Particularmente, operações executadas em loops ou caminhos de alta frequência
 
 ---
 
-# 30. High-Volume Endpoints
+# 30. Endpoints de Alto Volume
 
 Endpoints de alta frequência podem produzir grandes quantidades de logs.
 
@@ -1065,7 +1065,7 @@ Por exemplo, se o objetivo for descobrir a taxa média de requisições por segu
 
 ---
 
-# 31. Logs and Metrics
+# 31. Logs e Métricas
 
 Logs e metrics possuem funções diferentes.
 
@@ -1075,7 +1075,7 @@ Respondem:
 
 > O que aconteceu nesta execução?
 
-### Metrics
+### Métricas
 
 Respondem:
 
@@ -1102,7 +1102,7 @@ Até essa evolução, os logs estruturados fornecem uma base importante para obs
 
 ---
 
-# 32. Logs and Tracing
+# 32. Logs e Tracing
 
 Logs são úteis para reconstruir uma execução, mas possuem limitações quando o sistema evolui para múltiplos serviços ou processos assíncronos.
 
@@ -1121,7 +1121,7 @@ O objetivo não é substituir logs por tracing, mas permitir que ambos trabalhem
 
 ---
 
-# 33. Log Retention
+# 33. Retenção de Logs
 
 Logs possuem valor operacional por um período limitado.
 
@@ -1141,7 +1141,7 @@ A retenção de logs técnicos também deve ser diferenciada da retenção de **
 
 ---
 
-# 34. Access Control
+# 34. Controle de Acesso
 
 Logs podem conter informações operacionais sensíveis.
 
@@ -1162,7 +1162,7 @@ Portanto:
 
 ---
 
-# 35. Testing
+# 35. Testes
 
 A estratégia de testes deve considerar logging principalmente nos pontos em que ele possui comportamento observável relevante.
 
@@ -1188,7 +1188,7 @@ não aparecem nos registros produzidos por determinados fluxos.
 
 ---
 
-# 36. Operational Investigation
+# 36. Investigação Operacional
 
 Um fluxo típico de troubleshooting pode começar pelo log de uma requisição.
 
@@ -1216,7 +1216,7 @@ Essa abordagem permite investigar problemas sem depender exclusivamente de uma �
 
 ---
 
-# 37. Example: Successful Request
+# 37. Exemplo: Requisição Bem-Sucedida
 
 Um fluxo normal pode resultar em:
 
@@ -1239,7 +1239,7 @@ O registro fornece contexto suficiente para identificar a execução sem registr
 
 ---
 
-# 38. Example: Authorization Failure
+# 38. Exemplo: Falha de Autorização
 
 ```json
 {
@@ -1259,7 +1259,7 @@ O evento pode posteriormente ser correlacionado com outros registros relacionado
 
 ---
 
-# 39. Example: Database Failure
+# 39. Exemplo: Falha do Banco de Dados
 
 ```json
 {
@@ -1279,7 +1279,7 @@ O log identifica a natureza técnica do problema sem expor credenciais ou connec
 
 ---
 
-# 40. Example: Unexpected Exception
+# 40. Exemplo: Exceção Inesperada
 
 ```json
 {
@@ -1300,11 +1300,11 @@ Quando disponível, o stack trace pode permanecer no registro interno para inves
 
 ---
 
-# 41. Anti-Patterns
+# 41. Antipadrões
 
 Os seguintes padrões devem ser evitados.
 
-## Logging secrets
+## Registrar secrets
 
 ```python
 logger.info("token=%s", token)
@@ -1314,7 +1314,7 @@ logger.info("token=%s", token)
 
 ---
 
-## Logging passwords
+## Registrar senhas
 
 ```python
 logger.info("login password=%s", password)
@@ -1324,7 +1324,7 @@ logger.info("login password=%s", password)
 
 ---
 
-## Logging entire request bodies
+## Registrar corpos de requisição inteiros
 
 ```python
 logger.info("request=%s", request.json)
@@ -1334,7 +1334,7 @@ logger.info("request=%s", request.json)
 
 ---
 
-## Logging without context
+## Logs sem contexto
 
 ```text
 Database failed
@@ -1355,7 +1355,7 @@ Preferir informações estruturadas como:
 
 ---
 
-## Excessive logging
+## Logs excessivos
 
 Registrar cada pequena operação interna pode gerar:
 
@@ -1367,7 +1367,7 @@ Registrar cada pequena operação interna pode gerar:
 
 ---
 
-# 42. Observability Evolution
+# 42. Evolução da Observabilidade
 
 A estratégia atual de infrastructure logging representa uma base para uma arquitetura de observabilidade mais completa.
 
@@ -1393,7 +1393,7 @@ Com a evolução da arquitetura do Exactum, novos componentes poderão gerar seu
 
 ---
 
-# 43. Future Architecture
+# 43. Arquitetura Futura
 
 Conforme o Exactum evolui em direção a uma arquitetura mais próxima de **DDD**, o logging deverá continuar separado das regras de negócio.
 
@@ -1420,7 +1420,7 @@ Essa evolução é especialmente relevante para futuras funcionalidades assíncr
 
 ---
 
-# 44. Current State
+# 44. Estado Atual
 
 Atualmente, o Exactum utiliza uma abordagem baseada em **structured application logging**, com foco em:
 
@@ -1439,7 +1439,7 @@ Em particular, métricas, dashboards e distributed tracing fazem parte de uma ev
 
 ---
 
-# 45. Design Principles Summary
+# 45. Resumo dos Princípios de Design
 
 A estratégia de infrastructure logging do Exactum pode ser resumida nos seguintes princípios:
 
@@ -1456,7 +1456,7 @@ A estratégia de infrastructure logging do Exactum pode ser resumida nos seguint
 
 ---
 
-# 46. Related Documentation
+# 46. Documentos Relacionados
 
 - [Observability Overview](./overview.md)
 - [Correlation](./correlation.md)

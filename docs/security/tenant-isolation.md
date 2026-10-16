@@ -1,6 +1,6 @@
-# Tenant Isolation
+# Isolamento de Tenant
 
-## 1. Overview
+## 1. Visão Geral
 
 O Exactum é uma plataforma SaaS multi-tenant na qual diferentes organizações utilizam a mesma aplicação e infraestrutura, mantendo seus dados logicamente isolados.
 
@@ -41,7 +41,7 @@ Nenhuma camada isoladamente deve ser considerada suficiente para garantir o isol
 
 ---
 
-## 2. Objectives
+## 2. Objetivos
 
 O mecanismo de tenant isolation possui os seguintes objetivos:
 
@@ -61,7 +61,7 @@ O princípio central é:
 
 ---
 
-# 3. Multi-Tenancy Model
+# 3. Modelo de Multi-Tenancy
 
 O Exactum utiliza um modelo de **multi-tenancy lógico**.
 
@@ -94,7 +94,7 @@ Os dados permanecem fisicamente dentro da mesma infraestrutura, mas cada operaç
 
 ---
 
-# 4. Isolation Boundary
+# 4. Fronteira de Isolamento
 
 O tenant representa uma das principais fronteiras de segurança do sistema.
 
@@ -130,7 +130,7 @@ O tenant autorizado deve ser determinado a partir do contexto confiável da sess
 
 ---
 
-# 5. Source of Tenant Context
+# 5. Origem do Contexto do Tenant
 
 O contexto do tenant é estabelecido durante o processamento da requisição.
 
@@ -166,7 +166,7 @@ O cliente não deve ser considerado uma fonte confiável para determinar a ident
 
 ---
 
-# 6. Tenant Context
+# 6. Contexto do Tenant
 
 O contexto do tenant funciona como uma restrição de escopo para operações tenant-scoped.
 
@@ -191,7 +191,7 @@ O contexto deve permanecer associado à requisição atual e não deve ser compa
 
 ---
 
-# 7. Tenant-Scoped Resources
+# 7. Recursos com Escopo de Tenant
 
 Recursos pertencentes a um tenant devem possuir uma relação explícita com esse tenant.
 
@@ -215,7 +215,7 @@ A regra de segurança permanece a mesma:
 
 ---
 
-# 8. Persistence Isolation
+# 8. Isolamento na Persistência
 
 A persistência constitui uma das principais linhas de defesa contra acesso cross-tenant.
 
@@ -252,7 +252,7 @@ Tenant Identity
 
 ---
 
-# 9. Defensive Dual Isolation
+# 9. Isolamento Defensivo em Duas Camadas
 
 O Exactum adota uma estratégia de **isolamento defensivo em duas camadas principais**:
 
@@ -280,7 +280,7 @@ Isso evita depender exclusivamente de middleware ou exclusivamente de repositori
 
 ---
 
-## 9.1. Request-Level Isolation
+## 9.1. Isolamento no Nível da Requisição
 
 Durante o processamento da requisição, o sistema estabelece o tenant associado ao contexto autenticado.
 
@@ -302,7 +302,7 @@ O tenant não deve ser livremente definido pelo cliente.
 
 ---
 
-## 9.2. Persistence-Level Isolation
+## 9.2. Isolamento na Camada de Persistência
 
 Mesmo após o estabelecimento do contexto, as operações de persistência devem aplicar explicitamente a restrição de tenant.
 
@@ -382,7 +382,7 @@ Evoluções planejadas:
 
 ---
 
-# 10. Authorization and Tenant Isolation
+# 10. Autorização e Isolamento de Tenant
 
 Tenant isolation e authorization são mecanismos diferentes, mas complementares.
 
@@ -428,7 +428,7 @@ A permissão deve ser aplicada dentro do tenant autorizado.
 
 ---
 
-# 11. Resource Ownership
+# 11. Propriedade do Recurso
 
 Para recursos tenant-scoped, a identidade do recurso não é suficiente para determinar se ele pode ser acessado.
 
@@ -469,7 +469,7 @@ a operação deve ser rejeitada.
 
 ---
 
-# 12. Preventing Cross-Tenant Access
+# 12. Prevenção de Acesso Cross-Tenant
 
 Uma tentativa de acesso cross-tenant pode ocorrer de várias maneiras.
 
@@ -509,7 +509,7 @@ Por isso, tenant isolation deve ser tratada como uma propriedade de toda a opera
 
 ---
 
-# 13. Client-Supplied Tenant Identifiers
+# 13. Identificadores de Tenant Fornecidos pelo Cliente
 
 O frontend pode conhecer o tenant atual para fins de interface, mas essa informação não deve ser considerada autoridade de segurança.
 
@@ -532,7 +532,7 @@ O backend é responsável pela segurança.
 
 ---
 
-# 14. Repository Responsibility
+# 14. Responsabilidade do Repository
 
 Repositories representam uma fronteira importante para o isolamento.
 
@@ -574,7 +574,7 @@ quando o recurso pertence a um tenant.
 
 ---
 
-# 15. Application Service Responsibility
+# 15. Responsabilidade do Application Service
 
 Application Services coordenam casos de uso e devem garantir que o contexto necessário esteja disponível para a operação.
 
@@ -600,7 +600,7 @@ Também não deve considerar a existência de um recurso como prova de que ele p
 
 ---
 
-# 16. Route and Controller Responsibility
+# 16. Responsabilidade de Routes e Controllers
 
 Routes e controllers são responsáveis por receber e validar a entrada HTTP, além de iniciar o fluxo de autenticação e autorização.
 
@@ -626,7 +626,7 @@ O isolamento deve sobreviver à passagem por todas as camadas.
 
 ---
 
-# 17. Database Constraints
+# 17. Constraints do Banco de Dados
 
 Sempre que aplicável, o banco deve ajudar a preservar invariantes relacionados ao tenant.
 
@@ -654,7 +654,7 @@ As constraints específicas devem refletir o modelo de dados efetivamente implem
 
 ---
 
-# 18. Public Identifiers
+# 18. Identificadores Públicos
 
 O Exactum utiliza identificadores públicos para exposição através da API.
 
@@ -680,7 +680,7 @@ O identificador protege contra determinadas formas de enumeração, mas não sub
 
 ---
 
-# 19. Tenant Administration
+# 19. Administração do Tenant
 
 Administradores de tenant possuem privilégios superiores dentro do próprio tenant, mas continuam limitados pela fronteira do tenant.
 
@@ -710,7 +710,7 @@ O escopo da role permanece vinculado ao tenant.
 
 ---
 
-# 20. Super-Admin Context
+# 20. Contexto do Super-Admin
 
 O super-admin representa uma autoridade de plataforma diferente das roles convencionais de tenant.
 
@@ -740,7 +740,7 @@ O contexto de plataforma possui uma fronteira de confiança diferente.
 
 ---
 
-# 21. Tenant Suspension
+# 21. Suspensão de Tenant
 
 O tenant pode estar sujeito a estados de ciclo de vida que impeçam operações normais.
 
@@ -772,7 +772,7 @@ O backend deve aplicar a regra.
 
 ---
 
-# 22. User Blocking
+# 22. Bloqueio de Usuários
 
 O bloqueio de um usuário possui efeito semelhante em relação à autorização.
 
@@ -849,7 +849,7 @@ A autoridade de plataforma e a identidade impersonada devem permanecer conceitua
 
 ---
 
-# 24. Impersonation and Tenant Boundaries
+# 24. Impersonation e Fronteiras de Tenant
 
 A impersonation não elimina tenant isolation.
 
@@ -900,7 +900,7 @@ com:
 
 ---
 
-# 25. Background and Asynchronous Operations
+# 25. Operações em Segundo Plano e Assíncronas
 
 Operações assíncronas futuras também devem preservar o contexto de tenant.
 
@@ -935,7 +935,7 @@ O tenant necessário para executar a operação deve fazer parte do contexto per
 
 ---
 
-# 26. Caching Considerations
+# 26. Considerações sobre Cache
 
 Caches também devem respeitar o tenant.
 
@@ -968,7 +968,7 @@ Tenant isolation deve ser preservada em todas as formas de armazenamento interme
 
 ---
 
-# 27. Logging and Observability
+# 27. Logging e Observabilidade
 
 Eventos relacionados a tenant devem preservar o contexto necessário para diagnóstico e auditoria.
 
@@ -996,7 +996,7 @@ Ao mesmo tempo, logs devem evitar exposição desnecessária de dados sensíveis
 
 ---
 
-# 28. Auditability
+# 28. Auditabilidade
 
 Alterações relacionadas a fronteiras de segurança devem ser auditáveis.
 
@@ -1026,7 +1026,7 @@ Isso fornece rastreabilidade sem transformar o mecanismo de auditoria em uma dep
 
 ---
 
-# 29. Error Handling
+# 29. Tratamento de Erros
 
 Uma tentativa de acessar um recurso fora do escopo autorizado deve resultar em uma resposta de segurança apropriada.
 
@@ -1059,11 +1059,11 @@ A decisão deve ser consistente com o contrato da API.
 
 ---
 
-# 30. Security Principles
+# 30. Princípios de Segurança
 
 O modelo de tenant isolation segue alguns princípios fundamentais.
 
-## 30.1. Deny by Default
+## 30.1. Negar por Padrão
 
 Na ausência de uma autorização explícita:
 
@@ -1073,25 +1073,25 @@ Access = Denied
 
 ---
 
-## 30.2. Least Privilege
+## 30.2. Menor Privilégio
 
 Usuários devem possuir somente os privilégios necessários para executar suas atividades.
 
 ---
 
-## 30.3. Explicit Tenant Scope
+## 30.3. Escopo de Tenant Explícito
 
 Operações tenant-scoped devem possuir escopo de tenant explícito.
 
 ---
 
-## 30.4. Backend as Security Boundary
+## 30.4. Backend como Fronteira de Segurança
 
 O frontend nunca deve ser considerado uma barreira de segurança.
 
 ---
 
-## 30.5. Defense in Depth
+## 30.5. Defesa em Profundidade
 
 O isolamento deve ser reforçado por múltiplas camadas.
 
@@ -1111,7 +1111,7 @@ Defense in Depth
 
 ---
 
-## 30.6. Fail Closed
+## 30.6. Falhar de Forma Fechada (Fail Closed)
 
 Quando o sistema não consegue determinar com segurança o tenant ou a autorização necessária, a operação deve ser rejeitada.
 
@@ -1129,11 +1129,11 @@ Guess tenant
 
 ---
 
-# 31. Threats Addressed
+# 31. Ameaças Tratadas
 
 Tenant isolation reduz o risco de ameaças como:
 
-### Broken Access Control
+### Controle de Acesso Quebrado (Broken Access Control)
 
 Usuário consegue acessar um recurso sem possuir autorização.
 
@@ -1141,19 +1141,19 @@ Usuário consegue acessar um recurso sem possuir autorização.
 
 Usuário manipula identificadores para acessar recursos pertencentes a outro tenant.
 
-### Privilege Escalation
+### Escalada de Privilégio
 
 Usuário obtém privilégios superiores aos autorizados.
 
-### Tenant Escape
+### Escape de Tenant
 
 Operação ultrapassa a fronteira do tenant atual.
 
-### Parameter Tampering
+### Adulteração de Parâmetros
 
 Cliente altera `tenant_id` ou outro parâmetro para tentar mudar o escopo da operação.
 
-### Cross-Tenant Data Leakage
+### Vazamento de Dados Cross-Tenant
 
 Informações de um tenant aparecem em:
 
@@ -1167,11 +1167,11 @@ Informações de um tenant aparecem em:
 
 ---
 
-# 32. Security Invariants
+# 32. Invariantes de Segurança
 
 O sistema deve preservar invariantes fundamentais.
 
-### Invariant 1 — Resource Ownership
+### Invariante 1 — Propriedade do Recurso
 
 ```text
 Tenant(resource) == EffectiveTenant
@@ -1179,7 +1179,7 @@ Tenant(resource) == EffectiveTenant
 
 para operações tenant-scoped.
 
-### Invariant 2 — Authorization
+### Invariante 2 — Autorização
 
 ```text
 Permission(user, operation) == allowed
@@ -1187,7 +1187,7 @@ Permission(user, operation) == allowed
 
 antes da execução de operações protegidas.
 
-### Invariant 3 — Tenant Context
+### Invariante 3 — Contexto do Tenant
 
 ```text
 EffectiveTenant != null
@@ -1195,21 +1195,21 @@ EffectiveTenant != null
 
 para operações que exigem contexto tenant-scoped.
 
-### Invariant 4 — No Cross-Tenant Mutation
+### Invariante 4 — Nenhuma Alteração Cross-Tenant
 
 Uma operação originada no tenant A não pode modificar recursos pertencentes ao tenant B.
 
-### Invariant 5 — No Cross-Tenant Read
+### Invariante 5 — Nenhuma Leitura Cross-Tenant
 
 Uma operação originada no tenant A não pode consultar recursos pertencentes ao tenant B.
 
-### Invariant 6 — Platform Separation
+### Invariante 6 — Separação da Plataforma
 
 Operações de plataforma devem ser explicitamente diferenciadas das operações tenant-scoped.
 
 ---
 
-# 33. Request Lifecycle
+# 33. Ciclo de Vida da Requisição
 
 O fluxo completo de uma operação tenant-scoped pode ser representado por:
 
@@ -1268,7 +1268,7 @@ Cada etapa possui uma responsabilidade diferente.
 
 ---
 
-# 34. Responsibilities by Layer
+# 34. Responsabilidades por Camada
 
 | Layer                | Responsibility                                    |
 | -------------------- | ------------------------------------------------- |
@@ -1285,11 +1285,11 @@ Nenhuma dessas responsabilidades deve ser confundida com as demais.
 
 ---
 
-# 35. Testing Strategy
+# 35. Estratégia de Testes
 
 Tenant isolation deve possuir testes positivos e negativos.
 
-## 35.1. Same-Tenant Access
+## 35.1. Acesso no Mesmo Tenant
 
 Usuário deve conseguir acessar recursos pertencentes ao próprio tenant quando possuir a permissão necessária.
 
@@ -1303,7 +1303,7 @@ Resource A
 
 ---
 
-## 35.2. Cross-Tenant Access
+## 35.2. Acesso Cross-Tenant
 
 Usuário não deve acessar recurso de outro tenant.
 
@@ -1318,7 +1318,7 @@ Tenant B
 
 ---
 
-## 35.3. Cross-Tenant Mutation
+## 35.3. Alteração Cross-Tenant
 
 Usuário não deve modificar recurso de outro tenant.
 
@@ -1330,7 +1330,7 @@ PUT Resource B
 
 ---
 
-## 35.4. Cross-Tenant Deletion
+## 35.4. Exclusão Cross-Tenant
 
 Usuário não deve excluir recurso de outro tenant.
 
@@ -1342,25 +1342,25 @@ DELETE Resource B
 
 ---
 
-## 35.5. Tenant Parameter Manipulation
+## 35.5. Manipulação do Parâmetro de Tenant
 
 Alterar `tenant_id` enviado pelo cliente não deve alterar o contexto efetivo da requisição.
 
 ---
 
-## 35.6. Role Escalation
+## 35.6. Escalada de Role
 
 Um usuário de um tenant não deve obter permissões de outro tenant simplesmente manipulando IDs ou payloads.
 
 ---
 
-## 35.7. Suspended Tenant
+## 35.7. Tenant Suspenso
 
 Usuários de tenants suspensos devem ter operações bloqueadas conforme as regras definidas para o estado de suspensão.
 
 ---
 
-## 35.8. Blocked User
+## 35.8. Usuário Bloqueado
 
 Usuários bloqueados não devem continuar executando operações protegidas através de sessões previamente válidas.
 
@@ -1379,11 +1379,11 @@ Testes devem verificar:
 
 ---
 
-# 36. Common Failure Modes
+# 36. Modos de Falha Comuns
 
 Os seguintes padrões devem ser evitados.
 
-### Trusting `tenant_id` from the Client
+### Confiar no `tenant_id` Enviado pelo Cliente
 
 ```text
 Client → tenant_id → Database
@@ -1393,7 +1393,7 @@ O cliente não deve controlar diretamente o escopo de segurança.
 
 ---
 
-### Querying by ID Only
+### Consulta Apenas por ID
 
 ```sql
 WHERE id = :id
@@ -1403,37 +1403,37 @@ sem considerar o tenant quando necessário.
 
 ---
 
-### Filtering Only in the Frontend
+### Filtragem Apenas no Frontend
 
 Esconder recursos de outro tenant na interface não constitui isolamento.
 
 ---
 
-### Authorization Without Ownership Check
+### Autorização sem Verificação de Propriedade
 
 Ter permissão para editar produtos não significa poder editar produtos de qualquer tenant.
 
 ---
 
-### Incomplete Cache Keys
+### Chaves de Cache Incompletas
 
 Cache compartilhado entre tenants pode gerar vazamento de dados.
 
 ---
 
-### Background Jobs Without Context
+### Jobs em Segundo Plano sem Contexto
 
 Workers executando operações sem conhecer o tenant podem operar sobre dados incorretos.
 
 ---
 
-### Implicit Super-Admin Bypass
+### Bypass Implícito de Super-Admin
 
 Permitir que uma role de plataforma atravesse qualquer regra sem uma política explícita dificulta auditoria e aumenta o risco de privilege escalation.
 
 ---
 
-# 37. Architectural Evolution
+# 37. Evolução Arquitetural
 
 O modelo atual foi projetado para funcionar com a arquitetura predominantemente em camadas do Exactum.
 
@@ -1485,7 +1485,7 @@ Pelo contrário, a separação de responsabilidades deve tornar as regras de ten
 
 ---
 
-# 38. Future Improvements
+# 38. Melhorias Futuras
 
 Possíveis evoluções incluem:
 
@@ -1505,11 +1505,11 @@ Essas evoluções devem ser introduzidas de maneira incremental, sem substituir 
 
 ---
 
-# 39. Relationship with Other Security Components
+# 39. Relação com Outros Componentes de Segurança
 
 Tenant isolation não funciona isoladamente.
 
-### Authentication
+### Autenticação
 
 Determina a identidade autenticada.
 
@@ -1521,7 +1521,7 @@ Documentação:
 
 `docs/security/authentication.md`
 
-### Session Management
+### Gerenciamento de Sessões
 
 Controla a validade e o ciclo de vida da sessão.
 
@@ -1533,7 +1533,7 @@ Documentação:
 
 `docs/security/session-management.md`
 
-### Authorization
+### Autorização
 
 Determina quais operações o usuário pode executar.
 
@@ -1545,7 +1545,7 @@ Documentação:
 
 `docs/security/authorization.md`
 
-### Tenant Isolation
+### Isolamento de Tenant
 
 Determina sobre qual tenant essas operações podem ocorrer.
 
@@ -1553,7 +1553,7 @@ Determina sobre qual tenant essas operações podem ocorrer.
 Where can you operate?
 ```
 
-### Threat Model
+### Modelo de Ameaças
 
 Define e avalia as ameaças que podem comprometer essas garantias.
 
@@ -1563,7 +1563,7 @@ What can go wrong?
 
 ---
 
-# 40. Security Model
+# 40. Modelo de Segurança
 
 O modelo de segurança pode ser resumido como:
 
@@ -1604,7 +1604,7 @@ Uma operação somente deve prosseguir quando todas as condições necessárias 
 
 ---
 
-# 41. Summary
+# 41. Resumo
 
 O isolamento de tenants no Exactum é baseado em **isolamento lógico, contexto explícito e defesa em profundidade**.
 
@@ -1631,7 +1631,7 @@ O princípio fundamental permanece:
 
 ---
 
-# 42. Related Documentation
+# 42. Documentos Relacionados
 
 - `docs/security/overview.md`
 - `docs/security/authentication.md`

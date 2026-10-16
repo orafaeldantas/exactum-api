@@ -1,4 +1,4 @@
-# Testing Strategy
+# Estratégia de Testes
 
 ## 1. Objetivo
 
@@ -150,7 +150,7 @@ Essas áreas representam pontos onde regressões podem causar impacto significat
 
 ---
 
-# 4. Test Pyramid
+# 4. Pirâmide de Testes
 
 A estratégia segue uma ideia semelhante à **Test Pyramid**.
 
@@ -198,7 +198,7 @@ A quantidade e o tipo de teste devem depender do risco e da responsabilidade do 
 
 ---
 
-# 6. Unit Tests
+# 6. Testes Unitários
 
 Unit Tests verificam unidades relativamente isoladas do sistema.
 
@@ -229,7 +229,7 @@ O objetivo é testar uma regra específica sem envolver toda a infraestrutura.
 
 Algumas áreas são particularmente adequadas para Unit Tests.
 
-## Business Rules
+## Regras de Negócio
 
 Exemplos:
 
@@ -240,11 +240,11 @@ permission evaluation
 validation rules
 ```
 
-## Domain Logic
+## Lógica de Domínio
 
 Quando a lógica estiver suficientemente desacoplada do framework, ela deve preferencialmente ser testada sem Flask, HTTP ou banco.
 
-## Utility Functions
+## Funções Utilitárias
 
 Funções determinísticas também devem possuir testes diretos.
 
@@ -262,7 +262,7 @@ A estratégia não deve obrigar cada método a possuir um Unit Test apenas para 
 
 ---
 
-# 9. Integration Tests
+# 9. Testes de Integração
 
 Integration Tests verificam a interação entre componentes reais.
 
@@ -322,7 +322,7 @@ Um mock de repository não consegue provar que a query SQL realmente funciona.
 
 ---
 
-# 11. Repository Tests
+# 11. Testes de Repository
 
 Repositories devem ser testados principalmente através de Integration Tests quando o comportamento depende do banco.
 
@@ -343,7 +343,7 @@ Um Repository pode parecer correto em Unit Tests, mas falhar quando executado co
 
 ---
 
-# 12. Tenant-Aware Repository Tests
+# 12. Testes de Repository Conscientes de Tenant
 
 Como o Exactum é multi-tenant, testes de Repository devem verificar explicitamente o isolamento.
 
@@ -368,7 +368,7 @@ Esse comportamento deve ser testado diretamente.
 
 ---
 
-# 13. Tenant Isolation Tests
+# 13. Testes de Isolamento de Tenant
 
 Tenant isolation merece uma categoria própria de testes.
 
@@ -388,7 +388,7 @@ O sistema deve provar que acessos indevidos são rejeitados.
 
 ---
 
-# 14. Authorization Tests
+# 14. Testes de Autorização
 
 Authentication e Authorization devem ser testadas separadamente.
 
@@ -412,7 +412,7 @@ Também devem existir testes para:
 
 ---
 
-# 15. Authentication Tests
+# 15. Testes de Autenticação
 
 A estratégia de Authentication deve cobrir o ciclo completo.
 
@@ -448,7 +448,7 @@ Casos importantes incluem:
 
 ---
 
-# 16. HttpOnly Cookie Tests
+# 16. Testes de Cookies HttpOnly
 
 Como a autenticação do Exactum utiliza HttpOnly cookies, os testes devem verificar não apenas o JWT, mas também o comportamento dos cookies HTTP.
 
@@ -465,7 +465,7 @@ O objetivo é evitar regressões em que o backend gera tokens corretamente, mas 
 
 ---
 
-# 17. Refresh Session Tests
+# 17. Testes de Refresh Session
 
 O Redis participa do gerenciamento de refresh sessions.
 
@@ -494,7 +494,7 @@ valid JWT + revoked Redis session
 
 ---
 
-# 18. Impersonation Tests
+# 18. Testes de Impersonation
 
 Impersonation é uma funcionalidade de alto impacto e deve possuir testes específicos.
 
@@ -515,7 +515,7 @@ Também deve ser testado o comportamento quando o estado do Redis é perdido ou 
 
 ---
 
-# 19. API Tests
+# 19. Testes de API
 
 API Tests verificam o comportamento HTTP observável.
 
@@ -550,7 +550,7 @@ def test_create_product_returns_201(client, authenticated_user):
 
 ---
 
-# 20. API Contract
+# 20. Contrato da API
 
 A API deve possuir comportamento previsível.
 
@@ -580,7 +580,7 @@ Por exemplo, no formato atual:
 
 ---
 
-# 21. Validation Tests
+# 21. Testes de Validação
 
 Schemas e validações devem possuir testes para:
 
@@ -596,7 +596,7 @@ Devem existir testes positivos e negativos.
 
 ---
 
-# 22. Error Handling Tests
+# 22. Testes de Tratamento de Erros
 
 O tratamento centralizado de exceptions deve ser testado.
 
@@ -620,7 +620,7 @@ O sistema deve:
 
 ---
 
-# 23. Error Contract Stability
+# 23. Estabilidade do Contrato de Erros
 
 O `error.code` deve ser tratado como parte importante do contrato da API.
 
@@ -640,7 +640,7 @@ em vez de depender excessivamente do texto completo da mensagem.
 
 ---
 
-# 24. Soft Delete Tests
+# 24. Testes de Soft Delete
 
 Entidades que utilizam Soft Delete devem possuir testes para:
 
@@ -658,7 +658,7 @@ Um registro deletado logicamente não deve aparecer em consultas normais quando 
 
 ---
 
-# 25. Soft Delete e Uniqueness
+# 25. Soft Delete e Unicidade
 
 Quando Soft Delete interagir com regras de unicidade, os testes devem verificar explicitamente o comportamento esperado.
 
@@ -677,7 +677,7 @@ Não deve ser assumido automaticamente que o registro deletado pode ou não pode
 
 ---
 
-# 26. Database Migration Tests
+# 26. Testes de Migrations
 
 Migrations devem ser testadas principalmente como parte da integração do banco.
 
@@ -714,7 +714,7 @@ Isso evita que a aplicação seja a única camada responsável pela integridade.
 
 ---
 
-# 28. Transaction Tests
+# 28. Testes de Transações
 
 Operações que possuem múltiplas alterações devem testar comportamento transacional.
 
@@ -738,7 +738,7 @@ O teste deve verificar o estado final do banco, e não apenas o exception levant
 
 ---
 
-# 29. Concurrency
+# 29. Concorrência
 
 Operações sensíveis à concorrência devem receber atenção especial.
 
@@ -797,7 +797,7 @@ Ela representa uma operação de negócio que pode afetar outras entidades.
 
 ---
 
-# 32. Testes de Observability
+# 32. Testes de Observabilidade
 
 Observability também pode ser testada.
 
@@ -817,7 +817,7 @@ Deve-se testar principalmente a presença e integridade dos campos relevantes.
 
 ---
 
-# 33. Logging Tests
+# 33. Testes de Logging
 
 Quando logs estruturados forem críticos, testes podem verificar campos como:
 
@@ -833,7 +833,7 @@ Evite testes excessivamente frágeis que dependam da ordem exata de campos ou me
 
 ---
 
-# 34. Audit Logging Tests
+# 34. Testes de Logs de Auditoria
 
 Operações relevantes devem gerar Audit Logs conforme definido pela arquitetura.
 
@@ -853,7 +853,7 @@ Também deve ser validado que dados sensíveis não sejam armazenados indevidame
 
 ---
 
-# 35. Platform Event Tests
+# 35. Testes de Eventos de Plataforma
 
 Platform Events devem possuir testes para:
 
@@ -870,7 +870,7 @@ Quando eventos forem introduzidos em processamento assíncrono, testes adicionai
 
 ---
 
-# 36. Correlation Tests
+# 36. Testes de Correlação
 
 O `request_id` deve permanecer consistente dentro de uma requisição.
 
@@ -892,7 +892,7 @@ Os registros associados à operação devem poder ser correlacionados.
 
 ---
 
-# 37. Rate Limiting Tests
+# 37. Testes de Rate Limiting
 
 Rate limiting deve possuir testes para:
 
@@ -937,7 +937,7 @@ Um excesso de mocking pode produzir testes que passam enquanto a integração re
 
 ---
 
-# 39. Fake vs Mock vs Real Dependency
+# 39. Fake vs Mock vs Dependência Real
 
 Uma escolha de teste deve considerar o objetivo.
 
@@ -988,7 +988,7 @@ Uma fixture deve ser relativamente fácil de entender quando utilizada em um tes
 
 ---
 
-# 41. Test Data
+# 41. Dados de Teste
 
 Dados de teste devem ser:
 
@@ -1012,7 +1012,7 @@ Tenant
 
 ---
 
-# 42. Database Isolation
+# 42. Isolamento no Banco de Dados
 
 Testes de integração devem possuir isolamento adequado.
 
@@ -1037,7 +1037,7 @@ O mecanismo utilizado não deve permitir que um teste contamine outro.
 
 ---
 
-# 43. Redis Isolation
+# 43. Isolamento no Redis
 
 Da mesma forma, testes que utilizam Redis precisam evitar estado compartilhado.
 
@@ -1053,7 +1053,7 @@ A estratégia deve evitar que uma sessão criada em um teste influencie outro.
 
 ---
 
-# 44. Test Naming
+# 44. Nomenclatura de Testes
 
 Nomes de testes devem descrever comportamento.
 
@@ -1075,7 +1075,7 @@ O nome deve ajudar a entender a falha sem abrir imediatamente o código.
 
 ---
 
-# 45. Arrange / Act / Assert
+# 45. Arrange / Act / Assert (Preparar / Agir / Verificar)
 
 Quando apropriado:
 
@@ -1097,7 +1097,7 @@ Testes muito pequenos podem não precisar de comentários explícitos.
 
 ---
 
-# 46. Parametrization
+# 46. Parametrização
 
 Quando vários casos possuem a mesma estrutura, parametrização pode reduzir duplicação.
 
@@ -1116,7 +1116,7 @@ Entretanto, parametrização não deve tornar o teste difícil de ler.
 
 ---
 
-# 47. Coverage
+# 47. Cobertura
 
 Coverage é uma métrica útil, mas não deve ser tratada como objetivo absoluto.
 
@@ -1138,7 +1138,7 @@ Coverage deve ser utilizada para identificar áreas sem testes, não para substi
 
 ---
 
-# 48. Coverage Atual
+# 48. Cobertura Atual
 
 O Exactum utiliza coverage como parte da estratégia de qualidade. O CI exige no mínimo **80%** (`--cov-fail-under=80`) e o valor atual é publicado no Codecov.
 
@@ -1148,7 +1148,7 @@ A prioridade deve permanecer sobre funcionalidades críticas.
 
 ---
 
-# 49. High-Risk Areas
+# 49. Áreas de Alto Risco
 
 Áreas de maior risco devem possuir cobertura mais forte, independentemente do percentual global.
 
@@ -1171,7 +1171,7 @@ Essas áreas podem justificar múltiplas camadas de testes.
 
 ---
 
-# 50. Regression Tests
+# 50. Testes de Regressão
 
 Todo bug relevante identificado deve gerar, quando apropriado, um Regression Test.
 
@@ -1237,7 +1237,7 @@ Isso evita que a suíte continue refletindo uma arquitetura antiga depois de uma
 
 ---
 
-# 53. API Tests vs Service Tests
+# 53. Testes de API vs Testes de Service
 
 Nem toda regra precisa ser testada através da API.
 
@@ -1278,7 +1278,7 @@ O objetivo é provar que controles de segurança não existem apenas nominalment
 
 ---
 
-# 55. IDOR / Object-Level Authorization
+# 55. IDOR / Autorização em Nível de Objeto
 
 Como os recursos utilizam identificadores públicos, testes devem verificar que conhecer um UUID não concede acesso automaticamente.
 
@@ -1303,7 +1303,7 @@ Isso é particularmente importante em APIs REST.
 
 ---
 
-# 56. Authentication ≠ Authorization
+# 56. Autenticação ≠ Autorização
 
 Testes devem manter explicitamente a diferença:
 
@@ -1323,7 +1323,7 @@ Cada responsabilidade deve possuir cobertura própria.
 
 ---
 
-# 57. Negative Testing
+# 57. Testes Negativos
 
 A suíte deve possuir testes negativos.
 
@@ -1352,7 +1352,7 @@ Exemplos:
 
 ---
 
-# 58. Boundary Testing
+# 58. Testes de Fronteira
 
 Valores de fronteira são importantes.
 
@@ -1568,7 +1568,7 @@ Se um teste passa localmente mas falha no CI, a investigação deve considerar:
 
 ---
 
-# 68. Flaky Tests
+# 68. Testes Instáveis (Flaky)
 
 Um **flaky test** é um teste que alterna entre passar e falhar sem alteração relevante no código.
 
@@ -1616,7 +1616,7 @@ Parallelism pode reduzir tempo de CI, mas aumenta as exigências de isolamento.
 
 ---
 
-# 71. External Services
+# 71. Serviços Externos
 
 Chamadas para serviços externos devem ser isoladas quando apropriado.
 
@@ -1740,7 +1740,7 @@ Um teste que funciona para um tenant isoladamente não prova que a aplicação c
 
 ---
 
-# 77. Testes de Regressão de Database
+# 77. Testes de Regressão do Banco de Dados
 
 Mudanças em schema devem executar testes relacionados a:
 
@@ -1811,7 +1811,7 @@ Exemplos:
 
 ---
 
-# 80. Security Regression
+# 80. Regressão de Segurança
 
 Correções de segurança devem gerar testes permanentes sempre que possível.
 
@@ -1943,7 +1943,7 @@ Uma alteração significativa sem testes deve possuir justificativa técnica.
 
 ---
 
-# 87. Testes e Coverage Threshold
+# 87. Testes e Limite Mínimo de Cobertura
 
 Um threshold de coverage pode ser utilizado no CI como mecanismo de proteção.
 
@@ -2021,7 +2021,7 @@ deve possuir comportamento determinístico.
 
 ---
 
-# 90. Futuro com Observability
+# 90. Futuro da Observabilidade
 
 Com a introdução de:
 
@@ -2053,7 +2053,7 @@ A arquitetura deve continuar sendo guiada pelas responsabilidades do sistema, en
 
 ---
 
-# 92. Test Strategy e DDD
+# 92. Estratégia de Testes e DDD
 
 Uma arquitetura mais orientada a domínio pode permitir testes mais próximos das regras de negócio.
 
@@ -2085,7 +2085,7 @@ Essa separação reduz o custo de testar regras fundamentais.
 
 ---
 
-# 93. Test Isolation como Arquitetural Signal
+# 93. Isolamento de Testes como Sinal Arquitetural
 
 Dificuldade excessiva para testar determinada parte do sistema pode revelar acoplamento arquitetural.
 
@@ -2149,7 +2149,7 @@ Uma etapa crítica falhando deve impedir a progressão para ambientes posteriore
 
 ---
 
-# 96. Failure Diagnosis
+# 96. Diagnóstico de Falhas
 
 Uma boa suíte deve tornar falhas diagnosticáveis.
 
@@ -2166,7 +2166,7 @@ Mensagens, fixtures, nomes e organização dos testes contribuem diretamente par
 
 ---
 
-# 97. Test Organization
+# 97. Organização dos Testes
 
 A organização dos testes deve refletir, quando possível, a organização funcional do sistema.
 
@@ -2185,7 +2185,7 @@ A estrutura concreta pode variar conforme o projeto, mas a separação de respon
 
 ---
 
-# 98. Current Testing Philosophy
+# 98. Filosofia Atual de Testes
 
 A estratégia atual do Exactum pode ser resumida como:
 

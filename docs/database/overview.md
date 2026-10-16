@@ -1,4 +1,4 @@
-# Database Overview
+# Visão Geral do Banco de Dados
 
 ## 1. Objetivo
 
@@ -122,7 +122,7 @@ O isolamento é lógico e deve ser garantido pela aplicação e pelas regras de 
 
 ---
 
-# 5. Tenant Context
+# 5. Contexto do Tenant
 
 Durante uma requisição autenticada, o backend estabelece um contexto de tenant.
 
@@ -156,7 +156,7 @@ A camada de persistência deve utilizar esse contexto para garantir que consulta
 
 ---
 
-# 6. Tenant Isolation na Persistência
+# 6. Isolamento de Tenant na Persistência
 
 O isolamento de tenant não deve depender exclusivamente da camada HTTP.
 
@@ -330,7 +330,7 @@ Esse tipo de regra é importante porque a integridade dos dados não deve depend
 
 ---
 
-# 12. Database Constraints
+# 12. Constraints do Banco de Dados
 
 O banco deve utilizar constraints quando uma regra puder ser garantida de maneira confiável pela própria camada de persistência.
 
@@ -349,7 +349,7 @@ A aplicação pode validar antecipadamente para melhorar a experiência e retorn
 
 ---
 
-# 13. Primary Keys
+# 13. Chaves Primárias
 
 As entidades persistentes possuem identificadores internos utilizados pelo banco.
 
@@ -367,7 +367,7 @@ O identificador interno pode ser otimizado para persistência e relacionamentos,
 
 ---
 
-# 14. Public UUIDs
+# 14. UUIDs Públicos
 
 A API utiliza UUIDs como identificadores públicos dos recursos.
 
@@ -440,7 +440,7 @@ Não é desejável criar índices indiscriminadamente.
 
 ---
 
-# 17. Composite Indexes
+# 17. Índices Compostos
 
 Consultas multi-tenant podem se beneficiar de **composite indexes**.
 
@@ -494,7 +494,7 @@ Isso demonstra uma característica importante do modelo multi-tenant:
 
 ---
 
-# 19. Transactions
+# 19. Transações
 
 Operações que modificam múltiplos registros relacionados devem utilizar transactions quando precisam ser atomicamente consistentes.
 
@@ -547,7 +547,7 @@ A transação deve representar a unidade de consistência necessária para aquel
 
 ---
 
-# 21. Transaction Boundary
+# 21. Fronteira Transacional
 
 A definição do limite transacional deve estar alinhada ao caso de uso.
 
@@ -575,7 +575,7 @@ A implementação concreta pode evoluir conforme a arquitetura de Application Se
 
 ---
 
-# 22. Concurrency
+# 22. Concorrência
 
 Operações relacionadas a estoque e vendas possuem potenciais problemas de concorrência.
 
@@ -627,7 +627,7 @@ O objetivo é que a consistência seja preservada mesmo sob concorrência.
 
 ---
 
-# 24. Isolation Levels
+# 24. Níveis de Isolamento
 
 PostgreSQL oferece diferentes níveis de isolamento transacional.
 
@@ -791,7 +791,7 @@ Migrations não devem ser executadas de maneira manual e descontrolada em produ�
 
 ---
 
-# 31. Backward-Compatible Migrations
+# 31. Migrations Retrocompatíveis
 
 Sempre que possível, mudanças de schema devem ser feitas de maneira compatível com versões intermediárias da aplicação.
 
@@ -838,7 +838,7 @@ Esse processo evita alterações destrutivas abruptas.
 
 ---
 
-# 33. Data Integrity
+# 33. Integridade de Dados
 
 Integridade de dados é responsabilidade compartilhada entre:
 
@@ -866,7 +866,7 @@ As duas camadas possuem responsabilidades diferentes e complementares.
 
 ---
 
-# 34. Validation vs Database Constraints
+# 34. Validação vs Constraints do Banco de Dados
 
 A validação da API e as constraints do banco não possuem exatamente o mesmo objetivo.
 
@@ -894,7 +894,7 @@ Nenhuma das duas camadas deve ser considerada substituta completa da outra.
 
 ---
 
-# 35. Nullability
+# 35. Nulabilidade
 
 Campos devem possuir nullability definida de acordo com o domínio.
 
@@ -948,7 +948,7 @@ Datas e horários devem ser tratados de forma consistente em toda a aplicação.
 
 ---
 
-# 37. Time Zones
+# 37. Fusos Horários
 
 Informações temporais devem ser armazenadas e transportadas de maneira consistente.
 
@@ -976,7 +976,7 @@ Platform Events
 
 ---
 
-# 38. Data Types
+# 38. Tipos de Dados
 
 Os tipos utilizados no PostgreSQL devem refletir adequadamente a natureza dos dados.
 
@@ -998,7 +998,7 @@ Operações financeiras devem utilizar tipos apropriados para preservar precisã
 
 ---
 
-# 39. Money
+# 39. Valores Monetários
 
 Valores monetários representam uma área especialmente sensível.
 
@@ -1022,7 +1022,7 @@ pode ser utilizado para representar valores monetários com precisão definida.
 
 ---
 
-# 40. Stock Quantities
+# 40. Quantidades em Estoque
 
 Quantidades de estoque também precisam possuir representação coerente.
 
@@ -1046,7 +1046,7 @@ Essa decisão pertence ao domínio do Exactum e deve permanecer consistente entr
 
 ---
 
-# 41. Data Access Performance
+# 41. Performance de Acesso a Dados
 
 A performance do banco deve ser acompanhada de maneira incremental.
 
@@ -1066,7 +1066,7 @@ O objetivo não é otimizar prematuramente, mas observar o comportamento real do
 
 ---
 
-# 42. Query Optimization
+# 42. Otimização de Queries
 
 Queries críticas devem ser analisadas com ferramentas do PostgreSQL quando necessário.
 
@@ -1090,7 +1090,7 @@ A otimização deve ser baseada em evidência.
 
 ---
 
-# 43. N+1 Queries
+# 43. Queries N+1
 
 ORMs podem facilitar operações, mas também podem esconder padrões ineficientes.
 
@@ -1122,7 +1122,7 @@ A escolha depende do caso de uso.
 
 ---
 
-# 44. Connection Pool
+# 44. Pool de Conexões
 
 A aplicação utiliza conexões com PostgreSQL através da camada de acesso ao banco.
 
@@ -1170,7 +1170,7 @@ Redis não substitui o PostgreSQL como fonte principal dos dados persistentes de
 
 ---
 
-# 46. Cache e Database
+# 46. Cache e Banco de Dados
 
 Quando caching for introduzido para dados de negócio, será necessário definir claramente:
 
@@ -1203,7 +1203,7 @@ Também será necessário considerar:
 
 ---
 
-# 47. Database Transactions e Redis
+# 47. Transações no Banco e Redis
 
 Uma transaction PostgreSQL e uma operação Redis não possuem automaticamente a mesma atomicidade.
 
@@ -1233,7 +1233,7 @@ A estratégia concreta dependerá do caso de uso.
 
 ---
 
-# 48. Audit e Database
+# 48. Auditoria e Banco de Dados
 
 Audit Logs podem estar relacionados à mesma transaction da operação de negócio.
 
@@ -1283,7 +1283,7 @@ Atualmente, essa é uma direção arquitetural futura e não deve ser interpreta
 
 ---
 
-# 50. Database e Domain Events
+# 50. Banco de Dados e Eventos de Domínio
 
 Domain Events podem representar mudanças relevantes no domínio.
 
@@ -1311,7 +1311,7 @@ São conceitos diferentes.
 
 ---
 
-# 51. Database Backup
+# 51. Backup do Banco de Dados
 
 Como o PostgreSQL contém dados persistentes importantes, backups são uma responsabilidade operacional crítica.
 
@@ -1331,7 +1331,7 @@ Backup não deve ser considerado concluído apenas porque um arquivo foi gerado.
 
 ---
 
-# 52. Disaster Recovery
+# 52. Recuperação de Desastres
 
 Além do backup, a operação deve considerar recuperação após falhas.
 
@@ -1353,7 +1353,7 @@ Esses valores ainda podem ser formalizados conforme a infraestrutura do Exactum 
 
 ---
 
-# 53. Database Security
+# 53. Segurança do Banco de Dados
 
 O acesso ao PostgreSQL deve seguir o princípio de menor privilégio.
 
@@ -1391,7 +1391,7 @@ O gerenciamento desses valores deve ser realizado pela infraestrutura apropriada
 
 ---
 
-# 55. Database Access em Development
+# 55. Acesso ao Banco em Desenvolvimento
 
 O ambiente de desenvolvimento deve possuir configuração separada do ambiente de produção.
 
@@ -1413,7 +1413,7 @@ Dados reais de produção não devem ser utilizados indiscriminadamente em desen
 
 ---
 
-# 56. Database Access em Tests
+# 56. Acesso ao Banco nos Testes
 
 Testes automatizados devem possuir ambiente controlado.
 
@@ -1430,7 +1430,7 @@ O objetivo é evitar que testes dependam de dados existentes ou produzam efeitos
 
 ---
 
-# 57. Test Data
+# 57. Dados de Teste
 
 Dados utilizados em testes devem ser determinísticos sempre que possível.
 
@@ -1449,7 +1449,7 @@ Factories podem ser utilizadas para gerar dados de teste sem duplicar estruturas
 
 ---
 
-# 58. Database Testing
+# 58. Testes de Banco de Dados
 
 A camada de persistência deve ser testada de maneira apropriada.
 
@@ -1470,7 +1470,7 @@ Testes unitários isolados não substituem testes de integração com PostgreSQL
 
 ---
 
-# 59. Migrations Testing
+# 59. Testes de Migrations
 
 Migrations também devem ser tratadas como código.
 
@@ -1488,7 +1488,7 @@ Idealmente, o pipeline deve detectar migrations quebradas antes do deployment de
 
 ---
 
-# 60. Schema Evolution
+# 60. Evolução do Schema
 
 O schema do banco não é estático.
 
@@ -1517,7 +1517,7 @@ A evolução deve ser controlada por migrations e acompanhada de alterações co
 
 ---
 
-# 61. Database e Domain Boundaries
+# 61. Banco de Dados e Fronteiras de Domínio
 
 A organização do banco deve acompanhar, mas não necessariamente reproduzir literalmente, os limites de domínio.
 
@@ -1545,7 +1545,7 @@ A separação física ou lógica mais forte pode ocorrer conforme houver necessi
 
 ---
 
-# 62. Database e DDD
+# 62. Banco de Dados e DDD
 
 A evolução para uma arquitetura inspirada em DDD não significa que cada entidade precise automaticamente possuir sua própria tabela ou banco.
 
@@ -1572,7 +1572,7 @@ Um contexto pode compartilhar o mesmo banco enquanto os limites de software são
 
 ---
 
-# 63. Future Database Architecture
+# 63. Arquitetura Futura do Banco de Dados
 
 Conforme o Exactum amadurecer, a camada de persistência poderá evoluir com:
 
@@ -1596,7 +1596,7 @@ Essas evoluções devem ocorrer conforme problemas reais surgirem, evitando comp
 
 ---
 
-# 64. Observability
+# 64. Observabilidade
 
 A camada de banco deve participar da estratégia de observabilidade.
 
@@ -1624,7 +1624,7 @@ ou outras ferramentas de observabilidade.
 
 ---
 
-# 65. Performance Monitoring
+# 65. Monitoramento de Performance
 
 Performance do banco deve ser acompanhada junto com performance da aplicação.
 
@@ -1652,7 +1652,7 @@ podem ajudar a relacionar uma requisição HTTP a operações internas e problem
 
 ---
 
-# 66. Error Handling
+# 66. Tratamento de Erros
 
 Erros de banco não devem ser expostos diretamente ao consumidor da API.
 
@@ -1680,7 +1680,7 @@ docs/api/errors.md
 
 ---
 
-# 67. Database Errors e Multi-tenancy
+# 67. Erros de Banco de Dados e Multi-Tenancy
 
 Erros de persistência também precisam respeitar o contexto de tenant.
 
@@ -1694,7 +1694,7 @@ Respostas para o cliente devem continuar obedecendo:
 
 ---
 
-# 68. Data Retention
+# 68. Retenção de Dados
 
 Nem todos os dados possuem a mesma necessidade de retenção.
 
@@ -1716,7 +1716,7 @@ As políticas de retenção ainda podem ser formalizadas conforme o produto amad
 
 ---
 
-# 69. Data Deletion
+# 69. Exclusão de Dados
 
 Exclusão de dados deve ser analisada de acordo com o tipo de informação.
 
@@ -1764,7 +1764,7 @@ Entretanto, remoções físicas devem ser realizadas com cautela.
 
 ---
 
-# 71. Database Documentation
+# 71. Documentação do Banco de Dados
 
 A documentação do banco deve evoluir junto com o schema.
 
@@ -1787,7 +1787,7 @@ O objetivo é evitar que o código seja a única fonte de conhecimento sobre a p
 
 ---
 
-# 72. Current State
+# 72. Estado Atual
 
 Atualmente, o Exactum utiliza:
 
@@ -1811,7 +1811,7 @@ A camada de persistência ainda está em evolução junto com a arquitetura do E
 
 ---
 
-# 73. Limitations and Known Evolution Points
+# 73. Limitações e Pontos de Evolução Conhecidos
 
 Algumas capacidades ainda podem evoluir.
 
@@ -1835,7 +1835,7 @@ Esses pontos representam possibilidades de evolução e não devem ser interpret
 
 ---
 
-# 74. Future Evolution
+# 74. Evolução Futura
 
 A evolução da persistência deverá seguir uma abordagem incremental.
 
@@ -1873,7 +1873,7 @@ A evolução não deve ser guiada apenas por padrões arquiteturais, mas pelos p
 
 ---
 
-# 75. Design Principles
+# 75. Princípios de Design
 
 A arquitetura de banco de dados do Exactum pode ser resumida nos seguintes princípios:
 
@@ -1897,7 +1897,7 @@ A arquitetura de banco de dados do Exactum pode ser resumida nos seguintes princ
 
 ---
 
-# 76. Related Documentation
+# 76. Documentos Relacionados
 
 Documentos relacionados:
 

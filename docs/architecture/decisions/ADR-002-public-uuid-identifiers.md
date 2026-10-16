@@ -1,4 +1,4 @@
-# ADR-002 — Public UUID Identifiers
+# ADR-002 — UUIDs como Identificadores Públicos
 
 - **Status:** Accepted
 - **Date:** None
@@ -9,7 +9,7 @@
 
 ---
 
-# 1. Context
+# 1. Contexto
 
 O Exactum possui uma API utilizada pelo frontend e que expõe recursos como:
 
@@ -66,7 +66,7 @@ O Exactum precisa também considerar:
 
 ---
 
-# 2. Decision
+# 2. Decisão
 
 O Exactum adotará **UUID como identificador público dos recursos expostos pela API**.
 
@@ -108,7 +108,7 @@ A resolução entre identificador público e identificador interno deve ocorrer 
 
 ---
 
-# 3. Rationale
+# 3. Justificativa
 
 A principal motivação para essa decisão é separar a **identidade pública de um recurso** de sua **representação interna de persistência**.
 
@@ -138,11 +138,11 @@ A API, portanto, não precisa ficar acoplada à estratégia específica utilizad
 
 ---
 
-# 4. Public Identifier vs Internal Identifier
+# 4. Identificador Público vs Identificador Interno
 
 A arquitetura diferencia explicitamente dois conceitos.
 
-## 4.1 Public Identifier
+## 4.1 Identificador Público
 
 É o identificador utilizado para referenciar um recurso através da API.
 
@@ -164,7 +164,7 @@ Esse identificador pode aparecer em:
 
 ---
 
-## 4.2 Internal Identifier
+## 4.2 Identificador Interno
 
 É o identificador utilizado internamente pela persistência.
 
@@ -181,7 +181,7 @@ O cliente da API não deve depender desse identificador.
 
 ---
 
-# 5. API Contract
+# 5. Contrato da API
 
 O UUID público faz parte do contrato da API.
 
@@ -215,7 +215,7 @@ A API atua como uma abstração sobre a persistência.
 
 ---
 
-# 6. Why Not Expose Sequential Integer IDs?
+# 6. Por que Não Expor IDs Inteiros Sequenciais?
 
 Uma alternativa seria expor diretamente IDs incrementais:
 
@@ -240,7 +240,7 @@ Esse modelo possui algumas características indesejáveis para o contrato públi
 
 ---
 
-## 6.1 Resource Enumeration
+## 6.1 Enumeração de Recursos
 
 IDs sequenciais facilitam perceber a existência de uma sequência de recursos.
 
@@ -274,7 +274,7 @@ O UUID reduz exposição estrutural do identificador, mas não substitui os cont
 
 ---
 
-# 7. Security Considerations
+# 7. Considerações de Segurança
 
 A utilização de UUID público oferece uma camada adicional de separação entre o contrato público e a estrutura interna.
 
@@ -310,7 +310,7 @@ Portanto:
 
 ---
 
-# 8. UUID and Tenant Isolation
+# 8. UUID e Isolamento de Tenant
 
 A decisão também se relaciona diretamente com Multi-Tenancy.
 
@@ -352,7 +352,7 @@ A existência de um UUID válido não elimina a necessidade de Tenant Isolation.
 
 ---
 
-# 9. Identifier Resolution
+# 9. Resolução de Identificadores
 
 Quando a API recebe um UUID público, a aplicação deve resolver esse identificador para a entidade correspondente.
 
@@ -382,7 +382,7 @@ O princípio importante é:
 
 ---
 
-# 10. Separation of Concerns
+# 10. Separação de Responsabilidades
 
 A separação entre identificador público e interno reforça a divisão entre:
 
@@ -418,17 +418,17 @@ Essa independência facilita mudanças futuras na persistência.
 
 ---
 
-# 11. Alternatives Considered
+# 11. Alternativas Consideradas
 
-## 11.1 Sequential Integer as Public Identifier
+## 11.1 Inteiro Sequencial como Identificador Público
 
-### Example
+### Exemplo
 
 ```http
 GET /products/42
 ```
 
-### Advantages
+### Vantagens
 
 - simples;
 - compacto;
@@ -436,7 +436,7 @@ GET /products/42
 - familiar;
 - fácil de depurar.
 
-### Disadvantages
+### Desvantagens
 
 - expõe sequência;
 - aumenta a previsibilidade dos identificadores;
@@ -444,13 +444,13 @@ GET /products/42
 - facilita enumeration;
 - pode dificultar evolução da estratégia de identificação.
 
-### Decision
+### Decisão
 
 **Não adotado como identificador público.**
 
 ---
 
-# 12. UUID as Database Primary Key and Public Identifier
+# 12. UUID como Chave Primária e Identificador Público
 
 Outra alternativa seria utilizar o mesmo UUID como:
 
@@ -467,21 +467,21 @@ Product
 └── uuid = 018f...
 ```
 
-### Advantages
+### Vantagens
 
 - modelo conceitualmente simples;
 - um único identificador;
 - menor necessidade de resolução entre IDs;
 - UUID já possui semântica pública.
 
-### Disadvantages
+### Desvantagens
 
 - acopla diretamente a persistência ao identificador público;
 - pode tornar decisões futuras de persistência mais difíceis;
 - aumenta o tamanho de PKs/FKs quando comparado a identificadores numéricos;
 - mistura uma preocupação de API com uma preocupação de armazenamento.
 
-### Decision
+### Decisão
 
 Não é o modelo arquitetural escolhido como princípio obrigatório.
 
@@ -489,7 +489,7 @@ O sistema pode utilizar UUID em ambos os contextos quando tecnicamente apropriad
 
 ---
 
-# 13. UUID Versions
+# 13. Versões de UUID
 
 A arquitetura não deve depender de propriedades específicas de uma versão de UUID sem que isso seja uma decisão explícita.
 
@@ -510,7 +510,7 @@ A escolha específica da versão deve ser tratada como uma decisão de implement
 
 ---
 
-# 14. UUID Generation
+# 14. Geração de UUID
 
 A geração de UUID deve ocorrer de maneira consistente.
 
@@ -528,7 +528,7 @@ Em operações de criação, a aplicação deve controlar a geração ou valida�
 
 ---
 
-# 15. Identifier Immutability
+# 15. Imutabilidade de Identificadores
 
 Depois que um recurso recebe seu UUID público, esse identificador deve ser considerado estável.
 
@@ -554,7 +554,7 @@ O identificador representa a identidade do recurso e não seus atributos mutáve
 
 ---
 
-# 16. Resource References
+# 16. Referências a Recursos
 
 Recursos relacionados devem utilizar os identificadores públicos quando a referência fizer parte do contrato externo.
 
@@ -586,7 +586,7 @@ O UUID continua sendo o identificador do recurso.
 
 ---
 
-# 17. Logging and Observability
+# 17. Logging e Observabilidade
 
 UUIDs públicos podem aparecer em mecanismos de observabilidade quando necessários para investigação.
 
@@ -619,7 +619,7 @@ Esses conceitos possuem responsabilidades diferentes.
 
 ---
 
-# 18. Audit Logs and Platform Events
+# 18. Logs de Auditoria e Eventos de Plataforma
 
 A estratégia de observabilidade também utiliza identificadores públicos para relacionar eventos e recursos quando necessário.
 
@@ -659,7 +659,7 @@ O uso desses identificadores ajuda a manter os registros correlacionáveis sem e
 
 ---
 
-# 19. Database Considerations
+# 19. Considerações sobre o Banco de Dados
 
 A separação entre identificador público e interno permite que o banco seja otimizado independentemente do contrato da API.
 
@@ -692,7 +692,7 @@ Essa flexibilidade é especialmente relevante para uma aplicação que ainda est
 
 ---
 
-# 20. Migration Implications
+# 20. Implicações nas Migrations
 
 Caso a estratégia interna de identificação seja alterada no futuro, a API não precisa necessariamente mudar.
 
@@ -724,7 +724,7 @@ Essa separação reduz o impacto de migrations estruturais.
 
 ---
 
-# 21. Performance Considerations
+# 21. Considerações de Performance
 
 UUIDs possuem características diferentes de identificadores numéricos.
 
@@ -742,7 +742,7 @@ A arquitetura preserva a possibilidade de utilizar identificadores internos adeq
 
 ---
 
-# 22. Distributed Systems Considerations
+# 22. Considerações sobre Sistemas Distribuídos
 
 UUIDs também possuem uma característica útil para uma futura evolução do Exactum.
 
@@ -772,7 +772,7 @@ Essa possibilidade não é o motivo principal da decisão atual, mas representa 
 
 ---
 
-# 23. External Integrations
+# 23. Integrações Externas
 
 Caso recursos do Exactum sejam futuramente expostos a integrações externas, o UUID público poderá funcionar como identificador estável do recurso.
 
@@ -800,7 +800,7 @@ O conhecimento do UUID não concede acesso automaticamente.
 
 ---
 
-# 24. Security Misconceptions
+# 24. Equívocos de Segurança
 
 Esta decisão não deve gerar a interpretação de que UUID torna a API segura contra acesso indevido.
 
@@ -846,9 +846,9 @@ Secure Session Management
 
 ---
 
-# 25. Consequences
+# 25. Consequências
 
-## 25.1 Positive Consequences
+## 25.1 Consequências Positivas
 
 ### Menor acoplamento entre API e banco
 
@@ -876,7 +876,7 @@ UUIDs podem ser gerados sem depender exclusivamente de uma sequence centralizada
 
 ---
 
-# 26. Negative Consequences
+# 26. Consequências Negativas
 
 ### Maior complexidade
 
@@ -908,7 +908,7 @@ antes de executar determinadas operações.
 
 Quando utilizados diretamente na persistência, podem produzir estruturas maiores que identificadores numéricos.
 
-### Debugging
+### Depuração
 
 UUIDs são menos amigáveis visualmente do que pequenos IDs sequenciais.
 
@@ -956,7 +956,7 @@ O trade-off é considerado adequado ao modelo de evolução do Exactum.
 
 ---
 
-# 28. Current State
+# 28. Estado Atual
 
 Atualmente, o Exactum utiliza identificadores públicos baseados em UUID para recursos expostos pela API.
 
@@ -978,7 +978,7 @@ Essa separação deve ser preservada mesmo quando detalhes da implementação mu
 
 ---
 
-# 29. Future Evolution
+# 29. Evolução Futura
 
 A estratégia de identificadores poderá evoluir conforme o sistema cresça.
 
@@ -1009,7 +1009,7 @@ UUIDv7 / Distributed Identifier Strategy
 
 ---
 
-# 30. Related Decisions
+# 30. Decisões Relacionadas
 
 ### Multi-Tenancy
 
@@ -1019,7 +1019,7 @@ O identificador público de um recurso deve ser interpretado dentro do tenant co
 ADR-001 — Shared Database Multi-Tenancy
 ```
 
-### Authentication
+### Autenticação
 
 UUIDs podem aparecer associados a identities autenticadas.
 
@@ -1027,7 +1027,7 @@ UUIDs podem aparecer associados a identities autenticadas.
 ADR-003 — HttpOnly Cookie Authentication
 ```
 
-### Session Management
+### Gerenciamento de Sessões
 
 Identificadores como user UUID e tenant UUID podem participar da associação de sessões.
 
@@ -1035,7 +1035,7 @@ Identificadores como user UUID e tenant UUID podem participar da associação de
 ADR-004 — Redis Session Management
 ```
 
-### Observability
+### Observabilidade
 
 UUIDs são utilizados como referências de recursos em logs, events e audit.
 
@@ -1045,7 +1045,7 @@ ADR-008 — Observability Strategy
 
 ---
 
-# 31. Related Documentation
+# 31. Documentos Relacionados
 
 - `docs/architecture/overview.md`
 - `docs/architecture/application-architecture.md`
@@ -1066,7 +1066,7 @@ ADR-008 — Observability Strategy
 
 ---
 
-# 32. Decision Summary
+# 32. Resumo da Decisão
 
 | Aspect                          | Decision                           |
 | ------------------------------- | ---------------------------------- |
@@ -1084,7 +1084,7 @@ ADR-008 — Observability Strategy
 
 ---
 
-# 33. Final Decision
+# 33. Decisão Final
 
 The Exactum will use **UUIDs as public identifiers for API resources**, maintaining a conceptual separation between public resource identity and internal persistence identity.
 
@@ -1102,6 +1102,6 @@ The UUID itself is **not considered a security mechanism** and does not replace 
 
 ---
 
-## Architectural Principle
+## Princípio Arquitetural
 
 > **Public resource identity should remain independent from internal persistence identity.**

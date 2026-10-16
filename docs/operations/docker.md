@@ -266,7 +266,7 @@ O deploy passa a consistir principalmente em atualizar as imagens/código e recr
 
 ---
 
-# 6. Networks
+# 6. Redes
 
 Os serviços do Compose são conectados através de uma network interna.
 
@@ -414,7 +414,7 @@ Sessões, revogações e outros estados mantidos no Redis devem possuir comporta
 
 ---
 
-# 11. Environment Variables
+# 11. Variáveis de Ambiente
 
 Configurações dependentes do ambiente não devem ser hardcoded nas imagens.
 
@@ -449,7 +449,7 @@ Secrets não devem ser commitados no repositório.
 
 ---
 
-# 12. Docker Images
+# 12. Imagens Docker
 
 As imagens devem conter somente o necessário para executar o serviço.
 
@@ -474,7 +474,7 @@ Quando aplicável, o uso de **multi-stage builds** permite separar o ambiente de
 
 ---
 
-# 13. Backend Image
+# 13. Imagem do Backend
 
 A imagem do backend deve fornecer o runtime necessário para executar a aplicação Flask.
 
@@ -499,7 +499,7 @@ O projeto está em processo de migração do gerenciamento tradicional de `requi
 
 ---
 
-# 14. Frontend Image
+# 14. Imagem do Frontend
 
 O frontend utiliza uma etapa de build para gerar os artefatos estáticos.
 
@@ -524,7 +524,7 @@ A imagem final de produção não precisa carregar todo o toolchain de desenvolv
 
 ---
 
-# 15. Container Lifecycle
+# 15. Ciclo de Vida dos Containers
 
 Containers devem ser considerados componentes descartáveis do ambiente.
 
@@ -580,7 +580,7 @@ No backend do Exactum, o health endpoint também verifica dependências importan
 
 ---
 
-# 17. Startup Order
+# 17. Ordem de Inicialização
 
 A ordem de inicialização dos containers não deve ser confundida com disponibilidade real dos serviços.
 
@@ -766,7 +766,7 @@ Operational Security
 
 ---
 
-# 23. Container não substitui Application Security
+# 23. Container não substitui a segurança da aplicação
 
 É importante não confundir isolamento de containers com mecanismos como:
 
@@ -931,7 +931,7 @@ A estratégia operacional de backup e recovery pode ser detalhada futuramente no
 
 ---
 
-# 29. Production Data
+# 29. Dados de Produção
 
 Dados de produção não devem ser tratados como dados descartáveis.
 
@@ -1204,35 +1204,35 @@ Da mesma forma, uma mudança futura na infraestrutura não deve exigir necessari
 
 A utilização de Docker no Exactum segue alguns princípios:
 
-### Reproducibility
+### Reprodutibilidade
 
 O ambiente deve poder ser recriado de maneira previsível.
 
-### Isolation
+### Isolamento
 
 Cada serviço deve possuir responsabilidades e ciclo de vida bem definidos.
 
-### Ephemeral Containers
+### Containers Efêmeros
 
 Containers podem ser recriados sem que isso represente perda de estado persistente.
 
-### Explicit Persistence
+### Persistência Explícita
 
 Dados importantes devem possuir mecanismo explícito de persistência.
 
-### Minimal Exposure
+### Exposição Mínima
 
 Somente os serviços que realmente precisam de exposição externa devem possuir portas públicas.
 
-### Infrastructure as Code
+### Infraestrutura como Código
 
 A infraestrutura deve ser descrita e versionada junto ao projeto.
 
-### Operational Safety
+### Segurança Operacional
 
 Operações potencialmente destrutivas devem ser explícitas e controladas.
 
-### Production Parity
+### Paridade com Produção
 
 O ambiente de desenvolvimento deve manter compatibilidade suficiente com produção para reduzir surpresas no deploy.
 

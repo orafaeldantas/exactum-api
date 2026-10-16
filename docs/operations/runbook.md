@@ -1,4 +1,4 @@
-# Operational Runbook
+# Runbook Operacional
 
 ## 1. Objetivo
 
@@ -565,7 +565,7 @@ Verifique:
 
 ---
 
-# 13. Problemas com HttpOnly Cookies
+# 13. Problemas com Cookies HttpOnly
 
 O Exactum utiliza cookies `HttpOnly` para autenticação.
 
@@ -669,7 +669,7 @@ Uma falha de refresh não deve ser tratada simplesmente como "JWT inválido" sem
 
 ---
 
-# 15. Cookie Path
+# 15. Path do Cookie
 
 O `Path` dos cookies é particularmente importante no ambiente atual.
 
@@ -826,7 +826,7 @@ O frontend pode esconder funcionalidades sem permissão, mas essa verificação 
 
 ---
 
-# 20. Tenant Isolation
+# 20. Isolamento de Tenant
 
 Problemas relacionados a tenant isolation devem ser tratados como incidentes de alta prioridade.
 
@@ -2413,7 +2413,7 @@ O objetivo não é apenas corrigir o bug.
 
 ---
 
-# 68. Root Cause Analysis
+# 68. Análise de Causa Raiz
 
 A investigação deve tentar diferenciar:
 
@@ -2554,7 +2554,7 @@ top
 htop
 ```
 
-## Docker Storage
+## Armazenamento Docker
 
 ```bash
 docker system df

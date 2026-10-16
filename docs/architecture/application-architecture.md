@@ -225,7 +225,7 @@ A camada de domínio, especialmente, ainda está em processo de consolidação e
 
 ---
 
-## 5. Presentation / HTTP Layer
+## 5. Camada de Apresentação / HTTP
 
 A camada de apresentação é responsável por adaptar o protocolo HTTP à aplicação.
 
@@ -317,7 +317,7 @@ A regra de criação do produto deve permanecer no application/domain layer, e n
 
 ---
 
-## 6. Application Layer (Services)
+## 6. Camada de Aplicação (Services)
 
 A camada de aplicação coordena os casos de uso do sistema.
 
@@ -367,7 +367,7 @@ O objetivo é que um application service represente um fluxo de aplicação, e n
 
 ---
 
-## 7. Domain Layer
+## 7. Camada de Domínio
 
 A camada de domínio representa as regras e conceitos centrais do negócio.
 
@@ -391,7 +391,7 @@ O objetivo é identificar quais regras pertencem efetivamente ao negócio e remo
 
 ---
 
-## 8. Infrastructure Layer
+## 8. Camada de Infraestrutura
 
 A infraestrutura contém componentes necessários para executar a aplicação, mas que não representam diretamente regras de negócio.
 
@@ -452,7 +452,7 @@ delete()
 
 ---
 
-### 9.1 Tenant Scoping
+### 9.1 Escopo de Tenant
 
 Repositories possuem papel importante na estratégia defensiva de isolamento de tenants.
 
@@ -504,7 +504,7 @@ pertencem à aplicação, autorização ou domínio.
 
 ---
 
-## 10. Cross-Cutting Concerns
+## 10. Responsabilidades Transversais
 
 Algumas preocupações atravessam múltiplas partes da aplicação.
 
@@ -523,7 +523,7 @@ Essas preocupações não devem ser tratadas simplesmente como responsabilidades
 
 ---
 
-### 10.1 Authentication
+### 10.1 Autenticação
 
 A autenticação determina quem está realizando a requisição.
 
@@ -554,7 +554,7 @@ Detalhes completos estão documentados em:
 
 ---
 
-## 11. Authorization
+## 11. Autorização
 
 Autenticação responde:
 
@@ -593,7 +593,7 @@ Detalhes:
 
 ---
 
-## 12. Tenant Context
+## 12. Contexto do Tenant
 
 O tenant context identifica a organização dentro da qual uma operação está sendo executada.
 
@@ -1046,7 +1046,7 @@ O objetivo principal não é a estrutura de diretórios em si, mas a criação d
 
 ---
 
-## 22. Domain Boundaries
+## 22. Fronteiras de Domínio
 
 Os domínios representam áreas de responsabilidade do sistema.
 
@@ -1080,7 +1080,7 @@ A identificação dos limites deve considerar:
 
 ---
 
-## 23. Framework Isolation
+## 23. Isolamento do Framework
 
 O Exactum utiliza Flask como framework HTTP.
 
@@ -1117,7 +1117,7 @@ O objetivo da v0.3.x é reduzir progressivamente a presença de objetos e APIs e
 
 ---
 
-## 24. Persistence Isolation
+## 24. Isolamento na Persistência
 
 A aplicação utiliza PostgreSQL e SQLAlchemy.
 

@@ -1,4 +1,4 @@
-# ADR-005 — Refresh Token Rotation
+# ADR-005 — Rotação de Refresh Token
 
 - **Status:** Accepted
 - **Date:** None
@@ -9,7 +9,7 @@
 
 ---
 
-# 1. Context
+# 1. Contexto
 
 O Exactum utiliza autenticação baseada em JWT, conforme definido na **ADR-003 — HttpOnly Cookie Authentication**.
 
@@ -46,7 +46,7 @@ Dessa forma, torna-se possível adotar **Refresh Token Rotation**.
 
 ---
 
-# 2. Decision
+# 2. Decisão
 
 O Exactum adotará **Refresh Token Rotation**.
 
@@ -91,7 +91,7 @@ Assim, cada refresh representa uma transição do estado da sessão.
 
 ---
 
-# 3. Core Principle
+# 3. Princípio Central
 
 O princípio central desta decisão é:
 
@@ -116,7 +116,7 @@ O token anterior deixa de ser válido depois de uma rotação bem-sucedida.
 
 ---
 
-# 4. Relationship with Session Management
+# 4. Relação com o Gerenciamento de Sessões
 
 A rotação depende diretamente do gerenciamento de sessão definido na ADR-004.
 
@@ -145,7 +145,7 @@ Sem algum mecanismo de estado server-side, a rotação e a detecção confiável
 
 ---
 
-# 5. Refresh Token Identity
+# 5. Identidade do Refresh Token
 
 Cada refresh token possui um identificador único, representado pelo **JTI**.
 
@@ -170,7 +170,7 @@ A rotação altera o identificador associado à credencial ativa.
 
 ---
 
-# 6. Initial Session
+# 6. Sessão Inicial
 
 Durante o login, o backend cria a primeira geração da sessão.
 
@@ -199,7 +199,7 @@ O refresh token inicial passa a representar a primeira geração da sessão.
 
 ---
 
-# 7. Normal Refresh Flow
+# 7. Fluxo Normal de Refresh
 
 Quando o access token expira, o frontend não precisa solicitar novamente as credenciais do usuário.
 
@@ -251,7 +251,7 @@ Issue Access + Refresh B
 
 ---
 
-# 8. Refresh Token Rotation Example
+# 8. Exemplo de Rotação de Refresh Token
 
 Considere uma sessão inicialmente criada com:
 
@@ -297,7 +297,7 @@ Somente a geração atual deve permanecer utilizável.
 
 ---
 
-# 9. Why Rotate
+# 9. Por que Rotacionar
 
 A rotação reduz o tempo durante o qual uma determinada credencial de refresh pode ser reutilizada.
 
@@ -334,7 +334,7 @@ Ela reduz a utilidade de uma credencial antiga e permite que o backend identifiq
 
 ---
 
-# 10. Refresh Token Reuse
+# 10. Reutilização de Refresh Token
 
 Uma consequência importante da rotação é a possibilidade de detectar o uso de um refresh token que já deveria estar invalidado.
 
@@ -378,7 +378,7 @@ A aplicação deve tratar esse cenário como uma condição de segurança releva
 
 ---
 
-# 11. Reuse Detection Strategy
+# 11. Estratégia de Detecção de Reutilização
 
 A reutilização de um refresh token invalidado deve ser distinguida de um refresh token simplesmente inexistente.
 
@@ -407,7 +407,7 @@ A diferenciação permite que o sistema evolua posteriormente para respostas de 
 
 ---
 
-# 12. Session Family
+# 12. Família de Sessões
 
 Os refresh tokens de uma mesma sessão podem ser entendidos como pertencentes a uma **rotation family**.
 
@@ -427,7 +427,7 @@ Isso cria uma base para futuras estratégias de invalidação da família inteir
 
 ---
 
-# 13. Compromised Refresh Token
+# 13. Refresh Token Comprometido
 
 Considere o seguinte cenário:
 
@@ -460,7 +460,7 @@ A aplicação pode, dependendo da estratégia futura de segurança, invalidar a 
 
 ---
 
-# 14. Race Conditions
+# 14. Condições de Corrida
 
 A rotação introduz uma questão importante de concorrência.
 
@@ -496,7 +496,7 @@ deve possuir comportamento suficientemente atômico para impedir que duas requis
 
 ---
 
-# 15. Atomicity Requirement
+# 15. Requisito de Atomicidade
 
 A rotação deve ser tratada como uma operação lógica única.
 
@@ -524,7 +524,7 @@ O mecanismo específico utilizado é detalhe de implementação e pode evoluir.
 
 ---
 
-# 16. Access Token Rotation
+# 16. Rotação de Access Token
 
 A rotação de refresh token normalmente acompanha a emissão de um novo access token.
 
@@ -549,7 +549,7 @@ A rotação do refresh token não implica necessariamente revogação imediata d
 
 ---
 
-# 17. Logout Interaction
+# 17. Interação com Logout
 
 O logout encerra a sessão ativa.
 
@@ -580,7 +580,7 @@ Tokens antigos ou refresh tokens anteriormente revogados não devem recuperar a 
 
 ---
 
-# 18. User Blocking Interaction
+# 18. Interação com o Bloqueio de Usuários
 
 Quando um usuário é bloqueado, as sessões associadas ao usuário podem precisar ser invalidadas.
 
@@ -607,7 +607,7 @@ Essa decisão deve permanecer alinhada ao modelo de Session Management da ADR-00
 
 ---
 
-# 19. Tenant Suspension Interaction
+# 19. Interação com a Suspensão de Tenant
 
 O mesmo princípio se aplica ao tenant.
 
@@ -630,7 +630,7 @@ Um refresh token criptograficamente válido não deve permitir que uma sessão c
 
 ---
 
-# 20. Impersonation Interaction
+# 20. Interação com Impersonation
 
 A rotação também precisa preservar corretamente o contexto de impersonation.
 
@@ -688,33 +688,33 @@ O navegador simplesmente mantém o cookie correspondente à sessão atual.
 
 ---
 
-# 22. Security Properties
+# 22. Propriedades de Segurança
 
 A rotação busca fornecer as seguintes propriedades:
 
-### Single-use behavior
+### Comportamento de uso único
 
 Uma geração de refresh token deve ser utilizada uma única vez.
 
-### Revocability
+### Revogabilidade
 
 Uma geração específica pode ser invalidada.
 
-### Replay resistance
+### Resistência a replay
 
 A reutilização de uma geração anterior pode ser detectada e rejeitada.
 
-### Session continuity
+### Continuidade da sessão
 
 O usuário pode continuar autenticado sem informar novamente suas credenciais.
 
-### Server-side control
+### Controle no servidor
 
 O backend pode controlar a validade da sessão independentemente da expiração criptográfica isolada do JWT.
 
 ---
 
-# 23. What Rotation Does Not Solve
+# 23. O que a Rotação Não Resolve
 
 Refresh Token Rotation não resolve automaticamente:
 
@@ -733,7 +733,7 @@ Ela não substitui outras medidas de segurança.
 
 ---
 
-# 24. Relationship with CSRF
+# 24. Relação com CSRF
 
 Como definido na ADR-003, o Exactum utiliza cookies HttpOnly.
 
@@ -755,7 +755,7 @@ A proteção contra CSRF deve ser tratada separadamente.
 
 ---
 
-# 25. Redis State
+# 25. Estado no Redis
 
 O Redis mantém o estado necessário para identificar a geração atual e seu status.
 
@@ -777,7 +777,7 @@ O princípio arquitetural é que o backend deve conseguir determinar se o JTI re
 
 ---
 
-# 26. Expiration
+# 26. Expiração
 
 Refresh tokens continuam possuindo expiração própria.
 
@@ -801,11 +801,11 @@ A rotação não deve permitir renovação indefinida caso a política da sessã
 
 ---
 
-# 27. Sliding Session vs Absolute Session Lifetime
+# 27. Sessão Deslizante vs Tempo de Vida Absoluto
 
 Uma evolução importante é distinguir:
 
-### Sliding Lifetime
+### Tempo de Vida Deslizante
 
 Cada refresh prolonga a sessão.
 
@@ -815,7 +815,7 @@ A → B → C → D → E
 
 A sessão continua enquanto o usuário permanecer ativo.
 
-### Absolute Lifetime
+### Tempo de Vida Absoluto
 
 Existe um limite máximo para a sessão.
 
@@ -841,9 +841,9 @@ Esses parâmetros devem ser tratados como políticas de segurança específicas 
 
 ---
 
-# 28. Alternatives Considered
+# 28. Alternativas Consideradas
 
-## 28.1 Static Refresh Token
+## 28.1 Refresh Token Estático
 
 ### Descrição
 
@@ -871,7 +871,7 @@ A → A → A → A
 
 ---
 
-# 29. Short-Lived Access Token Without Rotation
+# 29. Access Token de Curta Duração sem Rotação
 
 ### Descrição
 
@@ -894,7 +894,7 @@ Utilizar access tokens de curta duração, mas manter refresh token estático.
 
 ---
 
-# 30. Refresh Token Rotation
+# 30. Rotação de Refresh Token
 
 ### Descrição
 
@@ -923,7 +923,7 @@ Substituir o refresh token a cada utilização.
 
 ---
 
-# 31. Network Failure Considerations
+# 31. Considerações sobre Falhas de Rede
 
 Um ponto importante é o comportamento quando a rotação é concluída no backend, mas a resposta não chega corretamente ao cliente.
 
@@ -966,7 +966,7 @@ A implementação deve evitar que falhas normais de rede resultem em inconsistê
 
 ---
 
-# 32. Concurrency and Client Behavior
+# 32. Concorrência e Comportamento do Cliente
 
 O frontend também deve evitar múltiplos refreshes simultâneos desnecessários.
 
@@ -988,7 +988,7 @@ A implementação específica pertence ao frontend e não altera a decisão arqu
 
 ---
 
-# 33. Observability
+# 33. Observabilidade
 
 Eventos relacionados à rotação podem ser observados através de eventos de plataforma e logs estruturados.
 
@@ -1016,7 +1016,7 @@ Tokens completos não devem ser registrados.
 
 ---
 
-# 34. Security Response to Reuse
+# 34. Resposta de Segurança à Reutilização
 
 A reutilização de um refresh token já invalidado deve ser tratada como evento de segurança relevante.
 
@@ -1043,7 +1043,7 @@ Uma política mais sofisticada pode ser definida posteriormente.
 
 ---
 
-# 35. Performance Considerations
+# 35. Considerações de Performance
 
 Cada refresh exige operações adicionais:
 
@@ -1062,7 +1062,7 @@ A rotação, portanto, adiciona complexidade e algumas operações de infraestru
 
 ---
 
-# 36. Horizontal Scaling
+# 36. Escalabilidade Horizontal
 
 A rotação é compatível com múltiplas instâncias da API.
 
@@ -1088,11 +1088,11 @@ Isso é particularmente importante para a propriedade de single-use.
 
 ---
 
-# 37. Testing Strategy
+# 37. Estratégia de Testes
 
 Os testes devem validar tanto o fluxo normal quanto condições adversas.
 
-## 37.1 Normal Rotation
+## 37.1 Rotação Normal
 
 ```text
 A → B → C
@@ -1108,7 +1108,7 @@ Verificar:
 
 ---
 
-## 37.2 Reuse
+## 37.2 Reutilização
 
 ```text
 A → B
@@ -1120,7 +1120,7 @@ Verificar que A não pode ser reutilizado.
 
 ---
 
-## 37.3 Concurrent Refresh
+## 37.3 Refresh Concorrente
 
 Duas requisições utilizando A simultaneamente.
 
@@ -1135,25 +1135,25 @@ ou outro comportamento equivalente que preserve a propriedade de single-use.
 
 ---
 
-## 37.4 Expired Token
+## 37.4 Token Expirado
 
 Refresh token expirado deve ser rejeitado independentemente de seu estado no Redis.
 
 ---
 
-## 37.5 Revoked Session
+## 37.5 Sessão Revogada
 
 Refresh token associado a uma sessão revogada deve ser rejeitado.
 
 ---
 
-## 37.6 User Block
+## 37.6 Bloqueio de Usuário
 
 Refresh de usuário bloqueado deve ser rejeitado.
 
 ---
 
-## 37.7 Tenant Suspension
+## 37.7 Suspensão de Tenant
 
 Refresh de usuário pertencente a tenant suspenso deve ser rejeitado.
 
@@ -1187,7 +1187,7 @@ A identidade original deve permanecer corretamente associada à sessão.
 
 ---
 
-# 38. Operational Implications
+# 38. Implicações Operacionais
 
 A rotação aumenta a importância operacional do Redis.
 
@@ -1217,7 +1217,7 @@ pode indicar:
 
 ---
 
-# 39. Future Evolution
+# 39. Evolução Futura
 
 Esta decisão permite futuras evoluções como:
 
@@ -1238,7 +1238,7 @@ Essas funcionalidades devem ser registradas em novas ADRs quando introduzirem de
 
 ---
 
-# 40. Related Decisions
+# 40. Decisões Relacionadas
 
 - **ADR-001 — Shared Database Multi-Tenancy**
 - **ADR-002 — Public UUID Identifiers**
@@ -1255,7 +1255,7 @@ Esta ADR define a política de evolução do refresh token dentro desse modelo.
 
 ---
 
-# 41. Related Documentation
+# 41. Documentos Relacionados
 
 ```text
 docs/security/authentication.md
@@ -1275,7 +1275,7 @@ docs/observability/correlation.md
 
 ---
 
-# 42. Architectural Principle
+# 42. Princípio Arquitetural
 
 A decisão pode ser resumida pelo seguinte princípio:
 
@@ -1287,7 +1287,7 @@ No contexto do Exactum:
 
 ---
 
-# 43. Decision Summary
+# 43. Resumo da Decisão
 
 | Aspecto                | Decisão                       |
 | ---------------------- | ----------------------------- |
@@ -1314,7 +1314,7 @@ No contexto do Exactum:
 
 ---
 
-# 44. Final Decision
+# 44. Decisão Final
 
 O Exactum adotará **Refresh Token Rotation** como política padrão para renovação das sessões autenticadas.
 

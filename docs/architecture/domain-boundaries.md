@@ -1,4 +1,4 @@
-# Domain Boundaries
+# Fronteiras de Domínio
 
 > Definição das fronteiras de domínio do Exactum, suas responsabilidades,
 > dependências e regras de interação entre contextos.
@@ -238,7 +238,7 @@ conforme a modelagem do domínio evolua.
 
 ---
 
-## 5. Auth
+## 5. Autenticação
 
 ### Responsabilidade
 
@@ -342,7 +342,7 @@ através de contratos apropriados.
 
 ---
 
-## 7. Users
+## 7. Usuários
 
 ### Responsabilidade
 
@@ -371,7 +371,7 @@ autorização.
 
 ---
 
-## 8. Authorization
+## 8. Autorização
 
 ### Responsabilidade
 
@@ -402,7 +402,7 @@ Authorization Decision
 
 ---
 
-### Separação entre Users e Authorization
+### Separação entre Usuários e Autorização
 
 Um usuário possuir uma identidade não significa que ele possua
 automaticamente autorização para executar determinada operação.
@@ -421,7 +421,7 @@ Essa separação deve permanecer explícita.
 
 ---
 
-## 9. Products
+## 9. Produtos
 
 ### Responsabilidade
 
@@ -456,7 +456,7 @@ Ele não é responsável por determinar quanto estoque existe.
 
 ---
 
-## 10. Inventory
+## 10. Estoque
 
 > **Status:** Contexto arquitetural planejado, atualmente distribuído
 > principalmente entre `Products` e `Sales`.
@@ -513,7 +513,7 @@ Essa distinção deve permanecer clara.
 
 ---
 
-## 11. Sales
+## 11. Vendas
 
 ### Responsabilidade
 
@@ -539,7 +539,7 @@ Sale
  └── Transaction Context
 ```
 
-### Relação com Inventory
+### Relação com Estoque
 
 Uma venda pode provocar uma alteração no estoque.
 
@@ -581,7 +581,7 @@ A forma exata desse contrato poderá evoluir durante a v0.3.x.
 
 ---
 
-## 12. Reporting
+## 12. Relatórios
 
 > **Status:** Contexto arquitetural planejado — atualmente distribuído
 > entre `Products`, `Sales` e componentes de dashboard.
@@ -630,7 +630,7 @@ Por isso, Reporting deve evitar duplicar regras de negócio transacionais.
 
 ---
 
-## 13. Platform / Administration
+## 13. Plataforma / Administração
 
 Algumas operações pertencem ao nível da plataforma e não ao contexto
 de um tenant específico.

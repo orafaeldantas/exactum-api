@@ -1,4 +1,4 @@
-# API Versioning
+# Versionamento da API
 
 ## 1. Objetivo
 
@@ -376,7 +376,7 @@ seguida de um processo de depreciação e migração.
 
 ---
 
-# 10. Non-breaking Changes
+# 10. Mudanças Compatíveis
 
 Uma **non-breaking change** é uma alteração que mantém o contrato existente funcional para consumidores atuais.
 
@@ -511,7 +511,7 @@ Durante o período de transição, `name` poderia permanecer disponível enquant
 
 ---
 
-# 14. Deprecation
+# 14. Depreciação
 
 **Deprecation** significa que determinado recurso continua disponível, mas não deve mais ser utilizado para novos desenvolvimentos.
 
@@ -626,7 +626,7 @@ sem considerar compatibilidade pode representar uma mudança contratual.
 
 ---
 
-# 18. Error Codes como parte do contrato
+# 18. Códigos de erro como parte do contrato
 
 Os `error.code` também fazem parte do contrato público.
 
@@ -863,7 +863,7 @@ Esses testes ajudam a impedir mudanças acidentais no contrato.
 
 ---
 
-# 25. Contract Testing
+# 25. Testes de Contrato
 
 Conforme o Exactum evoluir para múltiplos consumidores, **Contract Testing** poderá ser utilizado para validar explicitamente a compatibilidade entre consumidores e API.
 
@@ -972,7 +972,7 @@ O processo exato pode variar conforme o impacto da alteração.
 
 ---
 
-# 28. Migration Guide
+# 28. Guia de Migração
 
 Quando uma nova versão introduzir mudanças relevantes, deve existir um **Migration Guide**.
 
@@ -1011,7 +1011,7 @@ O migration guide deve explicar exatamente como o consumidor deve adaptar sua in
 
 ---
 
-# 29. Breaking Change Review
+# 29. Revisão de Breaking Changes
 
 Antes de introduzir uma mudança potencialmente incompatível, deve ser feita uma análise explícita.
 
@@ -1037,7 +1037,7 @@ Essa análise evita que breaking changes sejam introduzidas acidentalmente.
 
 ---
 
-# 30. API Versioning e arquitetura interna
+# 30. Versionamento da API e arquitetura interna
 
 O versionamento público da API não deve forçar duplicação desnecessária de toda a aplicação.
 
@@ -1077,7 +1077,7 @@ como duas aplicações completamente independentes.
 
 ---
 
-# 31. Adapter Layer
+# 31. Camada de Adaptadores
 
 Em alguns casos, versões diferentes podem precisar representar o mesmo comportamento interno de maneiras diferentes.
 
@@ -1152,7 +1152,7 @@ Infrastructure
 
 ---
 
-# 33. Versionamento e Domain Evolution
+# 33. Versionamento e evolução do domínio
 
 O domínio também pode evoluir independentemente da API.
 
@@ -1172,7 +1172,7 @@ Esse princípio permite que a arquitetura interna evolua sem expor continuamente
 
 ---
 
-# 34. Versionamento e Database Migrations
+# 34. Versionamento e migrations do banco de dados
 
 API versioning e database migration são mecanismos diferentes.
 
@@ -1198,7 +1198,7 @@ A compatibilidade entre banco e API deve ser planejada separadamente.
 
 ---
 
-# 35. Expand and Contract
+# 35. Expandir e Contrair (Expand and Contract)
 
 Quando uma mudança exige alteração estrutural significativa, uma estratégia possível é utilizar o padrão **Expand and Contract**.
 
@@ -1236,7 +1236,7 @@ Esse padrão reduz a necessidade de mudanças abruptas.
 
 ---
 
-# 36. API Versioning e CI/CD
+# 36. Versionamento da API e CI/CD
 
 O pipeline de CI/CD deve validar alterações no contrato da API.
 
@@ -1254,7 +1254,7 @@ Uma mudança de API não deve depender exclusivamente de revisão manual.
 
 ---
 
-# 37. API Versioning e Observability
+# 37. Versionamento da API e observabilidade
 
 Mudanças de versão também devem ser observáveis.
 
@@ -1282,7 +1282,7 @@ O `request_id` continua sendo utilizado para correlação entre os registros rel
 
 ---
 
-# 38. API Versioning e Deprecation Observability
+# 38. Versionamento da API e observabilidade de depreciação
 
 Quando uma versão for deprecated, o uso dela deve ser monitorado.
 
@@ -1335,7 +1335,7 @@ A nomenclatura exata dos estados poderá evoluir conforme o projeto amadurecer.
 
 ---
 
-# 40. Sunset
+# 40. Descontinuação (Sunset)
 
 **Sunset** representa o encerramento planejado de uma versão ou endpoint.
 
@@ -1458,7 +1458,7 @@ Mesmo assim, documentar uma estratégia de versionamento antecipadamente é impo
 
 ---
 
-# 45. API Versioning e Segurança
+# 45. Versionamento da API e segurança
 
 Versionamento não deve ser utilizado para esconder problemas de segurança.
 
@@ -1477,7 +1477,7 @@ A segurança possui prioridade sobre compatibilidade indefinida.
 
 ---
 
-# 46. API Versioning e Authorization Changes
+# 46. Versionamento da API e mudanças de autorização
 
 Alterações de authorization behavior precisam de atenção especial.
 
@@ -1509,7 +1509,7 @@ A classificação depende do impacto real nos consumidores.
 
 ---
 
-# 47. API Versioning e Rate Limiting
+# 47. Versionamento da API e rate limiting
 
 Rate Limiting também pode fazer parte do comportamento observado pelos consumidores.
 
@@ -1649,7 +1649,7 @@ O objetivo é encontrar um equilíbrio entre estabilidade e evolução.
 
 ---
 
-# 52. Anti-patterns
+# 52. Antipadrões
 
 Alguns padrões devem ser evitados.
 
@@ -1709,7 +1709,7 @@ Breaking changes devem ser explícitas e acompanhadas de estratégia de migraç�
 
 ---
 
-# 53. Test Strategy
+# 53. Estratégia de Testes
 
 Os testes de API devem validar tanto comportamento quanto contrato.
 
@@ -1754,7 +1754,7 @@ Uma mudança não deve depender exclusivamente de uma alteração no código.
 
 ---
 
-# 55. Current State
+# 55. Estado Atual
 
 Atualmente, o Exactum possui uma API REST-oriented em evolução, utilizada principalmente pelo frontend web.
 
@@ -1781,7 +1781,7 @@ A estratégia formal de coexistência de múltiplas versões e deprecation será
 
 ---
 
-# 56. Future Evolution
+# 56. Evolução Futura
 
 Conforme o Exactum amadurecer, a estratégia de API versioning poderá evoluir para incluir:
 
@@ -1824,7 +1824,7 @@ Future
 
 ---
 
-# 57. Design Principles
+# 57. Princípios de Design
 
 A estratégia de versionamento da API do Exactum pode ser resumida nos seguintes princípios:
 
@@ -1845,7 +1845,7 @@ A estratégia de versionamento da API do Exactum pode ser resumida nos seguintes
 
 ---
 
-# 58. Related Documentation
+# 58. Documentos Relacionados
 
 Documentos relacionados:
 

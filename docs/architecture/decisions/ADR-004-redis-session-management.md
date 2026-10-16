@@ -1,4 +1,4 @@
-# ADR-004 — Redis-Based Session Management
+# ADR-004 — Gerenciamento de Sessões com Redis
 
 - **Status:** Accepted
 - **Date:** None
@@ -9,7 +9,7 @@
 
 ---
 
-# 1. Context
+# 1. Contexto
 
 O Exactum utiliza JWT como mecanismo de autenticação.
 
@@ -44,7 +44,7 @@ Dessa forma, foi decidido complementar a autenticação baseada em JWT com **ger
 
 ---
 
-# 2. Decision
+# 2. Decisão
 
 O Exactum utilizará **Redis como armazenamento de estado de sessão associado à autenticação**.
 
@@ -91,7 +91,7 @@ A responsabilidade de cada componente é separada:
 
 ---
 
-# 3. Why Redis
+# 3. Por que Redis
 
 Redis foi escolhido por ser adequado para armazenar informações de sessão que precisam ser acessadas com baixa latência e que possuem ciclo de vida controlado.
 
@@ -111,7 +111,7 @@ Redis é, portanto, utilizado como uma camada de **ephemeral security state**.
 
 ---
 
-# 4. Session State vs Authentication Token
+# 4. Estado da Sessão vs Token de Autenticação
 
 É importante distinguir duas coisas:
 
@@ -130,7 +130,7 @@ JWT
  └── expiration
 ```
 
-### Session State
+### Estado da Sessão
 
 Representa o estado atual que o servidor mantém sobre aquela autenticação.
 
@@ -151,7 +151,7 @@ Essa separação permite que o Exactum mantenha as vantagens dos JWTs sem depend
 
 ---
 
-# 5. Session Identifier
+# 5. Identificador da Sessão
 
 As sessões utilizam o **JWT ID (JTI)** como identificador relevante para o gerenciamento do estado associado ao token.
 
@@ -176,7 +176,7 @@ Isso permite que uma sessão específica seja identificada e invalidada sem nece
 
 ---
 
-# 6. Redis Key Strategy
+# 6. Estratégia de Chaves no Redis
 
 O estado de sessão deve ser organizado através de chaves previsíveis e específicas.
 
@@ -194,7 +194,7 @@ O formato exato da chave é considerado detalhe de implementação e pode evolui
 
 ---
 
-# 7. Session Lifecycle
+# 7. Ciclo de Vida da Sessão
 
 Uma sessão possui um ciclo de vida controlado.
 
@@ -324,7 +324,7 @@ Essa integração entre JWT e Redis é fundamental para permitir revogação efe
 
 ---
 
-# 10. Refresh Token Revocation
+# 10. Revogação de Refresh Token
 
 Uma das principais razões para utilizar estado server-side é permitir que o backend invalide uma sessão antes da expiração natural do JWT.
 
@@ -372,7 +372,7 @@ A invalidação no Redis é importante para impedir a utilização continuada de
 
 ---
 
-# 12. Revocation
+# 12. Revogação
 
 A arquitetura permite que o backend revogue uma sessão independentemente da ação direta do usuário.
 
@@ -392,7 +392,7 @@ O princípio é:
 
 ---
 
-# 13. User Blocking
+# 13. Bloqueio de Usuários
 
 O bloqueio de um usuário deve impedir que suas sessões continuem sendo utilizadas de maneira indevida.
 
@@ -418,7 +418,7 @@ Redis complementa esse mecanismo fornecendo controle de sessão.
 
 ---
 
-# 14. Tenant Suspension
+# 14. Suspensão de Tenant
 
 O mesmo princípio se aplica à suspensão de um tenant.
 
@@ -451,7 +451,7 @@ Redis não substitui essas regras.
 
 ---
 
-# 15. Multiple Sessions
+# 15. Múltiplas Sessões
 
 Um usuário pode possuir mais de uma sessão simultaneamente.
 
@@ -483,7 +483,7 @@ Isso permite futuras funcionalidades como:
 
 ---
 
-# 16. Session Revocation Granularity
+# 16. Granularidade da Revogação de Sessões
 
 A revogação deve ocorrer preferencialmente no nível da sessão quando a situação permitir.
 
@@ -503,7 +503,7 @@ Quando um incidente exige encerramento global, o backend poderá invalidar todas
 
 ---
 
-# 17. Redis TTL
+# 17. TTL no Redis
 
 O estado armazenado no Redis deve possuir tempo de expiração compatível com o ciclo de vida da sessão.
 
@@ -530,7 +530,7 @@ O valor exato do TTL é uma decisão operacional/configurável e não constitui,
 
 ---
 
-# 18. Redis Is Not the Primary Domain Database
+# 18. O Redis Não é o Banco de Dados Principal do Domínio
 
 Redis não substitui o PostgreSQL como banco de dados principal do Exactum.
 
@@ -560,7 +560,7 @@ Redis
 
 ---
 
-# 19. Failure Considerations
+# 19. Considerações sobre Falhas
 
 A dependência do Redis introduz uma consideração operacional importante.
 
@@ -597,7 +597,7 @@ Essa decisão deve ser equilibrada com requisitos de disponibilidade e poderá s
 
 ---
 
-# 20. Security Boundary
+# 20. Fronteira de Segurança
 
 Redis não deve ser considerado uma autoridade independente sobre identidade.
 
@@ -630,7 +630,7 @@ Nenhum cliente externo deve ter acesso direto ao Redis.
 
 ---
 
-# 21. Redis Access
+# 21. Acesso ao Redis
 
 O Redis deve permanecer em uma rede protegida da infraestrutura da aplicação.
 
@@ -664,7 +664,7 @@ Redis
 
 ---
 
-# 22. Session Data Minimization
+# 22. Minimização dos Dados de Sessão
 
 O estado armazenado no Redis deve conter apenas as informações necessárias para gerenciar a sessão.
 
@@ -681,7 +681,7 @@ A arquitetura deve seguir o princípio de **data minimization** para informaçõ
 
 ---
 
-# 23. Observability
+# 23. Observabilidade
 
 Eventos relacionados a sessão podem ser observados sem expor credenciais.
 
@@ -757,7 +757,7 @@ A ADR-004 estabelece apenas a infraestrutura conceitual necessária para manter 
 
 ---
 
-# 25. Relationship with HttpOnly Cookies
+# 25. Relação com Cookies HttpOnly
 
 A decisão desta ADR complementa diretamente a **ADR-003**.
 
@@ -802,9 +802,9 @@ As duas decisões são complementares, não concorrentes.
 
 ---
 
-# 26. Alternatives Considered
+# 26. Alternativas Consideradas
 
-## 26.1 Stateless JWT Only
+## 26.1 Apenas JWT Stateless
 
 ### Descrição
 
@@ -837,7 +837,7 @@ JWT continua sendo utilizado, mas complementado por estado server-side.
 
 ---
 
-# 27. PostgreSQL as Session Store
+# 27. PostgreSQL como Armazenamento de Sessões
 
 ### Descrição
 
@@ -866,7 +866,7 @@ PostgreSQL continua sendo o banco principal das entidades persistentes do Exactu
 
 ---
 
-# 28. In-Memory Application State
+# 28. Estado da Aplicação em Memória
 
 ### Descrição
 
@@ -891,7 +891,7 @@ Manter sessões diretamente na memória do processo Flask.
 
 ---
 
-# 29. Redis-Based Session Management
+# 29. Gerenciamento de Sessões com Redis
 
 ### Descrição
 
@@ -920,9 +920,9 @@ Manter estado de sessão compartilhado e temporário no Redis.
 
 ---
 
-# 30. Consequences
+# 30. Consequências
 
-## 30.1 Positive Consequences
+## 30.1 Consequências Positivas
 
 A decisão permite:
 
@@ -940,7 +940,7 @@ A decisão permite:
 
 ---
 
-## 30.2 Negative Consequences
+## 30.2 Consequências Negativas
 
 A decisão introduz:
 
@@ -954,7 +954,7 @@ A decisão introduz:
 
 ---
 
-# 31. Performance Considerations
+# 31. Considerações de Performance
 
 O gerenciamento de sessão adiciona operações de leitura e/ou escrita no Redis.
 
@@ -976,7 +976,7 @@ reduzindo a necessidade de utilizar o banco transacional principal para operaç�
 
 ---
 
-# 32. Horizontal Scaling
+# 32. Escalabilidade Horizontal
 
 A utilização de Redis permite que múltiplas instâncias da API compartilhem o mesmo estado de sessão.
 
@@ -1004,19 +1004,19 @@ Isso evita dependência do estado local de um único processo.
 
 ---
 
-# 33. Testing Implications
+# 33. Implicações nos Testes
 
 A implementação deve possuir testes para os principais estados da sessão.
 
 Entre eles:
 
-### Creation
+### Criação
 
 - sessão criada após login;
 - JTI registrado;
 - TTL configurado.
 
-### Validation
+### Validação
 
 - sessão ativa aceita;
 - sessão inexistente rejeitada;
@@ -1037,7 +1037,7 @@ Entre eles:
 - cookies removidos;
 - nova utilização rejeitada.
 
-### Security Events
+### Eventos de Segurança
 
 - usuário bloqueado;
 - tenant suspenso;
@@ -1052,7 +1052,7 @@ Entre eles:
 
 ---
 
-# 34. Operational Implications
+# 34. Implicações Operacionais
 
 Redis passa a ser um componente importante da infraestrutura de autenticação.
 
@@ -1075,7 +1075,7 @@ A perda de estado de sessão pode exigir que usuários realizem login novamente,
 
 ---
 
-# 35. Failure and Recovery
+# 35. Falha e Recuperação
 
 Caso o Redis seja reiniciado ou seu estado seja perdido, as sessões armazenadas podem deixar de existir.
 
@@ -1100,7 +1100,7 @@ A aplicação deve priorizar segurança sobre a manutenção artificial de sess�
 
 ---
 
-# 36. Data Retention
+# 36. Retenção de Dados
 
 O estado de sessão deve possuir retenção limitada.
 
@@ -1122,7 +1122,7 @@ Audit / Platform Events
 
 ---
 
-# 37. Future Evolution
+# 37. Evolução Futura
 
 A arquitetura foi projetada para permitir futuras evoluções, incluindo:
 
@@ -1146,7 +1146,7 @@ Essas funcionalidades devem ser adicionadas através de novas decisões quando a
 
 ---
 
-# 38. Related Decisions
+# 38. Decisões Relacionadas
 
 - **ADR-001 — Shared Database Multi-Tenancy**
 
@@ -1174,7 +1174,7 @@ Essas funcionalidades devem ser adicionadas através de novas decisões quando a
 
 ---
 
-# 39. Related Documentation
+# 39. Documentos Relacionados
 
 Esta decisão está relacionada principalmente aos seguintes documentos:
 
@@ -1198,7 +1198,7 @@ docs/observability/correlation.md
 
 ---
 
-# 40. Architectural Principle
+# 40. Princípio Arquitetural
 
 A decisão pode ser resumida pelo seguinte princípio:
 
@@ -1212,7 +1212,7 @@ O backend deve possuir mecanismos para controlar, revogar e invalidar sessões i
 
 ---
 
-# 41. Decision Summary
+# 41. Resumo da Decisão
 
 | Aspecto                      | Decisão                                                           |
 | ---------------------------- | ----------------------------------------------------------------- |
@@ -1242,7 +1242,7 @@ O backend deve possuir mecanismos para controlar, revogar e invalidar sessões i
 
 ---
 
-# 42. Final Decision
+# 42. Decisão Final
 
 O Exactum adotará **Redis como camada de gerenciamento server-side do estado das sessões de autenticação**.
 

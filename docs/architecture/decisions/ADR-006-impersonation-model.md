@@ -1,4 +1,4 @@
-# ADR-006 — Impersonation Model
+# ADR-006 — Modelo de Impersonation
 
 - **Status:** Accepted
 - **Date:** None
@@ -9,7 +9,7 @@
 
 ---
 
-# 1. Context
+# 1. Contexto
 
 O Exactum possui uma arquitetura multi-tenant na qual usuários operam dentro de um determinado contexto de tenant.
 
@@ -67,7 +67,7 @@ Dessa forma, foi necessária uma decisão arquitetural específica para definir 
 
 ---
 
-# 2. Decision
+# 2. Decisão
 
 O Exactum adotará um modelo de **impersonation temporário controlado pelo backend**, no qual:
 
@@ -85,11 +85,11 @@ O princípio central é:
 
 ---
 
-# 3. Identity Model
+# 3. Modelo de Identidade
 
 O modelo possui duas identidades relevantes.
 
-## 3.1 Original Identity
+## 3.1 Identidade Original
 
 É o usuário que iniciou a impersonation.
 
@@ -103,7 +103,7 @@ Essa identidade mantém a autoridade para iniciar e encerrar a operação.
 
 ---
 
-## 3.2 Impersonated Identity
+## 3.2 Identidade Representada
 
 É o usuário cujo contexto está sendo temporariamente representado.
 
@@ -125,7 +125,7 @@ Target Tenant
 
 ---
 
-# 4. Why Two Identities Are Necessary
+# 4. Por que Duas Identidades São Necessárias
 
 Uma implementação ingênua poderia simplesmente substituir o usuário autenticado:
 
@@ -151,7 +151,7 @@ Portanto, a arquitetura preserva explicitamente as duas identidades.
 
 ---
 
-# 5. Authentication Representation
+# 5. Representação da Autenticação
 
 A sessão utiliza dois tokens com responsabilidades diferentes.
 
@@ -194,7 +194,7 @@ Quem iniciou a representação?
 
 ---
 
-# 6. Session State
+# 6. Estado da Sessão
 
 Como definido na ADR-004, o Redis mantém o estado server-side da sessão.
 
@@ -216,7 +216,7 @@ O princípio arquitetural é que a informação necessária para recuperar a ide
 
 ---
 
-# 7. Why Redis Is Used
+# 7. Por que o Redis é Utilizado
 
 A informação de impersonation representa estado temporário associado à sessão.
 
@@ -239,7 +239,7 @@ Redis
 
 ---
 
-# 8. Authorization to Start Impersonation
+# 8. Autorização para Iniciar Impersonation
 
 Impersonation não é uma funcionalidade disponível para qualquer usuário.
 
@@ -274,7 +274,7 @@ Authorization Check
 
 ---
 
-# 9. Starting Impersonation
+# 9. Início do Impersonation
 
 O início da impersonation ocorre através de um endpoint específico da API.
 
@@ -303,7 +303,7 @@ O backend é responsável por garantir que o usuário alvo exista e que o contex
 
 ---
 
-# 10. Target User Validation
+# 10. Validação do Usuário-Alvo
 
 Antes de iniciar a impersonation, o backend deve validar o usuário alvo.
 
@@ -320,7 +320,7 @@ A existência do UUID do usuário não é suficiente para autorizar a operação
 
 ---
 
-# 11. Tenant Validation
+# 11. Validação do Tenant
 
 A impersonation também deve respeitar o modelo de multi-tenancy.
 
@@ -344,7 +344,7 @@ A impersonation não deve ser utilizada como mecanismo para contornar Tenant Iso
 
 ---
 
-# 12. Access Token During Impersonation
+# 12. Access Token Durante Impersonation
 
 O access token representa a identidade operacional atual.
 
@@ -364,7 +364,7 @@ Consequentemente, as regras normais de Authorization continuam sendo aplicadas.
 
 ---
 
-# 13. Refresh Token During Impersonation
+# 13. Refresh Token Durante Impersonation
 
 O refresh token possui uma responsabilidade diferente.
 
@@ -386,7 +386,7 @@ Isso impede que uma renovação de token perca a relação com o administrador o
 
 ---
 
-# 14. Refresh During Impersonation
+# 14. Refresh Durante Impersonation
 
 O refresh de uma sessão impersonada deve manter o estado de impersonation.
 
@@ -415,7 +415,7 @@ O novo refresh token continua preservando o contexto necessário da sessão orig
 
 ---
 
-# 15. Refresh Token Rotation
+# 15. Rotação de Refresh Token
 
 A impersonation deve respeitar a política de **Refresh Token Rotation** definida na ADR-005.
 
@@ -437,7 +437,7 @@ A rotação não deve apagar ou substituir incorretamente a identidade original.
 
 ---
 
-# 16. Impersonation State Across Rotation
+# 16. Estado do Impersonation Durante a Rotação
 
 Considerando:
 
@@ -468,7 +468,7 @@ A sessão continua representando o usuário alvo no access token.
 
 ---
 
-# 17. Frontend Representation
+# 17. Representação no Frontend
 
 Como os tokens são HttpOnly, o frontend não pode decodificar os JWTs para determinar se a aplicação está em modo de impersonation.
 
@@ -498,7 +498,7 @@ O princípio é:
 
 ---
 
-# 18. UI Responsibility
+# 18. Responsabilidade da UI
 
 Quando uma sessão está em impersonation, o frontend deve tornar esse estado claramente perceptível.
 
@@ -517,7 +517,7 @@ Essa decisão pertence ao backend.
 
 ---
 
-# 19. Stop Impersonation
+# 19. Encerramento do Impersonation
 
 O término da impersonation também é controlado pelo backend.
 
@@ -544,7 +544,7 @@ Após o término, o administrador retorna ao seu contexto original.
 
 ---
 
-# 20. Restoring Original Identity
+# 20. Restauração da Identidade Original
 
 O objetivo do stop impersonation é restaurar:
 
@@ -578,7 +578,7 @@ O mecanismo deve preservar a continuidade da sessão original sempre que a polí
 
 ---
 
-# 21. Session Isolation
+# 21. Isolamento de Sessões
 
 A sessão impersonada deve ser tratada como um contexto controlado.
 
@@ -602,7 +602,7 @@ O contexto de plataforma permanece separado.
 
 ---
 
-# 22. Privilege Boundary
+# 22. Fronteira de Privilégio
 
 Impersonation não deve resultar em **privilege escalation**.
 
@@ -634,7 +634,7 @@ A identidade operacional deve permanecer claramente definida.
 
 ---
 
-# 23. Security Principle
+# 23. Princípio de Segurança
 
 Um princípio importante da arquitetura é:
 
@@ -646,13 +646,13 @@ O Super Admin delega temporariamente o contexto operacional da sessão para repr
 
 ---
 
-# 24. Audit Logging
+# 24. Logs de Auditoria
 
 Impersonation é uma operação de segurança relevante e deve ser auditável.
 
 O sistema deve registrar pelo menos:
 
-### Start
+### Início
 
 - administrador original;
 - usuário alvo;
@@ -661,7 +661,7 @@ O sistema deve registrar pelo menos:
 - request ID/correlation ID quando aplicável;
 - contexto da operação.
 
-### Stop
+### Encerramento
 
 - administrador original;
 - usuário alvo;
@@ -689,7 +689,7 @@ IMPERSONATION_STOPPED
 
 ---
 
-# 25. Platform Events
+# 25. Eventos de Plataforma
 
 Além do audit logging, eventos de plataforma podem representar o ciclo de vida da impersonation.
 
@@ -710,7 +710,7 @@ Esses eventos podem alimentar:
 
 ---
 
-# 26. Request Correlation
+# 26. Correlação de Requisições
 
 As operações realizadas durante impersonation devem continuar utilizando os mecanismos normais de:
 
@@ -734,7 +734,7 @@ Sem registrar credenciais sensíveis.
 
 ---
 
-# 27. Token Logging
+# 27. Registro de Tokens
 
 Tokens de autenticação não devem ser registrados.
 
@@ -749,7 +749,7 @@ A auditoria deve registrar identidade e contexto, e não o segredo utilizado par
 
 ---
 
-# 28. Logout During Impersonation
+# 28. Logout Durante Impersonation
 
 Caso o usuário realize logout enquanto está em impersonation, o comportamento deve encerrar a sessão autenticada correspondente.
 
@@ -771,7 +771,7 @@ O comportamento exato deve seguir a política de sessão definida pelo backend.
 
 ---
 
-# 29. Expiration During Impersonation
+# 29. Expiração Durante Impersonation
 
 Uma sessão de impersonation deve obedecer às políticas normais de expiração.
 
@@ -793,7 +793,7 @@ Impersonation não deve criar uma sessão sem limite de duração.
 
 ---
 
-# 30. Maximum Impersonation Duration
+# 30. Duração Máxima do Impersonation
 
 A arquitetura permite que seja definida uma duração máxima para impersonation.
 
@@ -816,7 +816,7 @@ Essa capacidade poderá ser registrada em uma ADR futura caso seja adotada.
 
 ---
 
-# 31. Nested Impersonation
+# 31. Impersonation Aninhado
 
 O Exactum não deve permitir que uma impersonation seja utilizada para iniciar outra impersonation sem uma decisão explícita que defina esse comportamento.
 
@@ -854,7 +854,7 @@ Portanto, não faz parte do modelo atual.
 
 ---
 
-# 32. Concurrent Impersonation Sessions
+# 32. Sessões de Impersonation Concorrentes
 
 Um Super Admin pode, dependendo das políticas futuras, possuir mais de uma sessão de impersonation.
 
@@ -878,7 +878,7 @@ Uma sessão não deve alterar o estado de outra.
 
 ---
 
-# 33. Multiple Administrators
+# 33. Múltiplos Administradores
 
 O modelo também deve suportar diferentes Super Admins utilizando impersonation simultaneamente.
 
@@ -902,7 +902,7 @@ O Redis deve identificar as sessões através de identificadores únicos, evitan
 
 ---
 
-# 34. Tenant Isolation
+# 34. Isolamento de Tenant
 
 Impersonation não modifica o princípio de isolamento entre tenants.
 
@@ -926,7 +926,7 @@ A impersonation não deve ser usada como bypass das regras de Tenant Isolation.
 
 ---
 
-# 35. Authorization During Impersonation
+# 35. Autorização Durante Impersonation
 
 A autorização deve considerar a identidade operacional atual.
 
@@ -957,7 +957,7 @@ Isso evita confusão entre:
 
 ---
 
-# 36. API Boundary
+# 36. Fronteira da API
 
 Os endpoints de impersonation devem permanecer protegidos por Authorization.
 
@@ -974,7 +974,7 @@ A API deve garantir que somente atores autorizados possam executá-los.
 
 ---
 
-# 37. Error Handling
+# 37. Tratamento de Erros
 
 Falhas relacionadas à impersonation devem retornar erros apropriados sem expor informações sensíveis.
 
@@ -992,9 +992,9 @@ O backend não deve revelar detalhes internos do mecanismo de sessão ou Redis a
 
 ---
 
-# 38. Alternatives Considered
+# 38. Alternativas Consideradas
 
-## 38.1 Replace Current User Completely
+## 38.1 Substituir Completamente o Usuário Atual
 
 ### Descrição
 
@@ -1027,7 +1027,7 @@ User
 
 ---
 
-# 39. Client-Side Impersonation
+# 39. Impersonation no Cliente
 
 ### Descrição
 
@@ -1052,7 +1052,7 @@ Permitir que o frontend armazene ou manipule informações para representar outr
 
 ---
 
-# 40. Separate Impersonation Session
+# 40. Sessão de Impersonation Separada
 
 ### Descrição
 
@@ -1079,7 +1079,7 @@ O Exactum mantém a relação entre identidade original e identidade impersonada
 
 ---
 
-# 41. Token-Based Identity Preservation
+# 41. Preservação de Identidade Baseada em Token
 
 ### Descrição
 
@@ -1106,9 +1106,9 @@ Utilizar os tokens e o estado server-side para preservar a identidade original.
 
 ---
 
-# 42. Consequences
+# 42. Consequências
 
-## 42.1 Positive Consequences
+## 42.1 Consequências Positivas
 
 A decisão permite:
 
@@ -1125,7 +1125,7 @@ A decisão permite:
 
 ---
 
-## 42.2 Negative Consequences
+## 42.2 Consequências Negativas
 
 A decisão introduz:
 
@@ -1140,7 +1140,7 @@ A decisão introduz:
 
 ---
 
-# 43. Security Implications
+# 43. Implicações de Segurança
 
 Impersonation representa uma capacidade de alto privilégio.
 
@@ -1167,11 +1167,11 @@ Qualquer falha nesse mecanismo pode resultar em:
 
 ---
 
-# 44. Testing Implications
+# 44. Implicações nos Testes
 
 Os testes devem validar o ciclo completo.
 
-## Start
+## Início
 
 - Super Admin consegue iniciar;
 - usuário comum não consegue;
@@ -1181,7 +1181,7 @@ Os testes devem validar o ciclo completo.
 - tenant inválido;
 - estado Redis criado.
 
-## Access
+## Acesso
 
 - access token representa usuário alvo;
 - tenant correto;
@@ -1195,13 +1195,13 @@ Os testes devem validar o ciclo completo.
 - identidade original permanece preservada;
 - novo access token representa o usuário alvo.
 
-## Stop
+## Encerramento
 
 - identidade original recuperada;
 - sessão impersonada encerrada;
 - novo contexto autenticado criado corretamente.
 
-## Security
+## Segurança
 
 - nested impersonation rejeitada;
 - sessão expirada rejeitada;
@@ -1209,7 +1209,7 @@ Os testes devem validar o ciclo completo.
 - tenant suspenso tratado corretamente;
 - usuário bloqueado tratado corretamente.
 
-## Audit
+## Auditoria
 
 - `IMPERSONATION_STARTED` registrado;
 - `IMPERSONATION_STOPPED` registrado;
@@ -1219,7 +1219,7 @@ Os testes devem validar o ciclo completo.
 
 ---
 
-# 45. Observability
+# 45. Observabilidade
 
 A observabilidade deve permitir reconstruir o ciclo da impersonation.
 
@@ -1254,7 +1254,7 @@ Tokens não devem ser utilizados como mecanismo de auditoria.
 
 ---
 
-# 46. Operational Implications
+# 46. Implicações Operacionais
 
 A operação de impersonation deve ser tratada como evento administrativo relevante.
 
@@ -1271,7 +1271,7 @@ Essa capacidade é especialmente importante para sistemas multi-tenant onde aç�
 
 ---
 
-# 47. Future Evolution
+# 47. Evolução Futura
 
 A arquitetura permite futuras evoluções como:
 
@@ -1295,7 +1295,7 @@ Essas funcionalidades devem ser registradas em ADRs próprias quando representar
 
 ---
 
-# 48. Related Decisions
+# 48. Decisões Relacionadas
 
 - **ADR-001 — Shared Database Multi-Tenancy**
 
@@ -1323,7 +1323,7 @@ Essas funcionalidades devem ser registradas em ADRs próprias quando representar
 
 ---
 
-# 49. Related Documentation
+# 49. Documentos Relacionados
 
 ```text
 docs/security/authentication.md
@@ -1345,7 +1345,7 @@ docs/observability/correlation.md
 
 ---
 
-# 50. Architectural Principle
+# 50. Princípio Arquitetural
 
 A decisão pode ser resumida pelo seguinte princípio:
 
@@ -1357,7 +1357,7 @@ No contexto do Exactum:
 
 ---
 
-# 51. Decision Summary
+# 51. Resumo da Decisão
 
 | Aspecto                      | Decisão                        |
 | ---------------------------- | ------------------------------ |
@@ -1386,7 +1386,7 @@ No contexto do Exactum:
 
 ---
 
-# 52. Final Decision
+# 52. Decisão Final
 
 O Exactum adotará **backend-controlled impersonation** para permitir que Super Admins atuem temporariamente no contexto de outros usuários.
 

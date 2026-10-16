@@ -1,4 +1,4 @@
-# Session Management
+# Gerenciamento de Sessões
 
 ## Objetivo
 
@@ -59,7 +59,7 @@ O Redis fornece o estado necessário para determinar se essa capacidade de renov
 
 ---
 
-# Session-Aware Authentication
+# Autenticação com Estado de Sessão
 
 O Exactum não depende exclusivamente da validade criptográfica dos JWTs.
 
@@ -93,7 +93,7 @@ A sessão precisa continuar reconhecida pelo servidor.
 
 ---
 
-# Redis como Session Store
+# Redis como Armazenamento de Sessões
 
 O Redis é utilizado como mecanismo de estado para as sessões de autenticação.
 
@@ -268,7 +268,7 @@ Se qualquer uma das condições não for satisfeita, a operação deve ser rejei
 
 ---
 
-# Refresh Flow
+# Fluxo de Refresh
 
 O fluxo de renovação de sessão ocorre quando o access token não pode mais ser utilizado.
 
@@ -315,7 +315,7 @@ A renovação é, portanto, uma operação de transição entre estados de sess�
 
 ---
 
-# Refresh Token Rotation
+# Rotação de Refresh Token
 
 O Exactum utiliza rotação de refresh tokens.
 
@@ -643,7 +643,7 @@ A documentação deve refletir apenas os metadados efetivamente mantidos pela im
 
 ---
 
-# Session Lifecycle
+# Ciclo de Vida da Sessão
 
 O ciclo de vida completo pode ser representado da seguinte forma:
 
@@ -726,27 +726,27 @@ O gerenciamento de sessões possui impacto direto na segurança da plataforma.
 
 Os principais mecanismos são:
 
-### HttpOnly Cookies
+### Cookies HttpOnly
 
 Reduzem a exposição dos tokens ao JavaScript do navegador.
 
-### Refresh Token Rotation
+### Rotação de Refresh Token
 
 Evita que um único refresh token permaneça válido indefinidamente.
 
-### Server-side Session State
+### Estado de Sessão no Servidor
 
 Permite revogação antecipada.
 
-### Redis TTL
+### TTL no Redis
 
 Evita retenção indefinida de estado temporário.
 
-### Backend Authority
+### Backend como Autoridade
 
 O cliente não controla diretamente o estado da sessão.
 
-### Separation of Concerns
+### Separação de Responsabilidades
 
 Autenticação, autorização e isolamento de tenant possuem responsabilidades distintas.
 
@@ -1025,7 +1025,7 @@ Descreve RBAC, permissões e decisões de autorização.
 
 Descreve as fronteiras utilizadas para garantir isolamento entre tenants.
 
-### Threat Model
+### Modelo de Ameaças
 
 → [`threat-model.md`](./threat-model.md)
 

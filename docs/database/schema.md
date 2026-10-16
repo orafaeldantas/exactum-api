@@ -1,4 +1,4 @@
-# Database Schema
+# Schema do Banco de Dados
 
 ## 1. Objetivo
 
@@ -24,7 +24,7 @@ Este documento representa a visão arquitetural do schema e não deve ser interp
 
 ---
 
-# 2. Database Schema e Domain Model
+# 2. Schema do Banco e Modelo de Domínio
 
 O database schema representa a persistência dos dados da aplicação.
 
@@ -247,7 +247,7 @@ Um registro pertencente a um tenant não deve ser acessível por outro tenant at
 
 ---
 
-# 6. Tenant Identifier
+# 6. Identificador do Tenant
 
 O tenant possui um identificador público representado conceitualmente por:
 
@@ -277,7 +277,7 @@ O `tenant_uuid` também participa do contexto de execução estabelecido pela ca
 
 ---
 
-# 7. Tenant-Scoped Entities
+# 7. Entidades com Escopo de Tenant
 
 Nem todas as informações do banco precisam necessariamente possuir `tenant_uuid`.
 
@@ -296,7 +296,7 @@ Essa distinção é importante para evitar adicionar `tenant_uuid` indiscriminad
 
 ---
 
-# 8. User
+# 8. User (Usuário)
 
 `User` representa uma identidade autenticável da plataforma.
 
@@ -343,7 +343,7 @@ Uma operação autenticada deve sempre determinar o contexto adequado antes de a
 
 ---
 
-# 10. User Identifier
+# 10. Identificador do User
 
 O usuário possui um identificador público representado conceitualmente por:
 
@@ -384,7 +384,7 @@ Essa separação permite que o modelo evolua futuramente para representar outros
 
 ---
 
-# 12. Product
+# 12. Product (Produto)
 
 `Product` representa um produto comercial gerenciado pelo tenant.
 
@@ -412,7 +412,7 @@ A estrutura exata dos campos pertence ao schema atual da aplicação e às migra
 
 ---
 
-# 13. Product Identifier
+# 13. Identificador do Product
 
 O produto possui um identificador público representado conceitualmente por:
 
@@ -459,7 +459,7 @@ WHERE uuid = :product_uuid
 
 ---
 
-# 15. Product e Stock
+# 15. Product e Estoque
 
 No modelo atual do Exactum, responsabilidades relacionadas ao estoque ainda estão associadas ao contexto de produtos.
 
@@ -478,7 +478,7 @@ Essa organização não deve ser interpretada como um limite arquitetural defini
 
 ---
 
-# 16. Future Inventory Boundary
+# 16. Fronteira Futura de Estoque
 
 Conforme o sistema evoluir, responsabilidades relacionadas a estoque poderão ser extraídas para um contexto mais especializado.
 
@@ -518,7 +518,7 @@ Essa separação é uma direção arquitetural futura e não representa necessar
 
 ---
 
-# 17. Sale
+# 17. Sale (Venda)
 
 `Sale` representa uma operação de venda realizada dentro de um tenant.
 
@@ -543,7 +543,7 @@ Exemplos conceituais:
 
 ---
 
-# 18. Sale Identifier
+# 18. Identificador da Sale
 
 A venda possui um identificador público representado conceitualmente por:
 
@@ -561,7 +561,7 @@ GET /api/sales/{sale_uuid}
 
 ---
 
-# 19. Sale Items
+# 19. Itens da Venda
 
 Uma venda normalmente possui múltiplos itens.
 
@@ -619,7 +619,7 @@ normalmente materializada por uma entidade intermediária, como `SaleItem`.
 
 ---
 
-# 21. Sale e Stock
+# 21. Sale e Estoque
 
 Uma venda pode produzir efeitos sobre o estoque.
 
@@ -673,7 +673,7 @@ No estado atual do Exactum, responsabilidades de estoque ainda não estão neces
 
 ---
 
-# 23. Future Stock Movement
+# 23. Movimentação de Estoque Futura
 
 Uma possível evolução seria introduzir:
 
@@ -731,7 +731,7 @@ A role não deve ser confundida com permission.
 
 ---
 
-# 25. Permission
+# 25. Permissão
 
 `Permission` representa uma capacidade específica de execução de determinada operação.
 
@@ -787,7 +787,7 @@ quando suportado pelo modelo de autorização.
 
 ---
 
-# 27. User Authorization Data
+# 27. Dados de Autorização do Usuário
 
 Informações utilizadas para autorização podem possuir relações com:
 
@@ -816,7 +816,7 @@ A estrutura persistida apenas fornece os dados necessários para que essa decis�
 
 ---
 
-# 28. Session
+# 28. Sessão
 
 O Exactum utiliza Redis para parte do gerenciamento de sessões relacionadas à autenticação.
 
@@ -840,7 +840,7 @@ Isso demonstra que o database schema do PostgreSQL não representa todo o estado
 
 ---
 
-# 29. PostgreSQL vs Redis State
+# 29. Estado no PostgreSQL vs Redis
 
 A arquitetura distingue:
 
@@ -864,7 +864,7 @@ A separação exata de responsabilidades pode evoluir conforme novas funcionalid
 
 ---
 
-# 30. Audit Log
+# 30. Log de Auditoria
 
 Audit Logs representam ações relevantes executadas dentro do contexto de um tenant.
 
@@ -893,7 +893,7 @@ docs/observability/audit-logging.md
 
 ---
 
-# 31. Platform Event
+# 31. Evento de Plataforma
 
 Platform Events representam eventos relevantes para a operação da plataforma.
 
@@ -978,7 +978,7 @@ Isso permite que uma única operação origine múltiplos registros observáveis
 
 ---
 
-# 34. Resource Identifiers
+# 34. Identificadores de Recursos
 
 A documentação utiliza conceitos como:
 
@@ -1029,7 +1029,7 @@ Quando uma relação é obrigatória, a constraint deve refletir essa necessidad
 
 ---
 
-# 36. Tenant-aware Foreign Keys
+# 36. Foreign Keys Conscientes de Tenant
 
 Em um sistema multi-tenant, a existência de uma foreign key simples não garante necessariamente que duas entidades pertençam ao mesmo tenant.
 
@@ -1059,7 +1059,7 @@ A aplicação deve garantir essa consistência e, quando apropriado, o schema po
 
 ---
 
-# 37. Composite Relationships
+# 37. Relacionamentos Compostos
 
 Uma estratégia possível para reforçar relações tenant-aware é utilizar chaves compostas ou constraints que incluam o tenant.
 
@@ -1081,7 +1081,7 @@ Portanto, deve ser utilizada quando o benefício de integridade justificar a com
 
 ---
 
-# 38. Uniqueness
+# 38. Unicidade
 
 Regras de unicidade devem ser analisadas dentro do contexto do domínio.
 
@@ -1115,7 +1115,7 @@ A decisão depende do significado do campo.
 
 ---
 
-# 39. Natural Keys vs Surrogate Keys
+# 39. Chaves Naturais vs Chaves Substitutas
 
 Alguns campos podem parecer identificadores naturais:
 
@@ -1142,7 +1142,7 @@ Essa separação reduz acoplamento entre identidade e atributos mutáveis.
 
 ---
 
-# 40. Primary Key vs Public Identifier
+# 40. Chave Primária vs Identificador Público
 
 É importante distinguir:
 
@@ -1164,7 +1164,7 @@ Essa separação permite que detalhes internos permaneçam encapsulados.
 
 ---
 
-# 41. Soft Delete Fields
+# 41. Campos de Soft Delete
 
 Entidades que utilizam Soft Delete podem possuir:
 
@@ -1204,7 +1204,7 @@ docs/database/soft-delete.md
 
 ---
 
-# 42. Created At
+# 42. Data de Criação (created_at)
 
 Entidades persistentes relevantes podem possuir:
 
@@ -1225,7 +1225,7 @@ Ele pode ser utilizado para:
 
 ---
 
-# 43. Updated At
+# 43. Data de Atualização (updated_at)
 
 Quando uma entidade possui alterações relevantes, pode utilizar:
 
@@ -1245,7 +1245,7 @@ Esse campo permite identificar quando o estado persistido foi modificado pela ú
 
 ---
 
-# 44. Status Fields
+# 44. Campos de Status
 
 Entidades de negócio podem possuir campos de estado.
 
@@ -1269,7 +1269,7 @@ Estados devem ser modelados de maneira consistente e, quando necessário, proteg
 
 ---
 
-# 45. State Transitions
+# 45. Transições de Estado
 
 Um campo `status` não deve ser interpretado apenas como uma string.
 
@@ -1295,7 +1295,7 @@ Essas regras pertencem principalmente ao domínio/application layer, enquanto o 
 
 ---
 
-# 46. Database Constraints e State
+# 46. Constraints do Banco e Estado
 
 Quando apropriado, constraints podem impedir estados estruturalmente inválidos.
 
@@ -1320,7 +1320,7 @@ Essa separação evita transformar regras de negócio complexas em constraints e
 
 ---
 
-# 47. Cascading
+# 47. Cascata
 
 Relacionamentos podem possuir comportamento específico para remoção.
 
@@ -1340,7 +1340,7 @@ Soft Delete também reduz a necessidade de remoções físicas em determinados c
 
 ---
 
-# 48. Historical Data
+# 48. Dados Históricos
 
 Dados históricos possuem valor operacional.
 
@@ -1365,7 +1365,7 @@ A existência de um relacionamento não significa necessariamente que o registro
 
 ---
 
-# 49. Reporting Data
+# 49. Dados de Relatórios
 
 Relatórios podem inicialmente utilizar diretamente as entidades operacionais.
 
@@ -1394,7 +1394,7 @@ Essa separação pode melhorar performance e reduzir impacto sobre operações t
 
 ---
 
-# 50. Future Reporting Boundary
+# 50. Fronteira Futura de Relatórios
 
 No estado atual, responsabilidades relacionadas a reporting ainda não constituem necessariamente um bounded context ou estrutura física independente.
 
@@ -1415,7 +1415,7 @@ Isso pode ser introduzido somente quando houver necessidade real de escala, comp
 
 ---
 
-# 51. Normalization
+# 51. Normalização
 
 O schema relacional deve evitar duplicação desnecessária de dados.
 
@@ -1440,7 +1440,7 @@ Performance
 
 ---
 
-# 52. Denormalization
+# 52. Desnormalização
 
 Denormalization pode ser utilizada quando houver justificativa concreta.
 
@@ -1458,7 +1458,7 @@ Não deve ser utilizada simplesmente para evitar um join sem evidência de neces
 
 ---
 
-# 53. Materialized Views
+# 53. Views Materializadas
 
 Materialized Views são uma possível estratégia futura para consultas analíticas pesadas.
 
@@ -1480,7 +1480,7 @@ Atualmente, essa é uma possibilidade futura.
 
 ---
 
-# 54. Schema Evolution e Domain Evolution
+# 54. Evolução do Schema e Evolução do Domínio
 
 A estrutura do banco deve acompanhar a evolução dos limites do sistema sem ficar excessivamente acoplada a decisões temporárias.
 
@@ -1514,7 +1514,7 @@ Infrastructure Boundary
 
 ---
 
-# 55. Current Schema Perspective
+# 55. Perspectiva Atual do Schema
 
 O schema atual deve ser entendido como uma representação da aplicação em seu estágio presente.
 
@@ -1532,7 +1532,7 @@ Architectural Direction
 
 ---
 
-# 56. Database Schema e API
+# 56. Schema do Banco e API
 
 O schema interno não deve ser exposto diretamente através da API.
 
@@ -1554,7 +1554,7 @@ Da mesma forma, uma evolução do contrato HTTP pode ser implementada sem altera
 
 ---
 
-# 57. Database Schema e Serialization
+# 57. Schema do Banco e Serialização
 
 Schemas utilizados pela API são responsáveis por:
 
@@ -1574,7 +1574,7 @@ Essas responsabilidades devem permanecer separadas.
 
 ---
 
-# 58. ORM Mapping
+# 58. Mapeamento do ORM
 
 O SQLAlchemy funciona como uma camada de mapeamento entre objetos Python e estruturas persistentes.
 
@@ -1602,7 +1602,7 @@ O ORM simplifica o acesso aos dados, mas não elimina a necessidade de compreend
 
 ---
 
-# 59. Raw SQL
+# 59. SQL Puro
 
 Nem toda query precisa obrigatoriamente ser construída exclusivamente através da abstração de alto nível do ORM.
 
@@ -1620,7 +1620,7 @@ Entretanto, SQL deve permanecer encapsulado em pontos apropriados da camada de p
 
 ---
 
-# 60. Bulk Operations
+# 60. Operações em Lote
 
 Operações em grande volume devem evitar loops de queries individuais quando isso gerar impacto significativo.
 
@@ -1650,7 +1650,7 @@ A escolha depende do caso de uso e das necessidades de:
 
 ---
 
-# 61. Database Connection Lifecycle
+# 61. Ciclo de Vida das Conexões com o Banco
 
 A aplicação deve controlar adequadamente o ciclo de vida das conexões.
 
@@ -1699,7 +1699,7 @@ Isso é essencial para evitar estados parcialmente persistidos.
 
 ---
 
-# 63. Database Availability
+# 63. Disponibilidade do Banco de Dados
 
 A disponibilidade do PostgreSQL é uma dependência crítica do Exactum.
 
@@ -1756,7 +1756,7 @@ Essas informações podem ser utilizadas posteriormente por infraestrutura e obs
 
 ---
 
-# 65. Database Security Boundaries
+# 65. Fronteiras de Segurança do Banco de Dados
 
 O banco é uma camada de infraestrutura protegida.
 
@@ -1793,7 +1793,7 @@ Browser
 
 ---
 
-# 66. Current State
+# 66. Estado Atual
 
 No estado atual, o schema do Exactum é baseado principalmente em entidades relacionadas a:
 
@@ -1823,7 +1823,7 @@ Algumas responsabilidades ainda estão agrupadas em estruturas que poderão rece
 
 ---
 
-# 67. Known Evolution Points
+# 67. Pontos de Evolução Conhecidos
 
 Os principais pontos de evolução do schema incluem:
 
@@ -1843,7 +1843,7 @@ Esses pontos representam possibilidades arquiteturais e devem ser implementados 
 
 ---
 
-# 68. Future Schema Evolution
+# 68. Evolução Futura do Schema
 
 Uma possível trajetória arquitetural é:
 
@@ -1878,7 +1878,7 @@ Essa evolução deve ser incremental.
 
 ---
 
-# 69. Design Principles
+# 69. Princípios de Design
 
 O schema do Exactum segue os seguintes princípios:
 
@@ -1900,7 +1900,7 @@ O schema do Exactum segue os seguintes princípios:
 
 ---
 
-# 70. Related Documentation
+# 70. Documentos Relacionados
 
 Documentos relacionados:
 

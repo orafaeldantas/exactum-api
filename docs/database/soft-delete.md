@@ -232,7 +232,7 @@ O timestamp também permite determinar quando a exclusão ocorreu.
 
 ---
 
-## 7. Timezone
+## 7. Fuso Horário
 
 Timestamps relacionados a Soft Delete devem seguir a mesma estratégia temporal adotada pelo restante do banco.
 
@@ -288,7 +288,7 @@ Isso deve ser aplicado de maneira consistente.
 
 ---
 
-## 10. Active Records
+## 10. Registros Ativos
 
 A aplicação deve considerar como registros ativos aqueles que possuem:
 
@@ -320,7 +320,7 @@ Product C
 
 ---
 
-## 11. Deleted Records
+## 11. Registros Excluídos
 
 Registros removidos logicamente continuam armazenados.
 
@@ -336,7 +336,7 @@ Essas operações devem utilizar queries explícitas para acessar registros dele
 
 ---
 
-## 12. Explicit Access
+## 12. Acesso Explícito
 
 O acesso a registros deletados não deve acontecer acidentalmente.
 
@@ -357,7 +357,7 @@ Isso evita que uma query administrativa seja reutilizada inadvertidamente em uma
 
 ---
 
-## 13. Repository Responsibility
+## 13. Responsabilidade do Repository
 
 O Repository é um ponto importante para centralizar o comportamento de Soft Delete.
 
@@ -387,7 +387,7 @@ Isso reduz a possibilidade de esquecer o filtro em cada chamada.
 
 ---
 
-## 14. Application Service Responsibility
+## 14. Responsabilidade do Application Service
 
 O Application Service deve representar a intenção da operação.
 
@@ -419,7 +419,7 @@ O Repository executa a persistência.
 
 ---
 
-## 15. Controller Responsibility
+## 15. Responsabilidade do Controller
 
 O Controller não deve implementar diretamente a lógica de Soft Delete.
 
@@ -441,7 +441,7 @@ Isso mantém a regra de persistência fora da camada HTTP.
 
 ---
 
-## 16. API Semantics
+## 16. Semântica da API
 
 Do ponto de vista da API, uma operação de exclusão pode continuar utilizando:
 
@@ -485,7 +485,7 @@ O cliente não precisa conhecer necessariamente a implementação interna.
 
 ---
 
-## 18. Idempotency
+## 18. Idempotência
 
 Soft Delete pode ser tratado como uma operação idempotente.
 
@@ -511,7 +511,7 @@ A decisão depende do contrato específico da API.
 
 ---
 
-## 19. Authorization
+## 19. Autorização
 
 Soft Delete é uma operação protegida por Authorization.
 
@@ -526,7 +526,7 @@ A autorização deve continuar baseada nas permissions e roles aplicáveis.
 
 ---
 
-## 20. Tenant Isolation
+## 20. Isolamento de Tenant
 
 Em um sistema multi-tenant, Soft Delete não elimina a necessidade de isolamento por tenant.
 
@@ -549,7 +549,7 @@ O filtro de exclusão lógica nunca deve substituir o filtro de tenant.
 
 ---
 
-## 21. Defensive Isolation
+## 21. Isolamento Defensivo
 
 A aplicação deve manter a estratégia de isolamento defensivo:
 
@@ -576,7 +576,7 @@ Soft Delete é uma dimensão adicional de filtragem, não uma substituição par
 
 ---
 
-## 22. Unique Constraints
+## 22. Constraints de Unicidade
 
 Soft Delete possui uma consequência importante para `UNIQUE`.
 
@@ -604,7 +604,7 @@ Portanto, Soft Delete e uniqueness devem ser projetados em conjunto.
 
 ---
 
-## 23. Active Uniqueness
+## 23. Unicidade entre Registros Ativos
 
 Em alguns cenários, a regra desejada é:
 
@@ -631,7 +631,7 @@ mas impede dois registros ativos com o mesmo valor.
 
 ---
 
-## 24. Partial Indexes
+## 24. Índices Parciais
 
 Partial indexes são particularmente úteis em modelos com Soft Delete.
 
@@ -652,7 +652,7 @@ A utilização deve ser baseada nas queries reais e no modelo de dados.
 
 ---
 
-## 25. Existing Unique Constraints
+## 25. Constraints de Unicidade Existentes
 
 Nem toda constraint `UNIQUE` deve ser transformada automaticamente em partial unique index.
 
@@ -672,7 +672,7 @@ Essa decisão pertence ao domínio da entidade.
 
 ---
 
-## 26. Historical Uniqueness
+## 26. Unicidade Histórica
 
 Alguns dados devem permanecer únicos mesmo depois do Soft Delete.
 
@@ -710,7 +710,7 @@ Isso é uma das razões pelas quais Soft Delete pode ser útil em sistemas que p
 
 ---
 
-## 28. Historical Relationships
+## 28. Relacionamentos Históricos
 
 Uma venda histórica pode precisar continuar exibindo informações relacionadas ao produto que existia no momento da venda.
 
@@ -730,7 +730,7 @@ O Product deletado não deve necessariamente ser fisicamente removido.
 
 ---
 
-## 29. Referential Integrity
+## 29. Integridade Referencial
 
 Soft Delete preserva a integridade referencial física.
 
@@ -745,7 +745,7 @@ Isso é diferente de Hard Delete, que pode exigir:
 
 ---
 
-## 30. Soft Delete and Cascades
+## 30. Soft Delete e Cascatas
 
 Soft Delete não possui o mesmo comportamento de:
 
@@ -777,7 +777,7 @@ Esse comportamento precisa ser definido pelo domínio.
 
 ---
 
-## 31. Cascading Soft Delete
+## 31. Soft Delete em Cascata
 
 Caso exista necessidade de cascading logical deletion, ela deve ser implementada explicitamente.
 
@@ -833,7 +833,7 @@ Active
 
 ---
 
-## 33. Restore Authorization
+## 33. Autorização para Restauração
 
 Restore deve ser tratado como uma operação protegida.
 
@@ -850,7 +850,7 @@ product.restore
 
 ---
 
-## 34. Restore Validation
+## 34. Validação da Restauração
 
 Restaurar um registro pode gerar conflitos.
 
@@ -874,7 +874,7 @@ Portanto, restore deve revalidar as constraints e regras aplicáveis.
 
 ---
 
-## 35. Restore and Dependencies
+## 35. Restauração e Dependências
 
 Um registro deletado pode possuir dependências que também foram removidas logicamente.
 
@@ -893,7 +893,7 @@ Essa regra deve ser definida de acordo com o domínio.
 
 ---
 
-## 36. Audit Logging
+## 36. Logs de Auditoria
 
 Soft Delete é uma ação relevante para Audit Logging.
 
@@ -927,7 +927,7 @@ A nomenclatura deve seguir o padrão adotado pelo sistema.
 
 ---
 
-## 37. Platform Events
+## 37. Eventos de Plataforma
 
 Dependendo da natureza da entidade e da evolução arquitetural, uma exclusão lógica também pode gerar Platform Event ou Domain Event.
 
@@ -949,7 +949,7 @@ A existência de um evento deve ser determinada pela necessidade arquitetural, n
 
 ---
 
-## 38. Correlation
+## 38. Correlação
 
 Uma operação de Soft Delete deve manter a mesma estratégia de correlation utilizada pelas demais operações.
 
@@ -971,7 +971,7 @@ Isso permite reconstruir a operação posteriormente.
 
 ---
 
-## 39. Soft Delete and Logging
+## 39. Soft Delete e Logging
 
 O log operacional pode registrar a execução da operação.
 
@@ -998,7 +998,7 @@ Audit Log
 
 ---
 
-## 40. Sensitive Data
+## 40. Dados Sensíveis
 
 Soft Delete não significa que os dados devem permanecer disponíveis indiscriminadamente.
 
@@ -1015,7 +1015,7 @@ Um registro estar no banco não significa que ele deve estar disponível na API.
 
 ---
 
-## 41. Retention
+## 41. Retenção
 
 Soft Delete pode prolongar a retenção de dados.
 
@@ -1071,7 +1071,7 @@ Essa estratégia exige um processo explícito de purge.
 
 ---
 
-## 43. Purge
+## 43. Expurgo
 
 Purge é a remoção física de registros que já passaram pelas condições necessárias de retenção.
 
@@ -1086,7 +1086,7 @@ O mecanismo futuro pode utilizar Celery ou outro sistema de background processin
 
 ---
 
-## 44. Purge Safety
+## 44. Segurança do Expurgo
 
 Um purge deve ser especialmente conservador.
 
@@ -1106,7 +1106,7 @@ Hard Delete deve ser uma operação explicitamente controlada.
 
 ---
 
-## 45. Reporting
+## 45. Relatórios
 
 Reporting precisa definir como tratar registros deletados.
 
@@ -1152,7 +1152,7 @@ Essa diferença deve ser explicitamente considerada nas queries analíticas.
 
 ---
 
-## 47. Search
+## 47. Busca
 
 Sistemas de busca normalmente devem excluir registros soft-deleted por padrão.
 
@@ -1170,7 +1170,7 @@ Uma busca administrativa pode possuir comportamento diferente.
 
 ---
 
-## 48. Pagination
+## 48. Paginação
 
 Soft Delete deve ser aplicado antes da paginação lógica.
 
@@ -1199,7 +1199,7 @@ Caso registros deletados sejam filtrados depois da paginação, o resultado pode
 
 ---
 
-## 49. Sorting
+## 49. Ordenação
 
 O campo `deleted_at` normalmente não deve fazer parte do sorting operacional, pois registros deletados já foram excluídos da consulta.
 
@@ -1238,7 +1238,7 @@ Portanto, Soft Delete não elimina a necessidade de gerenciamento de dados antig
 
 ---
 
-## 51. Table Growth
+## 51. Crescimento das Tabelas
 
 Uma tabela pode crescer mesmo que o número de registros ativos permaneça estável.
 
@@ -1258,7 +1258,7 @@ Isso torna políticas de retenção e purge potencialmente importantes em tabela
 
 ---
 
-## 52. Index Strategy
+## 52. Estratégia de Índices
 
 Indexes devem considerar o padrão de Soft Delete.
 
@@ -1281,7 +1281,7 @@ A decisão deve ser baseada em:
 
 ---
 
-## 53. Foreign Key Indexes
+## 53. Índices de Foreign Keys
 
 Foreign keys utilizadas em queries de entidades ativas podem precisar de indexes que considerem o padrão de acesso.
 
@@ -1298,7 +1298,7 @@ Entretanto, indexes devem ser derivados das queries reais e não apenas adiciona
 
 ---
 
-## 54. ORM Behavior
+## 54. Comportamento do ORM
 
 O SQLAlchemy não deve ser considerado automaticamente responsável por excluir registros soft-deleted.
 
@@ -1316,7 +1316,7 @@ A estratégia escolhida deve permanecer compreensível.
 
 ---
 
-## 55. Avoiding Hidden Behavior
+## 55. Evitando Comportamento Oculto
 
 Um risco de abstrações excessivas é esconder o comportamento de Soft Delete.
 
@@ -1373,7 +1373,7 @@ Isso centraliza regras e reduz inconsistências.
 
 ---
 
-## 58. Direct Mutation
+## 58. Alteração Direta
 
 A aplicação deve evitar que múltiplas partes do sistema executem diretamente:
 
@@ -1387,7 +1387,7 @@ Alterações de estado importantes devem ser controladas pela camada responsáve
 
 ---
 
-## 59. State Transition
+## 59. Transição de Estado
 
 Soft Delete pode ser entendido como uma transição de estado:
 
@@ -1413,7 +1413,7 @@ Cada transição pode possuir regras próprias.
 
 ---
 
-## 60. Concurrency
+## 60. Concorrência
 
 Duas requests podem tentar deletar o mesmo registro simultaneamente.
 
@@ -1439,7 +1439,7 @@ A estratégia depende da importância da entidade e da operação.
 
 ---
 
-## 61. Delete During Update
+## 61. Exclusão Durante uma Atualização
 
 Também pode existir concorrência entre:
 
@@ -1459,7 +1459,7 @@ Por exemplo, uma request não deveria atualizar um registro que foi logicamente 
 
 ---
 
-## 62. Delete During Sale
+## 62. Exclusão Durante uma Venda
 
 No contexto do Exactum, produtos podem possuir relação com vendas.
 
@@ -1479,7 +1479,7 @@ devem ser conceitos distintos.
 
 ---
 
-## 63. Product Example
+## 63. Exemplo com Product
 
 Um exemplo conceitual:
 
@@ -1509,7 +1509,7 @@ O produto, porém, deixa de aparecer na listagem operacional de produtos ativos.
 
 ---
 
-## 64. Sale Example
+## 64. Exemplo com Sale
 
 Considere:
 
@@ -1535,7 +1535,7 @@ O histórico continua apontando para o registro original.
 
 ---
 
-## 65. User Example
+## 65. Exemplo com User
 
 Usuários também podem possuir estados relacionados à desativação.
 
@@ -1567,7 +1567,7 @@ pode representar uma conta temporariamente desativada.
 
 ---
 
-## 66. Soft Delete vs Inactive
+## 66. Soft Delete vs Inativo
 
 É importante distinguir:
 
@@ -1589,7 +1589,7 @@ Essa diferença deve permanecer explícita no domínio.
 
 ---
 
-## 67. Authentication Context
+## 67. Contexto de Autenticação
 
 Session records e authentication state possuem necessidades específicas.
 
@@ -1607,7 +1607,7 @@ Isso representa revogação, não necessariamente exclusão lógica.
 
 ---
 
-## 68. Audit Logs
+## 68. Logs de Auditoria
 
 Audit Logs normalmente não devem ser soft-deleted como parte das operações comuns do sistema.
 
@@ -1627,7 +1627,7 @@ Audit Log
 
 ---
 
-## 69. Platform Events
+## 69. Eventos de Plataforma
 
 Platform Events possuem função semelhante de histórico operacional.
 
@@ -1653,7 +1653,7 @@ Delete Audit Logs
 
 ---
 
-## 70. Privacy Considerations
+## 70. Considerações de Privacidade
 
 Preservar dados por Soft Delete não significa que todos os dados podem ser mantidos indefinidamente.
 
@@ -1670,7 +1670,7 @@ Soft Delete é uma técnica de persistência, não uma política de retenção p
 
 ---
 
-## 71. Anonymization
+## 71. Anonimização
 
 Em cenários futuros, pode existir necessidade de anonimizar determinados dados sem eliminar completamente o registro histórico.
 
@@ -1717,7 +1717,7 @@ representam os registros atuais.
 
 ---
 
-## 73. Adding Soft Delete to Existing Data
+## 73. Adição de Soft Delete a Dados Existentes
 
 Uma migration desse tipo geralmente possui baixo risco estrutural quando a nova coluna é nullable.
 
@@ -1735,7 +1735,7 @@ Por isso, a mudança de comportamento deve ser testada junto com a alteração d
 
 ---
 
-## 74. Migration and Indexes
+## 74. Migrations e Índices
 
 Se Soft Delete for introduzido em uma tabela existente, indexes e constraints podem precisar ser ajustados.
 
@@ -1758,7 +1758,7 @@ Essa alteração deve ser feita por migration e validada com dados existentes.
 
 ---
 
-## 75. Testing Soft Delete
+## 75. Testando o Soft Delete
 
 Testes devem verificar pelo menos:
 
@@ -1776,7 +1776,7 @@ Testes devem verificar pelo menos:
 
 ---
 
-## 76. Testing Restore
+## 76. Testando a Restauração
 
 Restore merece testes próprios.
 
@@ -1799,7 +1799,7 @@ O teste deve verificar se o estado final corresponde às regras do domínio.
 
 ---
 
-## 77. Testing Tenant Isolation
+## 77. Testando o Isolamento de Tenant
 
 Testes de Soft Delete também devem considerar múltiplos tenants.
 
@@ -1819,7 +1819,7 @@ Soft Delete não pode criar um bypass de tenant isolation.
 
 ---
 
-## 78. Testing Pagination
+## 78. Testando a Paginação
 
 Quando Soft Delete participa das queries de listagem, testes de paginação devem confirmar que:
 
@@ -1830,7 +1830,7 @@ Quando Soft Delete participa das queries de listagem, testes de paginação deve
 
 ---
 
-## 79. Testing Uniqueness
+## 79. Testando a Unicidade
 
 Devem existir testes para cenários como:
 
@@ -1852,7 +1852,7 @@ principalmente quando forem utilizados partial unique indexes.
 
 ---
 
-## 80. Testing Historical Data
+## 80. Testando Dados Históricos
 
 Também devem existir testes para confirmar que:
 
@@ -1870,7 +1870,7 @@ quando essa for a regra do domínio.
 
 ---
 
-## 81. Operational Monitoring
+## 81. Monitoramento Operacional
 
 O crescimento de registros soft-deleted deve ser monitorado quando o volume justificar.
 
@@ -1888,7 +1888,7 @@ Isso pode futuramente integrar a estratégia de Prometheus/Grafana do Exactum.
 
 ---
 
-## 82. Current State
+## 82. Estado Atual
 
 No estado atual do Exactum, Soft Delete deve ser entendido como uma estratégia de persistência destinada às entidades em que preservação histórica e restauração sejam relevantes.
 
@@ -1904,7 +1904,7 @@ O comportamento deve permanecer concentrado nas abstrações responsáveis pela 
 
 ---
 
-## 83. Known Evolution Points
+## 83. Pontos de Evolução Conhecidos
 
 A estratégia pode evoluir conforme o sistema cresça.
 
@@ -1926,7 +1926,7 @@ Esses mecanismos devem ser introduzidos conforme exista necessidade real.
 
 ---
 
-## 84. Design Principles
+## 84. Princípios de Design
 
 A estratégia de Soft Delete do Exactum segue os seguintes princípios:
 
@@ -1964,7 +1964,7 @@ Purge, anonymization e outras estratégias devem ser introduzidas somente quando
 
 ---
 
-## 85. Related Documentation
+## 85. Documentos Relacionados
 
 Este documento se relaciona diretamente com:
 
@@ -1983,7 +1983,7 @@ Este documento se relaciona diretamente com:
 
 ---
 
-## 86. Naming and Architectural Evolution
+## 86. Nomenclatura e Evolução Arquitetural
 
 Alguns conceitos utilizados neste documento são arquiteturais e podem não corresponder literalmente aos nomes utilizados atualmente no código.
 

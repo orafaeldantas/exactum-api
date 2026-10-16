@@ -1,4 +1,4 @@
-# ADR-003 — HttpOnly Cookie Authentication
+# ADR-003 — Autenticação com Cookies HttpOnly
 
 - **Status:** Accepted
 - **Date:** None
@@ -9,7 +9,7 @@
 
 ---
 
-# 1. Context
+# 1. Contexto
 
 O Exactum utiliza autenticação baseada em **JSON Web Tokens (JWT)** para autenticar usuários e autorizar o acesso aos recursos protegidos da API.
 
@@ -39,7 +39,7 @@ Diante disso, foi decidido adotar um modelo baseado em **cookies HttpOnly**, man
 
 ---
 
-# 2. Decision
+# 2. Decisão
 
 O Exactum utilizará **JWT armazenado em cookies HttpOnly** para autenticação da aplicação web.
 
@@ -79,7 +79,7 @@ O navegador passa a ser responsável pelo envio dos cookies, enquanto o backend 
 
 ---
 
-# 3. Authentication Flow
+# 3. Fluxo de Autenticação
 
 ## 3.1 Login
 
@@ -127,7 +127,7 @@ Backend
 
 ---
 
-# 4. HttpOnly Cookies
+# 4. Cookies HttpOnly
 
 Os tokens de autenticação serão armazenados em cookies marcados como `HttpOnly`.
 
@@ -159,7 +159,7 @@ Authentication Cookies
 
 ---
 
-# 5. Access Token and Refresh Token
+# 5. Access Token e Refresh Token
 
 A autenticação utiliza dois tokens com responsabilidades diferentes.
 
@@ -202,7 +202,7 @@ No fluxo atual, a renovação também envolve **refresh token rotation**, cuja d
 
 ---
 
-# 6. Token Rotation
+# 6. Rotação de Tokens
 
 O refresh token não deve ser tratado como uma credencial permanente.
 
@@ -263,7 +263,7 @@ Backend
 
 ---
 
-# 8. Refresh Cookie Path
+# 8. Path do Cookie de Refresh
 
 O refresh token utiliza um cookie com escopo de caminho compatível com os endpoints de autenticação.
 
@@ -281,7 +281,7 @@ Além de representar uma preocupação de segurança, restringir o escopo do coo
 
 ---
 
-# 9. Frontend Responsibility
+# 9. Responsabilidade do Frontend
 
 A adoção de cookies HttpOnly reduz significativamente a responsabilidade do frontend sobre o gerenciamento dos tokens.
 
@@ -307,7 +307,7 @@ O frontend é, portanto, um **cliente da autenticação**, e não a autoridade r
 
 ---
 
-# 10. Request Credentials
+# 10. Credenciais da Requisição
 
 Como os tokens estão armazenados em cookies, as requisições realizadas pelo frontend precisam permitir o envio das credenciais apropriadas.
 
@@ -325,11 +325,11 @@ A configuração de CORS, quando aplicável, deve ser tratada em conjunto com es
 
 ---
 
-# 11. Authentication vs Authorization
+# 11. Autenticação vs Autorização
 
 A adoção de HttpOnly cookies não altera a separação conceitual entre **Authentication** e **Authorization**.
 
-### Authentication
+### Autenticação
 
 Responde:
 
@@ -337,7 +337,7 @@ Responde:
 
 O backend utiliza os tokens de autenticação para determinar a identidade e o contexto autenticado.
 
-### Authorization
+### Autorização
 
 Responde:
 
@@ -376,7 +376,7 @@ Allowed / Denied
 
 ---
 
-# 12. HttpOnly Does Not Mean CSRF Protection
+# 12. HttpOnly Não Significa Proteção contra CSRF
 
 A utilização de cookies HttpOnly não significa que a aplicação esteja automaticamente protegida contra **Cross-Site Request Forgery (CSRF)**.
 
@@ -400,7 +400,7 @@ Essa distinção é deliberada para evitar uma falsa sensação de segurança.
 
 ---
 
-# 13. Cookie Security Attributes
+# 13. Atributos de Segurança dos Cookies
 
 Os cookies de autenticação devem utilizar atributos de segurança apropriados ao ambiente.
 
@@ -418,7 +418,7 @@ Os valores exatos de atributos que dependem do ambiente de execução não são 
 
 ---
 
-# 14. Security Boundary
+# 14. Fronteira de Segurança
 
 A mudança para HttpOnly cookies estabelece uma fronteira mais clara entre frontend e backend.
 
@@ -438,7 +438,7 @@ O princípio arquitetural é:
 
 ---
 
-# 15. Multi-Tenancy Relation
+# 15. Relação com Multi-Tenancy
 
 A autenticação por cookies não elimina a necessidade de isolamento entre tenants.
 
@@ -474,7 +474,7 @@ Essa decisão se relaciona diretamente com:
 
 ---
 
-# 16. Impersonation Relation
+# 16. Relação com Impersonation
 
 A arquitetura de cookies também suporta o mecanismo de **impersonation** utilizado pelo Exactum.
 
@@ -492,7 +492,7 @@ Isso mantém a mesma fronteira de segurança estabelecida pela decisão de HttpO
 
 ---
 
-# 17. Observability and Logging
+# 17. Observabilidade e Logging
 
 Os tokens de autenticação não devem ser registrados em logs.
 
@@ -520,7 +520,7 @@ Porém, informações secretas utilizadas para autenticação não devem ser per
 
 ---
 
-# 18. API Documentation
+# 18. Documentação da API
 
 A API deve deixar explícito que a autenticação utiliza cookies HttpOnly.
 
@@ -538,7 +538,7 @@ O consumidor da API precisa compreender que a autenticação depende do estado d
 
 ---
 
-# 19. Alternatives Considered
+# 19. Alternativas Consideradas
 
 ## 19.1 sessionStorage + Authorization Bearer
 
@@ -596,7 +596,7 @@ Armazenar o JWT no `localStorage` e reutilizá-lo nas requisições.
 
 ---
 
-# 21. Server-Side Session with Opaque Cookie
+# 21. Sessão Server-Side com Cookie Opaco
 
 ### Descrição
 
@@ -636,7 +636,7 @@ O Exactum mantém JWT como mecanismo de autenticação, enquanto utiliza Redis p
 
 ---
 
-# 22. HttpOnly Cookie Authentication
+# 22. Autenticação com Cookies HttpOnly
 
 ### Descrição
 
@@ -665,9 +665,9 @@ Armazenar access e refresh tokens em cookies HttpOnly.
 
 ---
 
-# 23. Consequences
+# 23. Consequências
 
-## 23.1 Positive Consequences
+## 23.1 Consequências Positivas
 
 A decisão proporciona:
 
@@ -681,7 +681,7 @@ A decisão proporciona:
 
 ---
 
-## 23.2 Negative Consequences
+## 23.2 Consequências Negativas
 
 A decisão também introduz responsabilidades adicionais:
 
@@ -695,7 +695,7 @@ A decisão também introduz responsabilidades adicionais:
 
 ---
 
-# 24. Testing Implications
+# 24. Implicações nos Testes
 
 A mudança exige que os testes da aplicação considerem o comportamento real dos cookies.
 
@@ -723,7 +723,7 @@ Isso mantém os testes mais próximos do comportamento efetivo do sistema.
 
 ---
 
-# 25. Operational Implications
+# 25. Implicações Operacionais
 
 Em produção, a autenticação depende de uma configuração consistente entre:
 
@@ -752,7 +752,7 @@ Consequentemente, alterações na infraestrutura devem considerar o impacto sobr
 
 ---
 
-# 26. Performance Considerations
+# 26. Considerações de Performance
 
 Cookies adicionam informações às requisições HTTP, portanto possuem impacto potencial no tamanho dos requests.
 
@@ -762,7 +762,7 @@ O refresh token também possui escopo mais restrito para evitar seu envio desnec
 
 ---
 
-# 27. Migration from Previous Architecture
+# 27. Migração da Arquitetura Anterior
 
 A migração substituiu o fluxo anterior:
 
@@ -797,7 +797,7 @@ O estado necessário para a interface passou a ser obtido através das respostas
 
 ---
 
-# 28. Current State
+# 28. Estado Atual
 
 A arquitetura está atualmente implementada utilizando:
 
@@ -819,7 +819,7 @@ A documentação Swagger/OpenAPI também representa a autenticação como basead
 
 ---
 
-# 29. Known Security Limitation
+# 29. Limitação de Segurança Conhecida
 
 A adoção de HttpOnly cookies resolve uma classe específica de exposição relacionada ao acesso de tokens pelo JavaScript, mas não representa uma solução completa para todas as ameaças relacionadas à autenticação web.
 
@@ -833,7 +833,7 @@ Da mesma forma, HttpOnly não deve ser utilizado como justificativa para conside
 
 ---
 
-# 30. Future Evolution
+# 30. Evolução Futura
 
 A arquitetura poderá evoluir futuramente em áreas como:
 
@@ -853,7 +853,7 @@ Essas evoluções deverão ser registradas através de novas ADRs quando represe
 
 ---
 
-# 31. Related Decisions
+# 31. Decisões Relacionadas
 
 - **ADR-001 — Shared Database Multi-Tenancy**
 
@@ -877,7 +877,7 @@ Essas evoluções deverão ser registradas através de novas ADRs quando represe
 
 ---
 
-# 32. Related Documentation
+# 32. Documentos Relacionados
 
 Esta decisão está relacionada principalmente aos seguintes documentos:
 
@@ -897,7 +897,7 @@ docs/architecture/application-architecture.md
 
 ---
 
-# 33. Architectural Principle
+# 33. Princípio Arquitetural
 
 A decisão pode ser resumida pelo seguinte princípio:
 
@@ -909,7 +909,7 @@ No contexto do Exactum:
 
 ---
 
-# 34. Decision Summary
+# 34. Resumo da Decisão
 
 | Aspecto                  | Decisão                              |
 | ------------------------ | ------------------------------------ |
@@ -935,7 +935,7 @@ No contexto do Exactum:
 
 ---
 
-# 35. Final Decision
+# 35. Decisão Final
 
 O Exactum adotará **JWT armazenado em cookies HttpOnly** como mecanismo de autenticação para sua aplicação web.
 

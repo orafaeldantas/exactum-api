@@ -1,4 +1,4 @@
-# System Context
+# Contexto do Sistema
 
 ## 1. Visão Geral
 
@@ -111,7 +111,7 @@ As capacidades efetivamente disponíveis são determinadas pelo modelo de autori
 
 ---
 
-### 4.3 Super-admin
+### 4.3 Super-Admin
 
 Representa um operador administrativo em nível de plataforma.
 

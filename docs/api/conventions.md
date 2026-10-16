@@ -1,4 +1,4 @@
-# API Conventions
+# Convenções da API
 
 ## 1. Objetivo
 
@@ -249,7 +249,7 @@ Essa distinção permite que a documentação represente responsabilidades arqui
 
 ---
 
-# 6. Request Body
+# 6. Corpo da Requisição
 
 Operações que recebem dados devem utilizar JSON quando apropriado.
 
@@ -293,7 +293,7 @@ Verificar se uma determinada operação pode alterar o preço de um produto é u
 
 ---
 
-# 7. Query Parameters
+# 7. Parâmetros de Query
 
 Query parameters devem ser utilizados para modificar a forma como uma coleção é consultada sem alterar o recurso em si.
 
@@ -357,7 +357,7 @@ O padrão pode ser refinado conforme a API evoluir.
 
 ---
 
-# 9. Filtering
+# 9. Filtragem
 
 Filtros devem ser expressos por query parameters.
 
@@ -387,7 +387,7 @@ Em geral, filtros representam uma operação lógica conjunta.
 
 ---
 
-# 10. Sorting
+# 10. Ordenação
 
 A ordenação deve ser explicitamente indicada quando suportada pelo endpoint.
 
@@ -418,7 +418,7 @@ Isso evita comportamento inesperado e reduz riscos relacionados à construção 
 
 ---
 
-# 11. Response Body
+# 11. Corpo da Resposta
 
 As respostas devem utilizar JSON para representar os dados retornados pela API.
 
@@ -441,7 +441,7 @@ A resposta deve representar aquilo que o consumidor da API precisa conhecer, e n
 
 ---
 
-# 12. Resource Representation
+# 12. Representação de Recursos
 
 Um recurso pode possuir diferentes representações dependendo do endpoint.
 
@@ -496,7 +496,7 @@ O status code deve representar o resultado da operação sem depender exclusivam
 
 ---
 
-# 14. Authentication
+# 14. Autenticação
 
 A API utiliza autenticação baseada em JWT armazenado em cookies HttpOnly.
 
@@ -539,7 +539,7 @@ Os detalhes encontram-se em:
 
 ---
 
-# 15. Tenant Context
+# 15. Contexto do Tenant
 
 O Exactum possui arquitetura multi-tenant.
 
@@ -570,7 +570,7 @@ Mais detalhes em:
 
 ---
 
-# 16. Authorization
+# 16. Autorização
 
 A autorização ocorre no backend.
 
@@ -610,11 +610,11 @@ A autorização pode considerar:
 
 ---
 
-# 17. Validation
+# 17. Validação
 
 A API possui diferentes níveis de validação.
 
-## 17.1 Structural Validation
+## 17.1 Validação Estrutural
 
 Verifica se a entrada possui formato válido.
 
@@ -629,7 +629,7 @@ Exemplos:
 
 ---
 
-## 17.2 Business Validation
+## 17.2 Validação de Negócio
 
 Verifica regras específicas do domínio.
 
@@ -649,7 +649,7 @@ Essas regras pertencem à camada de aplicação/domínio apropriada, e não excl
 
 ---
 
-## 17.3 Authorization Validation
+## 17.3 Validação de Autorização
 
 Verifica se o ator possui permissão para executar determinada operação.
 
@@ -669,7 +669,7 @@ Na prática, a ordem exata pode variar conforme o endpoint e a arquitetura da op
 
 ---
 
-# 18. Error Responses
+# 18. Respostas de Erro
 
 > **Formato atual:** exceções da aplicação retornam `{"error": "<mensagem>"}` e erros de validação seguem o formato do flask-smorest (`code`, `status`, `errors`). Os exemplos abaixo representam o **contrato planejado**. Ver [`docs/api/errors.md`](./errors.md#51-formato-atual).
 
@@ -717,7 +717,7 @@ Mais detalhes em:
 
 ---
 
-# 19. Idempotency
+# 19. Idempotência
 
 Operações que podem ser repetidas devem considerar sua semântica de idempotência.
 
@@ -742,7 +742,7 @@ Esse mecanismo pode ser incorporado conforme a maturidade da API aumentar.
 
 ---
 
-# 20. Concurrency
+# 20. Concorrência
 
 Operações concorrentes podem modificar o mesmo recurso simultaneamente.
 
@@ -764,7 +764,7 @@ A regra de negócio deve ser protegida no backend e na persistência.
 
 ---
 
-# 21. Date and Time
+# 21. Data e Hora
 
 Datas e timestamps devem utilizar uma representação consistente.
 
@@ -787,7 +787,7 @@ O backend deve evitar depender implicitamente do timezone local do servidor para
 
 ---
 
-# 22. Boolean Values
+# 22. Valores Booleanos
 
 Valores booleanos devem ser representados como JSON boolean:
 
@@ -809,7 +809,7 @@ Isso mantém o contrato semanticamente correto e reduz ambiguidades no consumo d
 
 ---
 
-# 23. Nullability
+# 23. Nulabilidade
 
 Quando um campo puder não possuir valor, a API deve definir explicitamente se:
 
@@ -853,7 +853,7 @@ Essa semântica deve ser definida de forma consistente pelo endpoint.
 
 ---
 
-# 24. Naming Conventions
+# 24. Convenções de Nomenclatura
 
 A API deve utilizar nomenclatura previsível.
 
@@ -906,7 +906,7 @@ A necessidade deve ser determinada pelo domínio e pelo ciclo de vida do recurso
 
 ---
 
-# 26. Resource State
+# 26. Estado do Recurso
 
 Recursos podem possuir estados explícitos quando o domínio exigir.
 
@@ -926,7 +926,7 @@ Quando houver uma máquina de estados relevante para o domínio, suas transiçõ
 
 ---
 
-# 27. API and Application Services
+# 27. API e Application Services
 
 Controllers e routes são responsáveis por preocupações relacionadas ao HTTP.
 
@@ -959,7 +959,7 @@ Isso permite que a lógica de aplicação permaneça menos acoplada ao framework
 
 ---
 
-# 28. API and Repositories
+# 28. API e Repositories
 
 A API não deve acessar diretamente a camada de persistência quando isso resultar em acoplamento inadequado.
 
@@ -984,7 +984,7 @@ A separação também facilita testes e futuras mudanças na arquitetura.
 
 ---
 
-# 29. API and Observability
+# 29. API e Observabilidade
 
 As requisições da API fazem parte do Request Lifecycle observado pelo sistema.
 
@@ -1025,7 +1025,7 @@ Mais detalhes em:
 
 ---
 
-# 30. Security Considerations
+# 30. Considerações de Segurança
 
 A API deve considerar segurança desde o desenho do endpoint.
 
@@ -1048,7 +1048,7 @@ Segurança é uma preocupação transversal da arquitetura, e não uma responsab
 
 ---
 
-# 31. API Contract
+# 31. Contrato da API
 
 A API deve possuir um contrato explícito entre backend e consumidores.
 
@@ -1080,7 +1080,7 @@ a documentação arquitetural descreve:
 
 ---
 
-# 32. Backward Compatibility
+# 32. Compatibilidade Retroativa
 
 Mudanças no contrato público devem considerar compatibilidade com consumidores existentes.
 
@@ -1098,11 +1098,11 @@ Quando uma mudança incompatível for necessária, ela deve ser tratada como evo
 
 ---
 
-# 33. Anti-Patterns
+# 33. Antipadrões
 
 A API deve evitar padrões como:
 
-### 33.1 Business Logic in Controllers
+### 33.1 Regras de Negócio em Controllers
 
 ```text
 Controller
@@ -1117,7 +1117,7 @@ Isso aumenta o acoplamento e dificulta manutenção e testes.
 
 ---
 
-### 33.2 Trusting the Frontend
+### 33.2 Confiar no Frontend
 
 Não se deve considerar que uma funcionalidade está protegida porque o frontend não exibe o botão.
 
@@ -1125,7 +1125,7 @@ A API deve verificar autorização independentemente do cliente.
 
 ---
 
-### 33.3 Client-Controlled Tenant
+### 33.3 Tenant Controlado pelo Cliente
 
 Não se deve permitir que o cliente determine livremente o tenant da operação.
 
@@ -1133,7 +1133,7 @@ O contexto autorizado deve ser estabelecido pelo backend.
 
 ---
 
-### 33.4 Exposing Internal Errors
+### 33.4 Exposição de Erros Internos
 
 Não se deve retornar stack traces, SQL ou detalhes internos ao consumidor.
 
@@ -1141,13 +1141,13 @@ O cliente deve receber uma resposta segura e estruturada.
 
 ---
 
-### 33.5 Inconsistent Naming
+### 33.5 Nomenclatura Inconsistente
 
 Endpoints diferentes não devem utilizar nomes diferentes para o mesmo conceito sem justificativa.
 
 ---
 
-### 33.6 Unbounded Queries
+### 33.6 Queries sem Limite
 
 Endpoints de listagem não devem permitir consultas sem limites que possam gerar consumo excessivo de recursos.
 
@@ -1155,7 +1155,7 @@ Paginação e limites devem ser aplicados quando apropriado.
 
 ---
 
-### 33.7 Arbitrary Sorting or Filtering
+### 33.7 Ordenação ou Filtragem Arbitrária
 
 Campos de ordenação e filtros devem ser explicitamente controlados pelo backend.
 
@@ -1163,7 +1163,7 @@ Não se deve permitir que o cliente transforme parâmetros diretamente em partes
 
 ---
 
-# 34. Testing API Conventions
+# 34. Testando as Convenções da API
 
 As convenções da API devem ser protegidas por testes automatizados.
 
@@ -1188,7 +1188,7 @@ Testes de integração são especialmente importantes para garantir que diferent
 
 ---
 
-# 35. Current State
+# 35. Estado Atual
 
 Atualmente, o Exactum possui uma API REST-oriented construída em Flask, utilizando schemas para validação e serialização, controllers/routes para a camada HTTP e Application Services para orquestração das operações.
 
@@ -1210,7 +1210,7 @@ A implementação continua em evolução e algumas convenções descritas neste 
 
 ---
 
-# 36. Future Evolution
+# 36. Evolução Futura
 
 Conforme o Exactum evoluir, a API poderá incorporar ou aprofundar:
 
@@ -1236,7 +1236,7 @@ Essas evoluções devem preservar os princípios de baixo acoplamento, seguranç
 
 ---
 
-# 37. Design Principles
+# 37. Princípios de Design
 
 As principais diretrizes para evolução da API são:
 
@@ -1266,7 +1266,7 @@ As principais diretrizes para evolução da API são:
 
 ---
 
-# 38. Related Documentation
+# 38. Documentos Relacionados
 
 - `docs/api/overview.md`
 - `docs/api/authentication.md`

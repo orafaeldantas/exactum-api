@@ -1,4 +1,4 @@
-# Audit Logging
+# Logs de Auditoria
 
 ## 1. Objetivo
 
@@ -47,11 +47,11 @@ Uma requisição de leitura simples, por exemplo, pode ser relevante para Infras
 
 ---
 
-## 3. Audit Logs vs. Infrastructure Logs
+## 3. Logs de Auditoria vs. Logs de Infraestrutura
 
 Os dois mecanismos possuem objetivos diferentes.
 
-### Infrastructure Logs
+### Logs de Infraestrutura
 
 Infrastructure Logs descrevem a execução técnica da aplicação.
 
@@ -68,7 +68,7 @@ Request completed
 
 Seu principal público é composto por developers, operators e responsáveis pela infraestrutura.
 
-### Audit Logs
+### Logs de Auditoria
 
 Audit Logs descrevem ações relevantes realizadas sobre recursos do negócio.
 
@@ -109,11 +109,11 @@ Audit Log
 
 ---
 
-## 4. Audit Logs vs. Platform Events
+## 4. Logs de Auditoria vs. Eventos de Plataforma
 
 Audit Logs também não devem ser confundidos com Platform Events.
 
-### Platform Events
+### Eventos de Plataforma
 
 Platform Events representam acontecimentos relevantes para a própria plataforma.
 
@@ -128,7 +128,7 @@ impersonation_finished
 
 Esses eventos podem ser utilizados para observabilidade administrativa, operações de plataforma ou futuras integrações.
 
-### Audit Logs
+### Logs de Auditoria
 
 Audit Logs representam ações relevantes realizadas dentro do contexto de um tenant.
 
@@ -206,7 +206,7 @@ Isso permite reconstruir posteriormente o contexto da operação sem depender ex
 
 ---
 
-## 6. Actor
+## 6. Ator
 
 O conceito de **actor** representa quem originou ou executou uma ação.
 
@@ -252,7 +252,7 @@ A documentação utiliza o conceito arquitetural, enquanto a implementação uti
 
 ---
 
-## 7. Actor vs. Target
+## 7. Ator vs. Alvo
 
 Durante operações administrativas, especialmente impersonation, é importante distinguir o **actor** do usuário ou recurso afetado pela ação.
 
@@ -291,7 +291,7 @@ Essa diferenciação é especialmente importante para operações administrativa
 
 ---
 
-## 8. Tenant Context
+## 8. Contexto do Tenant
 
 Todo Audit Log relacionado a dados de negócio deve possuir contexto de tenant.
 
@@ -318,7 +318,7 @@ O Audit Logging deve respeitar as mesmas regras de **Tenant Isolation** aplicada
 
 ---
 
-## 9. Audit Log Structure
+## 9. Estrutura do Log de Auditoria
 
 Um Audit Log pode ser representado conceitualmente por uma estrutura semelhante a:
 
@@ -442,7 +442,7 @@ changes:
 
 ---
 
-## 10. Action Naming
+## 10. Nomenclatura de Ações
 
 As ações devem utilizar uma nomenclatura consistente.
 
@@ -483,7 +483,7 @@ A escolha da representação concreta deve considerar a implementação atual e 
 
 ---
 
-## 11. Meaningful Actions
+## 11. Ações Relevantes
 
 O Audit Logging não deve se transformar em um espelho de todas as operações realizadas pela API.
 
@@ -517,7 +517,7 @@ A definição exata das ações auditáveis deve evoluir conforme os requisitos 
 
 ---
 
-## 12. Create Operations
+## 12. Operações de Criação
 
 A criação de um recurso pode ser registrada com informações suficientes para identificar:
 
@@ -553,7 +553,7 @@ O objetivo principal é preservar o contexto da ação.
 
 ---
 
-## 13. Update Operations
+## 13. Operações de Atualização
 
 Atualizações podem exigir informações adicionais porque o estado anterior e o novo estado podem ser relevantes para auditoria.
 
@@ -576,7 +576,7 @@ Isso reduz volume e exposição de dados.
 
 ---
 
-## 14. Delete Operations
+## 14. Operações de Exclusão
 
 Operações de exclusão devem ser especialmente consideradas para auditoria.
 
@@ -605,7 +605,7 @@ O Audit Log não deve ser alterado para refletir o estado atual do recurso.
 
 ---
 
-## 15. Immutability
+## 15. Imutabilidade
 
 Audit Logs possuem natureza histórica.
 
@@ -629,7 +629,7 @@ Esse princípio preserva a integridade histórica do sistema.
 
 ---
 
-## 16. Audit Logging and Soft Delete
+## 16. Logs de Auditoria e Soft Delete
 
 Soft Delete e Audit Logging possuem responsabilidades complementares.
 
@@ -659,7 +659,7 @@ Essa distinção é importante para manter uma separação clara entre **current
 
 ---
 
-## 17. Sensitive Data
+## 17. Dados Sensíveis
 
 Audit Logs podem conter informações importantes sobre operações do sistema e, por isso, também precisam seguir princípios de segurança e privacidade.
 
@@ -688,7 +688,7 @@ O objetivo é registrar **evidência suficiente da ação**, não duplicar o ban
 
 ---
 
-## 18. Before and After Values
+## 18. Valores Antes e Depois
 
 Quando alterações de estado forem relevantes, o sistema pode registrar valores anteriores e posteriores.
 
@@ -724,7 +724,7 @@ em vez de armazenar o objeto completo.
 
 ---
 
-## 19. Authorization Changes
+## 19. Mudanças de Autorização
 
 Alterações de autorização são especialmente importantes para auditoria.
 
@@ -797,7 +797,7 @@ O modelo exato de armazenamento pode evoluir junto com a implementação de impe
 
 ---
 
-## 21. Request Correlation
+## 21. Correlação de Requisições
 
 Audit Logs devem manter uma relação com o contexto da requisição sempre que a ação for originada por uma requisição HTTP.
 
@@ -831,7 +831,7 @@ docs/observability/correlation.md
 
 ---
 
-## 22. Tenant Isolation
+## 22. Isolamento de Tenant
 
 Audit Logs são dados potencialmente sensíveis do tenant.
 
@@ -857,7 +857,7 @@ Isso mantém o princípio de **defense in depth** utilizado pelo Exactum.
 
 ---
 
-## 23. Access Control
+## 23. Controle de Acesso
 
 Nem todo usuário deve necessariamente possuir acesso aos Audit Logs.
 
@@ -878,7 +878,7 @@ O frontend pode ocultar funcionalidades sem permissão para melhorar a UX, mas a
 
 ---
 
-## 24. Retention
+## 24. Retenção
 
 Audit Logs podem crescer significativamente ao longo do tempo.
 
@@ -897,7 +897,7 @@ Não se deve remover registros históricos simplesmente porque o recurso corresp
 
 ---
 
-## 25. Audit Logs Are Not Event Sourcing
+## 25. Logs de Auditoria Não São Event Sourcing
 
 Audit Logging não deve ser confundido com **Event Sourcing**.
 
@@ -921,7 +921,7 @@ Caso Event Sourcing seja considerado futuramente, ele deverá ser tratado como u
 
 ---
 
-## 26. Transactional Consistency
+## 26. Consistência Transacional
 
 Quando uma ação de negócio e seu Audit Log são persistidos, é importante considerar a consistência entre os dois.
 
@@ -947,11 +947,11 @@ Essa é uma possibilidade arquitetural futura, não uma dependência obrigatóri
 
 ---
 
-## 27. Synchronous vs. Asynchronous Audit Processing
+## 27. Processamento de Auditoria Síncrono vs. Assíncrono
 
 O registro de auditoria pode ocorrer de forma síncrona ou assíncrona.
 
-### Synchronous
+### Síncrono
 
 ```text
 Request
@@ -974,7 +974,7 @@ Desvantagens:
 - adiciona trabalho ao request;
 - pode aumentar latência.
 
-### Asynchronous
+### Assíncrono
 
 ```text
 Request
@@ -1006,7 +1006,7 @@ A evolução para processamento assíncrono poderá ser considerada juntamente c
 
 ---
 
-## 28. Idempotency
+## 28. Idempotência
 
 Caso o processamento de Audit Logs passe a ocorrer de forma assíncrona, o sistema deve considerar **idempotency**.
 
@@ -1030,7 +1030,7 @@ Um identificador único de evento pode ser utilizado para garantir que o mesmo e
 
 ---
 
-## 29. Relationship with Domain Events
+## 29. Relação com Eventos de Domínio
 
 Audit Logging pode receber informações provenientes de **Domain Events**, especialmente à medida que a arquitetura do Exactum evoluir.
 
@@ -1056,7 +1056,7 @@ Da mesma forma, nem todo Audit Log precisa ser modelado como um Domain Event.
 
 ---
 
-## 30. Domain Boundaries
+## 30. Fronteiras de Domínio
 
 Audit Logging é uma preocupação transversal da aplicação.
 
@@ -1082,7 +1082,7 @@ Essa abordagem também é compatível com a evolução arquitetural planejada pa
 
 ---
 
-## 31. Avoiding Audit Noise
+## 31. Evitando Ruído na Auditoria
 
 Um sistema de auditoria deve priorizar qualidade sobre quantidade.
 
@@ -1101,7 +1101,7 @@ Se a resposta for negativa, provavelmente um Infrastructure Log ou Metric será 
 
 ---
 
-## 32. Investigation Example
+## 32. Exemplo de Investigação
 
 Considere que um administrador perceba que o estoque mínimo de um produto foi alterado.
 
@@ -1133,7 +1133,7 @@ O Correlation ID conecta os dois.
 
 ---
 
-## 33. Testing
+## 33. Testes
 
 Audit Logging deve possuir testes que validem principalmente:
 
@@ -1156,7 +1156,7 @@ Também devem existir testes garantindo que uma operação realizada em um tenan
 
 ---
 
-## 34. Current State
+## 34. Estado Atual
 
 No estado atual do Exactum, Audit Logging faz parte da estratégia geral de Observability e deve ser tratado como uma camada específica para rastreabilidade de ações relevantes.
 
@@ -1166,7 +1166,7 @@ A documentação, portanto, define principalmente os princípios e responsabilid
 
 ---
 
-## 35. Future Evolution
+## 35. Evolução Futura
 
 A evolução planejada da arquitetura pode introduzir:
 
@@ -1195,7 +1195,7 @@ Security
 
 ---
 
-## 36. Design Principles
+## 36. Princípios de Design
 
 O Audit Logging do Exactum deve seguir os seguintes princípios:
 
@@ -1217,7 +1217,7 @@ O Audit Logging do Exactum deve seguir os seguintes princípios:
 
 ---
 
-## 37. Related Documentation
+## 37. Documentos Relacionados
 
 - [`Observability Overview`](./overview.md)
 - [`Infrastructure Logging`](./infrastructure-logging.md)

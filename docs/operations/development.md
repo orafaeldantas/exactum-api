@@ -1,4 +1,4 @@
-# Development Environment
+# Ambiente de Desenvolvimento
 
 ## 1. Objetivo
 
@@ -144,7 +144,7 @@ DATABASE_TESTS_URL=postgresql://exactum:exactum@localhost:5433/exactum_db_tests 
 
 ---
 
-## 2. Development Stack
+## 2. Stack de Desenvolvimento
 
 O ambiente de desenvolvimento do Exactum utiliza principalmente:
 
@@ -182,7 +182,7 @@ As versões exatas utilizadas pelo projeto devem ser obtidas a partir dos arquiv
 
 ---
 
-## 3. Development Environment
+## 3. Ambiente de Desenvolvimento
 
 O desenvolvimento pode ser realizado diretamente no sistema operacional ou utilizando containers, dependendo da necessidade.
 
@@ -204,7 +204,7 @@ Docker pode ser utilizado para padronizar principalmente os serviços de infraes
 
 ---
 
-## 4. Source Repository
+## 4. Repositório de Código
 
 O código fonte do Exactum é versionado utilizando Git.
 
@@ -227,7 +227,7 @@ O endereço efetivo do repositório deve ser obtido da configuração atual do p
 
 ---
 
-## 5. Operating System
+## 5. Sistema Operacional
 
 O Exactum pode ser desenvolvido em sistemas compatíveis com as ferramentas utilizadas pelo projeto.
 
@@ -296,7 +296,7 @@ Python Application
 
 ---
 
-## 8. Virtual Environment
+## 8. Ambiente Virtual
 
 O backend deve ser executado dentro de um ambiente Python isolado.
 
@@ -316,7 +316,7 @@ System Python
 
 ---
 
-## 9. Dependency Management
+## 9. Gerenciamento de Dependências
 
 As dependências do backend devem ser declaradas nos arquivos de configuração do projeto.
 
@@ -348,7 +348,7 @@ A versão deve ser mantida consistente entre desenvolvimento e CI sempre que pos
 
 ---
 
-## 11. Frontend Dependencies
+## 11. Dependências do Frontend
 
 As dependências do frontend devem ser instaladas a partir dos manifests versionados.
 
@@ -369,7 +369,7 @@ O lockfile deve ser preservado no repositório quando utilizado pelo projeto.
 
 ---
 
-## 12. Environment Variables
+## 12. Variáveis de Ambiente
 
 Configurações dependentes do ambiente devem ser fornecidas por environment variables ou mecanismos equivalentes.
 
@@ -426,7 +426,7 @@ Um arquivo de exemplo pode documentar as variáveis necessárias:
 
 ---
 
-## 15. Configuration by Environment
+## 15. Configuração por Ambiente
 
 A configuração deve distinguir pelo menos:
 
@@ -449,7 +449,7 @@ O código da aplicação deve evitar depender de condições específicas da má
 
 ---
 
-## 16. Local PostgreSQL
+## 16. PostgreSQL Local
 
 O PostgreSQL é o database relacional principal do Exactum.
 
@@ -469,7 +469,7 @@ O uso de Docker facilita a reprodução do ambiente.
 
 ---
 
-## 17. PostgreSQL Container
+## 17. Container do PostgreSQL
 
 Uma representação típica é:
 
@@ -486,7 +486,7 @@ O banco utilizado no desenvolvimento deve ser isolado do banco de produção.
 
 ---
 
-## 18. Database Initialization
+## 18. Inicialização do Banco de Dados
 
 Após iniciar PostgreSQL, a aplicação deve possuir um database compatível com sua configuração.
 
@@ -516,7 +516,7 @@ No desenvolvimento, Redis pode ser executado localmente ou via Docker.
 
 ---
 
-## 20. Redis Container
+## 20. Container do Redis
 
 Arquitetura local:
 
@@ -532,7 +532,7 @@ A API se conecta aos dois serviços.
 
 ---
 
-## 21. Backend Startup
+## 21. Inicialização do Backend
 
 A API Flask deve ser executada utilizando o mecanismo definido pelo projeto.
 
@@ -552,7 +552,7 @@ Os comandos exatos devem seguir os scripts e configurações atuais do repositó
 
 ---
 
-## 22. Frontend Startup
+## 22. Inicialização do Frontend
 
 O frontend React é executado em modo de desenvolvimento utilizando Vite.
 
@@ -572,7 +572,7 @@ O frontend se comunica com a API backend utilizando a configuração de desenvol
 
 ---
 
-## 23. API and Frontend
+## 23. API e Frontend
 
 Durante desenvolvimento, frontend e backend podem executar em processos separados.
 
@@ -618,7 +618,7 @@ A configuração efetiva deve ser mantida no arquivo de configuração do fronte
 
 ---
 
-## 25. HttpOnly Cookies in Development
+## 25. Cookies HttpOnly em Desenvolvimento
 
 A autenticação do Exactum utiliza HttpOnly cookies.
 
@@ -642,7 +642,7 @@ O frontend realiza requests com as credenciais configuradas para permitir o envi
 
 ---
 
-## 26. Authentication Development Flow
+## 26. Fluxo de Autenticação em Desenvolvimento
 
 Conceitualmente:
 
@@ -703,7 +703,7 @@ Esse fluxo deve ser preservado também no ambiente de desenvolvimento.
 
 ---
 
-## 28. Database Migrations
+## 28. Migrations do Banco de Dados
 
 Antes de executar a aplicação sobre um database novo ou atualizado, as migrations devem estar aplicadas.
 
@@ -723,7 +723,7 @@ O ambiente local deve utilizar o mesmo mecanismo oficial de migrations utilizado
 
 ---
 
-## 29. Fresh Database
+## 29. Banco de Dados Limpo
 
 Para testar um ambiente limpo, pode ser necessário utilizar um database vazio.
 
@@ -743,7 +743,7 @@ Isso também ajuda a detectar dependências acidentais de alterações manuais.
 
 ---
 
-## 30. Seed Data
+## 30. Dados de Seed
 
 Dados iniciais podem ser necessários para desenvolvimento.
 
@@ -767,7 +767,7 @@ Seed
 
 ---
 
-## 31. Production Data Must Not Be Used Locally
+## 31. Dados de Produção Não Devem Ser Usados Localmente
 
 Dados reais de produção não devem ser copiados indiscriminadamente para o ambiente local.
 
@@ -785,7 +785,7 @@ Quando dados reais forem necessários para troubleshooting, devem existir proces
 
 ---
 
-## 32. Development Database
+## 32. Banco de Dados de Desenvolvimento
 
 O database de desenvolvimento deve ser descartável quando necessário.
 
@@ -832,7 +832,7 @@ Dependendo do fluxo de desenvolvimento, frontend pode executar fora do Compose u
 
 ---
 
-## 34. Service Dependencies
+## 34. Dependências entre Serviços
 
 A API depende de serviços de infraestrutura.
 
@@ -867,7 +867,7 @@ Isso ajuda a identificar rapidamente problemas de infraestrutura local.
 
 ---
 
-## 36. Local Troubleshooting
+## 36. Troubleshooting Local
 
 Quando a API não inicia, a investigação deve começar pelas dependências.
 
@@ -915,7 +915,7 @@ PostgreSQL
 
 ---
 
-## 38. Redis Troubleshooting
+## 38. Troubleshooting do Redis
 
 Problemas comuns:
 
@@ -931,7 +931,7 @@ Em desenvolvimento, Redis state pode ser limpo quando necessário para reproduzi
 
 ---
 
-## 39. Ports
+## 39. Portas
 
 Serviços locais devem utilizar portas configuradas no projeto.
 
@@ -979,7 +979,7 @@ Não é recomendável utilizar permissões excessivamente amplas apenas para fac
 
 ---
 
-## 41. Cookies and CORS
+## 41. Cookies e CORS
 
 Como a autenticação utiliza cookies, desenvolvimento deve considerar:
 
@@ -1010,7 +1010,7 @@ A ausência de uma estratégia explícita de CSRF deve ser tratada como uma preo
 
 ---
 
-## 43. Debugging
+## 43. Depuração
 
 Durante desenvolvimento, debugging deve ocorrer preferencialmente utilizando:
 
@@ -1025,7 +1025,7 @@ Não se deve introduzir temporariamente mecanismos de debugging que alterem perm
 
 ---
 
-## 44. Structured Logging
+## 44. Logging Estruturado
 
 A aplicação utiliza uma estratégia de logging estruturado e contextual.
 
@@ -1046,7 +1046,7 @@ O nível de detalhe pode ser maior em desenvolvimento do que em produção, desd
 
 ---
 
-## 45. Request Correlation
+## 45. Correlação de Requisições
 
 Requests devem manter seu `request_id` para facilitar troubleshooting.
 
@@ -1086,7 +1086,7 @@ A autenticação baseada em cookies deve ser considerada ao utilizar o Swagger U
 
 ---
 
-## 47. API Testing During Development
+## 47. Testes da API Durante o Desenvolvimento
 
 Uma feature backend deve ser validada em diferentes níveis:
 
@@ -1127,7 +1127,7 @@ Pass / Fail
 
 ---
 
-## 49. Test Database
+## 49. Banco de Dados de Testes
 
 Testes que interagem com PostgreSQL devem utilizar um database de teste isolado.
 
@@ -1147,7 +1147,7 @@ Isso reduz risco de corrupção e resultados não determinísticos.
 
 ---
 
-## 50. Redis During Tests
+## 50. Redis Durante os Testes
 
 Testes que dependem de Redis devem utilizar um estado isolado.
 
@@ -1189,7 +1189,7 @@ O objetivo é detectar:
 
 ---
 
-## 52. Formatting
+## 52. Formatação
 
 A formatação do código deve seguir a configuração oficial do projeto.
 
@@ -1205,7 +1205,7 @@ A configuração versionada é a referência.
 
 ---
 
-## 53. Git Workflow
+## 53. Fluxo de Git
 
 O desenvolvimento deve ocorrer em branches apropriadas.
 
@@ -1223,7 +1223,7 @@ O nome das branches deve seguir as convenções utilizadas pelo projeto.
 
 ---
 
-## 54. Small Changes
+## 54. Mudanças Pequenas
 
 Mudanças devem preferencialmente ser pequenas e coerentes.
 
@@ -1245,7 +1245,7 @@ Evita-se misturar alterações sem relação clara.
 
 ---
 
-## 55. Refactoring
+## 55. Refatoração
 
 Refactors devem preservar comportamento quando não houver mudança funcional intencional.
 
@@ -1271,7 +1271,7 @@ Isso reduz o risco de introduzir regressões durante reorganizações arquitetur
 
 ---
 
-## 56. Architecture Changes
+## 56. Mudanças de Arquitetura
 
 Mudanças arquiteturais maiores devem ser acompanhadas pela documentação correspondente.
 
@@ -1290,7 +1290,7 @@ Quando uma alteração muda uma decisão arquitetural importante, um ADR pode se
 
 ---
 
-## 57. Documentation During Development
+## 57. Documentação Durante o Desenvolvimento
 
 Documentação não deve ser deixada exclusivamente para o final do projeto.
 
@@ -1307,7 +1307,7 @@ Isso mantém documentação e implementação alinhadas.
 
 ---
 
-## 58. Development Lifecycle
+## 58. Ciclo de Desenvolvimento
 
 Um ciclo de desenvolvimento típico pode ser:
 
@@ -1346,7 +1346,7 @@ também faz parte do change set.
 
 ---
 
-## 59. Local Feature Workflow
+## 59. Fluxo Local de Desenvolvimento de Features
 
 Exemplo:
 
@@ -1368,7 +1368,7 @@ Exemplo:
 
 ---
 
-## 60. Database Inspection
+## 60. Inspeção do Banco de Dados
 
 Durante desenvolvimento, ferramentas como PostgreSQL clients podem ser utilizadas para inspecionar:
 
@@ -1402,7 +1402,7 @@ Alterações permanentes de schema devem ser refletidas nas migrations.
 
 ---
 
-## 62. Raw SQL During Development
+## 62. SQL Puro Durante o Desenvolvimento
 
 Queries SQL manuais podem ser úteis para:
 
@@ -1416,7 +1416,7 @@ Entretanto, alterações estruturais realizadas manualmente não devem permanece
 
 ---
 
-## 63. Query Performance
+## 63. Performance de Queries
 
 Quando uma query apresenta problemas de performance, o desenvolvimento pode utilizar ferramentas do PostgreSQL como:
 
@@ -1438,7 +1438,7 @@ A otimização deve ser baseada em evidência da query real.
 
 ---
 
-## 64. Reproducing Bugs
+## 64. Reprodução de Bugs
 
 Um bug deve, sempre que possível, ser reduzido a uma reprodução local.
 
@@ -1467,7 +1467,7 @@ Adicionar um regression test reduz a chance de o problema retornar.
 
 ---
 
-## 65. Authentication Bug Reproduction
+## 65. Reprodução de Bugs de Autenticação
 
 Problemas relacionados à autenticação podem exigir inspeção de:
 
@@ -1489,7 +1489,7 @@ O conteúdo sensível dos tokens não deve ser exposto em logs ou documentação
 
 ---
 
-## 66. Impersonation Development
+## 66. Desenvolvimento de Impersonation
 
 O fluxo de impersonation deve ser testado considerando:
 
@@ -1515,7 +1515,7 @@ A API deve fornecer o estado necessário ao frontend de forma explícita.
 
 ---
 
-## 67. Tenant Development
+## 67. Desenvolvimento com Tenants
 
 Features tenant-scoped devem ser testadas utilizando pelo menos dois tenants quando a regra de isolamento for relevante.
 
@@ -1535,7 +1535,7 @@ Uma request autenticada como Tenant A não deve acessar dados de Tenant B.
 
 ---
 
-## 68. Development Security
+## 68. Segurança no Desenvolvimento
 
 Mesmo no ambiente local:
 
@@ -1550,7 +1550,7 @@ Mesmo no ambiente local:
 
 ---
 
-## 69. Production Parity
+## 69. Paridade com Produção
 
 O ambiente local não precisa ser idêntico à produção em todos os detalhes.
 
@@ -1569,7 +1569,7 @@ Diferenças inevitáveis devem ser explicitamente configuradas por ambiente.
 
 ---
 
-## 70. Development vs Production
+## 70. Desenvolvimento vs Produção
 
 | Aspecto    | Development             | Production                 |
 | ---------- | ----------------------- | -------------------------- |
@@ -1586,7 +1586,7 @@ Diferenças inevitáveis devem ser explicitamente configuradas por ambiente.
 
 ---
 
-## 71. Docker Development
+## 71. Desenvolvimento com Docker
 
 Docker pode fornecer um ambiente consistente para:
 
@@ -1602,7 +1602,7 @@ O objetivo não é obrigar todos os fluxos de desenvolvimento a utilizar contain
 
 ---
 
-## 72. Container Volumes
+## 72. Volumes dos Containers
 
 Serviços stateful podem utilizar volumes para preservar dados locais entre reinicializações.
 
@@ -1619,7 +1619,7 @@ Entretanto, volumes de desenvolvimento podem ser descartados quando for necessá
 
 ---
 
-## 73. Reset Development Environment
+## 73. Reset do Ambiente de Desenvolvimento
 
 Quando o ambiente local estiver inconsistente, uma estratégia possível é reconstruí-lo.
 
@@ -1647,7 +1647,7 @@ Nunca deve ser utilizada indiscriminadamente em produção.
 
 ---
 
-## 74. Dependency Updates
+## 74. Atualização de Dependências
 
 Atualizações de dependências devem ser tratadas como mudanças de código.
 
@@ -1673,7 +1673,7 @@ deve-se avaliar:
 
 ---
 
-## 75. Security Updates
+## 75. Atualizações de Segurança
 
 Dependências relacionadas a:
 
@@ -1689,7 +1689,7 @@ Atualizações de segurança devem ser aplicadas de forma controlada e testadas.
 
 ---
 
-## 76. CI Consistency
+## 76. Consistência com o CI
 
 O ambiente local deve tentar reproduzir as mesmas verificações executadas pelo CI.
 
@@ -1711,7 +1711,7 @@ Quanto maior a equivalência, menor a chance de uma mudança funcionar localment
 
 ---
 
-## 77. Pre-Commit Validation
+## 77. Validação Antes do Commit
 
 Antes de abrir um Pull Request ou mergear uma mudança, recomenda-se validar:
 
@@ -1747,7 +1747,7 @@ Os padrões efetivos devem seguir o `.gitignore` atual do projeto.
 
 ---
 
-## 79. IDE Configuration
+## 79. Configuração da IDE
 
 Configurações específicas de IDE podem existir localmente, mas não devem alterar o comportamento esperado do projeto.
 
@@ -1762,7 +1762,7 @@ Ferramentas diferentes devem respeitar:
 
 ---
 
-## 80. Shell Commands
+## 80. Comandos de Shell
 
 Comandos utilizados para desenvolvimento devem preferencialmente estar documentados ou ser reproduzíveis a partir dos arquivos do projeto.
 
@@ -1772,7 +1772,7 @@ Quando scripts forem utilizados, devem possuir nomes claros e responsabilidades 
 
 ---
 
-## 81. Development Documentation
+## 81. Documentação de Desenvolvimento
 
 Este documento deve permanecer como ponto de entrada para a configuração do ambiente local.
 
@@ -1786,7 +1786,7 @@ Detalhes específicos podem estar documentados em:
 
 ---
 
-## 82. Current State
+## 82. Estado Atual
 
 O ambiente de desenvolvimento do Exactum é baseado em:
 
@@ -1812,7 +1812,7 @@ A infraestrutura de produção utiliza Docker, Nginx, GitHub Actions e VPS, enqu
 
 ---
 
-## 83. Known Evolution Points
+## 83. Pontos de Evolução Conhecidos
 
 O ambiente de desenvolvimento poderá evoluir conforme o Exactum amadureça.
 
@@ -1836,7 +1836,7 @@ Essas possibilidades devem ser adotadas conforme trouxerem valor real ao fluxo d
 
 ---
 
-## 84. Design Principles
+## 84. Princípios de Design
 
 O ambiente de desenvolvimento segue alguns princípios:
 
@@ -1874,7 +1874,7 @@ A complexidade do ambiente deve crescer conforme as necessidades do sistema.
 
 ---
 
-## 85. Related Documentation
+## 85. Documentos Relacionados
 
 Este documento se relaciona diretamente com:
 
@@ -1895,7 +1895,7 @@ Este documento se relaciona diretamente com:
 
 ---
 
-## 86. Naming and Architectural Evolution
+## 86. Nomenclatura e Evolução Arquitetural
 
 Alguns termos utilizados neste documento representam conceitos de ambiente e arquitetura, não necessariamente nomes literais presentes no código.
 
