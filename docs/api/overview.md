@@ -479,14 +479,15 @@ Exception Handling
 Safe API Error
 ```
 
-Por exemplo:
+Formato atual para exceções da aplicação:
 
 ```json
 {
-  "code": "product_not_found",
-  "message": "Product not found."
+  "error": "Product not found"
 }
 ```
+
+Erros de validação e de JWT possuem formatos próprios, e um contrato unificado com códigos semânticos está planejado. Ver [`docs/api/errors.md`](./errors.md#5-error-response-structure).
 
 Detalhes como stack traces, SQL queries, secrets ou informações internas de infraestrutura não devem ser expostos ao cliente.
 
@@ -518,8 +519,7 @@ A resposta pública pode ser:
 
 ```json
 {
-  "code": "internal_error",
-  "message": "An unexpected error occurred."
+  "error": "Internal server error"
 }
 ```
 

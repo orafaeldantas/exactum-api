@@ -374,7 +374,7 @@ A API utiliza UUIDs como identificadores públicos dos recursos.
 Por exemplo:
 
 ```http
-GET /api/v1/products/{product_uuid}
+GET /api/products/{product_uuid}
 ```
 
 O consumidor não precisa conhecer o ID interno utilizado pelo PostgreSQL.

@@ -618,9 +618,7 @@ Também documenta logout, sessões, Redis, impersonation e limitações atuais r
 
 ### `api/errors.md`
 
-Documenta o contrato de erros.
-
-O formato base utilizado é:
+Documenta o contrato de erros: os formatos retornados atualmente (`{"error": "<mensagem>"}` para exceções da aplicação, o formato padrão do flask-smorest para validação e os identificadores dos erros de JWT) e o contrato planejado com códigos semânticos:
 
 ```json
 {
@@ -630,8 +628,6 @@ O formato base utilizado é:
   }
 }
 ```
-
-Erros de validação podem fornecer informações adicionais através de `details`.
 
 Também são documentados:
 

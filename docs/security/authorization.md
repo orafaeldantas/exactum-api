@@ -130,6 +130,79 @@ As permissões representam capacidades específicas do sistema, enquanto os pap�
 
 ---
 
+## 3.1 Implementação Atual
+
+### Verificação de permissão
+
+Rotas protegidas utilizam o decorator `permission_required` (`app/domains/rbac/decorators/permissions.py`):
+
+```python
+@blp_products.route("/")
+class ProductListRoute(MethodView):
+    @jwt_required()
+    @permission_required("product:view")
+    def get(self): ...
+```
+
+O decorator, nesta ordem:
+
+1. libera a execução se `g.is_super_admin` for verdadeiro (sem consultar permissões nem blocklist);
+2. resolve as permissões efetivas do usuário (`RBACService.get_effective_permissions`);
+3. bloqueia com `RefreshTokenRevoked` (`401`) se o tenant ou o usuário estiverem na blocklist do Redis;
+4. bloqueia com `ForbiddenException` (`403`) se a permissão exigida não estiver no conjunto efetivo.
+
+Rotas exclusivas da plataforma utilizam `require_super_admin` (`app/domains/platform/platform_decorators.py`).
+
+### Permissões efetivas
+
+```text
+permissões efetivas = permissões dos roles do usuário
+                    + user_permissions com granted = true
+                    − user_permissions com granted = false
+```
+
+O resultado é armazenado em cache no Redis na chave `tenant:{tenant_id}:user:{user_id}:permissions`, com TTL igual ao do refresh token (`JWT_REFRESH_TOKEN_EXPIRES`, padrão 30 dias).
+
+O cache é invalidado quando:
+
+- um role é atribuído ao usuário (`assign_role_to_user`);
+- uma permissão individual é concedida ou revogada (`grant_permission` / `revoke_permission`).
+
+> **Limitação conhecida:** alterar as permissões de um role (`update_role`) ou excluir um role (`delete_role`) **não** invalida o cache dos usuários afetados. Até a expiração do cache, esses usuários continuam com o conjunto anterior de permissões.
+
+### Catálogo de permissões
+
+As permissões são definidas em `app/infra/seed/rbac_seed.py` (`PERMISSIONS`) e criadas por `flask seed-rbac`. O formato é `<recurso>:<ação>`:
+
+| Recurso     | Ações                                 |
+| ----------- | ------------------------------------- |
+| `product`   | `view`, `create`, `update`, `delete`  |
+| `sale`      | `view`, `create`, `cancel`            |
+| `user`      | `view`, `create`, `update`, `delete`  |
+| `profile`   | `view`, `update`                      |
+| `tenant`    | `view`, `update`                      |
+| `analytics` | `view`                                |
+| `inventory` | `view`, `update`                      |
+| `goal`      | `view`, `create`, `update`, `delete`  |
+| `rbac`      | `view`, `create`, `update`, `delete`  |
+| `logs`      | `view`                                |
+
+### Roles padrão
+
+Cada tenant recebe, na criação, os roles definidos em `app/domains/rbac/constants.py` (`DEFAULT_ROLES`):
+
+| Role                | Escopo resumido                                                                 |
+| ------------------- | ------------------------------------------------------------------------------- |
+| `administrador`     | Todas as permissões do tenant, exceto `rbac:create`, `rbac:update` e `rbac:delete` |
+| `gerente_de_vendas` | Vendas, analytics, metas (sem exclusão), visualização de produtos e estoque     |
+| `vendedor`          | Visualização de produtos e metas, criação e visualização de vendas              |
+| `estoquista`        | Produtos (sem exclusão) e estoque                                               |
+| `acesso_restrito`   | Apenas o próprio perfil; recebe os usuários de um role excluído                 |
+
+Todos os roles incluem `profile:view` e `profile:update`. O super-admin não utiliza roles: é identificado pela claim `is_super_admin`.
+
+---
+
 ## 4. Conceitos
 
 ### 4.1 User

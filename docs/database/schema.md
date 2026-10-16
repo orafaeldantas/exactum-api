@@ -75,7 +75,7 @@ PostgreSQL
 └── outras estruturas
 ```
 
-Os dados pertencentes a tenants são associados ao respectivo `tenant_uuid`.
+Os dados pertencentes a tenants são associados ao respectivo tenant pela foreign key interna `tenant_id` (`BIGINT` → `tenants.id`). O `tenant_uuid` é o identificador público, utilizado em claims e respostas da API, e não é usado como chave de relacionamento.
 
 A separação entre tenants ocorre logicamente através das relações e filtros de tenant.
 
@@ -83,23 +83,145 @@ A separação entre tenants ocorre logicamente através das relações e filtros
 
 # 4. Principais Entidades
 
-As principais entidades persistentes do sistema incluem conceitos relacionados a:
+As tabelas abaixo refletem os models em `backend/app/models/`. Em caso de divergência, os models e as migrations em `backend/migrations/versions/` são a fonte da verdade.
 
-```text
-Tenant
-User
-Product
-Sale
-Permission
-Role
-Session
-Audit Log
-Platform Event
-```
+Sessões e refresh tokens **não** são persistidos no PostgreSQL; residem no Redis (ver [`docs/security/session-management.md`](../security/session-management.md)).
 
-A existência e o grau de persistência de cada uma dessas entidades pode variar conforme a implementação atual e a evolução do sistema.
+## 4.1 Visão geral
 
-Algumas responsabilidades podem futuramente ser separadas ou reorganizadas em contextos mais especializados.
+| Tabela             | Escopo   | Soft delete | Model            |
+| ------------------ | -------- | ----------- | ---------------- |
+| `tenants`          | Platform | Não         | `Tenant`         |
+| `users`            | Tenant   | Sim         | `User`           |
+| `products`         | Tenant   | Sim         | `Product`        |
+| `sales`            | Tenant   | Não         | `Sale`           |
+| `items_sales`      | Tenant   | Não         | `ItemSale`       |
+| `goals`            | Tenant   | Não         | `Goal`           |
+| `roles`            | Tenant   | Não         | `Role`           |
+| `permissions`      | Platform | Não         | `Permission`     |
+| `role_permissions` | Tenant¹  | Não         | `RolePermission` |
+| `user_roles`       | Tenant¹  | Não         | `UserRole`       |
+| `user_permissions` | Tenant¹  | Não         | `UserPermission` |
+| `audit_logs`       | Tenant   | Não         | `AuditLog`       |
+| `platform_events`  | Platform | Não         | `PlatformEvent`  |
+
+¹ Tabelas associativas sem `tenant_id` próprio; o escopo é herdado de `roles`/`users`.
+
+## 4.2 Colunas
+
+Convenções: `id` é a chave primária interna (`BIGINT`, nunca exposta pela API); `uuid` é o identificador público; `created_at` é preenchido em UTC.
+
+**`tenants`**
+
+| Coluna             | Tipo           | Restrições                  |
+| ------------------ | -------------- | --------------------------- |
+| `id`               | BIGINT         | PK                          |
+| `uuid`             | UUID           | Identificador público       |
+| `name`             | VARCHAR(120)   |                             |
+| `slug`             | VARCHAR(100)   | UNIQUE                      |
+| `plan`             | VARCHAR(100)   |                             |
+| `is_active`        | BOOLEAN        | default `true`              |
+| `fantasy_name`     | VARCHAR(120)   | NULL                        |
+| `cnpj`             | VARCHAR(18)    | UNIQUE, NULL                |
+| `corporate_email`  | VARCHAR(255)   | UNIQUE, NULL                |
+| `global_min_stock` | INTEGER        | default `10`                |
+| `created_at`       | TIMESTAMP      |                             |
+
+**`users`**
+
+| Coluna           | Tipo         | Restrições                                       |
+| ---------------- | ------------ | ------------------------------------------------ |
+| `id`             | BIGINT       | PK                                               |
+| `uuid`           | UUID         | Identificador público                            |
+| `tenant_id`      | BIGINT       | FK → `tenants.id`                                |
+| `is_super_admin` | BOOLEAN      | default `false`                                  |
+| `username`       | VARCHAR(80)  | UNIQUE (global)                                  |
+| `email`          | VARCHAR(255) | UNIQUE (global)                                  |
+| `password_hash`  | VARCHAR(255) |                                                  |
+| `is_active`      | BOOLEAN      | default `true`                                   |
+| `password_reset` | BOOLEAN      | default `true` (força troca no próximo login)    |
+| `created_at`     | TIMESTAMP    |                                                  |
+| `deleted_at`     | TIMESTAMPTZ  | NULL — soft delete                               |
+
+**`products`**
+
+| Coluna           | Tipo          | Restrições            |
+| ---------------- | ------------- | --------------------- |
+| `id`             | BIGINT        | PK                    |
+| `uuid`           | UUID          | Identificador público |
+| `tenant_id`      | BIGINT        | FK → `tenants.id`     |
+| `name`           | VARCHAR(120)  |                       |
+| `description`    | VARCHAR(255)  | NULL                  |
+| `price`          | NUMERIC(10,2) |                       |
+| `stock_quantity` | INTEGER       | default `0`           |
+| `sku`            | VARCHAR(255)  | UNIQUE (global)       |
+| `category`       | VARCHAR(120)  |                       |
+| `is_active`      | BOOLEAN       | default `true`        |
+| `created_at`     | TIMESTAMP     |                       |
+| `updated_at`     | TIMESTAMP     | atualizado no update  |
+| `deleted_at`     | TIMESTAMPTZ   | NULL — soft delete    |
+
+**`sales`**
+
+| Coluna           | Tipo          | Restrições                |
+| ---------------- | ------------- | ------------------------- |
+| `id`             | BIGINT        | PK                        |
+| `uuid`           | UUID          | Identificador público     |
+| `tenant_id`      | BIGINT        | FK → `tenants.id`         |
+| `user_id`        | BIGINT        | FK → `users.id` (vendedor) |
+| `total_price`    | NUMERIC(10,2) |                           |
+| `payment_method` | VARCHAR(50)   |                           |
+| `quantity_items` | INTEGER       | default `1`               |
+| `channel`        | VARCHAR(50)   | default `physical`        |
+| `created_at`     | TIMESTAMP     |                           |
+
+**`items_sales`**
+
+| Coluna         | Tipo          | Restrições                       |
+| -------------- | ------------- | -------------------------------- |
+| `id`           | BIGINT        | PK                               |
+| `sale_id`      | BIGINT        | FK → `sales.id`                  |
+| `tenant_id`    | BIGINT        | FK → `tenants.id`                |
+| `user_id`      | BIGINT        | FK → `users.id`                  |
+| `product_id`   | BIGINT        | FK → `products.id`, NULL         |
+| `product_uuid` | UUID          | FK → `products.uuid`, NULL       |
+| `sku`          | VARCHAR(50)   | FK → `products.sku`              |
+| `category`     | VARCHAR(120)  | NULL — snapshot do produto       |
+| `name`         | VARCHAR(255)  | snapshot do nome no momento da venda |
+| `quantity`     | INTEGER       | default `1`                      |
+| `item_price`   | NUMERIC(10,2) | snapshot do preço unitário       |
+| `channel`      | VARCHAR(50)   | default `physical`               |
+| `created_at`   | TIMESTAMP     |                                  |
+
+**`goals`**
+
+| Coluna        | Tipo          | Restrições        |
+| ------------- | ------------- | ----------------- |
+| `id`          | INTEGER       | PK                |
+| `tenant_id`   | INTEGER       | FK → `tenants.id` |
+| `type`        | VARCHAR(50)   |                   |
+| `year`        | INTEGER       |                   |
+| `month`       | INTEGER       |                   |
+| `value`       | NUMERIC(12,2) |                   |
+| `description` | VARCHAR(255)  | NULL              |
+| `created_at`  | TIMESTAMP     |                   |
+
+**RBAC**
+
+| Tabela             | Colunas                                                                  |
+| ------------------ | ------------------------------------------------------------------------ |
+| `roles`            | `id` PK, `uuid`, `tenant_id` FK, `name` VARCHAR(80), `is_system` BOOLEAN, `created_at` |
+| `permissions`      | `id` PK, `code` VARCHAR(120) UNIQUE (ex.: `product:create`), `description`, `created_at` |
+| `role_permissions` | `role_id` FK + `permission_id` FK (PK composta)                          |
+| `user_roles`       | `user_id` FK + `role_id` FK (PK composta)                                |
+| `user_permissions` | `user_id` FK + `permission_id` FK (PK composta), `granted` BOOLEAN       |
+
+**Observabilidade**
+
+| Tabela            | Colunas                                                                                                    |
+| ----------------- | ---------------------------------------------------------------------------------------------------------- |
+| `audit_logs`      | `id` PK, `uuid`, `tenant_id` FK NOT NULL, `tenant_uuid`, `user_id` FK NULL, `user_uuid`, `event`, `entity`, `payload` JSON, `created_at` |
+| `platform_events` | `id` PK, `uuid`, `tenant_id` FK NULL, `tenant_uuid`, `user_id` FK NULL, `user_uuid`, `event`, `payload` JSON, `created_at` |
 
 ---
 
@@ -303,7 +425,7 @@ Esse identificador é utilizado pela API para referenciar o recurso.
 Exemplo:
 
 ```http
-GET /api/v1/products/{product_uuid}
+GET /api/products/{product_uuid}
 ```
 
 O consumidor da API não precisa conhecer o identificador interno utilizado pelo banco.
@@ -434,7 +556,7 @@ Esse identificador pode ser utilizado pela API e por mecanismos de auditoria e o
 Exemplo:
 
 ```http
-GET /api/v1/sales/{sale_uuid}
+GET /api/sales/{sale_uuid}
 ```
 
 ---

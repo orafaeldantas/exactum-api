@@ -392,6 +392,26 @@ Sem um mecanismo de estado externo, um JWT válido poderia permanecer utilizáve
 
 O Redis permite reduzir essa dependência.
 
+## Implementação atual da revogação
+
+| Mecanismo                 | Chave Redis                                      | TTL                              | Onde é verificado                          |
+| ------------------------- | ------------------------------------------------ | -------------------------------- | ------------------------------------------ |
+| Refresh session           | `tenant:{tenant_id}:user:{user_id}:refresh:{jti}` | `JWT_REFRESH_TOKEN_EXPIRES` (30d) | `POST /auth/refresh`, logout, impersonation |
+| Blocklist de usuário      | `blocklist:tenant:{tenant_id}:user:{user_id}`    | `JWT_ACCESS_TOKEN_EXPIRES` (15m)  | `permission_required` e login              |
+| Blocklist de tenant       | `blocklist:tenant:{tenant_id}:*`                 | `JWT_ACCESS_TOKEN_EXPIRES` (15m)  | `permission_required` e login              |
+
+Ao revogar a sessão de um usuário ou tenant, as refresh sessions correspondentes são removidas (via `SCAN` + `UNLINK`) e a entrada de blocklist é criada.
+
+> **Limitação conhecida — revogação do access token**
+>
+> A aplicação não registra um `token_in_blocklist_loader` no Flask-JWT-Extended. Consequentemente, a blocklist só é consultada em rotas protegidas por `permission_required`. Após logout, bloqueio de usuário ou suspensão de tenant:
+>
+> - o refresh token deixa de ser aceito imediatamente;
+> - o access token já emitido continua válido, até sua expiração (15 minutos por padrão), em rotas que utilizam apenas `@jwt_required()` — por exemplo, `GET /auth/bootstrap`;
+> - requisições de super-admin não consultam a blocklist.
+>
+> A evolução planejada é verificar a blocklist (e o `jti` do access token após logout) de forma centralizada via `token_in_blocklist_loader`.
+
 ---
 
 # Motivos para Revogação

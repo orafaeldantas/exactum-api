@@ -570,14 +570,11 @@ Testes devem verificar contratos como:
 
 Além do status code, o formato da resposta também deve ser validado quando relevante.
 
-Por exemplo:
+Por exemplo, no formato atual:
 
 ```json
 {
-  "error": {
-    "code": "RESOURCE_NOT_FOUND",
-    "message": "Resource not found"
-  }
+  "error": "Resource not found"
 }
 ```
 
@@ -1143,7 +1140,7 @@ Coverage deve ser utilizada para identificar áreas sem testes, não para substi
 
 # 48. Coverage Atual
 
-O Exactum já utiliza coverage como parte da estratégia de qualidade e historicamente mantém uma cobertura próxima de **89–90%**.
+O Exactum utiliza coverage como parte da estratégia de qualidade. O CI exige no mínimo **80%** (`--cov-fail-under=80`) e o valor atual é publicado no Codecov.
 
 Esse número deve ser interpretado como uma métrica de suporte à qualidade, e não como a definição da qualidade do sistema.
 
@@ -2212,31 +2209,44 @@ Busca possuir **testes que reduzam risco técnico real**.
 
 # 99. Estado Atual
 
-O Exactum já possui uma suíte de testes significativa baseada em **Pytest**, incluindo testes relacionados a:
+A suíte atual é baseada em **Pytest** e composta exclusivamente por **testes funcionais de API**, que exercitam as rotas através do Flask test client contra PostgreSQL e Redis reais.
 
-- API;
-- Authentication;
-- Authorization;
-- banco;
-- regras da aplicação;
-- segurança;
-- integração;
-- regressões.
+Estrutura:
 
-A cobertura histórica do projeto permanece próxima de **89–90%**, servindo como uma métrica de acompanhamento da qualidade.
+```text
+backend/tests/
+├── conftest.py                   # app, client, limpeza do banco por teste
+├── fixtures/
+│   ├── seed_fixtures.py          # default_tenant, default_user, default_roles,
+│   │                             # default_product, default_sale
+│   └── auth_header_fixtures.py   # auth_headers (login autenticado)
+└── functional/
+    ├── test_auth.py
+    ├── test_product.py
+    ├── test_revenue_analytic.py
+    ├── test_sale.py
+    ├── test_tenant.py
+    └── test_user.py
+```
 
-O CI também utiliza os testes como parte da validação antes de alterações chegarem aos ambientes posteriores.
+Características atuais:
 
-A estratégia atual ainda pode evoluir conforme o projeto adote:
+- não existem testes unitários isolados nem testes dedicados de repository;
+- o CI exige cobertura mínima de **80%**;
+- cada teste executa `TRUNCATE ... RESTART IDENTITY CASCADE` em todas as tabelas ao final;
+- o banco é criado com `db.create_all()` (não via migrations); a validação das migrations é feita separadamente no CI com `flask db upgrade && flask db check`.
 
-- boundaries de domínio mais fortes;
-- maior desacoplamento;
-- Redis em mais fluxos;
-- background processing;
-- Prometheus/Grafana;
-- Celery;
-- RabbitMQ;
-- novas integrações.
+> **Atenção:** a fixture `app` utiliza `DATABASE_TESTS_URL` e, na ausência dela, faz fallback para `DATABASE_URL`, executando `drop_all()` ao final da sessão. Nunca execute a suíte com `DATABASE_URL` apontando para um banco com dados reais. Remover esse fallback é uma correção planejada.
+
+Lacunas conhecidas em relação à estratégia descrita neste documento:
+
+- testes explícitos de isolamento cross-tenant (leitura, mutação e exclusão);
+- testes de negação de permissão (RBAC) por role;
+- testes de impersonation (início, encerramento, sessões);
+- testes de concorrência de estoque;
+- testes de contrato de erros.
+
+A estratégia descrita nas seções anteriores representa a direção desejada; as lacunas acima indicam onde a suíte ainda não a alcança.
 
 ---
 

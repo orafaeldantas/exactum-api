@@ -8,7 +8,7 @@ No ambiente de produção, ele funciona como ponto de entrada para as requisiç�
 
 Sua posição na arquitetura pode ser representada como:
 
-```text id="5q5w8c"
+```text
 Client
   │
   ▼
@@ -54,7 +54,7 @@ Sem essa camada, o cliente poderia precisar acessar diretamente o processo do ba
 
 Com o Nginx:
 
-```text id="6d1hzn"
+```text
                     Internet
                        │
                        ▼
@@ -88,7 +88,7 @@ Um **reverse proxy** recebe uma requisição destinada ao servidor e a encaminha
 
 No Exactum:
 
-```text id="9h4j8m"
+```text
 HTTP Request
      │
      ▼
@@ -121,7 +121,7 @@ O Nginx pode utilizar regras de routing para diferenciar requisições destinada
 
 Conceitualmente:
 
-```text id="g2qv4n"
+```text
 Request
    │
    ├── /api/*
@@ -137,13 +137,13 @@ Request
 
 Assim, o mesmo domínio pode disponibilizar:
 
-```text id="zq5g8k"
+```text
 https://exactum.app.br/
 ```
 
 para o frontend e:
 
-```text id="r7h0e1"
+```text
 https://exactum.app.br/api/...
 ```
 
@@ -159,7 +159,7 @@ O frontend React é compilado antes de ser disponibilizado em produção.
 
 O processo conceitual é:
 
-```text id="0kq7m4"
+```text
 React source
      │
      ▼
@@ -196,7 +196,7 @@ Aplicações desse tipo podem possuir rotas que não correspondem diretamente a 
 
 Por exemplo:
 
-```text id="q5s3k8"
+```text
 /
  /produtos
  /usuarios
@@ -212,7 +212,7 @@ Quando uma rota não corresponde a um arquivo estático real, a configuração d
 
 Conceitualmente:
 
-```text id="0xj8k3"
+```text
 GET /produtos
       │
       ▼
@@ -237,13 +237,13 @@ Isso evita erros `404` ao acessar diretamente uma rota válida do frontend.
 
 As requisições destinadas à API utilizam o prefixo:
 
-```text id="0r9qca"
+```text
 /api/
 ```
 
 Conceitualmente:
 
-```text id="0dbq6j"
+```text
 Client
    │
    ▼
@@ -278,7 +278,7 @@ No ambiente containerizado, Nginx e API podem se comunicar através da Docker ne
 
 Conceitualmente:
 
-```text id="4gqk6b"
+```text
 Docker Network
 │
 ├── nginx
@@ -306,7 +306,7 @@ Os serviços internos não precisam necessariamente expor suas portas diretament
 
 Uma arquitetura típica é:
 
-```text id="6n9w2d"
+```text
 Internet
    │
    ▼
@@ -331,7 +331,7 @@ Manter serviços internos atrás do Nginx reduz a superfície de exposição.
 
 Em vez de:
 
-```text id="u6qkz0"
+```text
 Internet
  ├── Nginx
  ├── Flask
@@ -341,7 +341,7 @@ Internet
 
 o objetivo é aproximar a arquitetura de:
 
-```text id="3m5xpa"
+```text
 Internet
     │
     ▼
@@ -366,7 +366,7 @@ A aplicação de produção deve ser disponibilizada através de HTTPS.
 
 Conceitualmente:
 
-```text id="0l1h6s"
+```text
 Browser
    │
    │ HTTPS
@@ -394,7 +394,7 @@ O Cloudflare participa da camada externa de infraestrutura do Exactum.
 
 Conceitualmente:
 
-```text id="o0y2o5"
+```text
 Client
    │
    ▼
@@ -459,7 +459,7 @@ O backend precisa possuir uma política clara para headers confiáveis.
 
 Especialmente quando existe mais de uma camada de proxy:
 
-```text id="q7gqj5"
+```text
 Client
    │
    ▼
@@ -520,7 +520,7 @@ Quando existem múltiplas camadas de proxy, o backend pode receber a requisiçã
 
 Exemplo:
 
-```text id="5ph5a7"
+```text
 Browser
    │
    │ HTTPS
@@ -539,7 +539,7 @@ Por isso, informações como `X-Forwarded-Proto` podem ser utilizadas para prese
 
 Essa informação é particularmente importante para aplicações que precisam distinguir:
 
-```text id="r8s6z1"
+```text
 http
 vs
 https
@@ -555,7 +555,7 @@ O Nginx participa da infraestrutura que transporta essas requisições, mas não
 
 Conceitualmente:
 
-```text id="l5b9ca"
+```text
 Login
   │
   ▼
@@ -573,7 +573,7 @@ Browser
 
 Em requisições posteriores:
 
-```text id="0v3e7u"
+```text
 Browser
   │
   └── Cookie
@@ -595,7 +595,7 @@ A configuração dos cookies precisa ser compatível com a topologia da aplicaç
 
 O Exactum utiliza o prefixo:
 
-```text id="q4l8qv"
+```text
 /api/
 ```
 
@@ -613,7 +613,7 @@ Uma configuração incorreta pode gerar situações em que:
 
 Portanto, cookie configuration deve ser considerada parte do contrato entre:
 
-```text id="5cljpn"
+```text
 Browser
    +
 Nginx
@@ -627,7 +627,7 @@ API
 
 O fluxo simplificado de autenticação é:
 
-```text id="k1z8x4"
+```text
 Browser
    │
    │ POST /api/auth/login
@@ -650,7 +650,7 @@ Browser
 
 Depois:
 
-```text id="9n9xv4"
+```text
 Browser
    │
    │ Cookie
@@ -678,7 +678,7 @@ Ainda assim, CORS deve ser configurado explicitamente conforme os ambientes util
 
 Durante o desenvolvimento, por exemplo:
 
-```text id="2o9l9r"
+```text
 Vite
 localhost
    │
@@ -691,7 +691,7 @@ pode haver uma origem diferente entre frontend e backend.
 
 No ambiente de produção:
 
-```text id="m7f0jo"
+```text
 exactum.app.br
     │
     ├── /
@@ -775,7 +775,7 @@ Pode aplicar regras relacionadas ao significado da operação.
 
 Por exemplo:
 
-```text id="2u4vhy"
+```text
 Infrastructure Rate Limit
         +
 Application Rate Limit
@@ -793,7 +793,7 @@ O rate limiting pode ser aplicado de maneira específica para proteger operaçõ
 
 Exemplo conceitual:
 
-```text id="f91z3p"
+```text
 Client
   │
   ▼
@@ -846,7 +846,7 @@ Podem existir diferentes limites para:
 
 Conceitualmente:
 
-```text id="r5q4q1"
+```text
 Client
    │
    ▼
@@ -871,7 +871,7 @@ O backend pode ser tratado pelo Nginx como um **upstream**.
 
 Conceitualmente:
 
-```text id="k3q4a6"
+```text
 Nginx
   │
   ▼
@@ -885,7 +885,7 @@ Essa abstração facilita uma evolução futura para múltiplas instâncias.
 
 Por exemplo:
 
-```text id="r6d4sz"
+```text
 Nginx
   │
   ├── API instance 1
@@ -907,7 +907,7 @@ Não se deve interpretar a existência do reverse proxy como evidência de uma a
 
 O modelo atual é mais próximo de:
 
-```text id="7d0z2a"
+```text
 Nginx
   │
   ▼
@@ -927,7 +927,7 @@ Caso a necessidade de escala aumente, o Nginx pode se tornar uma camada de distr
 
 Uma evolução possível:
 
-```text id="0u8m2j"
+```text
                   Nginx
                     │
           ┌─────────┼─────────┐
@@ -961,7 +961,7 @@ Isso é importante para uma futura arquitetura com múltiplas instâncias.
 
 Conceitualmente:
 
-```text id="5s2b7h"
+```text
 API #1 ─┐
         │
 API #2 ─┼──► Redis
@@ -992,7 +992,7 @@ Esses logs são diferentes dos logs internos da aplicação Flask.
 
 A distinção é importante:
 
-```text id="2q5v2d"
+```text
 Nginx access log
       │
       └── HTTP infrastructure
@@ -1022,7 +1022,7 @@ Podem aparecer problemas como:
 
 Esses logs são particularmente úteis para distinguir:
 
-```text id="1v7f8r"
+```text
 Nginx problem
 vs
 Application problem
@@ -1036,7 +1036,7 @@ O Exactum utiliza `request_id` como parte de sua estratégia de correlação.
 
 Idealmente, o contexto de uma requisição pode ser acompanhado através de:
 
-```text id="s0y5er"
+```text
 Client
   │
   ▼
@@ -1093,13 +1093,13 @@ Porém, cache deve ser compatível com o mecanismo de versionamento dos assets d
 
 Arquivos com hash no nome, por exemplo:
 
-```text id="xk0k9g"
+```text
 assets/index-a83fd2.js
 ```
 
 podem ser tratados de maneira diferente de:
 
-```text id="m2x7s1"
+```text
 index.html
 ```
 
@@ -1113,7 +1113,7 @@ Um problema comum em aplicações frontend é o navegador continuar utilizando a
 
 Uma estratégia de cache adequada deve considerar:
 
-```text id="m7r8j4"
+```text
 HTML
  │
  └── shorter cache
@@ -1160,7 +1160,7 @@ Responses relacionadas a usuários autenticados exigem atenção especial.
 
 Por exemplo:
 
-```text id="1k9k3v"
+```text
 User A
    │
    ▼
@@ -1169,7 +1169,7 @@ Authenticated API response
 
 não pode ser inadvertidamente reutilizada para:
 
-```text id="0q8q1b"
+```text
 User B
 ```
 
@@ -1201,7 +1201,7 @@ O Nginx mantém conexões HTTP entre clientes e upstreams.
 
 Isso permite desacoplar:
 
-```text id="j7y7bp"
+```text
 Client connection
        │
        ▼
@@ -1281,7 +1281,7 @@ O Nginx representa uma camada de infraestrutura, mas não deve ser tratado como 
 
 A arquitetura possui múltiplas camadas:
 
-```text id="7k0r4p"
+```text
 Internet
    │
    ▼
@@ -1312,7 +1312,7 @@ O Nginx pode controlar acesso em determinados cenários, mas não deve substitui
 
 Por exemplo:
 
-```text id="k1v4w7"
+```text
 GET /api/products/123
 ```
 
@@ -1335,7 +1335,7 @@ Isso mantém as regras de negócio centralizadas na aplicação.
 
 Da mesma forma, o Nginx não é responsável por determinar se:
 
-```text id="q7s5s8"
+```text
 Product A
 ```
 
@@ -1351,7 +1351,7 @@ A isolation deve continuar sendo aplicada através das regras de aplicação e c
 
 O Nginx pode gerar erros próprios, como:
 
-```text id="2o8y4e"
+```text
 502 Bad Gateway
 504 Gateway Timeout
 404 Not Found
@@ -1359,20 +1359,11 @@ O Nginx pode gerar erros próprios, como:
 
 Esses erros são diferentes dos erros estruturados produzidos pela API.
 
-A API utiliza seu próprio formato de erro:
-
-```json id="a2v8m0"
-{
-  "error": {
-    "code": "...",
-    "message": "..."
-  }
-}
-```
+A API retorna erros em JSON (por exemplo, `{"error": "Product not found"}`; ver [`docs/api/errors.md`](../api/errors.md#51-formato-atual)), enquanto erros gerados pelo próprio Nginx — incluindo o `429` do rate limiting — são respostas HTML padrão do Nginx.
 
 Portanto, é importante distinguir:
 
-```text id="c6v3av"
+```text
 Nginx error
     ≠
 Application error
@@ -1426,7 +1417,7 @@ Uma configuração inválida pode impedir o serviço de iniciar ou recarregar co
 
 Conceitualmente:
 
-```text id="8f3qwp"
+```text
 Edit config
     │
     ▼
@@ -1468,7 +1459,7 @@ Alterações no Nginx fazem parte do deployment de infraestrutura.
 
 Um fluxo possível é:
 
-```text id="e3t6p1"
+```text
 Change config
       │
       ▼
@@ -1500,7 +1491,7 @@ Durante o desenvolvimento, o Nginx pode não estar presente no mesmo papel que p
 
 Por exemplo:
 
-```text id="j4m7gz"
+```text
 Browser
   │
   ├── Vite dev server
@@ -1512,7 +1503,7 @@ O Vite pode fornecer o frontend e um proxy de desenvolvimento pode encaminhar re
 
 Isso significa que:
 
-```text id="t8w5k0"
+```text
 Development architecture
       ≠
 Production architecture
@@ -1528,7 +1519,7 @@ Durante o desenvolvimento, o Vite pode atuar como proxy para requests da API.
 
 Conceitualmente:
 
-```text id="n7v8x2"
+```text
 Browser
    │
    ▼
@@ -1541,7 +1532,7 @@ Flask
 
 Em produção:
 
-```text id="r3q1n5"
+```text
 Browser
    │
    ▼
@@ -1562,7 +1553,7 @@ O uso de `/api` como prefixo possui importância operacional.
 
 Ele permite separar claramente:
 
-```text id="y4v6u8"
+```text
 /        → frontend
 
 /api/*   → backend
@@ -1619,7 +1610,7 @@ O Nginx possui mecanismos próprios para resolver paths, mas a configuração ai
 
 O objetivo é garantir que uma request como:
 
-```text id="x3z1y9"
+```text
 ../../etc/passwd
 ```
 
@@ -1633,7 +1624,7 @@ A aplicação e a infraestrutura devem trabalhar em conjunto para evitar esse ti
 
 Arquivos como:
 
-```text id="s1y5m2"
+```text
 .env
 .git/
 private keys
@@ -1656,7 +1647,7 @@ Porém, a validação principal dos métodos suportados pela API continua perten
 
 Por exemplo:
 
-```text id="d7v9q4"
+```text
 /api/products
 ```
 
@@ -1669,7 +1660,7 @@ POST
 
 enquanto:
 
-```text id="s8p3r2"
+```text
 /api/products/{uuid}
 ```
 
@@ -1695,7 +1686,7 @@ O Nginx pode produzir status codes antes que a request alcance o backend.
 
 Isso cria duas fontes possíveis de respostas HTTP:
 
-```text id="5z6r3k"
+```text
 Nginx
  │
  ├── 4xx / 5xx infrastructure errors
@@ -1724,7 +1715,7 @@ Essas informações podem futuramente alimentar a estratégia de observability d
 
 Com Prometheus/Grafana, por exemplo, seria possível visualizar:
 
-```text id="6g1v2p"
+```text
 Nginx
  │
  ├── Requests
@@ -1741,7 +1732,7 @@ A integração futura com Prometheus pode permitir monitorar a camada HTTP separ
 
 Isso cria uma visão:
 
-```text id="7q2j8k"
+```text
 Client
   │
   ▼
@@ -1782,7 +1773,7 @@ O Nginx não corrige automaticamente gargalos de backend.
 
 Por exemplo:
 
-```text id="a6f5k0"
+```text
 Nginx fast
      +
 API slow
@@ -1798,7 +1789,7 @@ Quando a aplicação apresenta lentidão, o Nginx pode ajudar a determinar em qu
 
 Uma investigação pode observar:
 
-```text id="7y2k8p"
+```text
 Client latency
       │
       ▼
@@ -1824,7 +1815,7 @@ O Nginx pode continuar executando mesmo quando a API está indisponível.
 
 Isso significa que:
 
-```text id="5x7m9z"
+```text
 Nginx running
       ≠
 Application healthy
@@ -1838,7 +1829,7 @@ Um health check operacional precisa verificar a cadeia completa quando o objetiv
 
 Se PostgreSQL estiver indisponível:
 
-```text id="8x0s3a"
+```text
 Nginx
   │
   ▼
@@ -1876,7 +1867,7 @@ Isso reduz o risco de transformar uma alteração simples de infraestrutura em i
 
 Uma investigação de problemas envolvendo Nginx pode seguir:
 
-```text id="6x9s8m"
+```text
 1. DNS / Cloudflare
         │
         ▼
@@ -1996,7 +1987,7 @@ O Nginx pertence à camada de infraestrutura HTTP.
 
 Sua posição pode ser representada como:
 
-```text id="l4q1v7"
+```text
 Client
   │
   ▼

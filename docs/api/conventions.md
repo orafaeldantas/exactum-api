@@ -671,6 +671,8 @@ Na prática, a ordem exata pode variar conforme o endpoint e a arquitetura da op
 
 # 18. Error Responses
 
+> **Formato atual:** exceções da aplicação retornam `{"error": "<mensagem>"}` e erros de validação seguem o formato do flask-smorest (`code`, `status`, `errors`). Os exemplos abaixo representam o **contrato planejado**. Ver [`docs/api/errors.md`](./errors.md#51-formato-atual).
+
 Erros devem possuir uma representação estruturada.
 
 Exemplo conceitual:

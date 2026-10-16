@@ -322,6 +322,66 @@ Isso cria uma segunda barreira caso alguma camada anterior seja utilizada incorr
 
 ---
 
+## 9.3. Implementação Atual
+
+O isolamento é implementado hoje por três mecanismos complementares.
+
+### a) Contexto do tenant a partir do JWT
+
+`app/core/middlewares/context.py` executa em `before_request`, valida o JWT de forma opcional e popula `flask.g`:
+
+| Atributo             | Origem (claim)    |
+| -------------------- | ----------------- |
+| `g.user_id`          | `sub` (identity)  |
+| `g.user_uuid`        | `user_uuid`       |
+| `g.tenant_id`        | `tenant_id`       |
+| `g.tenant_uuid`      | `tenant_uuid`     |
+| `g.is_super_admin`   | `is_super_admin`  |
+| `g.impersonate_mode` | `impersonate_mode`|
+
+O tenant **nunca** é lido do payload, da query string ou da URL. Controllers repassam `g.tenant_id` aos services.
+
+### b) Filtro explícito nos repositories
+
+Os repositories recebem `tenant_id` e o aplicam na query:
+
+```python
+stmt = select(Product).where(
+    Product.tenant_id == tenant_id,
+    Product.uuid == product_uuid,
+    Product.deleted_at.is_(None),
+)
+```
+
+### c) Filtro automático no ORM (`tenant_filter`)
+
+`app/database/tenant_filter.py` registra um listener `do_orm_execute` na sessão do SQLAlchemy. Para cada `SELECT` executado via ORM, quando `g.tenant_id` está definido, o listener adiciona `with_loader_criteria(Model, Model.tenant_id == g.tenant_id, include_aliases=True)` à query — inclusive em relacionamentos carregados e aliases.
+
+Consultas cross-tenant legítimas (contexto `platform`) desativam o filtro explicitamente:
+
+```python
+db.session.execute(stmt, execution_options={"skip_tenant_filter": True})
+```
+
+### Limitações conhecidas do filtro automático
+
+O filtro automático é uma **camada adicional**, não a única. As limitações abaixo fazem com que o filtro explícito nos repositories (item b) continue obrigatório:
+
+| Limitação                                   | Efeito                                                                                                   |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Cobre apenas `User`, `Product` e `Goal`     | `Sale`, `ItemSale`, `Role`, `UserRole`, `UserPermission`, `AuditLog` e `PlatformEvent` não são filtrados automaticamente |
+| Atua somente em `SELECT`                    | `update()` e `delete()` em massa não recebem o critério de tenant                                         |
+| Sem `g.tenant_id`, não filtra               | Fora de um request autenticado (CLI, seeds, rotas públicas) a query não é restringida                      |
+| Lista de models fixa no código              | Um novo model tenant-scoped não é protegido até ser adicionado manualmente ao listener                    |
+
+Evoluções planejadas:
+
+- aplicar o critério a todos os models tenant-scoped por meio de um mixin comum (ex.: `TenantScopedMixin`), em vez de uma lista fixa;
+- falhar de forma fechada (*fail closed*) quando uma query sobre model tenant-scoped for executada sem tenant e sem `skip_tenant_filter`;
+- adicionar testes automatizados de acesso cross-tenant para cada recurso.
+
+---
+
 # 10. Authorization and Tenant Isolation
 
 Tenant isolation e authorization são mecanismos diferentes, mas complementares.

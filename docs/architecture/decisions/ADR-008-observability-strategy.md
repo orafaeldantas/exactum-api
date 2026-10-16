@@ -90,7 +90,7 @@ Esses mecanismos possuem finalidades diferentes e não devem ser tratados como e
 
 A arquitetura conceitual é:
 
-```text id="7w3m1a"
+```text
                          Observability
                               │
           ┌───────────────────┼───────────────────┐
@@ -109,7 +109,7 @@ A arquitetura conceitual é:
 
 A estratégia futura poderá incorporar:
 
-```text id="3px1gs"
+```text
 Observability
      │
      ├── Logs
@@ -180,13 +180,13 @@ O Exactum utiliza **Structured Logging** como mecanismo principal para informaç
 
 Em vez de produzir apenas mensagens livres:
 
-```text id="f3o6b7"
+```text
 User login failed
 ```
 
 os logs devem, sempre que possível, possuir informações estruturadas:
 
-```text id="8q4m3v"
+```text
 {
   "level": "WARNING",
   "event": "authentication_failed",
@@ -273,7 +273,7 @@ O **Correlation ID** é utilizado para associar diferentes registros pertencente
 
 Conceitualmente:
 
-```text id="4m9p6k"
+```text
 Request A
    │
    ├── Correlation ID: abc123
@@ -295,7 +295,7 @@ Todos os registros relevantes podem utilizar o mesmo identificador de correlaç�
 
 Isso permite realizar consultas como:
 
-```text id="q9x3de"
+```text
 correlation_id = "abc123"
 ```
 
@@ -309,7 +309,7 @@ O Correlation ID deve acompanhar o Request Lifecycle sempre que tecnicamente apl
 
 Conceitualmente:
 
-```text id="w5c1tr"
+```text
 Incoming Request
       │
       ▼
@@ -346,7 +346,7 @@ Ele é apenas um identificador técnico de correlação.
 
 Portanto:
 
-```text id="l3s6ke"
+```text
 Correlation ID ≠ User Identity
 Correlation ID ≠ Session
 Correlation ID ≠ Authorization
@@ -371,7 +371,7 @@ Um Platform Event representa um fato que aconteceu no sistema e que pode possuir
 
 Exemplos incluem:
 
-```text id="6m8x4a"
+```text
 USER_LOGGED_IN
 USER_LOGGED_OUT
 SESSION_REVOKED
@@ -454,7 +454,7 @@ Audit Logging possui relação direta com o modelo de **Impersonation**.
 
 Em uma operação normal:
 
-```text id="f6p9x2"
+```text
 Actor
   │
   ▼
@@ -466,7 +466,7 @@ Resource
 
 Em uma operação de impersonation:
 
-```text id="v2g7ca"
+```text
 Original Administrator
         │
         ▼
@@ -512,7 +512,7 @@ Tem como objetivo principal:
 
 Uma ação pode gerar ambos:
 
-```text id="qf4y7e"
+```text
 Request
  │
  ├── Structured Log
@@ -534,7 +534,7 @@ A estratégia de Observability acompanha o Request Lifecycle.
 
 Um fluxo simplificado é:
 
-```text id="g7z3wa"
+```text
 HTTP Request
      │
      ▼
@@ -569,7 +569,7 @@ Durante esse ciclo, informações relevantes podem ser registradas nos mecanismo
 
 Por exemplo:
 
-```text id="a4j7sb"
+```text
 Request
  │
  ├── Correlation ID
@@ -591,7 +591,7 @@ Falhas da aplicação devem ser observáveis sem expor informações desnecessá
 
 Um erro pode produzir:
 
-```text id="c9v3xd"
+```text
 Application Exception
        │
        ├── Structured Log
@@ -617,7 +617,7 @@ Como o Exactum é multi-tenant, informações de tenant são importantes para di
 
 Quando aplicável, registros podem incluir:
 
-```text id="3h7n2s"
+```text
 tenant_uuid
 user_uuid
 correlation_id
@@ -637,7 +637,7 @@ Eventos relacionados à autenticação possuem relevância operacional e de segu
 
 Exemplos:
 
-```text id="v6n1se"
+```text
 LOGIN_SUCCESS
 LOGIN_FAILURE
 LOGOUT
@@ -684,7 +684,7 @@ Impersonation possui tratamento especial devido ao impacto de segurança e accou
 
 Eventos relevantes incluem:
 
-```text id="f0r5qa"
+```text
 IMPERSONATION_STARTED
 IMPERSONATION_STOPPED
 ```
@@ -712,7 +712,7 @@ Isso segue o princípio estabelecido na ADR-006:
 
 A separação conceitual pode ser resumida da seguinte maneira:
 
-```text id="4p7d9m"
+```text
                 ┌──────────────────────┐
                 │    O que aconteceu?  │
                 └──────────┬───────────┘
@@ -766,7 +766,7 @@ Métricas podem representar informações quantitativas como:
 
 Conceitualmente:
 
-```text id="2j7m4b"
+```text
 Logs
   → eventos detalhados
 
@@ -831,7 +831,7 @@ Os diferentes tipos de informação podem possuir necessidades diferentes de ret
 
 Conceitualmente:
 
-```text id="5k3n8x"
+```text
 Structured Logs
     ↓
 retenção operacional
@@ -956,7 +956,7 @@ Observability não deve depender apenas de testes manuais.
 
 Uma abordagem simples seria utilizar exclusivamente logs:
 
-```text id="n1x6ps"
+```text
 Application
     ↓
 Logs
@@ -1105,7 +1105,7 @@ Conforme a observabilidade evolui, ferramentas especializadas poderão ser neces
 
 A estratégia atual do Exactum pode ser resumida como:
 
-```text id="n7c4pe"
+```text
                     Exactum
                        │
                 Observability
@@ -1137,7 +1137,7 @@ A estratégia de métricas e monitoramento mais avançada permanece como evoluç
 
 A arquitetura poderá evoluir progressivamente para:
 
-```text id="0f6x1w"
+```text
                     Observability
                          │
       ┌──────────────────┼──────────────────┐
@@ -1206,7 +1206,7 @@ A estratégia de Observability também está relacionada à **ADR-007 — Layere
 
 A arquitetura em camadas fornece pontos naturais para observabilidade:
 
-```text id="7g1m4s"
+```text
 HTTP
  │
  ├── Request Logging
@@ -1242,7 +1242,7 @@ O princípio central estabelecido por esta ADR é:
 
 Em termos práticos:
 
-```text id="d2r5xq"
+```text
 Logs
    → O que aconteceu tecnicamente?
 

@@ -106,6 +106,27 @@ Deployable Change
 
 Nem todas as etapas precisam ser executadas em exatamente essa ordem em todas as versões do pipeline.
 
+## 4.1 Pipeline atual
+
+O pipeline implementado em `.github/workflows/ci.yml` é executado em `push` e `pull_request` para `main` e `develop`, em um único job (`test-and-lint`) com PostgreSQL 15 e Redis como serviços.
+
+| # | Etapa                     | Comando (em `backend/`)                                        | Falha bloqueia o CI |
+| - | ------------------------- | -------------------------------------------------------------- | ------------------- |
+| 1 | Dependências              | `uv sync --frozen`                                             | Sim                 |
+| 2 | Lint                      | `uv run ruff check .`                                          | Sim                 |
+| 3 | Formatação                | `uv run ruff format --check .`                                 | Sim                 |
+| 4 | Type checking             | `uv run mypy .`                                                | Sim                 |
+| 5 | Auditoria de dependências | `uv run pip-audit --strict`                                    | Sim                 |
+| 6 | Migrations                | `uv run flask db upgrade && uv run flask db check`             | Sim                 |
+| 7 | Testes + cobertura        | `uv run pytest --cov=app --cov-report=xml --cov-fail-under=80` | Sim                 |
+| 8 | Upload de cobertura       | `codecov/codecov-action@v5`                                    | —                   |
+
+Etapas que **não** existem atualmente:
+
+- CI do frontend (lint/build do React);
+- build das imagens Docker;
+- validação do contrato OpenAPI.
+
 A ordem deve priorizar:
 
 1. feedback rápido;
@@ -516,7 +537,7 @@ Por exemplo:
 Coverage >= project threshold
 ```
 
-Quando o projeto definir um threshold, uma alteração que reduza a cobertura abaixo do limite poderá impedir a conclusão do CI.
+O threshold atual é **80%**, aplicado via `--cov-fail-under=80`. Uma alteração que reduza a cobertura total de `app/` abaixo desse valor faz o CI falhar.
 
 Porém, o threshold deve ser tratado como uma proteção mínima.
 
@@ -526,9 +547,11 @@ Ele não deve substituir análise de risco.
 
 # 24. Coverage Atual
 
-O Exactum historicamente mantém coverage próxima de **89–90%**.
+A cobertura atual é publicada no Codecov (badge no `README.md` da raiz) e o CI exige no mínimo **80%**.
 
-Essa métrica indica uma suíte relativamente abrangente, mas não significa que todas as áreas tenham o mesmo nível de proteção.
+A suíte atual é composta por testes funcionais em `backend/tests/functional/` e não possui testes unitários isolados. Áreas como isolamento cross-tenant, negação de permissão (RBAC) e impersonation ainda têm cobertura limitada, mesmo com a cobertura total acima do threshold.
+
+Cobertura de linhas não mede se os cenários de segurança foram exercitados.
 
 Por isso, mudanças em áreas críticas devem continuar recebendo atenção específica.
 
@@ -834,6 +857,8 @@ Deployment
 ```
 
 Isso reduz a probabilidade de uma alteração evidentemente inválida chegar à produção.
+
+> **Estado atual:** o workflow de deploy (`deploy.yml`) **não** depende do CI. Ambos são disparados pelo push em `main` de forma independente. O gate efetivo hoje é o CI executado no Pull Request `develop → main` (garantido por `check-pr-source.yml`), desde que o merge só ocorra com o CI verde. Ver [`docs/operations/deployment.md`](../operations/deployment.md).
 
 ---
 
@@ -1207,10 +1232,25 @@ pytest → failure
 deve permitir algo próximo de:
 
 ```bash
-pytest path/to/test.py
+cd backend
+uv run pytest tests/functional/test_sale.py
 ```
 
 localmente.
+
+Para reproduzir o pipeline completo:
+
+```bash
+cd backend
+uv run ruff check .
+uv run ruff format --check .
+uv run mypy .
+uv run pip-audit --strict
+DATABASE_TESTS_URL=postgresql://<user>:<senha>@localhost:5433/exactum_test \
+  uv run pytest --cov=app --cov-fail-under=80
+```
+
+> **Atenção:** utilize sempre um banco **dedicado a testes** em `DATABASE_TESTS_URL`. A fixture de testes executa `TRUNCATE` e `drop_all()` no banco configurado e, na ausência de `DATABASE_TESTS_URL`, utiliza `DATABASE_URL` como fallback.
 
 Quanto menor a diferença entre ambiente local e CI, menor o custo de diagnóstico.
 

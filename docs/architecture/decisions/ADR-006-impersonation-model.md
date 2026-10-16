@@ -163,7 +163,7 @@ Representa o usuário impersonado.
 
 Conceitualmente:
 
-```text id="2h6n4m"
+```text
 Access Token
     │
     ├── impersonated user
@@ -177,7 +177,7 @@ Preserva o contexto necessário para recuperar a identidade original.
 
 Conceitualmente:
 
-```text id="z0xwpp"
+```text
 Refresh Token
     │
     ├── original Super Admin
@@ -202,7 +202,7 @@ Durante uma impersonation, esse estado também mantém a relação entre a sess�
 
 No modelo atual, a estrutura conceitual é:
 
-```text id="b9j8jp"
+```text
 impersonation:<refresh_jti>
     │
     ├── original_user_id
@@ -226,7 +226,7 @@ Portanto, o Redis é adequado para manter esse estado operacional.
 
 O PostgreSQL continua sendo responsável pelas entidades persistentes do domínio.
 
-```text id="xy5nwu"
+```text
 PostgreSQL
     │
     └── Persistent Domain State
@@ -249,7 +249,7 @@ No modelo atual, essa autoridade pertence ao **Super Admin da plataforma**.
 
 O frontend não pode simplesmente declarar:
 
-```json id="f5a4h7"
+```json
 {
   "impersonate": true
 }
@@ -261,7 +261,7 @@ A autorização deve ser determinada pelo backend.
 
 Conceitualmente:
 
-```text id="20o2fs"
+```text
 Authenticated Actor
        │
        ▼
@@ -280,7 +280,7 @@ O início da impersonation ocorre através de um endpoint específico da API.
 
 O fluxo conceitual é:
 
-```text id="p5d2w0"
+```text
 Super Admin
      │
      │ Start impersonation
@@ -328,7 +328,7 @@ O Super Admin atua em nível de plataforma, mas o usuário impersonado continua 
 
 O backend deve estabelecer corretamente:
 
-```text id="n8yfdj"
+```text
 Super Admin
      │
      ▼
@@ -350,7 +350,7 @@ O access token representa a identidade operacional atual.
 
 Portanto, durante impersonation:
 
-```text id="qv50k3"
+```text
 access_token
     │
     ├── user = impersonated user
@@ -372,7 +372,7 @@ Ele mantém o contexto necessário para preservar a relação com o Super Admin 
 
 Conceitualmente:
 
-```text id="sk2w2x"
+```text
 refresh_token
     │
     ├── original user
@@ -392,7 +392,7 @@ O refresh de uma sessão impersonada deve manter o estado de impersonation.
 
 Exemplo:
 
-```text id="j9p3y4"
+```text
 Super Admin
      │
      ▼
@@ -421,7 +421,7 @@ A impersonation deve respeitar a política de **Refresh Token Rotation** definid
 
 Portanto:
 
-```text id="7m3c20"
+```text
 Refresh A
     │
     ▼
@@ -441,7 +441,7 @@ A rotação não deve apagar ou substituir incorretamente a identidade original.
 
 Considerando:
 
-```text id="8h8q1w"
+```text
 Refresh A
    │
    └── original = Super Admin
@@ -449,7 +449,7 @@ Refresh A
 
 Após rotação:
 
-```text id="8i4u8m"
+```text
 Refresh B
    │
    └── original = Super Admin
@@ -457,7 +457,7 @@ Refresh B
 
 O relacionamento permanece:
 
-```text id="0n8a4j"
+```text
 Refresh A → revoked
 Refresh B → active
                  │
@@ -478,7 +478,7 @@ Portanto, o backend deve fornecer explicitamente o estado necessário para a int
 
 Exemplo conceitual:
 
-```json id="f7p0p7"
+```json
 {
   "impersonating": true,
   "user": {
@@ -523,7 +523,7 @@ O término da impersonation também é controlado pelo backend.
 
 O fluxo conceitual é:
 
-```text id="y8ynmb"
+```text
 Impersonated Session
        │
        │ Stop impersonation
@@ -548,7 +548,7 @@ Após o término, o administrador retorna ao seu contexto original.
 
 O objetivo do stop impersonation é restaurar:
 
-```text id="1v8pgr"
+```text
 Original User
        +
 Original Tenant
@@ -558,7 +558,7 @@ em vez de simplesmente realizar logout completo.
 
 Portanto:
 
-```text id="8u2d3h"
+```text
 Super Admin
      │
      ▼
@@ -586,7 +586,7 @@ O usuário impersonado não deve conseguir transformar sua própria identidade e
 
 Por exemplo, se o usuário alvo possuir privilégios administrativos dentro do tenant:
 
-```text id="r7x5f2"
+```text
 Super Admin
      │
      ▼
@@ -671,7 +671,7 @@ O sistema deve registrar pelo menos:
 
 Conceitualmente:
 
-```text id="y0r2t7"
+```text
 IMPERSONATION_STARTED
         │
         └── original actor
@@ -695,7 +695,7 @@ Além do audit logging, eventos de plataforma podem representar o ciclo de vida 
 
 Exemplos:
 
-```text id="u1grq7"
+```text
 IMPERSONATION_STARTED
 IMPERSONATION_STOPPED
 ```
@@ -720,7 +720,7 @@ As operações realizadas durante impersonation devem continuar utilizando os me
 
 Isso permite relacionar:
 
-```text id="f5k5h7"
+```text
 Impersonation Started
        │
        ▼
@@ -757,7 +757,7 @@ O sistema não deve assumir automaticamente que logout equivale a `stop imperson
 
 A diferença conceitual é:
 
-```text id="1g3j4n"
+```text
 Stop Impersonation
     ↓
 Return to Original Session
@@ -777,7 +777,7 @@ Uma sessão de impersonation deve obedecer às políticas normais de expiração
 
 Se o refresh token expirar:
 
-```text id="d7e6fj"
+```text
 Impersonation Session
        │
        ▼
@@ -799,7 +799,7 @@ A arquitetura permite que seja definida uma duração máxima para impersonation
 
 Exemplo conceitual:
 
-```text id="4fl4n5"
+```text
 Start
  │
  ▼
@@ -822,7 +822,7 @@ O Exactum não deve permitir que uma impersonation seja utilizada para iniciar o
 
 O modelo atual deve ser interpretado como:
 
-```text id="9mcexk"
+```text
 Super Admin
      │
      ▼
@@ -831,7 +831,7 @@ User A
 
 e não:
 
-```text id="7v4d0c"
+```text
 Super Admin
      │
      ▼
@@ -862,7 +862,7 @@ Cada sessão deve possuir estado próprio.
 
 Exemplo:
 
-```text id="6j1u8r"
+```text
 Super Admin
  │
  ├── Impersonation Session A
@@ -884,7 +884,7 @@ O modelo também deve suportar diferentes Super Admins utilizando impersonation 
 
 Exemplo:
 
-```text id="j9m5zz"
+```text
 Super Admin A
       │
       ▼
@@ -908,7 +908,7 @@ Impersonation não modifica o princípio de isolamento entre tenants.
 
 Mesmo que o Super Admin possua autoridade de plataforma:
 
-```text id="z1v1ac"
+```text
 Platform Authority
         │
         ▼
@@ -932,7 +932,7 @@ A autorização deve considerar a identidade operacional atual.
 
 Exemplo:
 
-```text id="v8w3k2"
+```text
 Access Token
      │
      ▼
@@ -963,7 +963,7 @@ Os endpoints de impersonation devem permanecer protegidos por Authorization.
 
 Exemplo conceitual:
 
-```text id="v0y8q7"
+```text
 POST /run-impersonate
 POST /stop-impersonate
 ```
@@ -1000,7 +1000,7 @@ O backend não deve revelar detalhes internos do mecanismo de sessão ou Redis a
 
 Substituir a identidade do Super Admin pela identidade do usuário alvo sem preservar o contexto original.
 
-```text id="q2e0w3"
+```text
 Super Admin
      │
      ▼
@@ -1225,7 +1225,7 @@ A observabilidade deve permitir reconstruir o ciclo da impersonation.
 
 Exemplo:
 
-```text id="yqeq93"
+```text
 IMPERSONATION_STARTED
         │
         ▼
@@ -1325,7 +1325,7 @@ Essas funcionalidades devem ser registradas em ADRs próprias quando representar
 
 # 49. Related Documentation
 
-```text id="0o9a4r"
+```text
 docs/security/authentication.md
 docs/security/authorization.md
 docs/security/session-management.md

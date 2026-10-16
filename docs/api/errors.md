@@ -25,6 +25,10 @@ O tratamento de erros faz parte do contrato público da API.
 
 O cliente deve conseguir identificar programaticamente o resultado de uma operação sem depender exclusivamente de mensagens textuais.
 
+> **Estado atual vs. contrato planejado**
+>
+> A API **ainda não** retorna códigos de erro semânticos (`code`). O formato efetivamente retornado hoje está descrito na [seção 5.1](#51-formato-atual). Os exemplos com `{"error": {"code": ..., "message": ...}}` ao longo deste documento representam o **contrato planejado** e não devem ser utilizados pelo frontend até que sejam implementados.
+
 ---
 
 # 2. Error Handling Principles
@@ -97,11 +101,63 @@ Outros status codes podem ser utilizados quando houver uma necessidade específi
 
 # 5. Error Response Structure
 
-As respostas de erro devem possuir uma estrutura consistente.
+## 5.1 Formato atual
 
-Exemplo:
+Atualmente a API produz **três formatos** de resposta de erro, dependendo de onde o erro é tratado.
 
-```json id="9pq7tv"
+**a) Exceções da aplicação (`AppException`)** — erros de domínio, autenticação de negócio e autorização (`app/exceptions/handlers.py`):
+
+```json
+{
+  "error": "Product not found"
+}
+```
+
+O status HTTP vem do atributo `status_code` da exceção (ex.: `ProductNotFound` → `404`, `ForbiddenException` → `403`, `InvalidCredentials` → `401`). Exceções marcadas com `clear_auth_cookies` também removem os cookies de autenticação.
+
+**b) Erros HTTP e de validação (flask-smorest / webargs)** — payload inválido, rota inexistente, método não permitido:
+
+```json
+{
+  "code": 422,
+  "status": "Unprocessable Entity",
+  "errors": {
+    "json": {
+      "email": ["Missing data for required field."]
+    }
+  }
+}
+```
+
+**c) Erros de JWT (`app/exceptions/jwt_handlers.py`):**
+
+| Situação                | Status | Corpo                                  | Cookies removidos |
+| ----------------------- | ------ | -------------------------------------- | ----------------- |
+| Token ausente           | `401`  | `{"error": "missing_token"}`           | Não               |
+| Access token expirado   | `401`  | `{"error": "access_token_expired"}`    | Não               |
+| Refresh token expirado  | `401`  | `{"error": "refresh_token_expired"}`   | Sim               |
+| Token inválido          | `422`  | `{"error": "invalid_token"}`           | Sim               |
+| Token revogado          | `401`  | `{"error": "revoked"}`                 | Sim               |
+
+O frontend (`frontend/src/services/api.js`) dispara o fluxo de refresh para qualquer resposta `401` fora das rotas de login, logout e refresh, independentemente do corpo.
+
+**d) Erros inesperados** — qualquer exceção não tratada que não seja `HTTPException`:
+
+```json
+{
+  "error": "Internal server error"
+}
+```
+
+com status `500`. O traceback é registrado no log; nenhum detalhe interno é exposto ao cliente.
+
+> As respostas de erro **não** incluem `request_id` atualmente. A correlação é feita pelos logs.
+
+## 5.2 Contrato planejado
+
+O objetivo é unificar os formatos acima em uma estrutura única:
+
+```json
 {
   "error": {
     "code": "PRODUCT_NOT_FOUND",
@@ -121,6 +177,8 @@ message
 
 Quando necessário, podem existir campos adicionais.
 
+Essa unificação é uma mudança de contrato e deve ser coordenada com o frontend (ver [`docs/api/versioning.md`](./versioning.md)).
+
 ---
 
 # 6. Error Code
@@ -129,7 +187,7 @@ O campo `code` identifica semanticamente o erro.
 
 Exemplo:
 
-```text id="q1t7m8"
+```text
 PRODUCT_NOT_FOUND
 ```
 
@@ -139,14 +197,14 @@ Isso permite que o frontend tome decisões baseadas no código.
 
 Exemplo:
 
-```text id="5f8xri"
+```text
 if error.code == "PRODUCT_NOT_FOUND":
     ...
 ```
 
 A aplicação cliente não deve depender de:
 
-```text id="3z8zpb"
+```text
 if error.message == "Product not found.":
     ...
 ```
@@ -161,7 +219,7 @@ O campo `message` fornece uma descrição legível do erro.
 
 Exemplo:
 
-```json id="p0v3b4"
+```json
 {
   "error": {
     "code": "PRODUCT_NOT_FOUND",
@@ -196,11 +254,11 @@ Erros de validação ocorrem quando os dados fornecidos pelo cliente não respei
 
 Exemplo:
 
-```http id="t1a2r9"
+```http
 POST /products
 ```
 
-```json id="0f2r2j"
+```json
 {
   "name": "",
   "price": -10
@@ -209,7 +267,7 @@ POST /products
 
 A API pode retornar:
 
-```json id="h1l4v8"
+```json
 {
   "error": {
     "code": "VALIDATION_ERROR",
@@ -232,7 +290,7 @@ Quando um erro possui múltiplos problemas, cada campo pode possuir sua própria
 
 Exemplo:
 
-```json id="z7q7mt"
+```json
 {
   "error": {
     "code": "VALIDATION_ERROR",
@@ -265,7 +323,7 @@ Exemplos:
 
 Exemplo:
 
-```json id="f5k4zi"
+```json
 {
   "error": {
     "code": "AUTHENTICATION_REQUIRED",
@@ -276,7 +334,7 @@ Exemplo:
 
 Normalmente esses erros resultam em:
 
-```http id="u5a9h5"
+```http
 401 Unauthorized
 ```
 
@@ -288,13 +346,13 @@ A API não deve expor informações desnecessárias sobre o motivo interno da fa
 
 Quando o usuário está autenticado, mas não possui autorização para realizar uma operação, a API deve utilizar:
 
-```http id="b9w0g4"
+```http
 403 Forbidden
 ```
 
 Exemplo:
 
-```json id="8s3h5b"
+```json
 {
   "error": {
     "code": "PERMISSION_DENIED",
@@ -321,13 +379,13 @@ A decisão de autorização pertence ao backend.
 
 Quando um recurso solicitado não existe ou não pode ser retornado dentro do contexto autorizado, a API pode utilizar:
 
-```http id="0zccn7"
+```http
 404 Not Found
 ```
 
 Exemplo:
 
-```json id="eq6kxi"
+```json
 {
   "error": {
     "code": "PRODUCT_NOT_FOUND",
@@ -348,7 +406,7 @@ Conflitos ocorrem quando a operação é válida em termos estruturais, mas entr
 
 Exemplo:
 
-```text id="7gq7dg"
+```text
 409 Conflict
 ```
 
@@ -361,7 +419,7 @@ Possíveis situações:
 
 Exemplo:
 
-```json id="j91r0a"
+```json
 {
   "error": {
     "code": "PRODUCT_ALREADY_EXISTS",
@@ -401,7 +459,7 @@ A entrada não possui o formato ou estrutura esperada.
 
 Exemplo:
 
-```json id="y9ex3m"
+```json
 {
   "price": "abc"
 }
@@ -413,7 +471,7 @@ A entrada possui formato válido, mas a operação não é permitida pelas regra
 
 Exemplo:
 
-```text id="hcrz90"
+```text
 Tentativa de realizar uma venda sem estoque suficiente.
 ```
 
@@ -437,7 +495,7 @@ Uma requisição pode passar pela validação estrutural e posteriormente ser re
 
 Quando uma requisição excede o limite estabelecido pela API:
 
-```http id="f9v0c4"
+```http
 429 Too Many Requests
 ```
 
@@ -445,7 +503,7 @@ A resposta pode conter informações que permitam ao cliente compreender a situa
 
 Exemplo:
 
-```json id="p3xw6j"
+```json
 {
   "error": {
     "code": "RATE_LIMIT_EXCEEDED",
@@ -466,13 +524,13 @@ Erros inesperados devem resultar em uma resposta genérica ao cliente.
 
 Exemplo:
 
-```http id="b3n6x4"
+```http
 500 Internal Server Error
 ```
 
 Resposta:
 
-```json id="k6z3a9"
+```json
 {
   "error": {
     "code": "INTERNAL_ERROR",
@@ -485,7 +543,7 @@ O cliente não deve receber detalhes internos da exceção.
 
 Por exemplo, não retornar:
 
-```text id="rj9z8a"
+```text
 Traceback...
 SQLAlchemyError...
 PostgreSQL connection failed...
@@ -502,7 +560,7 @@ Exceções devem ser tratadas em uma camada centralizada sempre que possível.
 
 Conceitualmente:
 
-```text id="i7o0ra"
+```text
 Application
      │
      │ exception
@@ -562,13 +620,13 @@ A aplicação pode utilizar exceções específicas para representar erros conhe
 
 Conceitualmente:
 
-```python id="z5s0qx"
+```python
 raise ProductNotFoundError(...)
 ```
 
 ou:
 
-```python id="t8y8a6"
+```python
 raise PermissionDeniedError(...)
 ```
 
@@ -584,7 +642,7 @@ Application Services e regras de negócio não devem depender diretamente de obj
 
 Evita-se:
 
-```python id="p5d8z2"
+```python
 return jsonify(...)
 ```
 
@@ -592,7 +650,7 @@ dentro da lógica de aplicação.
 
 Preferencialmente:
 
-```text id="x0i6hf"
+```text
 Application
    │
    └── raises domain/application error
@@ -707,7 +765,7 @@ Em uma arquitetura multi-tenant, erros também precisam respeitar tenant isolati
 
 Por exemplo, uma requisição:
 
-```http id="m0by5m"
+```http
 GET /products/{uuid}
 ```
 
@@ -730,7 +788,7 @@ Erros relevantes devem ser registrados de forma apropriada nos logs.
 
 Para erros inesperados, o log pode incluir:
 
-```text id="2b8gk3"
+```text
 timestamp
 level
 event
@@ -756,7 +814,7 @@ Uma mesma falha pode possuir duas representações diferentes.
 
 Exemplo:
 
-```text id="xv4y9v"
+```text
 Internal Exception
       │
       ├── Internal Log
@@ -811,7 +869,7 @@ A mensagem pode ser utilizada para apresentação ao usuário quando apropriado.
 
 Exemplo conceitual:
 
-```text id="4j2h3q"
+```text
 HTTP 409
      │
      ▼
@@ -835,7 +893,7 @@ Por isso, o `error.code` deve permanecer independente da linguagem.
 
 Exemplo:
 
-```text id="2f9e5v"
+```text
 PRODUCT_NOT_FOUND
 ```
 
@@ -863,7 +921,7 @@ Operações que envolvem múltiplas alterações devem considerar o comportament
 
 Exemplo conceitual:
 
-```text id="q3f8w0"
+```text
 Create Sale
    │
    ├── create sale
@@ -927,7 +985,7 @@ O tratamento de erros faz parte da estratégia geral de observabilidade.
 
 Um erro pode produzir diferentes registros:
 
-```text id="p8z9b4"
+```text
 Request
   │
   ├── Infrastructure Log
@@ -953,7 +1011,7 @@ Um erro conhecido não deve necessariamente ser registrado como `ERROR` em todas
 
 Por exemplo:
 
-```text id="f5x2wv"
+```text
 Repository
    │
    └── raises ResourceNotFound
@@ -1076,7 +1134,7 @@ Isso permite que consumidores compreendam o contrato antes de executar as opera�
 
 Um erro completo pode ser representado conceitualmente como:
 
-```json id="7p4x1j"
+```json
 {
   "error": {
     "code": "VALIDATION_ERROR",
@@ -1090,7 +1148,7 @@ Um erro completo pode ser representado conceitualmente como:
 
 Enquanto um erro inesperado pode utilizar:
 
-```json id="q0r6yb"
+```json
 {
   "error": {
     "code": "INTERNAL_ERROR",
@@ -1108,24 +1166,17 @@ A diferença é intencional:
 
 # 41. Current State
 
-Atualmente, o Exactum possui uma estratégia centralizada para tratamento de exceções e respostas HTTP.
+Atualmente:
 
-A API diferencia erros relacionados a:
+- exceções de domínio herdam de `AppException` e são convertidas em `{"error": "<mensagem>"}` com o status definido na exceção;
+- erros de validação e erros HTTP seguem o formato padrão do flask-smorest (`code`, `status`, `errors`);
+- erros de JWT possuem handlers próprios com identificadores textuais (`missing_token`, `access_token_expired`, etc.);
+- exceções inesperadas retornam `500` com mensagem genérica e são registradas com traceback;
+- ainda não existem códigos de erro semânticos estáveis (`PRODUCT_NOT_FOUND`, etc.);
+- respostas de erro não incluem `request_id`;
+- rate limiting (`429`) é aplicado apenas pelo Nginx em `/api/`, e a resposta é gerada pelo Nginx, não pela API.
 
-- autenticação;
-- autorização;
-- validação;
-- recursos;
-- regras de negócio;
-- conflitos;
-- rate limiting;
-- falhas internas.
-
-O contrato utiliza status codes HTTP e respostas estruturadas.
-
-A aplicação também integra o tratamento de erros com a estratégia de observabilidade, permitindo correlacionar falhas com o `request_id` e o contexto da requisição.
-
-Alguns detalhes do contrato podem continuar sendo refinados conforme novos endpoints e domínios sejam implementados.
+A seção 5.1 descreve os formatos atuais em detalhe.
 
 ---
 
@@ -1191,7 +1242,6 @@ As principais diretrizes são:
 - `docs/security/threat-model.md`
 - `docs/observability/infrastructure-logging.md`
 - `docs/observability/correlation.md`
-- `docs/database/transactions.md` _(quando aplicável)_
 - `docs/testing/strategy.md`
 
 ---

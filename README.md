@@ -6,7 +6,7 @@ O **Exactum** é uma plataforma ERP web voltada para pequenas e médias empresas
 
 O projeto é desenvolvido com forte foco em engenharia de backend, arquitetura de software, segurança, integridade de dados e confiabilidade operacional.
 
-🔗 **[Demo ao Vivo](https://exactum.app.br/)** · 📖 **[Documentação](#documentação)** · 📑 **[Documentação da API](#api-documentation)** · 🐛 **[Reportar Bug](https://github.com/orafaeldantas/exactum-api/issues)**
+🔗 **[Demo ao Vivo](https://exactum.app.br/)** · 📖 **[Documentação](#documentação)** · 📑 **[Documentação da API](#documentação-da-api)** · 🐛 **[Reportar Bug](https://github.com/orafaeldantas/exactum-api/issues)**
 
 <br>
 
@@ -67,7 +67,7 @@ O projeto é desenvolvido com forte foco em engenharia de backend, arquitetura d
 - [Stack Tecnológica](#stack-tecnológica)
 - [Decisões Técnicas](#decisões-técnicas)
 - [Versionamento & Releases](#versionamento--releases)
-- [Documentação da API](#api-documentation)
+- [Documentação da API](#documentação-da-api)
 - [Como Executar Localmente](#como-executar-localmente)
 - [Estrutura do Projeto](#estrutura-do-projeto)
 - [Documentação](#documentação)
@@ -557,7 +557,7 @@ Em vez do fluxo tradicional de e-mail com links de expiração rápida, o admini
 
 **🔑 Evolução da estratégia de autenticação: de JWT em sessionStorage para cookies HttpOnly**
 
-O sistema evoluiu de uma autenticação stateless baseada em JWT armazenado no `sessionStorage` do cliente para um modelo consciente de sessão, com cookies HttpOnly/Secure gerenciados pelo backend e sessão apoiada em Redis. Isso reduz a exposição dos tokens a scripts executados no contexto do navegador, mitigando uma classe importante de riscos associados à exfiltração de tokens via XSS, já que o ecossistema React deixa de ter acesso direto ao token via JavaScript.
+O sistema evoluiu de uma autenticação stateless baseada em JWT armazenado no `sessionStorage` do cliente para um modelo consciente de sessão, com cookies HttpOnly gerenciados pelo backend e sessão apoiada em Redis. Isso reduz a exposição dos tokens a scripts executados no contexto do navegador, mitigando uma classe importante de riscos associados à exfiltração de tokens via XSS, já que o ecossistema React deixa de ter acesso direto ao token via JavaScript.
 
 **⚡ Flask-Smorest + Marshmallow vs FastAPI**
 
@@ -604,7 +604,7 @@ cd exactum-api
 cp .env.example .env
 ```
 
-Ajuste as variáveis de ambiente necessárias conforme seu ambiente local.
+Ajuste as variáveis de ambiente necessárias conforme seu ambiente local. A variável `ALLOWED_ORIGINS` é obrigatória (ex.: `http://localhost:5173`); a API não inicia sem ela. A lista completa está em [Documentação de Desenvolvimento](./docs/operations/development.md#11-início-rápido).
 
 > ⚠️ Nunca faça commit de credenciais, tokens ou segredos de produção no repositório.
 
@@ -614,11 +614,15 @@ Ajuste as variáveis de ambiente necessárias conforme seu ambiente local.
 docker compose up -d --build
 ```
 
-**4. Rodar as migrações do banco**
+**4. Rodar as migrações e popular o banco**
 
 ```bash
-docker compose exec api bash && flask db upgrade
+docker compose exec api flask db upgrade
+docker compose exec api flask seed-rbac
+docker compose exec api flask seed
 ```
+
+> `seed-rbac` deve ser executado antes de `seed`, pois os tenants criados pelo seed recebem roles que dependem das permissões.
 
 **5. Subir o frontend**
 

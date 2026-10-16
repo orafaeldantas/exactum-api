@@ -150,8 +150,28 @@ A API possui:
 - responses JSON;
 - tratamento centralizado de erros;
 - documentação OpenAPI/Swagger;
-- códigos de erro estruturados;
 - separação entre HTTP layer e Application Services.
+
+**A API ainda não possui versionamento explícito.** As rotas são registradas sem prefixo de versão:
+
+```text
+/auth/...
+/users/...
+/tenants/...
+/products/...
+/sales/...
+/analytics/revenue/...
+/analytics/sold-items/...
+/platform/...
+/rbac/...
+/health
+```
+
+Em produção, o Nginx expõe essas rotas sob `/api/` e remove o prefixo antes de encaminhar para a aplicação (`proxy_pass http://backend/;`). Assim, `GET https://exactum.app.br/api/products` chega à aplicação como `GET /products`. O Vite reproduz o mesmo comportamento em desenvolvimento.
+
+Os códigos de erro também ainda não são estruturados; ver [`docs/api/errors.md`](./errors.md#51-formato-atual).
+
+Os exemplos com `/api/v1/...` neste documento representam a **estratégia planejada**, não rotas existentes.
 
 A API encontra-se em evolução ativa, acompanhando a evolução arquitetural do Exactum.
 
@@ -236,6 +256,8 @@ Da mesma forma, uma mudança contratual significativa poderá exigir uma nova ve
 ---
 
 # 7. Estratégia de versionamento
+
+> **Planejado — não implementado.** Esta seção descreve a estratégia a ser adotada quando o versionamento for introduzido.
 
 A estratégia adotada para a API deve priorizar **versionamento explícito por major version**.
 

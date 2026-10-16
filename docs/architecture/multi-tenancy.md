@@ -489,6 +489,10 @@ WHERE tenant_id = :tenant_id;
 
 O princípio importante é que o repositório não deve tratar a tabela como um conjunto global de dados quando a entidade é tenant-scoped.
 
+Além do filtro explícito nos repositories, o Exactum possui um **filtro automático no ORM** (`app/database/tenant_filter.py`), que utiliza `with_loader_criteria` em um listener `do_orm_execute` para restringir `SELECT`s ao `g.tenant_id` do request. Atualmente ele cobre apenas `User`, `Product` e `Goal`, atua somente em leituras e não filtra quando não há tenant no contexto. Por isso, o filtro explícito continua obrigatório.
+
+Detalhes e limitações: [`docs/security/tenant-isolation.md` — seção 9.3](../security/tenant-isolation.md#93-implementação-atual).
+
 ---
 
 ## 13. Dupla Camada de Isolamento
@@ -699,6 +703,19 @@ O mesmo princípio vale para:
 - exclusão;
 - relacionamentos;
 - operações compostas.
+
+### 17.1 Unicidade global
+
+Algumas constraints de unicidade são atualmente **globais**, e não por tenant:
+
+| Coluna            | Constraint atual | Consequência                                                                 |
+| ----------------- | ---------------- | ---------------------------------------------------------------------------- |
+| `users.email`     | `UNIQUE` global  | Intencional: o e-mail identifica o usuário no login, sem seleção de tenant   |
+| `users.username`  | `UNIQUE` global  | Um username não pode se repetir entre tenants                                |
+| `products.sku`    | `UNIQUE` global  | Dois tenants não podem cadastrar o mesmo SKU; o erro `409` revela indiretamente que o SKU existe em outro tenant |
+| `tenants.slug`, `tenants.cnpj` | `UNIQUE` global | Intencional: identificam o tenant na plataforma               |
+
+A evolução planejada para `products.sku` é uma constraint composta `UNIQUE (tenant_id, sku)`. Como `items_sales.sku` possui foreign key para `products.sku`, essa mudança exige ajuste conjunto do relacionamento.
 
 ---
 

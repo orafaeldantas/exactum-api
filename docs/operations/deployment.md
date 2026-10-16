@@ -194,31 +194,24 @@ Antes do deployment, o código passa pelo processo de **Continuous Integration (
 
 O CI tem como objetivo detectar problemas antes que uma alteração seja disponibilizada em produção.
 
-Entre as verificações utilizadas pelo projeto estão:
+O pipeline de CI (`.github/workflows/ci.yml`) é executado em `push` e `pull_request` para as branches `main` e `develop`, com PostgreSQL 15 e Redis como serviços do job.
 
-- execução de testes;
-- lint;
-- validação do código;
-- validações relacionadas ao backend;
-- verificações do ambiente de build.
+Etapas atuais, na ordem em que são executadas:
 
-O pipeline utiliza GitHub Actions.
+| Etapa                       | Comando                                                       |
+| --------------------------- | ------------------------------------------------------------- |
+| Instalação de dependências  | `uv sync --frozen`                                            |
+| Lint                        | `uv run ruff check .`                                         |
+| Formatação                  | `uv run ruff format --check .`                                |
+| Type checking               | `uv run mypy .`                                               |
+| Auditoria de dependências   | `uv run pip-audit --strict`                                   |
+| Validação de migrations     | `uv run flask db upgrade && uv run flask db check`            |
+| Testes e cobertura          | `uv run pytest --cov=app --cov-report=xml --cov-fail-under=80` |
+| Upload de cobertura         | Codecov                                                       |
 
-Conceitualmente:
+Todas as etapas são executadas no diretório `backend/`. O frontend não possui etapa de CI atualmente.
 
-```text
-Push
- │
- ▼
-GitHub Actions
- │
- ├── Install dependencies
- ├── Run tests
- ├── Run Ruff
- └── Validate application
-```
-
-Somente depois de passar pelas validações o código deve seguir para o processo de deployment.
+Detalhes adicionais estão em [`docs/testing/ci.md`](../testing/ci.md).
 
 ---
 
@@ -252,21 +245,13 @@ O GitHub Actions funciona como mecanismo de automação do pipeline.
 
 Ele executa as etapas necessárias para validar e implantar o projeto.
 
-Um fluxo simplificado é:
+O projeto possui três workflows:
 
-```text
-GitHub
-   │
-   ▼
-Workflow
-   │
-   ├── Checkout
-   ├── Setup environment
-   ├── Install dependencies
-   ├── Tests
-   ├── Lint
-   └── Deployment
-```
+| Workflow                | Gatilho                                | Responsabilidade                                 |
+| ----------------------- | -------------------------------------- | ------------------------------------------------ |
+| `ci.yml`                | push / PR em `main` e `develop`        | Lint, type checking, auditoria, migrations, testes |
+| `deploy.yml`            | push em `main`                         | Deploy via SSH no VPS                            |
+| `check-pr-source.yml`   | PR para `main`                         | Garante que PRs para `main` venham de `develop`  |
 
 O workflow deve evitar operações manuais sempre que elas puderem ser automatizadas com segurança.
 
@@ -291,35 +276,43 @@ As credenciais necessárias para o deployment devem permanecer armazenadas como 
 
 # 9. Fluxo de Deployment
 
-O fluxo atual pode ser representado como:
+O deploy é executado pelo workflow `.github/workflows/deploy.yml` a cada `push` na branch `main`.
+
+> **Importante:** o workflow de deploy **não depende** do workflow de CI. Os dois são disparados de forma independente pelo mesmo `push`, portanto um deploy pode ocorrer mesmo que o CI daquele commit falhe.
+>
+> Na prática, a garantia de qualidade depende de a alteração ter passado pelo CI no Pull Request antes do merge em `main`. Tornar o deploy dependente do CI (por exemplo, via `workflow_run` ou unificando os jobs com `needs:`) é uma melhoria planejada.
+
+Fluxo atual:
 
 ```text
-Git Push
+git push (main)
    │
-   ▼
-GitHub Actions
-   │
-   ▼
-CI
-   │
-   ├── Tests
-   └── Lint
-   │
-   ▼
-SSH
-   │
-   ▼
-Production VPS
-   │
-   ▼
-Update repository / deployment files
-   │
-   ▼
-Docker Compose
-   │
-   ▼
-Updated containers
+   ├──────────────────────────┐
+   ▼                          ▼
+CI (ci.yml)              Deploy (deploy.yml)
+                              │
+                              ▼
+                        SSH no VPS (appleboy/ssh-action)
+                              │
+                              ▼
+                        cd /etc/opt/exactum-api
+                        git fetch origin
+                        git reset --hard origin/main
+                              │
+                              ▼
+                        docker compose -f docker-compose.prod.yml build
+                        docker compose -f docker-compose.prod.yml up -d db
+                        docker compose -f docker-compose.prod.yml run --rm api flask db upgrade
+                        docker compose -f docker-compose.prod.yml up -d --build
+                        docker image prune -f
 ```
+
+Características do fluxo atual:
+
+- não há backup automático antes de `flask db upgrade`;
+- não há health check automatizado após o deploy;
+- não há rollback automatizado;
+- o `git reset --hard` descarta qualquer alteração local no diretório do servidor.
 
 O processo exato pode variar conforme a alteração realizada.
 
@@ -960,6 +953,8 @@ A existência de um backup não elimina a necessidade de testar migrations.
 
 Backup é uma camada de recovery, não uma substituição de validação.
 
+> **Estado atual:** não existe backup automatizado. O workflow de deploy executa migrations sem backup prévio. Os comandos de backup e restore manuais estão em [`docs/operations/runbook.md` — seção 34](./runbook.md#34-backup).
+
 ---
 
 # 32. Deployment de Frontend
@@ -1239,7 +1234,7 @@ Verificar se o deployment alcançou o VPS.
 
 Verificar:
 
-```bash id="e8e6ec"
+```bash
 docker compose ps
 ```
 
@@ -1247,7 +1242,7 @@ docker compose ps
 
 Verificar:
 
-```bash id="k4p6ht"
+```bash
 docker compose logs
 ```
 

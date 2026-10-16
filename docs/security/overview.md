@@ -204,8 +204,7 @@ A implementação atual utiliza:
 - JWT;
 - Access tokens;
 - Refresh tokens;
-- Cookies HttpOnly;
-- Cookies Secure;
+- Cookies HttpOnly (a flag `Secure` ainda não está habilitada; ver [Limitações Conhecidas](#limitações-conhecidas));
 - Rotação de refresh tokens;
 - Redis para gestão de sessão;
 - Revogação de sessões.
@@ -423,6 +422,16 @@ O rate limiting contribui para reduzir riscos associados a:
 O rate limiting não é considerado um mecanismo de autenticação ou autorização.
 
 Ele funciona como uma camada adicional de proteção da disponibilidade da API.
+
+**Implementação atual:** o rate limiting é aplicado exclusivamente pelo Nginx, em `location /api/`:
+
+```nginx
+limit_req_zone $binary_remote_addr zone=api_limit:10m rate=10r/s;   # nginx.conf
+limit_req zone=api_limit burst=20 nodelay;                          # conf.d/default.conf
+limit_req_status 429;
+```
+
+Não há limite específico para o endpoint de login nem rate limiting na camada de aplicação. Detalhes em [`docs/operations/nginx.md`](../operations/nginx.md).
 
 ---
 
@@ -657,6 +666,24 @@ Documenta ameaças, riscos, trust boundaries e respectivas mitigações.
 → [`../observability/audit-logging.md`](../observability/audit-logging.md)
 
 Documenta a estrutura e o funcionamento dos registros de auditoria.
+
+---
+
+## Limitações Conhecidas
+
+O Exactum está em fase **alpha**. As limitações abaixo são conhecidas, estão registradas para correção e devem ser consideradas ao avaliar o modelo de segurança descrito neste documento.
+
+| Área                 | Limitação                                                                                                   | Documento de referência |
+| -------------------- | ----------------------------------------------------------------------------------------------------------- | ----------------------- |
+| CSRF                 | Não há proteção CSRF dedicada (`JWT_COOKIE_CSRF_PROTECT = False`); a mitigação atual depende de `SameSite=Lax` e CORS | [ADR-003](../architecture/decisions/ADR-003-httponly-cookie-authentication.md) |
+| Cookies              | A flag `Secure` dos cookies de autenticação está desabilitada na configuração (`JWT_COOKIE_SECURE = False`); o tráfego em produção é servido via HTTPS | [authentication.md](./authentication.md) |
+| Revogação            | O access token permanece válido até expirar (15 min) após logout/bloqueio em rotas sem `permission_required` | [session-management.md](./session-management.md) |
+| Cache de permissões  | Alterar ou excluir um role não invalida o cache de permissões dos usuários afetados                          | [authorization.md](./authorization.md) |
+| Isolamento de tenant | O filtro automático do ORM cobre apenas parte dos models e somente leituras; o filtro explícito nos repositories é obrigatório | [tenant-isolation.md](./tenant-isolation.md) |
+| Configuração         | `SECRET_KEY` possui valor padrão quando a variável de ambiente está ausente                                  | [development.md](../operations/development.md) |
+| Rate limiting        | Apenas no Nginx, sem limite específico para autenticação                                                     | Seção "Rate Limiting" acima |
+
+Essas limitações não devem ser omitidas ou descritas como resolvidas em outros documentos até que a correção correspondente seja implementada.
 
 ---
 

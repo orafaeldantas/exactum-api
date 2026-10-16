@@ -28,7 +28,7 @@ Surgiu, portanto, a necessidade de definir se o identificador utilizado internam
 
 Uma alternativa seria utilizar diretamente um identificador numérico:
 
-```text id="m3p1q7"
+```text
 Product
     id = 42
 ```
@@ -41,7 +41,7 @@ GET /products/42
 
 Outra alternativa seria utilizar um UUID como identificador público:
 
-```text id="k1z8a2"
+```text
 Product
     internal_id = 42
     uuid = "..."
@@ -74,7 +74,7 @@ O identificador público será utilizado para referenciar entidades através da 
 
 Conceitualmente:
 
-```text id="7f8k2s"
+```text
              API
               │
               ↓
@@ -92,7 +92,7 @@ Conceitualmente:
 
 Por exemplo:
 
-```text id="a4j6p1"
+```text
 Product
 ├── id        → internal persistence identifier
 ├── uuid      → public identifier
@@ -120,7 +120,7 @@ Essa separação permite que o banco evolua sem necessariamente exigir uma alter
 
 Conceitualmente:
 
-```text id="q8r2lm"
+```text
 Public Contract
        │
        ↓
@@ -187,7 +187,7 @@ O UUID público faz parte do contrato da API.
 
 Exemplo conceitual:
 
-```json id="f9x1q2"
+```json
 {
   "uuid": "018f...",
   "name": "Product A",
@@ -219,7 +219,7 @@ A API atua como uma abstração sobre a persistência.
 
 Uma alternativa seria expor diretamente IDs incrementais:
 
-```text id="m4z2w7"
+```text
 1
 2
 3
@@ -246,7 +246,7 @@ IDs sequenciais facilitam perceber a existência de uma sequência de recursos.
 
 Por exemplo:
 
-```text id="9qz7ha"
+```text
 GET /products/100
 GET /products/101
 GET /products/102
@@ -264,7 +264,7 @@ Mesmo utilizando UUID, a aplicação continua obrigada a verificar:
 
 Portanto:
 
-```text id="h2t8qw"
+```text
 UUID
  ≠
 Authorization
@@ -288,7 +288,7 @@ GET /products/{uuid}
 
 deve passar pelos controles normais:
 
-```text id="p9s2kf"
+```text
 Request
    ↓
 Authentication
@@ -316,7 +316,7 @@ A decisão também se relaciona diretamente com Multi-Tenancy.
 
 Um recurso pode possuir:
 
-```text id="k3d8az"
+```text
 uuid
 tenant_uuid
 ```
@@ -327,7 +327,7 @@ O `tenant_uuid` identifica o contexto ao qual o recurso pertence.
 
 Esses conceitos não devem ser confundidos.
 
-```text id="5xv8c0"
+```text
 Resource Identity
        ↓
       uuid
@@ -341,7 +341,7 @@ A resolução de um recurso deve considerar ambos os conceitos quando o recurso 
 
 Por exemplo, conceitualmente:
 
-```sql id="z8x6r2"
+```sql
 SELECT *
 FROM products
 WHERE uuid = :product_uuid
@@ -358,7 +358,7 @@ Quando a API recebe um UUID público, a aplicação deve resolver esse identific
 
 Conceitualmente:
 
-```text id="v5k7p2"
+```text
 HTTP
  ↓
 Public UUID
@@ -386,7 +386,7 @@ O princípio importante é:
 
 A separação entre identificador público e interno reforça a divisão entre:
 
-```text id="n4s7j1"
+```text
 External Contract
        │
        ↓
@@ -462,7 +462,7 @@ Public API Identifier
 
 Exemplo:
 
-```text id="y2g7rm"
+```text
 Product
 └── uuid = 018f...
 ```
@@ -497,7 +497,7 @@ UUIDs podem ser gerados através de diferentes estratégias.
 
 Entre elas:
 
-```text id="5j2v0n"
+```text
 UUIDv4
 UUIDv7
 ```
@@ -534,7 +534,7 @@ Depois que um recurso recebe seu UUID público, esse identificador deve ser cons
 
 Por exemplo:
 
-```text id="q7m4ax"
+```text
 Product
 uuid = 018f...
 ```
@@ -560,7 +560,7 @@ Recursos relacionados devem utilizar os identificadores públicos quando a refer
 
 Exemplo:
 
-```json id="k8s3q1"
+```json
 {
   "uuid": "018f...",
   "product_uuid": "018f...",
@@ -572,13 +572,13 @@ A nomenclatura específica deve seguir as convenções da API.
 
 A documentação diferencia:
 
-```text id="9r7t3w"
+```text
 resource identity
 ```
 
 de:
 
-```text id="w2k8p6"
+```text
 resource relationship
 ```
 
@@ -592,7 +592,7 @@ UUIDs públicos podem aparecer em mecanismos de observabilidade quando necessár
 
 Por exemplo:
 
-```text id="b3z6m1"
+```text
 request_id
 tenant_uuid
 user_uuid
@@ -625,7 +625,7 @@ A estratégia de observabilidade também utiliza identificadores públicos para 
 
 Exemplo conceitual:
 
-```json id="c4n8z2"
+```json
 {
   "event": "product.updated",
   "actor": "user-uuid",
@@ -665,7 +665,7 @@ A separação entre identificador público e interno permite que o banco seja ot
 
 Por exemplo:
 
-```text id="q4t7z1"
+```text
 API
  ↓
 UUID
@@ -698,7 +698,7 @@ Caso a estratégia interna de identificação seja alterada no futuro, a API nã
 
 Por exemplo:
 
-```text id="8xq2fm"
+```text
 Current
 
 Public UUID
@@ -708,7 +708,7 @@ Integer PK
 
 poderia evoluir para:
 
-```text id="5z7n1c"
+```text
 Future
 
 Public UUID
@@ -750,7 +750,7 @@ Em um sistema distribuído, diferentes componentes podem gerar identificadores s
 
 Conceitualmente:
 
-```text id="p2h7vz"
+```text
 Service A
    ↓
 UUID A
@@ -778,7 +778,7 @@ Caso recursos do Exactum sejam futuramente expostos a integrações externas, o 
 
 Por exemplo:
 
-```text id="j7x3qp"
+```text
 Exactum
    ↓
 External Integration
@@ -832,7 +832,7 @@ Nenhuma dessas conclusões faz parte da arquitetura.
 
 A segurança continua baseada em:
 
-```text id="n8v2yq"
+```text
 Authentication
 +
 Authorization
@@ -932,7 +932,7 @@ Isso é um trade-off aceitável para identificadores públicos.
 
 A decisão prioriza:
 
-```text id="z2x6f8"
+```text
 API Abstraction
        +
 Security Boundary
@@ -962,7 +962,7 @@ Atualmente, o Exactum utiliza identificadores públicos baseados em UUID para re
 
 A arquitetura diferencia conceitualmente:
 
-```text id="j6r9t2"
+```text
 Public Identity
        ↓
 UUID
@@ -997,7 +997,7 @@ Caso uma dessas mudanças altere significativamente a decisão arquitetural atua
 
 Por exemplo:
 
-```text id="y8v2kc"
+```text
 ADR-002
 Public UUID Identifiers
         ↓

@@ -28,6 +28,122 @@ O objetivo é reduzir diferenças entre ambientes e tornar o processo de desenvo
 
 ---
 
+## 1.1 Início Rápido
+
+Esta seção descreve o caminho mínimo para executar o Exactum localmente. As seções seguintes detalham cada componente.
+
+### Pré-requisitos
+
+- Docker e Docker Compose;
+- Node.js (frontend e hooks do Husky);
+- Python 3.11 e [uv](https://docs.astral.sh/uv/) — necessários apenas para executar testes, lint e type checking fora do container.
+
+### 1. Hooks de Git
+
+Na raiz do repositório:
+
+```bash
+npm install
+```
+
+Instala Husky e commitlint (validação de Conventional Commits e de branch).
+
+### 2. Variáveis de ambiente
+
+```bash
+cp .env.example .env
+```
+
+Variáveis obrigatórias para o ambiente local com Docker Compose:
+
+| Variável             | Exemplo local                                                  | Observação                                          |
+| -------------------- | -------------------------------------------------------------- | --------------------------------------------------- |
+| `SECRET_KEY`         | valor aleatório                                                | Possui fallback inseguro se ausente                 |
+| `JWT_SECRET_KEY`     | valor aleatório                                                | Obrigatório para emissão de tokens                  |
+| `POSTGRES_DB`        | `exactum_db`                                                   | Usado pelo container `db`                           |
+| `POSTGRES_USER`      | `exactum`                                                      |                                                     |
+| `POSTGRES_PASSWORD`  | `exactum`                                                      |                                                     |
+| `DATABASE_URL`       | `postgresql://exactum:exactum@db:5432/exactum_db`              | Host `db` (rede interna do Compose)                 |
+| `DATABASE_TESTS_URL` | `postgresql://exactum:exactum@db:5432/exactum_db_tests`        | Banco criado por `backend/init.sql`                 |
+| `REDIS_HOST`         | `redis`                                                        |                                                     |
+| `ALLOWED_ORIGINS`    | `http://localhost:5173`                                        | A API **não inicia** sem essa variável              |
+| `SUPER_ADMIN_*`      | e-mail, nome e senha                                           | Utilizados por `flask seed` para criar o super-admin |
+
+> `DATABASE_TESTS_URL` deve apontar **sempre** para um banco separado. Os testes executam `TRUNCATE` e `drop_all()` no banco configurado.
+
+### 3. Subir os serviços
+
+```bash
+docker compose up -d --build
+docker compose ps
+```
+
+O `docker-compose.yml` de desenvolvimento sobe:
+
+| Serviço | Porta no host | Observação                                              |
+| ------- | ------------- | ------------------------------------------------------- |
+| `api`   | `5000`        | `flask run --debug` com o código montado em volume      |
+| `db`    | `5433`        | PostgreSQL 15; executa `backend/init.sql` na 1ª criação |
+| `redis` | `6379`        | Redis 8 com AOF                                         |
+
+### 4. Banco de dados e seeds
+
+A ordem importa: as permissões precisam existir antes da criação dos tenants (que recebem roles padrão).
+
+```bash
+docker compose exec api flask db upgrade   # aplica as migrations
+docker compose exec api flask seed-rbac    # cria o catálogo de permissões
+docker compose exec api flask seed         # super-admin, tenants, produtos e vendas de exemplo
+```
+
+### 5. Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+O Vite serve o frontend em `http://localhost:5173` e encaminha `/api/*` para `http://localhost:5000` removendo o prefixo `/api` (ver `frontend/vite.config.js`), reproduzindo o comportamento do Nginx em produção.
+
+### 6. Verificação
+
+| Recurso    | URL                                 |
+| ---------- | ----------------------------------- |
+| Frontend   | `http://localhost:5173`             |
+| Health     | `http://localhost:5000/health`      |
+| Swagger UI | `http://localhost:5000/doc/swagger` |
+
+O Swagger é desabilitado quando `FLASK_ENV=production`.
+
+### 7. Testes e qualidade
+
+Dentro do container (a imagem de desenvolvimento inclui as dependências de dev):
+
+```bash
+docker compose exec api pytest
+```
+
+Ou no host, a partir de `backend/`:
+
+```bash
+uv sync
+uv run ruff check . && uv run ruff format --check .
+uv run mypy .
+DATABASE_TESTS_URL=postgresql://exactum:exactum@localhost:5433/exactum_db_tests \
+  REDIS_HOST=localhost uv run pytest
+```
+
+### Comandos CLI disponíveis
+
+| Comando            | Descrição                                       |
+| ------------------ | ----------------------------------------------- |
+| `flask seed-rbac`  | Cria as permissões definidas em `PERMISSIONS`   |
+| `flask seed`       | Popula super-admin, tenants, produtos e vendas  |
+| `flask redis-test` | Verifica a conexão com o Redis                  |
+
+---
+
 ## 2. Development Stack
 
 O ambiente de desenvolvimento do Exactum utiliza principalmente:
@@ -102,7 +218,7 @@ O repositório deve ser clonado antes da configuração do ambiente.
 
 Exemplo:
 
-```bash id="6up3pj"
+```bash
 git clone <repository>
 cd exactum-api
 ```
@@ -143,7 +259,7 @@ O ambiente local deve utilizar a versão compatível especificada pelo projeto.
 
 Exemplo:
 
-```bash id="h7j0d9"
+```bash
 python --version
 ```
 
@@ -294,7 +410,7 @@ Um arquivo `.env` pode ser utilizado localmente quando suportado pela aplicaçã
 
 Exemplo conceitual:
 
-```env id="q6qv29"
+```env
 DATABASE_URL=...
 REDIS_URL=...
 SECRET_KEY=...
@@ -1304,7 +1420,7 @@ Entretanto, alterações estruturais realizadas manualmente não devem permanece
 
 Quando uma query apresenta problemas de performance, o desenvolvimento pode utilizar ferramentas do PostgreSQL como:
 
-```sql id="t1z3me"
+```sql
 EXPLAIN
 EXPLAIN ANALYZE
 ```

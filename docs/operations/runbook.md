@@ -76,6 +76,35 @@ Os principais componentes considerados neste Runbook são:
 
 ---
 
+## 2.1 Convenções dos comandos deste Runbook
+
+Os comandos deste documento assumem que estão sendo executados **no VPS de produção**, a partir do diretório do projeto utilizado pelo workflow de deploy (`.github/workflows/deploy.yml`):
+
+```bash
+cd /etc/opt/exactum-api
+export COMPOSE_FILE=docker-compose.prod.yml
+```
+
+Com `COMPOSE_FILE` definido, os comandos `docker compose ...` passam a utilizar automaticamente o arquivo de produção. Sem essa variável, o Compose utilizaria o `docker-compose.yml` de desenvolvimento.
+
+Os comandos do Compose utilizam **nomes de serviço**, não nomes de container:
+
+| Serviço (Compose) | Container        | Responsabilidade             |
+| ----------------- | ---------------- | ---------------------------- |
+| `nginx`           | `exactum_nginx`  | Reverse proxy, TLS, frontend |
+| `api`             | `exactum_api`    | API Flask (Gunicorn)         |
+| `db`              | `exactum_db`     | PostgreSQL 15                |
+| `redis`           | `exactum_redis`  | Redis (sessões e cache)      |
+
+Exemplo:
+
+```bash
+docker compose logs --tail=200 api     # correto (nome do serviço)
+docker logs --tail=200 exactum_api     # equivalente, usando o nome do container
+```
+
+---
+
 # 3. Princípios de Operação
 
 A investigação operacional deve seguir alguns princípios fundamentais.
@@ -277,13 +306,13 @@ Unhealthy
 ## 7.3 Verificar logs
 
 ```bash
-docker compose logs --tail=200 exactum_api
+docker compose logs --tail=200 api
 ```
 
 Para acompanhar em tempo real:
 
 ```bash
-docker compose logs -f exactum_api
+docker compose logs -f api
 ```
 
 Procure por:
@@ -319,7 +348,7 @@ o problema normalmente está relacionado ao processo de inicialização da aplic
 Investigue:
 
 ```bash
-docker compose logs --tail=300 exactum_api
+docker compose logs --tail=300 api
 ```
 
 Não comece removendo o container.
@@ -374,13 +403,13 @@ too many connections
 ## 9.2 Verificar container
 
 ```bash
-docker compose ps postgres
+docker compose ps db
 ```
 
 Se necessário:
 
 ```bash
-docker compose logs --tail=200 postgres
+docker compose logs --tail=200 db
 ```
 
 ---
@@ -394,10 +423,12 @@ Depois verifique a comunicação a partir da API.
 Exemplo:
 
 ```bash
-docker compose exec exactum_api ...
-```
+# A imagem da API inclui netcat (usado pelo entrypoint.sh)
+docker compose exec api nc -z db 5432 && echo "PostgreSQL acessível"
 
-O teste específico depende das ferramentas disponíveis dentro da imagem.
+# Verificação direta no container do banco
+docker compose exec db sh -c 'pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"'
+```
 
 A ideia é validar:
 
@@ -1289,6 +1320,51 @@ Backup
 Restore
    ↓
 Sistema recuperado
+```
+
+## 34.1 Estado atual
+
+> **Atualmente não existe backup automatizado do PostgreSQL.**
+>
+> O workflow de deploy executa `flask db upgrade` diretamente, sem gerar backup prévio. Os dados residem apenas no volume Docker `pgdata` do VPS.
+
+Até que uma rotina automatizada (agendada e com cópia fora do VPS) seja implementada, o backup deve ser feito manualmente antes de qualquer operação de risco, incluindo deploys que contenham migrations.
+
+## 34.2 Backup manual
+
+```bash
+mkdir -p ~/backups
+
+docker compose exec -T db sh -c \
+  'pg_dump -U "$POSTGRES_USER" -d "$POSTGRES_DB" --format=custom' \
+  > ~/backups/exactum_$(date +%Y%m%d_%H%M%S).dump
+
+ls -lh ~/backups
+```
+
+O formato `custom` permite restauração seletiva com `pg_restore`.
+
+Mantenha uma cópia fora do VPS. Um backup armazenado apenas no mesmo servidor não protege contra perda do servidor.
+
+## 34.3 Restore
+
+> Restaurar sobrescreve os dados atuais. Confirme o arquivo e o ambiente antes de executar.
+
+```bash
+docker compose stop api
+
+docker compose exec -T db sh -c \
+  'pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB" --clean --if-exists --no-owner' \
+  < ~/backups/<arquivo>.dump
+
+docker compose start api
+```
+
+Após o restore, valide:
+
+```bash
+docker compose exec api flask db current
+curl -i https://exactum.app.br/api/health
 ```
 
 ---
@@ -2281,7 +2357,7 @@ Checklist:
 - origin acessível;
 - Nginx ativo;
 - redirect correto;
-- cookies Secure;
+- cookies de autenticação presentes (`access_token`, `refresh_token`);
 - API acessível.
 
 ---

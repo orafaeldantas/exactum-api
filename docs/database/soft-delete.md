@@ -43,6 +43,36 @@ Este documento descreve:
 
 ---
 
+## 1.1 Implementação Atual
+
+O soft delete é implementado pelo `SoftDeleteMixin` (`app/core/mixins/soft_delete.py`):
+
+```python
+class SoftDeleteMixin:
+    deleted_at: Mapped[datetime | None]   # TIMESTAMPTZ, NULL = registro ativo
+
+    @hybrid_property
+    def is_deleted(self) -> bool: ...
+
+    def soft_delete(self): ...            # deleted_at = datetime.now(UTC)
+```
+
+Entidades que utilizam soft delete atualmente:
+
+| Model     | Tabela     |
+| --------- | ---------- |
+| `User`    | `users`    |
+| `Product` | `products` |
+
+As demais tabelas (`sales`, `items_sales`, `goals`, `roles`, etc.) utilizam hard delete ou não possuem operação de exclusão.
+
+Características da implementação atual:
+
+- **o filtro não é automático**: cada repository aplica explicitamente `Model.deleted_at.is_(None)` (ex.: `ProductRepository.get_product`, `UserRepository.get_user_by_email`). O `tenant_filter` não aplica critério de soft delete;
+- **as constraints de unicidade não consideram `deleted_at`**: `products.sku`, `users.email` e `users.username` permanecem reservados após o soft delete, impedindo a reutilização do valor por um novo registro (ver seções 22–26).
+
+---
+
 ## 2. Soft Delete vs Hard Delete
 
 Existem duas formas principais de remoção de dados.
@@ -186,13 +216,13 @@ O campo `deleted_at` representa o momento em que a exclusão lógica ocorreu.
 
 Exemplo:
 
-```text id="q8a1e6"
+```text
 deleted_at = NULL
 ```
 
 registro ativo.
 
-```text id="v9f2s4"
+```text
 deleted_at = 2026-09-23T18:30:00
 ```
 

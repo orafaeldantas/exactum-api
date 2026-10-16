@@ -665,20 +665,21 @@ Essa separação também permite que a aplicação mantenha access tokens de vid
 
 # Segurança dos Cookies
 
-Os cookies de autenticação são configurados pelo backend de acordo com o ambiente e os requisitos de segurança.
+Os cookies de autenticação são definidos pelo backend via Flask-JWT-Extended, com a configuração em `backend/config.py`.
 
-As principais propriedades consideradas são:
+Configuração atual (idêntica em todos os ambientes):
 
-| Propriedade | Objetivo                                       |
-| ----------- | ---------------------------------------------- |
-| `HttpOnly`  | Impedir acesso direto pelo JavaScript          |
-| `Secure`    | Restringir envio a conexões HTTPS              |
-| `SameSite`  | Controlar envio cross-site                     |
-| `Path`      | Restringir o escopo do cookie quando aplicável |
+| Propriedade | Access token (`access_token`) | Refresh token (`refresh_token`) | Objetivo                              |
+| ----------- | ----------------------------- | ------------------------------- | ------------------------------------- |
+| `HttpOnly`  | Sim                           | Sim                             | Impedir acesso direto pelo JavaScript |
+| `Secure`    | **Não** (`JWT_COOKIE_SECURE = False`) | **Não**                 | Restringir envio a conexões HTTPS     |
+| `SameSite`  | `Lax`                         | `Lax`                           | Controlar envio cross-site            |
+| `Path`      | `/`                           | `/api/auth`                     | Restringir o escopo do cookie         |
+| Expiração   | 15 min (`JWT_ACCESS_TOKEN_EXPIRES`) | 30 dias (`JWT_REFRESH_TOKEN_EXPIRES`) |                           |
 
-A configuração exata pode variar entre desenvolvimento e produção.
+O `Path` do refresh token restringe seu envio às rotas de autenticação (`/api/auth/*`), reduzindo sua exposição nas demais requisições.
 
-Em produção, o tráfego deve ser protegido por HTTPS.
+> **Limitação conhecida:** a flag `Secure` está desabilitada em todos os ambientes. Em produção o tráfego é servido via HTTPS (Cloudflare + Nginx com redirect de HTTP para HTTPS e HSTS), mas o cookie em si não impõe essa restrição. A evolução planejada é habilitar `Secure` condicionado ao ambiente (`FLASK_ENV=production`).
 
 ---
 
