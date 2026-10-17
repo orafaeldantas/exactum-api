@@ -365,14 +365,7 @@ db.session.execute(stmt, execution_options={"skip_tenant_filter": True})
 
 ### Limitações conhecidas do filtro automático
 
-O filtro automático é uma **camada adicional**, não a única. As limitações abaixo fazem com que o filtro explícito nos repositories (item b) continue obrigatório:
-
-| Limitação                                   | Efeito                                                                                                   |
-| ------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| Cobre apenas `User`, `Product` e `Goal`     | `Sale`, `ItemSale`, `Role`, `UserRole`, `UserPermission`, `AuditLog` e `PlatformEvent` não são filtrados automaticamente |
-| Atua somente em `SELECT`                    | `update()` e `delete()` em massa não recebem o critério de tenant                                         |
-| Sem `g.tenant_id`, não filtra               | Fora de um request autenticado (CLI, seeds, rotas públicas) a query não é restringida                      |
-| Lista de models fixa no código              | Um novo model tenant-scoped não é protegido até ser adicionado manualmente ao listener                    |
+O filtro automático é uma **camada adicional**, não a única. Ele ainda não cobre todos os models e operações tenant-scoped, e sua lista de models é mantida manualmente. Por isso, o filtro explícito nos repositories (item b) continua obrigatório em todas as consultas e alterações.
 
 Evoluções planejadas:
 

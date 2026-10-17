@@ -146,7 +146,7 @@ class ProductListRoute(MethodView):
 
 O decorator, nesta ordem:
 
-1. libera a execução se `g.is_super_admin` for verdadeiro (sem consultar permissões nem blocklist);
+1. libera a execução se `g.is_super_admin` for verdadeiro (o super-admin não utiliza roles);
 2. resolve as permissões efetivas do usuário (`RBACService.get_effective_permissions`);
 3. bloqueia com `RefreshTokenRevoked` (`401`) se o tenant ou o usuário estiverem na blocklist do Redis;
 4. bloqueia com `ForbiddenException` (`403`) se a permissão exigida não estiver no conjunto efetivo.
@@ -161,14 +161,9 @@ permissões efetivas = permissões dos roles do usuário
                     − user_permissions com granted = false
 ```
 
-O resultado é armazenado em cache no Redis na chave `tenant:{tenant_id}:user:{user_id}:permissions`, com TTL igual ao do refresh token (`JWT_REFRESH_TOKEN_EXPIRES`, padrão 30 dias).
+O resultado é armazenado em cache no Redis na chave `tenant:{tenant_id}:user:{user_id}:permissions` e invalidado quando as atribuições de role ou as permissões individuais do usuário são alteradas.
 
-O cache é invalidado quando:
-
-- um role é atribuído ao usuário (`assign_role_to_user`);
-- uma permissão individual é concedida ou revogada (`grant_permission` / `revoke_permission`).
-
-> **Limitação conhecida:** alterar as permissões de um role (`update_role`) ou excluir um role (`delete_role`) **não** invalida o cache dos usuários afetados. Até a expiração do cache, esses usuários continuam com o conjunto anterior de permissões.
+> **Em evolução:** a estratégia de invalidação do cache de permissões está sendo revisada para cobrir todos os fluxos de administração de roles.
 
 ### Catálogo de permissões
 

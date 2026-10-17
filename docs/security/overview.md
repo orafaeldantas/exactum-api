@@ -677,9 +677,9 @@ O Exactum está em fase **alpha**. As limitações abaixo são conhecidas, estã
 | -------------------- | ----------------------------------------------------------------------------------------------------------- | ----------------------- |
 | CSRF                 | Não há proteção CSRF dedicada (`JWT_COOKIE_CSRF_PROTECT = False`); a mitigação atual depende de `SameSite=Lax` e CORS | [ADR-003](../architecture/decisions/ADR-003-httponly-cookie-authentication.md) |
 | Cookies              | A flag `Secure` dos cookies de autenticação está desabilitada na configuração (`JWT_COOKIE_SECURE = False`); o tráfego em produção é servido via HTTPS | [authentication.md](./authentication.md) |
-| Revogação            | O access token permanece válido até expirar (15 min) após logout/bloqueio em rotas sem `permission_required` | [session-management.md](./session-management.md) |
-| Cache de permissões  | Alterar ou excluir um role não invalida o cache de permissões dos usuários afetados                          | [authorization.md](./authorization.md) |
-| Isolamento de tenant | O filtro automático do ORM cobre apenas parte dos models e somente leituras; o filtro explícito nos repositories é obrigatório | [tenant-isolation.md](./tenant-isolation.md) |
+| Revogação            | A revogação centralizada de access tokens (vida curta, 15 min) é uma evolução planejada                     | [session-management.md](./session-management.md) |
+| Cache de permissões  | A invalidação do cache de permissões está sendo revisada para cobrir todos os fluxos de administração de roles | [authorization.md](./authorization.md) |
+| Isolamento de tenant | O filtro automático do ORM ainda não cobre todos os models; o filtro explícito nos repositories é obrigatório | [tenant-isolation.md](./tenant-isolation.md) |
 | Configuração         | `SECRET_KEY` possui valor padrão quando a variável de ambiente está ausente                                  | [development.md](../operations/development.md) |
 | Rate limiting        | Apenas no Nginx, sem limite específico para autenticação                                                     | Seção "Rate Limiting" acima |
 

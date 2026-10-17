@@ -63,7 +63,7 @@ Routes (Blueprint) → Controller → Service → Repository → Model
 - O tenant vem **sempre** do JWT (`g.tenant_id`, populado em `app/core/middlewares/context.py`). Nenhuma camada aceita `tenant_id` vindo do payload, da URL ou da query string.
 - Isolamento em duas camadas:
   1. **Obrigatório:** todo método de repository sobre dados tenant-scoped filtra explicitamente por `tenant_id` (inclusive `update()`/`delete()`).
-  2. **Rede de proteção:** `app/database/tenant_filter.py` aplica `with_loader_criteria` automaticamente, mas hoje cobre só `User`, `Product` e `Goal`, só em `SELECT`, e não filtra quando `g.tenant_id` está vazio. Não confie nele sozinho.
+  2. **Rede de proteção:** `app/database/tenant_filter.py` aplica `with_loader_criteria` automaticamente, mas ainda não cobre todos os models e operações. Não confie nele sozinho.
 - Consultas cross-tenant só com `execution_options(skip_tenant_filter=True)` e **apenas** no domínio `platform`.
 
 ### Autenticação e autorização
@@ -74,7 +74,7 @@ Routes (Blueprint) → Controller → Service → Repository → Model
 - Autorização é verificada na borda (decorators nas routes) **e** regras de propriedade no service.
 - Mudou roles ou permissões de alguém? Invalide o cache de permissões (`tenant:{id}:user:{id}:permissions`).
 - Impersonate sempre gera **platform event** (`IMPERSONATION_STARTED` / `IMPERSONATION_FINISHED`).
-- Revogação: blocklist no Redis com TTL igual ao do access token, por usuário ou por tenant. Hoje ela só é checada em `permission_required`.
+- Revogação: blocklist no Redis com TTL igual ao do access token, por usuário ou por tenant.
 
 ### Logs e observabilidade
 
@@ -191,15 +191,6 @@ Divergências conhecidas entre o código atual e as regras:
 - Queries sempre parametrizadas (ORM ou bind params); nunca concatenação de strings em SQL.
 - Menor privilégio em roles e endpoints; todo endpoint novo protegido declara sua permissão.
 - Limitações conhecidas estão em `docs/security/overview.md`. Não as descreva como resolvidas sem a correção correspondente. Detalhes exploráveis de vulnerabilidades abertas não vão para a documentação pública.
-
-### Registro de falhas
-
-- Toda vulnerabilidade, falha de integridade de dados ou risco operacional encontrado é registrado em `docs/security/findings.md`, seguindo o template e os critérios do próprio arquivo, com o próximo ID `SEC-xxx`. Não relate falhas só no chat.
-- O arquivo é **privado e nunca é commitado**, nem adicionado com `git add -f`.
-- O Claude registra e propõe; a correção segue o fluxo da seção 9, uma falha por PR (exceto falhas com a mesma causa raiz).
-- Antes de começar uma correção, leia o item e atualize o status para `Em correção`. Ao terminar, use `Corrigida`. `Em produção` só depois do deploy verificado.
-- Commits de correção citam apenas o ID no corpo (ex.: `Refs: SEC-004`), sem descrever como explorar a falha. O histórico do repositório é público.
-- Ao fechar um item, siga o checklist "Ao fechar um item" do `findings.md`.
 
 ---
 
