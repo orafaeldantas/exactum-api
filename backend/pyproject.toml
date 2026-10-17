@@ -20,6 +20,9 @@ dependencies = [
     "redis>=8.0.0",
     "uuid6>=2025.0.1",
     "msgpack>=1.2.1",
+    "pyjwt>=2.15.0",
+    "urllib3>=2.8.0",
+    "werkzeug>=3.1.9",
 ]
 
 [dependency-groups]
