@@ -17,7 +17,7 @@ def permission_required(permission: str):
                 return func(*args, **kwargs)
 
             permissions = get_rbac_service().get_effective_permissions(
-                g.tenant_id, g.user_id
+                g.tenant_id, int(g.user_id)
             )
 
             if CacheService().get(CacheKeys.blocklist_tenant(g.tenant_id)):
