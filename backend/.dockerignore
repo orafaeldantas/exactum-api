@@ -11,6 +11,9 @@ python_history
 venv/
 ENV/
 env/
+.env
+.env.*
+!.env.example
 
 # Docker & Git
 .git
